@@ -26,9 +26,12 @@
         <main class="game-layout">
             <!-- Left: Character Info -->
             <aside class="character-pane card">
-                <div class="char-header">
-                    <h2 id="char-name">순례자</h2>
-                    <span id="char-title" class="badge">Pilgrim</span>
+                <div class="char-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div>
+                        <h2 id="char-name">순례자</h2>
+                        <span id="char-title" class="badge">Pilgrim</span>
+                    </div>
+                    <button id="btn-settings" class="action-btn small secondary" style="padding: 5px 10px; font-size: 0.9rem;">⚙️ 설정</button>
                 </div>
                 
                 <!-- Quest/Progress Section -->
@@ -157,6 +160,35 @@
             <div class="verse-actions">
                 <button id="btn-download-verse" class="action-btn">💾 이미지 저장</button>
                 <button id="btn-close-verse" class="action-btn secondary">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Overlay (Phase 6) -->
+    <div id="auth-overlay" class="hidden">
+        <div class="auth-card card" style="text-align: center; max-width: 320px;">
+            <h2 style="margin-bottom: 5px;">여정의 시작</h2>
+            <p style="color: #aaa; margin-bottom: 20px; font-size: 0.9rem;">당신의 이름을 기록하십시오.</p>
+            <div class="auth-form" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="auth-id" placeholder="아이디" autocomplete="off" style="padding: 10px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #444;">
+                <input type="password" id="auth-pw" placeholder="비밀번호" style="padding: 10px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #444;">
+                <p id="auth-msg" class="auth-msg" style="color: #ff4b2b; font-size: 0.85rem; margin: 5px 0; min-height: 1.2em;"></p>
+                <div class="auth-actions" style="display: flex; gap: 10px;">
+                    <button id="btn-login" class="action-btn primary" style="flex:1;">기존 여정</button>
+                    <button id="btn-register" class="action-btn secondary" style="flex:1;">새로운 여정</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Overlay -->
+    <div id="settings-overlay" class="hidden">
+        <div class="settings-card card" style="text-align: center; max-width: 320px;">
+            <h2 style="margin-bottom: 20px;">⚙️ 설정</h2>
+            <div class="settings-actions" style="display:flex; flex-direction:column; gap:10px;">
+                <button id="btn-logout" class="action-btn secondary">로그아웃</button>
+                <button id="btn-reset" class="action-btn danger">⚠️ 데이터 초기화 (처음부터)</button>
+                <button id="btn-close-settings" class="action-btn primary" style="margin-top: 10px;">닫기</button>
             </div>
         </div>
     </div>

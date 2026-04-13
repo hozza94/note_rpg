@@ -650,9 +650,45 @@ body {
 }
 
 .tab-content {
+    display: none;
     flex: 1;
     overflow-y: auto;
     padding-right: 5px;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+/* -------------------------------------
+ * Phase 6: Auth & Settings Modal
+ * ------------------------------------- */
+
+#auth-overlay, #settings-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.85);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+#auth-overlay.hidden, #settings-overlay.hidden {
+    display: none !important;
+}
+
+.auth-card, .settings-card {
+    min-width: 300px;
+    padding: 30px;
+    background: rgba(30, 30, 35, 0.95);
+    border: 1px solid #555;
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.8);
 }
 
 .item-list {

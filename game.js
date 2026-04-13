@@ -40,6 +40,17 @@ class GameEngine {
     }
 
     init() {
+        if (typeof window !== 'undefined' && window.AuthManager) {
+            const user = window.AuthManager.getCurrentUser();
+            if (!user) {
+                document.getElementById('auth-overlay').classList.remove('hidden');
+                this.bindAuthEvents();
+                return; // Stop initialization until logged in
+            } else {
+                document.getElementById('char-name').innerText = user;
+            }
+        }
+
         const savedData = window.StorageManager.load();
         if (savedData) {
             this.state = savedData;
@@ -108,6 +119,49 @@ class GameEngine {
         document.getElementById('btn-download-verse').addEventListener('click', () => this.downloadVerseCard());
         document.getElementById('verse-overlay').addEventListener('click', (e) => {
             if (e.target.id === 'verse-overlay') this.hideVerseOverlay();
+        });
+
+        // Phase 6: Settings Actions
+        const settingsOverlay = document.getElementById('settings-overlay');
+        document.getElementById('btn-settings').addEventListener('click', () => {
+            settingsOverlay.classList.remove('hidden');
+        });
+        document.getElementById('btn-close-settings').addEventListener('click', () => {
+            settingsOverlay.classList.add('hidden');
+        });
+        document.getElementById('btn-logout').addEventListener('click', () => {
+            window.AuthManager.logout();
+            window.location.reload();
+        });
+        document.getElementById('btn-reset').addEventListener('click', () => {
+            if (confirm("경고: 모든 플레이 데이터가 삭제됩니다.\n정말 처음부터 다시 시작하시겠습니까?")) {
+                window.StorageManager.clear();
+                window.location.reload();
+            }
+        });
+    }
+
+    bindAuthEvents() {
+        const authOverlay = document.getElementById('auth-overlay');
+        const authId = document.getElementById('auth-id');
+        const authPw = document.getElementById('auth-pw');
+        const authMsg = document.getElementById('auth-msg');
+
+        document.getElementById('btn-login').addEventListener('click', () => {
+            const res = window.AuthManager.login(authId.value, authPw.value);
+            if (res.success) {
+                authOverlay.classList.add('hidden');
+                window.location.reload();
+            } else {
+                authMsg.innerText = res.msg;
+                authMsg.style.color = '#ff4b2b';
+            }
+        });
+
+        document.getElementById('btn-register').addEventListener('click', () => {
+            const res = window.AuthManager.register(authId.value, authPw.value);
+            authMsg.innerText = res.msg;
+            authMsg.style.color = res.success ? '#4caf50' : '#ff4b2b';
         });
     }
 
