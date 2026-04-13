@@ -27,8 +27,8 @@ class GameEngine {
                 ]
             },
             world: {
+                currentRegionId: "pishon",
                 saturation: 0,
-                currentRegion: "비손 유역",
                 isNavigating: false,
                 explorationProgress: 0,
                 bossDefeated: false
@@ -44,6 +44,7 @@ class GameEngine {
         if (savedData) {
             this.state = savedData;
             // Backward compatibility
+            if (!this.state.world.currentRegionId) this.state.world.currentRegionId = "pishon";
             if (this.state.world.explorationProgress === undefined) this.state.world.explorationProgress = 0;
             if (this.state.world.bossDefeated === undefined) this.state.world.bossDefeated = false;
             
@@ -72,6 +73,16 @@ class GameEngine {
         document.getElementById('btn-rest').addEventListener('click', () => this.rest());
         const bossBtn = document.getElementById('btn-boss-challenge');
         if (bossBtn) bossBtn.addEventListener('click', () => this.bossChallenge());
+
+        // Region Transition
+        const nextRegionBtn = document.createElement('button');
+        nextRegionBtn.id = 'btn-next-region';
+        nextRegionBtn.className = 'action-btn primary small hidden';
+        nextRegionBtn.style.marginTop = '10px';
+        nextRegionBtn.style.width = '100%';
+        nextRegionBtn.innerText = '➡️ 다음 지역으로 이동';
+        document.querySelector('.quest-section').appendChild(nextRegionBtn);
+        nextRegionBtn.addEventListener('click', () => this.handleRegionTransition());
 
         // Battle Actions
         document.getElementById('btn-attack').addEventListener('click', () => this.playerAttack());
@@ -230,12 +241,31 @@ class GameEngine {
 
         const questBar = document.getElementById('quest-bar');
         if (questBar) {
+            const regionData = window.GAME_DATA.regions[w.currentRegionId];
             questBar.style.width = `${w.explorationProgress}%`;
             document.getElementById('quest-text').innerText = `${Math.round(w.explorationProgress)}%`;
-            document.getElementById('quest-title').innerText = `${w.currentRegion} 탐사`;
+            document.getElementById('quest-title').innerText = `${regionData.name} 탐사`;
             
             const bossBtn = document.getElementById('btn-boss-challenge');
             bossBtn.classList.toggle('hidden', w.bossDefeated);
+
+            const nextRegionBtn = document.getElementById('btn-next-region');
+            const hasNextRegion = w.currentRegionId === 'pishon'; // Currently only pishon -> gihon
+            nextRegionBtn.classList.toggle('hidden', !w.bossDefeated || !hasNextRegion);
+
+            // Update Theme Color
+            document.documentElement.style.setProperty('--accent-color', regionData.themeColor);
+            const r = parseInt(regionData.themeColor.slice(1, 3), 16);
+            const g = parseInt(regionData.themeColor.slice(3, 5), 16);
+            const b_val = parseInt(regionData.themeColor.slice(5, 7), 16);
+            document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b_val}, 0.3)`);
+        }
+
+        const saturationFill = document.getElementById('saturation-fill');
+        if (saturationFill) saturationFill.style.width = `${w.saturation}%`;
+        const saturationVal = document.getElementById('saturation-value');
+        if (saturationVal) saturationVal.innerText = `${Math.round(w.saturation)}%`;
+            document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b_val}, 0.3)`);
         }
 
         document.getElementById('saturation-fill').style.width = `${w.saturation}%`;
@@ -324,12 +354,14 @@ class GameEngine {
 
             // 조우 확률 75% (roll < 0.75 이면 전투)
             if (roll < 0.75) {
-                // 플레이어 레벨에 맞는 일반 몬스터만 필터 (C등급 이상은 보스 전용)
-                const normalGrades = ['F', 'E', 'D'];
+                // 현재 지역 및 플레이어 레벨에 맞는 일반 몬스터만 필터
+                const normalGrades = ['F', 'E', 'D', 'C'];
                 const monsterList = window.GAME_DATA.monsters.filter(m =>
+                    m.regionId === this.state.world.currentRegionId &&
                     normalGrades.includes(m.grade) &&
                     m.minPlayerLv <= playerLv &&
-                    m.maxPlayerLv >= playerLv
+                    m.maxPlayerLv >= playerLv &&
+                    m.id !== window.GAME_DATA.regions[this.state.world.currentRegionId].bossId // 보스 제외
                 );
 
                 if (monsterList.length === 0) {
@@ -351,17 +383,47 @@ class GameEngine {
     bossChallenge() {
         if (this.state.world.isNavigating || this.state.battle) return;
         
-        let bossId = 'wraith'; 
+        const regionData = window.GAME_DATA.regions[this.state.world.currentRegionId];
+        const bossId = regionData.bossId; 
         const bossData = window.GAME_DATA.monsters.find(m => m.id === bossId);
         
         if (!bossData) return;
         
-        this.log(`${this.state.world.currentRegion}의 강력한 기운이 확산됩니다... ${bossData.name}와(과) 조우했습니다!`, "battle");
+        this.log(`${regionData.name}의 강력한 기운이 확산됩니다... ${bossData.name}와(과) 조우했습니다!`, "battle");
         
         const bossMonster = JSON.parse(JSON.stringify(bossData));
         bossMonster.isBoss = true;
         
         this.startBattle(bossMonster);
+    }
+
+    handleRegionTransition() {
+        // Find next region logic (currently sequential pishon -> gihon)
+        const nextRegionId = this.state.world.currentRegionId === 'pishon' ? 'gihon' : null;
+        if (!nextRegionId) return;
+
+        const nextRegion = window.GAME_DATA.regions[nextRegionId];
+        const playerLevel = this.state.player.level;
+
+        if (playerLevel < nextRegion.minLevel) {
+            const proceed = confirm(`⚠️ 경고: [${nextRegion.name}]의 권장 진입 레벨은 ${nextRegion.minLevel}입니다.\n현재 레벨(${playerLevel})로는 매우 위험할 수 있습니다. 그래도 이동하시겠습니까?`);
+            if (!proceed) return;
+        }
+
+        this.moveToRegion(nextRegionId);
+    }
+
+    moveToRegion(regionId) {
+        const region = window.GAME_DATA.regions[regionId];
+        this.state.world.currentRegionId = regionId;
+        this.state.world.explorationProgress = 0;
+        this.state.world.bossDefeated = false;
+
+        this.log(`✨ 새로운 지역: [${region.name}]에 도착했습니다.`, "system");
+        this.log(`📜 ${region.description}`, "info");
+
+        this.updateUI();
+        this.saveGame();
     }
 
     worship() {
@@ -502,7 +564,8 @@ class GameEngine {
         this.calculateDrops(m.dropTableId);
 
         if (m.isBoss) {
-            this.log(`[시나리오 달성] ${this.state.world.currentRegion}의 주인을 물리쳤습니다! 다음 지역으로 나아갈 수 있습니다.`, "system");
+            const regionName = window.GAME_DATA.regions[this.state.world.currentRegionId].name;
+            this.log(`[시나리오 달성] ${regionName}의 주인을 물리쳤습니다! 다음 지역으로 나아갈 수 있습니다.`, "system");
             this.state.world.bossDefeated = true;
             this.state.world.explorationProgress = 100;
             this.state.world.saturation = Math.min(100, this.state.world.saturation + 10);
