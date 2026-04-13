@@ -27,9 +27,33 @@ const GAME_DATA = {
     },
 
     items: {
+        // 재료 (Materials)
         'gray_dust': { name: '회색 가루', grade: 'Normal', desc: '세계를 덮고 있는 무채색의 가루입니다.' },
         'rat_tail': { name: '쥐 꼬리', grade: 'Normal', desc: '탐욕스러운 쥐의 꼬리입니다.' },
-        'tiny_horn': { name: '작은 뿔', grade: 'Uncommon', desc: '어린 마귀의 뿔입니다.' }
+        'tiny_horn': { name: '작은 뿔', grade: 'Uncommon', desc: '어린 마귀의 뿔입니다.' },
+
+        // 장비 (Equipment)
+        'wooden_sword': { 
+            name: '부러진 나무검', 
+            grade: 'Normal', 
+            slot: 'weapon', 
+            stats: { atk: 3 }, 
+            desc: '누군가 버리고 간 낡은 나무검입니다.' 
+        },
+        'rusty_armor': { 
+            name: '녹슨 호심경', 
+            grade: 'Normal', 
+            slot: 'armor', 
+            stats: { def: 2, hp: 10 }, 
+            desc: '세월의 풍파를 견디지 못하고 녹슬어버린 가슴 보호대입니다.' 
+        },
+        'old_boots': { 
+            name: '해진 가죽신', 
+            grade: 'Normal', 
+            slot: 'boots', 
+            stats: { spd: 5 }, 
+            desc: '바닥이 거의 다 닳아버린 낡은 가죽신입니다.' 
+        }
     }
 };
 

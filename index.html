@@ -30,6 +30,17 @@
                     <h2 id="char-name">순례자</h2>
                     <span id="char-title" class="badge">Pilgrim</span>
                 </div>
+                
+                <!-- Quest/Progress Section -->
+                <div class="quest-section">
+                    <div class="quest-header">
+                        <h3 id="quest-title">비손 유역 탐사</h3>
+                        <button id="btn-boss-challenge" class="action-btn danger small">👑 보스 도전</button>
+                    </div>
+                    <div class="bar-container"><div id="quest-bar" class="bar quest" style="width: 0%;"></div></div>
+                    <span id="quest-text" class="quest-progress">0%</span>
+                </div>
+
                 <div class="stats-group">
                     <div class="stat-item">
                         <label>체력 (HP)</label>
@@ -41,18 +52,31 @@
                         <div class="bar-container"><div id="pp-bar" class="bar pp" style="width: 100%;"></div></div>
                         <span id="pp-text">50 / 50</span>
                     </div>
+                    <div class="bonus-points-container">
+                        <span class="label">남은 포인트:</span>
+                        <span id="bonus-points" class="val">0</span>
+                    </div>
                     <div class="stat-grid">
                         <div class="stat-box">
                             <span class="label">공격력</span>
-                            <span id="atk-value" class="val">10</span>
+                            <div class="val-group">
+                                <span id="atk-value" class="val">10</span>
+                                <button class="point-btn hidden" data-stat="atk">+</button>
+                            </div>
                         </div>
                         <div class="stat-box">
                             <span class="label">방어력</span>
-                            <span id="def-value" class="val">5</span>
+                            <div class="val-group">
+                                <span id="def-value" class="val">5</span>
+                                <button class="point-btn hidden" data-stat="def">+</button>
+                            </div>
                         </div>
                         <div class="stat-box">
                             <span class="label">신앙심</span>
-                            <span id="faith-value" class="val">1</span>
+                            <div class="val-group">
+                                <span id="faith-value" class="val">1</span>
+                                <button class="point-btn hidden" data-stat="faith">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -87,12 +111,13 @@
             <aside class="data-pane card">
                 <nav class="tab-nav">
                     <button class="tab-btn active" data-tab="inventory">소지품</button>
+                    <button class="tab-btn" data-tab="equipment">장비</button>
                     <button class="tab-btn" data-tab="skills">스킬</button>
                 </nav>
                 <div class="tab-content">
                     <div id="inventory-list" class="item-list">
-                        <!-- Items will be injected here -->
-                        <div class="empty-msg">가방이 비어있습니다.</div>
+                        <!-- Items/Equipment will be injected here -->
+                        <div class="empty-msg">데이터가 없습니다.</div>
                     </div>
                 </div>
             </aside>
@@ -120,8 +145,26 @@
         </div>
     </div>
 
+    <!-- Verse Card Overlay (Phase 3) -->
+    <div id="verse-overlay" class="hidden">
+        <div id="verse-card-container">
+            <div id="verse-card" class="verse-card">
+                <div class="verse-deco top">†</div>
+                <p id="verse-content"></p>
+                <div class="verse-reference" id="verse-ref"></div>
+                <div class="verse-deco bottom">Basileia</div>
+            </div>
+            <div class="verse-actions">
+                <button id="btn-download-verse" class="action-btn">💾 이미지 저장</button>
+                <button id="btn-close-verse" class="action-btn secondary">닫기</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="js/storage.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/inventory.js"></script>
     <script src="game.js"></script>
 </body>
 </html>

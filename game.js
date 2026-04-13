@@ -20,7 +20,7 @@ class GameEngine {
                 exp: 0,
                 nextExp: 100,
                 gold: 0,
-                inventory: [],
+                bonusPoints: 0, 
                 skills: [
                     { id: 'meditation', name: '묵상', cost: 10 },
                     { id: 'praise', name: '찬양', cost: 15 }
@@ -29,27 +29,39 @@ class GameEngine {
             world: {
                 saturation: 0,
                 currentRegion: "비손 유역",
-                isNavigating: false
+                isNavigating: false,
+                explorationProgress: 0,
+                bossDefeated: false
             }
         };
 
+        this.inventory = new window.InventoryManager();
         this.init();
     }
 
     init() {
-        // Load saved data if exists
         const savedData = window.StorageManager.load();
         if (savedData) {
             this.state = savedData;
+            // Backward compatibility
+            if (this.state.world.explorationProgress === undefined) this.state.world.explorationProgress = 0;
+            if (this.state.world.bossDefeated === undefined) this.state.world.bossDefeated = false;
+            
+            if (this.state.inventoryData) {
+                this.inventory = new window.InventoryManager(this.state.inventoryData);
+            }
             this.log("이전의 여정을 이어갑니다...", "system");
         }
 
         this.bindEvents();
+        this.toggleBattleUI(false);
+        this.hideVerseOverlay();
         this.updateUI();
         this.log("세상이 회색빛으로 물들었습니다. 당신의 순례는 여기서부터 시작됩니다.", "system");
     }
 
     saveGame() {
+        this.state.inventoryData = this.inventory.serialize();
         window.StorageManager.save(this.state);
     }
 
@@ -58,6 +70,8 @@ class GameEngine {
         document.getElementById('btn-explore').addEventListener('click', () => this.explore());
         document.getElementById('btn-worship').addEventListener('click', () => this.worship());
         document.getElementById('btn-rest').addEventListener('click', () => this.rest());
+        const bossBtn = document.getElementById('btn-boss-challenge');
+        if (bossBtn) bossBtn.addEventListener('click', () => this.bossChallenge());
 
         // Battle Actions
         document.getElementById('btn-attack').addEventListener('click', () => this.playerAttack());
@@ -67,6 +81,18 @@ class GameEngine {
         // UI Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+        });
+
+        // Stat Point Buttons
+        document.querySelectorAll('.point-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => this.spendPoint(e.target.dataset.stat));
+        });
+
+        // Verse Card Actions (Phase 3)
+        document.getElementById('btn-close-verse').addEventListener('click', () => this.hideVerseOverlay());
+        document.getElementById('btn-download-verse').addEventListener('click', () => this.downloadVerseCard());
+        document.getElementById('verse-overlay').addEventListener('click', (e) => {
+            if (e.target.id === 'verse-overlay') this.hideVerseOverlay();
         });
     }
 
@@ -81,16 +107,50 @@ class GameEngine {
         container.innerHTML = '';
         
         if (tabId === 'inventory') {
-            if (this.state.player.inventory.length === 0) {
+            if (this.inventory.items.length === 0) {
                 container.innerHTML = '<div class="empty-msg">가방이 비어있습니다.</div>';
             } else {
-                this.state.player.inventory.forEach(item => {
+                this.inventory.items.forEach(itemInfo => {
+                    const itemData = window.GAME_DATA.items[itemInfo.id];
                     const div = document.createElement('div');
-                    div.className = 'list-item inventory-item';
-                    div.innerHTML = `<span>${item.name}</span> <span class="count">x${item.count}</span>`;
+                    div.className = `list-item inventory-item ${itemData.grade.toLowerCase()}`;
+                    div.innerHTML = `
+                        <div class="item-info">
+                            <span class="name">${itemData.name}</span>
+                            <span class="count">x${itemInfo.count}</span>
+                        </div>
+                        ${itemData.slot ? '<button class="equip-btn">장착</button>' : ''}
+                    `;
+                    if (itemData.slot) {
+                        div.querySelector('.equip-btn').onclick = () => this.equipItem(itemInfo.id);
+                    }
                     container.appendChild(div);
                 });
             }
+        } else if (tabId === 'equipment') {
+            const slots = ['weapon', 'armor', 'helmet', 'accessory', 'boots', 'offhand'];
+            slots.forEach(slot => {
+                const itemId = this.inventory.equipment[slot];
+                const div = document.createElement('div');
+                div.className = 'equipment-item';
+                
+                let content = `<span class="slot-name">${slot}</span>`;
+                if (itemId) {
+                    const item = window.GAME_DATA.items[itemId];
+                    content += `
+                        <span class="name ${item.grade.toLowerCase()}">${item.name}</span>
+                        <button class="unequip-btn">해제</button>
+                    `;
+                } else {
+                    content += `<span class="empty-slot">비어있음</span>`;
+                }
+                
+                div.innerHTML = content;
+                if (itemId) {
+                    div.querySelector('.unequip-btn').onclick = () => this.unequipItem(slot);
+                }
+                container.appendChild(div);
+            });
         } else if (tabId === 'skills') {
             this.state.player.skills.forEach(skill => {
                 const item = document.createElement('div');
@@ -99,6 +159,38 @@ class GameEngine {
                 container.appendChild(item);
             });
         }
+    }
+
+    equipItem(itemId) {
+        if (this.inventory.equip(itemId)) {
+            const item = window.GAME_DATA.items[itemId];
+            this.log(`[장비] ${item.name}을(를) 장착했습니다.`, "system");
+            this.updateUI();
+            this.renderTabContent('inventory');
+            this.saveGame();
+        }
+    }
+
+    unequipItem(slot) {
+        if (this.inventory.unequip(slot)) {
+            this.log(`[장비] 장비를 해제했습니다.`, "system");
+            this.updateUI();
+            this.renderTabContent('equipment');
+            this.saveGame();
+        }
+    }
+
+    spendPoint(stat) {
+        if (this.state.player.bonusPoints <= 0) return;
+        
+        this.state.player.bonusPoints--;
+        if (stat === 'atk') this.state.player.atk += 2;
+        else if (stat === 'def') this.state.player.def += 1;
+        else if (stat === 'faith') this.state.player.faith += 1;
+        
+        this.log(`[성장] ${stat.toUpperCase()} 스탯에 포인트를 투자했습니다.`, "system");
+        this.updateUI();
+        this.saveGame();
     }
 
     log(message, type = 'info') {
@@ -113,46 +205,123 @@ class GameEngine {
     updateUI() {
         const p = this.state.player;
         const w = this.state.world;
+        const b = this.inventory.getBonuses();
 
-        // Player Stats
-        document.getElementById('hp-bar').style.width = `${(p.hp / p.maxHp) * 100}%`;
-        document.getElementById('hp-text').innerText = `${Math.round(p.hp)} / ${p.maxHp}`;
-        document.getElementById('pp-bar').style.width = `${(p.pp / p.maxPp) * 100}%`;
-        document.getElementById('pp-text').innerText = `${Math.round(p.pp)} / ${p.maxPp}`;
+        const totalAtk = p.atk + b.atk;
+        const totalDef = p.def + b.def;
+        const totalMaxHp = p.maxHp + b.hp;
+        const totalMaxPp = p.maxPp + b.pp;
+        const totalSpd = p.spd + b.spd;
+
+        document.getElementById('hp-bar').style.width = `${(p.hp / totalMaxHp) * 100}%`;
+        document.getElementById('hp-text').innerText = `${Math.round(p.hp)} / ${totalMaxHp}`;
+        document.getElementById('pp-bar').style.width = `${(p.pp / totalMaxPp) * 100}%`;
+        document.getElementById('pp-text').innerText = `${Math.round(p.pp)} / ${totalMaxPp}`;
         
-        document.getElementById('atk-value').innerText = p.atk;
-        document.getElementById('def-value').innerText = p.def;
+        document.getElementById('atk-value').innerText = totalAtk;
+        document.getElementById('def-value').innerText = totalDef;
         document.getElementById('faith-value').innerText = p.faith;
 
-        // Monster Stats (during battle)
         if (this.state.battle) {
             const m = this.state.battle.monster;
             document.getElementById('monster-hp-bar').style.width = `${(m.hp / m.maxHp) * 100}%`;
             document.getElementById('monster-hp-text').innerText = `${Math.round(m.hp)} / ${m.maxHp}`;
         }
 
-        // World
+        const questBar = document.getElementById('quest-bar');
+        if (questBar) {
+            questBar.style.width = `${w.explorationProgress}%`;
+            document.getElementById('quest-text').innerText = `${Math.round(w.explorationProgress)}%`;
+            document.getElementById('quest-title').innerText = `${w.currentRegion} 탐사`;
+            
+            const bossBtn = document.getElementById('btn-boss-challenge');
+            bossBtn.classList.toggle('hidden', w.bossDefeated);
+        }
+
         document.getElementById('saturation-fill').style.width = `${w.saturation}%`;
-        document.getElementById('saturation-value').innerText = `${w.saturation}%`;
+        document.getElementById('saturation-value').innerText = `${w.saturation.toFixed(1)}%`;
         document.body.style.setProperty('--world-saturation', w.saturation);
+
+        const pointEl = document.getElementById('bonus-points');
+        if (pointEl) pointEl.innerText = p.bonusPoints;
+
+        document.querySelectorAll('.point-btn').forEach(btn => {
+            btn.classList.toggle('hidden', p.bonusPoints <= 0);
+        });
     }
 
     toggleBattleUI(isBattle) {
-        document.getElementById('explore-actions').classList.toggle('hidden', isBattle);
-        document.getElementById('battle-actions').classList.toggle('hidden', !isBattle);
+        document.getElementById('explore-actions').style.display = isBattle ? 'none' : 'flex';
+        document.getElementById('battle-actions').style.display = isBattle ? 'flex' : 'none';
         document.getElementById('battle-scene').classList.toggle('hidden', !isBattle);
+    }
+
+    // --- FX Functions (Phase 3) ---
+    spawnDamagePopup(targetEl, value, isCrit, isMonsterDamage) {
+        const rect = targetEl.getBoundingClientRect();
+        const popup = document.createElement('div');
+        popup.className = `damage-popup ${isCrit ? 'critical' : ''} ${isMonsterDamage ? 'monster-dmg' : ''}`;
+        popup.innerText = (isCrit ? 'CRITICAL! ' : '') + Math.round(value);
+        
+        // Randomize spawn position slightly
+        const randomX = (Math.random() - 0.5) * 40;
+        popup.style.left = `${rect.left + rect.width / 2 + randomX}px`;
+        popup.style.top = `${rect.top}px`;
+        
+        document.body.appendChild(popup);
+        
+        // Auto-remove
+        setTimeout(() => popup.remove(), 1000);
+    }
+
+    showVerseOverlay(verseText, reference) {
+        const overlay = document.getElementById('verse-overlay');
+        const content = document.getElementById('verse-content');
+        const ref = document.getElementById('verse-ref');
+        
+        content.innerText = verseText;
+        ref.innerText = reference;
+        
+        overlay.classList.remove('hidden');
+        
+        // Auto-hide after 5 seconds if not closed
+        this.verseTimer = setTimeout(() => this.hideVerseOverlay(), 5000);
+    }
+
+    hideVerseOverlay() {
+        document.getElementById('verse-overlay').classList.add('hidden');
+        if (this.verseTimer) clearTimeout(this.verseTimer);
+    }
+
+    async downloadVerseCard() {
+        const card = document.getElementById('verse-card');
+        const canvas = await html2canvas(card, {
+            backgroundColor: '#111',
+            scale: 2
+        });
+        
+        const link = document.createElement('a');
+        link.download = `Basileia_Verse_${Date.now()}.png`;
+        link.href = canvas.toDataURL();
+        link.click();
     }
 
     // --- Explore Functions ---
     explore() {
-        if (this.state.world.isNavigating) return;
+        if (this.state.world.isNavigating || this.state.battle) return;
         this.state.world.isNavigating = true;
         this.log("주변을 탐험합니다...", "info");
 
         setTimeout(() => {
+            if (this.state.world.explorationProgress >= 100 && !this.state.world.bossDefeated) {
+                this.state.world.isNavigating = false;
+                this.bossChallenge();
+                return;
+            }
+
             const roll = Math.random();
-            if (roll > 0.4) { // 60% 확률로 전투 발생
-                const monsterList = window.GAME_DATA.monsters.filter(m => m.level <= (this.state.player.faith * 5 + 5));
+            if (roll > 0.4) {
+                const monsterList = window.GAME_DATA.monsters.filter(m => m.level <= (this.state.player.faith * 5 + 5) && m.grade !== 'C' && m.grade !== 'B' && m.grade !== 'A' && m.grade !== 'S' && m.grade !== 'SS' && m.grade !== 'SSS');
                 const randomMonster = JSON.parse(JSON.stringify(monsterList[Math.floor(Math.random() * monsterList.length)]));
                 this.startBattle(randomMonster);
             } else {
@@ -162,33 +331,60 @@ class GameEngine {
         }, 800);
     }
 
+    bossChallenge() {
+        if (this.state.world.isNavigating || this.state.battle) return;
+        
+        let bossId = 'wraith'; 
+        const bossData = window.GAME_DATA.monsters.find(m => m.id === bossId);
+        
+        if (!bossData) return;
+        
+        this.log(`${this.state.world.currentRegion}의 강력한 기운이 확산됩니다... ${bossData.name}와(과) 조우했습니다!`, "battle");
+        
+        const bossMonster = JSON.parse(JSON.stringify(bossData));
+        bossMonster.isBoss = true;
+        
+        this.startBattle(bossMonster);
+    }
+
     worship() {
-        if (this.state.player.pp >= this.state.player.maxPp) return this.log("이미 영적으로 충만한 상태입니다.", "system");
+        const bonus = this.inventory.getBonuses();
+        const totalMaxPp = this.state.player.maxPp + bonus.pp;
+
+        if (this.state.player.pp >= totalMaxPp) return this.log("이미 영적으로 충만한 상태입니다.", "system");
         this.log("조용히 눈을 감고 예배를 드립니다...", "info");
         setTimeout(() => {
-            this.state.player.pp = this.state.player.maxPp;
+            this.state.player.pp = totalMaxPp;
             const verses = [
-                "내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라 (빌 4:13)",
-                "여호와는 나의 목자시니 내게 부족함이 없으리로다 (시 23:1)"
+                { text: "내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라", ref: "빌립보서 4:13" },
+                { text: "여호와는 나의 목자시니 내게 부족함이 없으리로다", ref: "시편 23:1" },
+                { text: "강하고 담대하라 두려워하지 말며 놀라지 말라", ref: "여호수아 1:9" },
+                { text: "너는 내게 부르짖으라 내가 네게 응답하겠고 네가 알지 못하는 크고 은밀한 일을 네게 보이리라", ref: "예레미야 33:3" }
             ];
-            this.log(`[묵상] ${verses[Math.floor(Math.random() * verses.length)]}`, "system");
+            const verse = verses[Math.floor(Math.random() * verses.length)];
+            this.log(`[묵상] ${verse.text} (${verse.ref})`, "system");
+            this.showVerseOverlay(verse.text, verse.ref);
             this.updateUI();
+            this.saveGame();
         }, 1000);
     }
 
     rest() {
+        const bonus = this.inventory.getBonuses();
+        const totalMaxHp = this.state.player.maxHp + bonus.hp;
+
         this.log("잠시 휴식을 취하며 체력을 회복합니다.", "info");
-        this.state.player.hp = Math.min(this.state.player.maxHp, this.state.player.hp + 20);
+        this.state.player.hp = Math.min(totalMaxHp, this.state.player.hp + 20);
         this.updateUI();
+        this.saveGame();
     }
 
     // --- Battle Functions ---
     startBattle(monster) {
-        monster.maxHp = monster.stats.hp; // Store max HP
+        monster.maxHp = monster.stats.hp;
         monster.hp = monster.stats.hp;
         this.state.battle = { monster, isPlayerTurn: true };
         
-        // Update Monster Card UI
         document.getElementById('monster-name').innerText = monster.name;
         document.getElementById('monster-grade').innerText = monster.grade;
         document.getElementById('monster-level').innerText = `Lv.${monster.level}`;
@@ -197,8 +393,10 @@ class GameEngine {
         this.log(`${monster.name}(이)가 나타났습니다!`, "battle");
         this.updateUI();
 
-        // Check if monster is faster
-        if (monster.stats.spd > this.state.player.spd) {
+        const bonus = this.inventory.getBonuses();
+        const totalSpd = this.state.player.spd + bonus.spd;
+
+        if (monster.stats.spd > totalSpd) {
             this.state.battle.isPlayerTurn = false;
             setTimeout(() => this.monsterTurn(), 1000);
         }
@@ -208,15 +406,34 @@ class GameEngine {
         if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
         
         const p = this.state.player;
+        const b = this.inventory.getBonuses();
         const m = this.state.battle.monster;
         
-        const dmg = Math.round(this.calculateDamage(p.atk, m.stats.def));
+        const isCrit = Math.random() < 0.1; // 10% base crit chance
+        const totalAtk = p.atk + b.atk;
+        let dmg = this.calculateDamage(totalAtk, m.stats.def);
+        if (isCrit) dmg *= 1.5;
+        dmg = Math.round(dmg);
+        
         m.hp -= dmg;
         
-        document.getElementById('battle-scene').classList.add('shake');
-        setTimeout(() => document.getElementById('battle-scene').classList.remove('shake'), 400);
+        const targetEl = document.querySelector('.monster-card');
+        const sceneEl = document.getElementById('battle-scene');
+        
+        if (isCrit) {
+            sceneEl.classList.add('shake-heavy');
+            document.getElementById('app').classList.add('crit-flash');
+            setTimeout(() => {
+                sceneEl.classList.remove('shake-heavy');
+                document.getElementById('app').classList.remove('crit-flash');
+            }, 500);
+        } else {
+            sceneEl.classList.add('shake');
+            setTimeout(() => sceneEl.classList.remove('shake'), 400);
+        }
 
-        this.log(`${m.name}에게 ${dmg}의 피해를 입혔습니다!`, "info");
+        this.spawnDamagePopup(targetEl, dmg, isCrit, false);
+        this.log(`${m.name}에게 ${dmg}${isCrit ? '!!! (강력한 일격)' : ''}의 피해를 입혔습니다!`, "info");
         this.updateUI();
 
         if (m.hp <= 0) return this.winBattle();
@@ -230,9 +447,14 @@ class GameEngine {
         
         const m = this.state.battle.monster;
         const p = this.state.player;
+        const b = this.inventory.getBonuses();
 
-        const dmg = Math.round(this.calculateDamage(m.stats.atk, p.def));
+        const totalDef = p.def + b.def;
+        const dmg = Math.round(this.calculateDamage(m.stats.atk, totalDef));
         p.hp -= dmg;
+
+        const targetEl = document.querySelector('.character-pane');
+        this.spawnDamagePopup(targetEl, dmg, false, true);
 
         document.getElementById('app').classList.add('hit-flash');
         setTimeout(() => document.getElementById('app').classList.remove('hit-flash'), 200);
@@ -247,7 +469,7 @@ class GameEngine {
 
     calculateDamage(atk, def) {
         const base = atk * (100 / (100 + def));
-        const random = 0.9 + Math.random() * 0.2; // 0.9 ~ 1.1
+        const random = 0.9 + Math.random() * 0.2;
         return base * random;
     }
 
@@ -255,16 +477,23 @@ class GameEngine {
         const m = this.state.battle.monster;
         this.log(`${m.name}을(를) 물리쳤습니다!`, "info");
         
-        // 1. Rewards (Gold/EXP)
         this.log(`경험치 ${m.reward.exp}, 골드 ${m.reward.gold}를 획득했습니다.`, "system");
         this.state.player.exp += m.reward.exp;
         this.state.player.gold += m.reward.gold;
         
-        // 2. Drop Items
         this.calculateDrops(m.dropTableId);
 
-        // 3. World Saturation
-        this.state.world.saturation = Math.min(100, this.state.world.saturation + 0.5);
+        if (m.isBoss) {
+            this.log(`[시나리오 달성] ${this.state.world.currentRegion}의 주인을 물리쳤습니다! 다음 지역으로 나아갈 수 있습니다.`, "system");
+            this.state.world.bossDefeated = true;
+            this.state.world.explorationProgress = 100;
+            this.state.world.saturation = Math.min(100, this.state.world.saturation + 10);
+        } else {
+            if (!this.state.world.bossDefeated) {
+                this.state.world.explorationProgress = Math.min(100, this.state.world.explorationProgress + 10);
+            }
+            this.state.world.saturation = Math.min(100, this.state.world.saturation + 0.1);
+        }
         
         this.state.battle = null;
         setTimeout(() => {
@@ -272,72 +501,88 @@ class GameEngine {
             this.updateUI();
             this.renderTabContent(document.querySelector('.tab-btn.active').dataset.tab);
             this.checkLevelUp();
-            this.saveGame(); // Auto Save
+            this.saveGame();
         }, 1500);
     }
 
+    loseBattle() {
+        this.log("무리한 순례로 인해 탈진했습니다...", "battle");
+        this.state.player.hp = 10;
+        this.state.player.gold = Math.floor(this.state.player.gold * 0.8);
+        this.state.battle = null;
+        
+        setTimeout(() => {
+            this.toggleBattleUI(false);
+            this.updateUI();
+            this.saveGame();
+        }, 2000);
+    }
+
     calculateDrops(dropTableId) {
-        // 드랍 테이블 로직 (임시 구현: 40% 확률로 몬스터별 고유 가루/재료 획득)
         const roll = Math.random();
-        if (roll < 0.4) {
+        if (roll < 0.3) {
             let itemId = '';
-            if (dropTableId === 'drop_f_slime') itemId = 'gray_dust';
-            else if (dropTableId === 'drop_e_rat') itemId = 'rat_tail';
-            else if (dropTableId === 'drop_d_imp') itemId = 'tiny_horn';
+            if (dropTableId === 'drop_f_slime') itemId = 'wooden_sword';
+            else if (dropTableId === 'drop_e_rat') itemId = 'rusty_armor';
+            else if (dropTableId === 'drop_d_imp') itemId = 'old_boots';
             
-            if (itemId && window.GAME_DATA.items[itemId]) {
-                const item = window.GAME_DATA.items[itemId];
-                this.addItem(itemId, item.name);
+            if (itemId) {
+                this.addItem(itemId);
             }
         }
     }
 
-    addItem(itemId, itemName) {
-        const inv = this.state.player.inventory;
-        const existing = inv.find(i => i.id === itemId);
-        
-        if (existing) {
-            existing.count++;
-        } else {
-            inv.push({ id: itemId, name: itemName, count: 1 });
+    addItem(itemId) {
+        if (this.inventory.addItem(itemId)) {
+            const item = window.GAME_DATA.items[itemId];
+            this.log(`아이템 획득: [${item.name}]`, "system");
         }
-        this.log(`아이템 획득: [${itemName}]`, "system");
     }
 
     checkLevelUp() {
         if (this.state.player.exp >= this.state.player.nextExp) {
             this.state.player.exp -= this.state.player.nextExp;
+            this.state.player.level++;
             this.state.player.nextExp = Math.floor(this.state.player.nextExp * 1.5);
-            this.state.player.atk += 2;
-            this.state.player.def += 1;
-            this.state.player.maxHp += 20;
-            this.state.player.hp = this.state.player.maxHp;
-            this.log("축하합니다! 레벨이 올랐습니다.", "system");
+            this.state.player.bonusPoints += 3;
+            
+            this.log(`축하합니다! 레벨 ${this.state.player.level}(이)가 되었습니다.`, "system");
+            this.log(`보너스 포인트 3점을 획득했습니다 (총 ${this.state.player.bonusPoints}점)`, "system");
+            
+            const bonus = this.inventory.getBonuses();
+            this.state.player.hp = this.state.player.maxHp + bonus.hp;
+            this.state.player.pp = this.state.player.maxPp + bonus.pp;
+            
             this.updateUI();
         }
     }
 
     showSkillMenu() {
         if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
-        this.log("사용할 기술을 선택하세요 (로그 창에서 기술 이름을 클릭하거나, 다음 업데이트에서 메뉴가 추가됩니다)", "system");
-        // 간단한 기술 실행 (프로토타입용)
         this.useSkill(this.state.player.skills[0]);
     }
 
     useSkill(skill) {
         const p = this.state.player;
+        const b = this.inventory.getBonuses();
+        const totalMaxPp = p.maxPp + b.pp;
+
         if (p.pp < skill.cost) return this.log("PP가 부족합니다!", "system");
 
         p.pp -= skill.cost;
         this.log(`${p.name}의 기술: [${skill.name}]!`, "info");
 
         if (skill.id === 'meditation') {
-            p.hp = Math.min(p.maxHp, p.hp + 30);
+            const totalMaxHp = p.maxHp + b.hp;
+            p.hp = Math.min(totalMaxHp, p.hp + 30);
             this.log("HP를 30 회복했습니다.", "info");
         } else {
             const m = this.state.battle.monster;
-            const dmg = this.calculateDamage(p.atk * 1.5, m.stats.def);
+            const targetEl = document.querySelector('.monster-card');
+            const totalAtk = p.atk + b.atk;
+            const dmg = Math.round(this.calculateDamage(totalAtk * 1.5, m.stats.def));
             m.hp -= dmg;
+            this.spawnDamagePopup(targetEl, dmg, true, false); // Skills often count as crit-like visual
             this.log(`${m.name}에게 ${Math.floor(dmg)}의 강력한 피해를 입혔습니다!`, "info");
         }
 

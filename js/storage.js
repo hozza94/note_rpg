@@ -1,23 +1,28 @@
 /**
  * Basileia - Storage Abstraction Layer
- * Handles data persistence. Currently uses localStorage.
- * Designed to be easily swappable with Firebase/Supabase.
+ * Handles data persistence with versioning and validation.
  */
 
 class StorageManager {
     constructor() {
         this.key = "BASILEIA_SAVE_DATA";
+        this.version = "1.1"; // Current data version
     }
 
     /**
-     * Save game state
+     * Save game state with metadata
      * @param {Object} state - The game state object to save
      */
     save(state) {
         try {
-            const data = JSON.stringify(state);
+            const saveData = {
+                version: this.version,
+                timestamp: Date.now(),
+                payload: state
+            };
+            const data = JSON.stringify(saveData);
             localStorage.setItem(this.key, data);
-            console.log("💾 Game Saved Successfully");
+            console.log(`💾 Game Saved (v${this.version})`);
             return true;
         } catch (e) {
             console.error("❌ Failed to save game:", e);
@@ -26,17 +31,26 @@ class StorageManager {
     }
 
     /**
-     * Load game state
-     * @returns {Object|null} The saved game state or null
+     * Load game state with validation
+     * @returns {Object|null} The saved state payload or null
      */
     load() {
         try {
             const data = localStorage.getItem(this.key);
             if (!data) return null;
+
+            const parsed = JSON.parse(data);
+            
+            // Version Check & Migration (placeholder for future)
+            if (parsed.version !== this.version) {
+                console.warn(`⚠️ Save version mismatch: ${parsed.version} vs ${this.version}`);
+                // Migration logic could go here
+            }
+
             console.log("📂 Game Loaded Successfully");
-            return JSON.parse(data);
+            return parsed.payload;
         } catch (e) {
-            console.error("❌ Failed to load game:", e);
+            console.error("❌ Failed to load game (Corrupted?):", e);
             return null;
         }
     }
@@ -50,7 +64,7 @@ class StorageManager {
     }
 
     /**
-     * Check if a save exists
+     * Check if a valid save exists
      */
     exists() {
         return localStorage.getItem(this.key) !== null;

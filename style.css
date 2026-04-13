@@ -161,9 +161,102 @@ body {
 .stat-box .label { font-size: 0.7rem; color: var(--text-secondary); display: block; }
 .stat-box .val { font-size: 1.1rem; font-weight: 600; }
 
-/* Log Pane */
 .log-pane {
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    min-height: 400px;
+    height: 100%;
+}
+
+/* Stats Enhancement */
+.bonus-points-container {
+    padding: 8px 12px;
+    background: rgba(var(--primary-rgb), 0.1);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    color: var(--primary);
+    border: 1px dashed var(--primary);
+}
+
+.val-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.point-btn {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--primary);
+    color: white;
+    border: none;
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+}
+
+.point-btn:hover {
+    transform: scale(1.2);
+}
+
+.point-btn.hidden {
+    display: none;
+}
+
+/* Item Grades */
+.inventory-item.normal { border-left: 3px solid #ccc; }
+.inventory-item.uncommon { border-left: 3px solid #4CAF50; color: #4CAF50; }
+.inventory-item.rare { border-left: 3px solid #2196F3; color: #2196F3; }
+.inventory-item.unique { border-left: 3px solid #9C27B0; color: #9C27B0; }
+.inventory-item.legendary { border-left: 3px solid #FF9800; color: #FF9800; }
+.inventory-item.mythic { border-left: 3px solid #FFD700; color: #FFD700; font-weight: bold; }
+
+.item-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.item-info .count {
+    font-size: 0.8rem;
+    opacity: 0.7;
+}
+
+.equip-btn, .unequip-btn {
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    color: white;
+}
+
+.equip-btn:hover { background: rgba(var(--primary-rgb), 0.2); }
+.unequip-btn:hover { background: rgba(200, 50, 50, 0.2); }
+
+/* Equipment Slot Item */
+.equipment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background: rgba(255,255,255,0.03);
+    border-radius: 6px;
+    margin-bottom: 6px;
+}
+
+.slot-name {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    opacity: 0.5;
+    width: 60px;
 }
 
 .log-content {
@@ -302,5 +395,185 @@ body {
     100% { background-color: transparent; }
 }
 
-/* Tab & Other Hidden */
-.hidden { display: none !important; }
+/* Damage Popups (Phase 3) */
+.damage-popup {
+    position: absolute;
+    pointer-events: none;
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    text-shadow: 0 0 4px rgba(0,0,0,0.8);
+    z-index: 100;
+    animation: floatUpFade 1s ease-out forwards;
+}
+
+.damage-popup.critical {
+    color: #ffd700;
+    font-size: 2.2rem;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+    animation: critPop 1.2s ease-out forwards;
+}
+
+.damage-popup.monster-dmg {
+    color: #ff4b2b;
+}
+
+@keyframes floatUpFade {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-50px); opacity: 0; }
+}
+
+@keyframes critPop {
+    0% { transform: scale(0.5); opacity: 0; }
+    20% { transform: scale(1.3); opacity: 1; }
+    40% { transform: scale(1); }
+    100% { transform: translateY(-70px) scale(0.8); opacity: 0; }
+}
+
+/* Verse Overlay (Phase 3) */
+#verse-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 1000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+}
+
+#verse-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.verse-card {
+    background: linear-gradient(135deg, #1e1e1e 0%, #111 100%);
+    padding: 60px 40px;
+    border-radius: 4px; /* Classic card feel */
+    border: 1px solid #333;
+    max-width: 500px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    position: relative;
+}
+
+.verse-card::before {
+    content: '';
+    position: absolute;
+    top: 10px; left: 10px; right: 10px; bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+    pointer-events: none;
+}
+
+.verse-deco {
+    font-family: 'serif';
+    color: #555;
+    font-size: 1.2rem;
+    margin: 10px 0;
+}
+
+#verse-content {
+    font-size: 1.4rem;
+    line-height: 1.8;
+    color: #eee;
+    font-weight: 400;
+    margin: 20px 0;
+}
+
+.verse-reference {
+    font-size: 0.9rem;
+    color: #888;
+    margin-top: 20px;
+}
+
+.verse-actions {
+    display: flex;
+    gap: 15px;
+}
+
+/* Heavier effects */
+.shake-heavy {
+    animation: shakeHeavy 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shakeHeavy {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: translate3d(-6px, 0, 0); }
+    20%, 40%, 60%, 80% { transform: translate3d(6px, 0, 0); }
+}
+
+.crit-flash {
+    animation: critFlash 0.3s ease-out;
+}
+
+@keyframes critFlash {
+    0% { filter: brightness(1); }
+    50% { filter: brightness(3) invert(0.2); }
+    100% { filter: brightness(1); }
+}
+
+/* Utility Classes */
+.hidden {
+    display: none !important;
+}
+
+.active {
+    display: block !important;
+}
+
+/* Quest & Progress UI */
+.quest-section {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px dashed rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 20px;
+}
+
+.quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.quest-header h3 {
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+.bar.quest {
+    background: #00bcd4; /* Cyan color */
+}
+
+.quest-progress {
+    display: block;
+    text-align: right;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.action-btn.small {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    border-radius: 4px;
+}
+
+.action-btn.danger {
+    background: rgba(255, 75, 43, 0.2);
+    border-color: #ff4b2b;
+    color: #ff4b2b;
+}
+
+.action-btn.danger:hover {
+    background: #ff4b2b;
+    color: white;
+}
