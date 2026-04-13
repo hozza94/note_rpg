@@ -8,12 +8,14 @@ class GameEngine {
             player: {
                 name: "순례자",
                 title: "Pilgrim",
-                hp: 100,
-                maxHp: 100,
+                level: 1,
+                hp: 200,
+                maxHp: 200,
                 pp: 50,
                 maxPp: 50,
-                atk: 10,
-                def: 5,
+                atk: 15,
+                def: 8,
+                spd: 100,
                 faith: 1,
                 exp: 0,
                 nextExp: 100,
@@ -35,9 +37,20 @@ class GameEngine {
     }
 
     init() {
+        // Load saved data if exists
+        const savedData = window.StorageManager.load();
+        if (savedData) {
+            this.state = savedData;
+            this.log("이전의 여정을 이어갑니다...", "system");
+        }
+
         this.bindEvents();
         this.updateUI();
         this.log("세상이 회색빛으로 물들었습니다. 당신의 순례는 여기서부터 시작됩니다.", "system");
+    }
+
+    saveGame() {
+        window.StorageManager.save(this.state);
     }
 
     bindEvents() {
@@ -71,7 +84,12 @@ class GameEngine {
             if (this.state.player.inventory.length === 0) {
                 container.innerHTML = '<div class="empty-msg">가방이 비어있습니다.</div>';
             } else {
-                // Render inventory items
+                this.state.player.inventory.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'list-item inventory-item';
+                    div.innerHTML = `<span>${item.name}</span> <span class="count">x${item.count}</span>`;
+                    container.appendChild(div);
+                });
             }
         } else if (tabId === 'skills') {
             this.state.player.skills.forEach(skill => {
@@ -98,9 +116,9 @@ class GameEngine {
 
         // Player Stats
         document.getElementById('hp-bar').style.width = `${(p.hp / p.maxHp) * 100}%`;
-        document.getElementById('hp-text').innerText = `${p.hp} / ${p.maxHp}`;
+        document.getElementById('hp-text').innerText = `${Math.round(p.hp)} / ${p.maxHp}`;
         document.getElementById('pp-bar').style.width = `${(p.pp / p.maxPp) * 100}%`;
-        document.getElementById('pp-text').innerText = `${p.pp} / ${p.maxPp}`;
+        document.getElementById('pp-text').innerText = `${Math.round(p.pp)} / ${p.maxPp}`;
         
         document.getElementById('atk-value').innerText = p.atk;
         document.getElementById('def-value').innerText = p.def;
@@ -110,7 +128,7 @@ class GameEngine {
         if (this.state.battle) {
             const m = this.state.battle.monster;
             document.getElementById('monster-hp-bar').style.width = `${(m.hp / m.maxHp) * 100}%`;
-            document.getElementById('monster-hp-text').innerText = `${Math.floor(m.hp)} / ${m.maxHp}`;
+            document.getElementById('monster-hp-text').innerText = `${Math.round(m.hp)} / ${m.maxHp}`;
         }
 
         // World
@@ -192,13 +210,13 @@ class GameEngine {
         const p = this.state.player;
         const m = this.state.battle.monster;
         
-        const dmg = this.calculateDamage(p.atk, m.stats.def);
+        const dmg = Math.round(this.calculateDamage(p.atk, m.stats.def));
         m.hp -= dmg;
         
         document.getElementById('battle-scene').classList.add('shake');
         setTimeout(() => document.getElementById('battle-scene').classList.remove('shake'), 400);
 
-        this.log(`${m.name}에게 ${Math.floor(dmg)}의 피해를 입혔습니다!`, "info");
+        this.log(`${m.name}에게 ${dmg}의 피해를 입혔습니다!`, "info");
         this.updateUI();
 
         if (m.hp <= 0) return this.winBattle();
@@ -213,13 +231,13 @@ class GameEngine {
         const m = this.state.battle.monster;
         const p = this.state.player;
 
-        const dmg = this.calculateDamage(m.stats.atk, p.def);
+        const dmg = Math.round(this.calculateDamage(m.stats.atk, p.def));
         p.hp -= dmg;
 
         document.getElementById('app').classList.add('hit-flash');
         setTimeout(() => document.getElementById('app').classList.remove('hit-flash'), 200);
 
-        this.log(`${m.name}의 공격! ${Math.floor(dmg)}의 피해를 입었습니다.`, "battle");
+        this.log(`${m.name}의 공격! ${dmg}의 피해를 입었습니다.`, "battle");
         this.updateUI();
 
         if (p.hp <= 0) return this.loseBattle();
@@ -236,20 +254,54 @@ class GameEngine {
     winBattle() {
         const m = this.state.battle.monster;
         this.log(`${m.name}을(를) 물리쳤습니다!`, "info");
-        this.log(`경험치 ${m.reward.exp}, 골드 ${m.reward.gold}를 획득했습니다.`, "system");
         
+        // 1. Rewards (Gold/EXP)
+        this.log(`경험치 ${m.reward.exp}, 골드 ${m.reward.gold}를 획득했습니다.`, "system");
         this.state.player.exp += m.reward.exp;
         this.state.player.gold += m.reward.gold;
         
-        // World Saturation update
+        // 2. Drop Items
+        this.calculateDrops(m.dropTableId);
+
+        // 3. World Saturation
         this.state.world.saturation = Math.min(100, this.state.world.saturation + 0.5);
         
         this.state.battle = null;
         setTimeout(() => {
             this.toggleBattleUI(false);
             this.updateUI();
+            this.renderTabContent(document.querySelector('.tab-btn.active').dataset.tab);
             this.checkLevelUp();
+            this.saveGame(); // Auto Save
         }, 1500);
+    }
+
+    calculateDrops(dropTableId) {
+        // 드랍 테이블 로직 (임시 구현: 40% 확률로 몬스터별 고유 가루/재료 획득)
+        const roll = Math.random();
+        if (roll < 0.4) {
+            let itemId = '';
+            if (dropTableId === 'drop_f_slime') itemId = 'gray_dust';
+            else if (dropTableId === 'drop_e_rat') itemId = 'rat_tail';
+            else if (dropTableId === 'drop_d_imp') itemId = 'tiny_horn';
+            
+            if (itemId && window.GAME_DATA.items[itemId]) {
+                const item = window.GAME_DATA.items[itemId];
+                this.addItem(itemId, item.name);
+            }
+        }
+    }
+
+    addItem(itemId, itemName) {
+        const inv = this.state.player.inventory;
+        const existing = inv.find(i => i.id === itemId);
+        
+        if (existing) {
+            existing.count++;
+        } else {
+            inv.push({ id: itemId, name: itemName, count: 1 });
+        }
+        this.log(`아이템 획득: [${itemName}]`, "system");
     }
 
     checkLevelUp() {

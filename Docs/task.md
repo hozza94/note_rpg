@@ -5,17 +5,13 @@
 - [x] `Lore Book _ Monster.md` 최신화 (E, F 등급 추가)
 - [ ] `Docs/features.md` 생성 (구체적인 게임 기능 정의서)
 
-## 🏗️ Phase 2: 초기 프로토타입 개발 (Text-based)
-- [/] 프로젝트 기초 파일 생성
-    - [ ] `index.html` (UI 골격)
-    - [ ] `style.css` (초기 흑백 테마 및 레이아웃)
-    - [ ] `js/game.js` (게임 상태 관리 엔진)
+## 🏗️ Phase 2: 핵심 엔진 고도화 및 내실 다지기
 - [/] 핵심 엔진 구현
-    - [ ] 데이터 엔진 구축 (`js/data.js` - 몬스터 및 아이템 데이터)
-    - [ ] 탐험(Explore) 시스템 (무작위 조우 로직)
-    - [ ] 예배(Worship) 시스템 (PP 회복 및 연출)
-    - [ ] 전투(Combat) 시스템 (BattleManager 구현: 공격, 스킬, 도망)
-    - [ ] 보상 시스템 (EXP, Gold, Drops 정산)
+    - [x] 데이터 엔진 구축 (`js/data.js`)
+    - [x] 전투(Combat) 시스템 기초 구현 (공격, 승리/패배 로직)
+    - [ ] **저장소 추상화 레이어 (`js/storage.js`) 구현**
+    - [ ] **인벤토리 시스템 및 드랍 로직 연동**
+    - [ ] 레벨업 상세 스탯 분배 및 성장 시스템
 
 ## 🎨 Phase 3: UI 및 연출 강화
 - [ ] 캐릭터 성장에 따른 채도(Saturation) 변화 시스템 구현

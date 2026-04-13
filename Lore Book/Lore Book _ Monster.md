@@ -195,7 +195,7 @@
       "name": "탐욕스러운 쥐",
       "type": "beast",
       "level": 7,
-      "stats": { "hp": 400, "atk": 45, "def": 30, "spd": 150 },
+      "stats": { "hp": 120, "atk": 12, "def": 8, "spd": 110 },
       "reward": { "exp": 150, "gold": 40 },
       "dropTableId": "drop_e_rat",
       "skills": ["bite"]
@@ -206,7 +206,7 @@
       "name": "회색 슬라임",
       "type": "spirit",
       "level": 1,
-      "stats": { "hp": 150, "atk": 20, "def": 10, "spd": 80 },
+      "stats": { "hp": 50, "atk": 5, "def": 3, "spd": 70 },
       "reward": { "exp": 50, "gold": 10 },
       "dropTableId": "drop_f_slime",
       "skills": ["stick"]

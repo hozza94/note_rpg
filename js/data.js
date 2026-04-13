@@ -4,8 +4,8 @@
 
 const GAME_DATA = {
     monsters: [
-        { id: "gray_slime", grade: "F", name: "회색 슬라임", level: 1, stats: { hp: 150, atk: 20, def: 10, spd: 80 }, reward: { exp: 50, gold: 10 }, dropTableId: "drop_f_slime", skills: ["stick"] },
-        { id: "greedy_rat", grade: "E", name: "탐욕스러운 쥐", level: 7, stats: { hp: 400, atk: 45, def: 30, spd: 150 }, reward: { exp: 150, gold: 40 }, dropTableId: "drop_e_rat", skills: ["bite"] },
+        { id: "gray_slime", grade: "F", name: "회색 슬라임", level: 1, stats: { hp: 50, atk: 5, def: 3, spd: 70 }, reward: { exp: 50, gold: 10 }, dropTableId: "drop_f_slime", skills: ["stick"] },
+        { id: "greedy_rat", grade: "E", name: "탐욕스러운 쥐", level: 7, stats: { hp: 120, atk: 12, def: 8, spd: 110 }, reward: { exp: 150, gold: 40 }, dropTableId: "drop_e_rat", skills: ["bite"] },
         { id: "weak_wraith", grade: "D", name: "약한 원령", level: 10, stats: { hp: 800, atk: 80, def: 50, spd: 120 }, reward: { exp: 300, gold: 80 }, dropTableId: "drop_d_wraith", skills: ["wail"] },
         { id: "mini_imp", grade: "D", name: "미니 임프", level: 12, stats: { hp: 1000, atk: 90, def: 60, spd: 180 }, reward: { exp: 350, gold: 100 }, dropTableId: "drop_d_imp", skills: ["small_fire"] },
         { id: "wraith", grade: "C", name: "원혼", level: 20, stats: { hp: 2000, atk: 150, def: 100, spd: 180 }, reward: { exp: 800, gold: 200 }, dropTableId: "drop_c_wraith", skills: ["fear"] },
