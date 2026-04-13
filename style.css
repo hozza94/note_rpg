@@ -234,5 +234,73 @@ body {
     border-color: #666;
 }
 
-/* Hidden elements */
-.hidden { display: none; }
+/* Battle Scene & Monster Card */
+.battle-scene {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
+    border: 1px dashed var(--border-color);
+    animation: slideDown 0.4s ease;
+}
+
+.monster-card {
+    text-align: center;
+}
+
+.monster-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.grade-badge {
+    background: #555;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+}
+
+.monster-stats {
+    max-width: 250px;
+    margin: 0 auto;
+}
+
+.bar-container.mini {
+    height: 6px;
+    margin-bottom: 4px;
+}
+
+/* Animations */
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.shake {
+    animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+.hit-flash {
+    animation: hitFlash 0.2s ease-out;
+}
+
+@keyframes hitFlash {
+    0% { background-color: transparent; }
+    50% { background-color: rgba(255, 255, 255, 0.2); }
+    100% { background-color: transparent; }
+}
+
+/* Tab & Other Hidden */
+.hidden { display: none !important; }

@@ -188,6 +188,28 @@
       "reward": { "exp": 350, "gold": 100 },
       "dropTableId": "drop_d_imp",
       "skills": ["small_fire"]
+    },
+    {
+      "id": "greedy_rat",
+      "grade": "E",
+      "name": "탐욕스러운 쥐",
+      "type": "beast",
+      "level": 7,
+      "stats": { "hp": 400, "atk": 45, "def": 30, "spd": 150 },
+      "reward": { "exp": 150, "gold": 40 },
+      "dropTableId": "drop_e_rat",
+      "skills": ["bite"]
+    },
+    {
+      "id": "gray_slime",
+      "grade": "F",
+      "name": "회색 슬라임",
+      "type": "spirit",
+      "level": 1,
+      "stats": { "hp": 150, "atk": 20, "def": 10, "spd": 80 },
+      "reward": { "exp": 50, "gold": 10 },
+      "dropTableId": "drop_f_slime",
+      "skills": ["stick"]
     }
   ]
 }
@@ -404,6 +426,22 @@
       "drops": [
         { "type": "item", "itemId": "tiny_horn", "chance": 0.4 },
         { "type": "gold", "chance": 1.0, "min": 50, "max": 100 }
+      ]
+    },
+    {
+      "id": "drop_e_rat",
+      "type": "independent",
+      "drops": [
+        { "type": "item", "itemId": "rat_tail", "chance": 0.5 },
+        { "type": "gold", "chance": 1.0, "min": 20, "max": 40 }
+      ]
+    },
+    {
+      "id": "drop_f_slime",
+      "type": "independent",
+      "drops": [
+        { "type": "item", "itemId": "gray_dust", "chance": 0.6 },
+        { "type": "gold", "chance": 1.0, "min": 5, "max": 10 }
       ]
     }
   ],

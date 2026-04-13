@@ -58,8 +58,25 @@
                 </div>
             </aside>
 
-            <!-- Center: Game Log -->
+            <!-- Center: Game Log & Battle Scene -->
             <section class="log-pane card">
+                <!-- Battle Enemy Info (Hidden by default) -->
+                <div id="battle-scene" class="battle-scene hidden">
+                    <div class="monster-card">
+                        <div class="monster-header">
+                            <span id="monster-grade" class="grade-badge">F</span>
+                            <h3 id="monster-name">회색 슬라임</h3>
+                            <span id="monster-level">Lv.1</span>
+                        </div>
+                        <div class="monster-stats">
+                            <div class="bar-container mini">
+                                <div id="monster-hp-bar" class="bar hp" style="width: 100%;"></div>
+                            </div>
+                            <span id="monster-hp-text">150 / 150</span>
+                        </div>
+                    </div>
+                </div>
+                
                 <div id="game-log" class="log-content">
                     <div class="log-entry system">세상이 회색빛으로 물들었습니다...</div>
                     <div class="log-entry info">당신은 순례의 길을 시작합니다.</div>
@@ -83,10 +100,15 @@
 
         <!-- Footer: Actions -->
         <footer class="action-footer">
-            <div class="action-buttons">
+            <div id="explore-actions" class="action-buttons">
                 <button id="btn-explore" class="action-btn primary">👣 탐험하기</button>
                 <button id="btn-worship" class="action-btn secondary">🙏 예배하기</button>
                 <button id="btn-rest" class="action-btn">💤 휴식하기</button>
+            </div>
+            <div id="battle-actions" class="action-buttons hidden">
+                <button id="btn-attack" class="action-btn primary">⚔️ 공격</button>
+                <button id="btn-skill" class="action-btn secondary">✨ 기술</button>
+                <button id="btn-run" class="action-btn">🏃 도망</button>
             </div>
         </footer>
     </div>
@@ -98,6 +120,7 @@
         </div>
     </div>
 
+    <script src="js/data.js"></script>
     <script src="game.js"></script>
 </body>
 </html>
