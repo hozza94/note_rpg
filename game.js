@@ -9,18 +9,18 @@ class GameEngine {
                 name: "순례자",
                 title: "Pilgrim",
                 level: 1,
-                hp: 200,
-                maxHp: 200,
-                pp: 50,
-                maxPp: 50,
-                atk: 15,
-                def: 8,
-                spd: 100,
+                hp: 80,
+                maxHp: 80,
+                pp: 30,
+                maxPp: 30,
+                atk: 8,
+                def: 4,
+                spd: 95,
                 faith: 1,
                 exp: 0,
-                nextExp: 100,
+                nextExp: 80,
                 gold: 0,
-                bonusPoints: 0, 
+                bonusPoints: 0,
                 skills: [
                     { id: 'meditation', name: '묵상', cost: 10 },
                     { id: 'praise', name: '찬양', cost: 15 }
@@ -319,11 +319,28 @@ class GameEngine {
                 return;
             }
 
+            const playerLv = this.state.player.level || 1;
             const roll = Math.random();
-            if (roll > 0.4) {
-                const monsterList = window.GAME_DATA.monsters.filter(m => m.level <= (this.state.player.faith * 5 + 5) && m.grade !== 'C' && m.grade !== 'B' && m.grade !== 'A' && m.grade !== 'S' && m.grade !== 'SS' && m.grade !== 'SSS');
-                const randomMonster = JSON.parse(JSON.stringify(monsterList[Math.floor(Math.random() * monsterList.length)]));
-                this.startBattle(randomMonster);
+
+            // 조우 확률 75% (roll < 0.75 이면 전투)
+            if (roll < 0.75) {
+                // 플레이어 레벨에 맞는 일반 몬스터만 필터 (C등급 이상은 보스 전용)
+                const normalGrades = ['F', 'E', 'D'];
+                const monsterList = window.GAME_DATA.monsters.filter(m =>
+                    normalGrades.includes(m.grade) &&
+                    m.minPlayerLv <= playerLv &&
+                    m.maxPlayerLv >= playerLv
+                );
+
+                if (monsterList.length === 0) {
+                    // 혹시 필터 결과가 비어있으면 F등급 기본 몬스터
+                    const fallback = window.GAME_DATA.monsters.filter(m => m.grade === 'F');
+                    const randomMonster = JSON.parse(JSON.stringify(fallback[Math.floor(Math.random() * fallback.length)]));
+                    this.startBattle(randomMonster);
+                } else {
+                    const randomMonster = JSON.parse(JSON.stringify(monsterList[Math.floor(Math.random() * monsterList.length)]));
+                    this.startBattle(randomMonster);
+                }
             } else {
                 this.log("고요한 길을 따라 걷습니다. 아무 일도 일어나지 않았습니다.", "info");
             }
@@ -520,17 +537,15 @@ class GameEngine {
     }
 
     calculateDrops(dropTableId) {
-        const roll = Math.random();
-        if (roll < 0.3) {
-            let itemId = '';
-            if (dropTableId === 'drop_f_slime') itemId = 'wooden_sword';
-            else if (dropTableId === 'drop_e_rat') itemId = 'rusty_armor';
-            else if (dropTableId === 'drop_d_imp') itemId = 'old_boots';
-            
-            if (itemId) {
-                this.addItem(itemId);
+        const table = window.GAME_DATA.dropTables[dropTableId];
+        if (!table) return;
+
+        table.forEach(drop => {
+            const roll = Math.random();
+            if (roll < drop.chance) {
+                this.addItem(drop.itemId);
             }
-        }
+        });
     }
 
     addItem(itemId) {
@@ -541,19 +556,29 @@ class GameEngine {
     }
 
     checkLevelUp() {
-        if (this.state.player.exp >= this.state.player.nextExp) {
+        while (this.state.player.exp >= this.state.player.nextExp) {
             this.state.player.exp -= this.state.player.nextExp;
             this.state.player.level++;
             this.state.player.nextExp = Math.floor(this.state.player.nextExp * 1.5);
-            this.state.player.bonusPoints += 3;
-            
-            this.log(`축하합니다! 레벨 ${this.state.player.level}(이)가 되었습니다.`, "system");
-            this.log(`보너스 포인트 3점을 획득했습니다 (총 ${this.state.player.bonusPoints}점)`, "system");
-            
+
+            // 레벨업 시 기본 스탯 자동 증가
+            this.state.player.maxHp  += 12;
+            this.state.player.maxPp  += 4;
+            this.state.player.atk   += 2;
+            this.state.player.def   += 1;
+            this.state.player.spd   += 2;
+
+            // 보너스 포인트 지급
+            this.state.player.bonusPoints += 2;
+
+            this.log(`🎉 레벨 업! 이제 Lv.${this.state.player.level} 순례자입니다!`, "system");
+            this.log(`[성장] HP+12 PP+4 공격+2 방어+1 속도+2 / 보너스 포인트 +2`, "system");
+
+            // HP/PP 전량 회복
             const bonus = this.inventory.getBonuses();
             this.state.player.hp = this.state.player.maxHp + bonus.hp;
             this.state.player.pp = this.state.player.maxPp + bonus.pp;
-            
+
             this.updateUI();
         }
     }
