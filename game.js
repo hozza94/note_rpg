@@ -127,8 +127,29 @@ class GameEngine {
         // Phase 6: Settings Actions
         const settingsOverlay = document.getElementById('settings-overlay');
         document.getElementById('btn-settings').addEventListener('click', () => {
+            if (window.AuthManager) {
+                document.getElementById('settings-nickname').value = window.AuthManager.getNickname();
+                document.getElementById('settings-msg').innerText = '';
+            }
             settingsOverlay.classList.remove('hidden');
         });
+        
+        document.getElementById('btn-update-nickname').addEventListener('click', () => {
+            const newVal = document.getElementById('settings-nickname').value;
+            const msgEl = document.getElementById('settings-msg');
+            const res = window.AuthManager.updateNickname(newVal);
+            if (res.success) {
+                this.state.player.name = newVal;
+                this.updateUI();
+                msgEl.style.color = '#4caf50';
+                msgEl.innerText = res.msg;
+                this.saveGame();
+            } else {
+                msgEl.style.color = '#ff4b2b';
+                msgEl.innerText = res.msg;
+            }
+        });
+
         document.getElementById('btn-close-settings').addEventListener('click', () => {
             settingsOverlay.classList.add('hidden');
         });
@@ -148,7 +169,6 @@ class GameEngine {
         const authOverlay = document.getElementById('auth-overlay');
         const authId = document.getElementById('auth-id');
         const authPw = document.getElementById('auth-pw');
-        const authNickname = document.getElementById('auth-nickname');
         const authMsg = document.getElementById('auth-msg');
 
         document.getElementById('btn-login').addEventListener('click', () => {
@@ -163,7 +183,7 @@ class GameEngine {
         });
 
         document.getElementById('btn-register').addEventListener('click', () => {
-            const res = window.AuthManager.register(authId.value, authPw.value, authNickname.value);
+            const res = window.AuthManager.register(authId.value, authPw.value);
             authMsg.innerText = res.msg;
             authMsg.style.color = res.success ? '#4caf50' : '#ff4b2b';
         });

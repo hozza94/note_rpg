@@ -172,7 +172,6 @@
             <div class="auth-form" style="display: flex; flex-direction: column; gap: 10px;">
                 <input type="text" id="auth-id" placeholder="계정 아이디" autocomplete="off" style="padding: 10px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #444;">
                 <input type="password" id="auth-pw" placeholder="비밀번호" style="padding: 10px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #444;">
-                <input type="text" id="auth-nickname" placeholder="캐릭터 닉네임 (가입 시에만 입력)" autocomplete="off" style="padding: 10px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #444;">
                 <p id="auth-msg" class="auth-msg" style="color: #ff4b2b; font-size: 0.85rem; margin: 5px 0; min-height: 1.2em;"></p>
                 <div class="auth-actions" style="display: flex; gap: 10px;">
                     <button id="btn-login" class="action-btn primary" style="flex:1; white-space: nowrap; font-size: 0.95rem;">로그인</button>
@@ -186,10 +185,20 @@
     <div id="settings-overlay" class="hidden">
         <div class="settings-card card" style="text-align: center; max-width: 320px;">
             <h2 style="margin-bottom: 20px;">⚙️ 설정</h2>
+            
+            <div style="margin-bottom: 20px; text-align: left;">
+                <label style="font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 5px;">닉네임 변경</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" id="settings-nickname" placeholder="새로운 닉네임" autocomplete="off" style="flex: 1; padding: 10px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #444;">
+                    <button id="btn-update-nickname" class="action-btn small primary">변경</button>
+                </div>
+                <p id="settings-msg" style="color: #4caf50; font-size: 0.85rem; margin-top: 5px; min-height: 1.2em;"></p>
+            </div>
+
             <div class="settings-actions" style="display:flex; flex-direction:column; gap:10px;">
                 <button id="btn-logout" class="action-btn secondary">로그아웃</button>
                 <button id="btn-reset" class="action-btn danger">⚠️ 데이터 초기화 (처음부터)</button>
-                <button id="btn-close-settings" class="action-btn primary" style="margin-top: 10px;">닫기</button>
+                <button id="btn-close-settings" class="action-btn" style="margin-top: 10px; background: #333; border-color: #555;">닫기</button>
             </div>
         </div>
     </div>
