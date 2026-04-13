@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basileia - The Age of Gray</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="theme-gray">
+    <div id="app" class="glass-container">
+        <!-- Header: World Saturation Status -->
+        <header class="app-header">
+            <h1 class="world-title">Basileia</h1>
+            <div class="saturation-meter">
+                <span class="label">세계의 색채</span>
+                <div class="meter-bar">
+                    <div id="saturation-fill" class="fill" style="width: 0%;"></div>
+                </div>
+                <span id="saturation-value" class="value">0%</span>
+            </div>
+        </header>
+
+        <main class="game-layout">
+            <!-- Left: Character Info -->
+            <aside class="character-pane card">
+                <div class="char-header">
+                    <h2 id="char-name">순례자</h2>
+                    <span id="char-title" class="badge">Pilgrim</span>
+                </div>
+                <div class="stats-group">
+                    <div class="stat-item">
+                        <label>체력 (HP)</label>
+                        <div class="bar-container"><div id="hp-bar" class="bar hp" style="width: 100%;"></div></div>
+                        <span id="hp-text">100 / 100</span>
+                    </div>
+                    <div class="stat-item">
+                        <label>기도 (PP)</label>
+                        <div class="bar-container"><div id="pp-bar" class="bar pp" style="width: 100%;"></div></div>
+                        <span id="pp-text">50 / 50</span>
+                    </div>
+                    <div class="stat-grid">
+                        <div class="stat-box">
+                            <span class="label">공격력</span>
+                            <span id="atk-value" class="val">10</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label">방어력</span>
+                            <span id="def-value" class="val">5</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label">신앙심</span>
+                            <span id="faith-value" class="val">1</span>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- Center: Game Log -->
+            <section class="log-pane card">
+                <div id="game-log" class="log-content">
+                    <div class="log-entry system">세상이 회색빛으로 물들었습니다...</div>
+                    <div class="log-entry info">당신은 순례의 길을 시작합니다.</div>
+                </div>
+            </section>
+
+            <!-- Right: Inventory/Skills -->
+            <aside class="data-pane card">
+                <nav class="tab-nav">
+                    <button class="tab-btn active" data-tab="inventory">소지품</button>
+                    <button class="tab-btn" data-tab="skills">스킬</button>
+                </nav>
+                <div class="tab-content">
+                    <div id="inventory-list" class="item-list">
+                        <!-- Items will be injected here -->
+                        <div class="empty-msg">가방이 비어있습니다.</div>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Footer: Actions -->
+        <footer class="action-footer">
+            <div class="action-buttons">
+                <button id="btn-explore" class="action-btn primary">👣 탐험하기</button>
+                <button id="btn-worship" class="action-btn secondary">🙏 예배하기</button>
+                <button id="btn-rest" class="action-btn">💤 휴식하기</button>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modals (Worship, Level Up, etc) -->
+    <div id="modal-overlay" class="hidden">
+        <div id="modal-content" class="modal card">
+            <!-- Modal content injected by JS -->
+        </div>
+    </div>
+
+    <script src="game.js"></script>
+</body>
+</html>
