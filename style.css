@@ -650,14 +650,11 @@ body {
 }
 
 .tab-content {
-    display: none;
+    display: flex;
+    flex-direction: column;
     flex: 1;
     overflow-y: auto;
     padding-right: 5px;
-}
-
-.tab-content.active {
-    display: block;
 }
 
 /* -------------------------------------

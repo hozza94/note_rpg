@@ -76,6 +76,7 @@ class GameEngine {
         this.toggleBattleUI(false);
         this.hideVerseOverlay();
         this.updateUI();
+        this.renderTabContent('inventory'); // 추가: 게임 시작 시 인벤토리 목록 렌더링
         this.log("세상이 회색빛으로 물들었습니다. 당신의 순례는 여기서부터 시작됩니다.", "system");
     }
 
