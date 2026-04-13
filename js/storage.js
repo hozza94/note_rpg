@@ -20,12 +20,12 @@ class AuthManager {
         localStorage.setItem(this.usersKey, JSON.stringify(users));
     }
 
-    register(username, password) {
-        if (!username || !password) return { success: false, msg: "아이디와 비밀번호를 입력해주세요." };
+    register(username, password, nickname) {
+        if (!username || !password || !nickname) return { success: false, msg: "모든 항목을 입력해주세요." };
         const users = this.getUsers();
         if (users[username]) return { success: false, msg: "이미 존재하는 아이디입니다." };
         
-        users[username] = { password, createdAt: Date.now() };
+        users[username] = { password, nickname, createdAt: Date.now() };
         this.saveUsers(users);
         return { success: true, msg: "회원가입이 완료되었습니다! 로그인해주세요." };
     }
@@ -45,6 +45,12 @@ class AuthManager {
 
     getCurrentUser() {
         return localStorage.getItem(this.sessionKey);
+    }
+
+    getNickname() {
+        const currentUser = this.getCurrentUser();
+        if (!currentUser) return "순례자";
+        return this.getUsers()[currentUser]?.nickname || currentUser; // fallback
     }
 }
 

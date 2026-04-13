@@ -46,8 +46,6 @@ class GameEngine {
                 document.getElementById('auth-overlay').classList.remove('hidden');
                 this.bindAuthEvents();
                 return; // Stop initialization until logged in
-            } else {
-                document.getElementById('char-name').innerText = user;
             }
         }
 
@@ -67,6 +65,11 @@ class GameEngine {
                 this.inventory = new window.InventoryManager(this.state.inventoryData);
             }
             this.log("이전의 여정을 이어갑니다...", "system");
+        } else {
+            // 새 게임인 경우 닉네임 로드
+            if (typeof window !== 'undefined' && window.AuthManager) {
+                this.state.player.name = window.AuthManager.getNickname();
+            }
         }
 
         this.bindEvents();
@@ -145,6 +148,7 @@ class GameEngine {
         const authOverlay = document.getElementById('auth-overlay');
         const authId = document.getElementById('auth-id');
         const authPw = document.getElementById('auth-pw');
+        const authNickname = document.getElementById('auth-nickname');
         const authMsg = document.getElementById('auth-msg');
 
         document.getElementById('btn-login').addEventListener('click', () => {
@@ -159,7 +163,7 @@ class GameEngine {
         });
 
         document.getElementById('btn-register').addEventListener('click', () => {
-            const res = window.AuthManager.register(authId.value, authPw.value);
+            const res = window.AuthManager.register(authId.value, authPw.value, authNickname.value);
             authMsg.innerText = res.msg;
             authMsg.style.color = res.success ? '#4caf50' : '#ff4b2b';
         });
@@ -281,6 +285,9 @@ class GameEngine {
         const totalMaxHp = p.maxHp + b.hp;
         const totalMaxPp = p.maxPp + b.pp;
         const totalSpd = p.spd + b.spd;
+
+        const charNameEl = document.getElementById('char-name');
+        if (charNameEl) charNameEl.innerText = p.name;
 
         document.getElementById('hp-bar').style.width = `${(p.hp / totalMaxHp) * 100}%`;
         document.getElementById('hp-text').innerText = `${Math.round(p.hp)} / ${totalMaxHp}`;
