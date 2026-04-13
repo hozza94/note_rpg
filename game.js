@@ -48,6 +48,10 @@ class GameEngine {
             if (this.state.world.explorationProgress === undefined) this.state.world.explorationProgress = 0;
             if (this.state.world.bossDefeated === undefined) this.state.world.bossDefeated = false;
             
+            // 세션 관련 휘발성 상태는 로드 시 초기화
+            this.state.world.isNavigating = false;
+            this.state.battle = null;
+            
             if (this.state.inventoryData) {
                 this.inventory = new window.InventoryManager(this.state.inventoryData);
             }
@@ -264,12 +268,7 @@ class GameEngine {
         const saturationFill = document.getElementById('saturation-fill');
         if (saturationFill) saturationFill.style.width = `${w.saturation}%`;
         const saturationVal = document.getElementById('saturation-value');
-        if (saturationVal) saturationVal.innerText = `${Math.round(w.saturation)}%`;
-            document.documentElement.style.setProperty('--accent-glow', `rgba(${r}, ${g}, ${b_val}, 0.3)`);
-        }
-
-        document.getElementById('saturation-fill').style.width = `${w.saturation}%`;
-        document.getElementById('saturation-value').innerText = `${w.saturation.toFixed(1)}%`;
+        if (saturationVal) saturationVal.innerText = `${w.saturation.toFixed(1)}%`;
         document.body.style.setProperty('--world-saturation', w.saturation);
 
         const pointEl = document.getElementById('bonus-points');
@@ -343,40 +342,47 @@ class GameEngine {
         this.log("주변을 탐험합니다...", "info");
 
         setTimeout(() => {
-            if (this.state.world.explorationProgress >= 100 && !this.state.world.bossDefeated) {
-                this.state.world.isNavigating = false;
-                this.bossChallenge();
-                return;
-            }
-
-            const playerLv = this.state.player.level || 1;
-            const roll = Math.random();
-
-            // 조우 확률 75% (roll < 0.75 이면 전투)
-            if (roll < 0.75) {
-                // 현재 지역 및 플레이어 레벨에 맞는 일반 몬스터만 필터
-                const normalGrades = ['F', 'E', 'D', 'C'];
-                const monsterList = window.GAME_DATA.monsters.filter(m =>
-                    m.regionId === this.state.world.currentRegionId &&
-                    normalGrades.includes(m.grade) &&
-                    m.minPlayerLv <= playerLv &&
-                    m.maxPlayerLv >= playerLv &&
-                    m.id !== window.GAME_DATA.regions[this.state.world.currentRegionId].bossId // 보스 제외
-                );
-
-                if (monsterList.length === 0) {
-                    // 혹시 필터 결과가 비어있으면 F등급 기본 몬스터
-                    const fallback = window.GAME_DATA.monsters.filter(m => m.grade === 'F');
-                    const randomMonster = JSON.parse(JSON.stringify(fallback[Math.floor(Math.random() * fallback.length)]));
-                    this.startBattle(randomMonster);
-                } else {
-                    const randomMonster = JSON.parse(JSON.stringify(monsterList[Math.floor(Math.random() * monsterList.length)]));
-                    this.startBattle(randomMonster);
+            try {
+                if (this.state.world.explorationProgress >= 100 && !this.state.world.bossDefeated) {
+                    this.state.world.isNavigating = false; // 보스 챌린지 전 상태 해제 필수
+                    this.bossChallenge();
+                    return;
                 }
-            } else {
-                this.log("고요한 길을 따라 걷습니다. 아무 일도 일어나지 않았습니다.", "info");
+
+                const playerLv = this.state.player.level || 1;
+                const roll = Math.random();
+                const regionId = this.state.world.currentRegionId || 'pishon';
+                const regionData = window.GAME_DATA.regions[regionId];
+
+                // 조우 확률 75%
+                if (roll < 0.75) {
+                    const normalGrades = ['F', 'E', 'D', 'C'];
+                    const monsterList = window.GAME_DATA.monsters.filter(m =>
+                        m.regionId === regionId &&
+                        normalGrades.includes(m.grade) &&
+                        m.minPlayerLv <= playerLv &&
+                        m.maxPlayerLv >= playerLv &&
+                        (!regionData || m.id !== regionData.bossId)
+                    );
+
+                    if (monsterList.length === 0) {
+                        const fallback = window.GAME_DATA.monsters.filter(m => m.grade === 'F');
+                        const randomMonster = JSON.parse(JSON.stringify(fallback[Math.floor(Math.random() * fallback.length)]));
+                        this.startBattle(randomMonster);
+                    } else {
+                        const randomMonster = JSON.parse(JSON.stringify(monsterList[Math.floor(Math.random() * monsterList.length)]));
+                        this.startBattle(randomMonster);
+                    }
+                } else {
+                    this.log("고요한 길을 따라 걷습니다. 아무 일도 일어나지 않았습니다.", "info");
+                }
+            } catch (err) {
+                console.error("Explore Error:", err);
+                this.log("탐험 중 알 수 없는 문제가 발생했습니다.", "system");
+            } finally {
+                this.state.world.isNavigating = false;
+                this.updateUI(); // 상태 반영을 위해 UI 업데이트 호출
             }
-            this.state.world.isNavigating = false;
         }, 800);
     }
 
