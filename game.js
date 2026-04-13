@@ -251,8 +251,8 @@ class GameEngine {
     }
 
     toggleBattleUI(isBattle) {
-        document.getElementById('explore-actions').style.display = isBattle ? 'none' : 'flex';
-        document.getElementById('battle-actions').style.display = isBattle ? 'flex' : 'none';
+        document.getElementById('explore-actions').classList.toggle('hidden', isBattle);
+        document.getElementById('battle-actions').classList.toggle('hidden', !isBattle);
         document.getElementById('battle-scene').classList.toggle('hidden', !isBattle);
     }
 
@@ -465,6 +465,7 @@ class GameEngine {
         if (p.hp <= 0) return this.loseBattle();
         
         this.state.battle.isPlayerTurn = true;
+        this.log("▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.", "system");
     }
 
     calculateDamage(atk, def) {
@@ -559,7 +560,38 @@ class GameEngine {
 
     showSkillMenu() {
         if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
-        this.useSkill(this.state.player.skills[0]);
+
+        const modal = document.getElementById('modal-overlay');
+        const content = document.getElementById('modal-content');
+        
+        let html = `<h3 style="margin-bottom: 20px;">어떤 능력을 사용하시겠습니까?</h3>`;
+        html += `<div style="display:flex; flex-direction:column; gap:10px;">`;
+        
+        this.state.player.skills.forEach(skill => {
+            const canUse = this.state.player.pp >= skill.cost;
+            html += `<button class="action-btn ${canUse ? 'primary' : 'secondary'}" data-skill="${skill.id}" ${canUse ? '' : 'disabled'} style="width: 100%;">
+                ${skill.name} <span style="font-size: 0.8rem; opacity: 0.7;">(PP ${skill.cost} 소모)</span>
+            </button>`;
+        });
+        
+        html += `<button class="action-btn" id="btn-cancel-skill" style="margin-top:10px; width: 100%;">취소</button>`;
+        html += `</div>`;
+        
+        content.innerHTML = html;
+        modal.classList.remove('hidden');
+
+        content.querySelectorAll('button[data-skill]').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const skillId = e.currentTarget.getAttribute('data-skill');
+                const selectedSkill = this.state.player.skills.find(s => s.id === skillId);
+                modal.classList.add('hidden');
+                if (selectedSkill) this.useSkill(selectedSkill);
+            });
+        });
+        
+        document.getElementById('btn-cancel-skill').addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
     }
 
     useSkill(skill) {
