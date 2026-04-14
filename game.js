@@ -437,6 +437,46 @@ class GameEngine {
         return '잠김';
     }
 
+    /** 정보 패널 등: 잠김은 이모지만 사용 (그래프 노드와 통일) */
+    getSkillNodeStateLabelShort(nodeId, unlocked) {
+        if (unlocked.has(nodeId)) return '해금 완료';
+        if (this.canUnlockSkillNode(nodeId).ok) return '해금 가능';
+        return '🔒';
+    }
+
+    /** clusters 기준으로 노드 계열 클래스명 (예: branch-faith_path) */
+    getSkillNodeBranchClass(tree, nodeId) {
+        if (!tree || !nodeId) return 'branch-unknown';
+        if (nodeId === tree.startNodeId) return 'branch-origin';
+        const clusters = tree.clusters;
+        if (!Array.isArray(clusters)) return 'branch-unknown';
+        for (let i = 0; i < clusters.length; i++) {
+            const ids = clusters[i].nodeIds;
+            if (Array.isArray(ids) && ids.includes(nodeId)) {
+                return `branch-${clusters[i].id}`;
+            }
+        }
+        return 'branch-unknown';
+    }
+
+    /** kind별 노드 원 반지름·라벨 위치 (액티브 > 키스톤·시작 > 노터블 > 스몰) */
+    getSkillNodeLayoutRadii(node) {
+        const k = node?.kind || 'small';
+        if (k === 'active_unlock') return { core: 24, ring: 34, nameY: -44, stateY: 54 };
+        if (k === 'keystone') return { core: 19, ring: 29, nameY: -36, stateY: 46 };
+        if (k === 'start') return { core: 18, ring: 28, nameY: -35, stateY: 45 };
+        if (k === 'notable') return { core: 16, ring: 25, nameY: -32, stateY: 43 };
+        return { core: 15, ring: 23, nameY: -30, stateY: 41 };
+    }
+
+    escapeSvgText(str) {
+        return String(str ?? '')
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
     getSkillNodeClass(nodeId, unlocked) {
         if (unlocked.has(nodeId)) return 'is-unlocked';
         if (this.canUnlockSkillNode(nodeId).ok) return 'is-available';
@@ -465,14 +505,24 @@ class GameEngine {
             const pos = positions[node.id];
             if (!pos) return '';
             const stateClass = this.getSkillNodeClass(node.id, unlocked);
-            const label = this.getSkillNodeStateLabel(node.id, unlocked);
+            const canUnlock = this.canUnlockSkillNode(node.id).ok;
+            const isLocked = !unlocked.has(node.id) && !canUnlock;
+            const bottomLabel = unlocked.has(node.id)
+                ? '해금 완료'
+                : (canUnlock ? '해금 가능' : '');
+            const branchClass = this.getSkillNodeBranchClass(tree, node.id);
+            const radii = this.getSkillNodeLayoutRadii(node);
+            const nm = this.escapeSvgText(node.name);
+            const lockTspan = isLocked
+                ? '<tspan class="skill-web-node-lock" dx="4" dy="0.5">🔒</tspan>'
+                : '';
             const effect = this.formatNodeGrantText(node);
             return `
-                <g class="skill-web-node ${stateClass} kind-${node.kind}" data-node-id="${node.id}" transform="translate(${pos.x}, ${pos.y})">
-                    <circle class="skill-web-node-core" r="20"></circle>
-                    <circle class="skill-web-node-ring" r="28"></circle>
-                    <text class="skill-web-node-name" text-anchor="middle" y="-38">${node.name}</text>
-                    <text class="skill-web-node-state" text-anchor="middle" y="47">${label}</text>
+                <g class="skill-web-node ${stateClass} kind-${node.kind} ${branchClass}" data-node-id="${node.id}" transform="translate(${pos.x}, ${pos.y})">
+                    <circle class="skill-web-node-core" r="${radii.core}"></circle>
+                    <circle class="skill-web-node-ring" r="${radii.ring}"></circle>
+                    <text class="skill-web-node-name" text-anchor="middle" y="${radii.nameY}"><tspan>${nm}</tspan>${lockTspan}</text>
+                    <text class="skill-web-node-state" text-anchor="middle" y="${radii.stateY}">${bottomLabel}</text>
                     <title>${node.name}\n${effect}\n${node.desc || ''}</title>
                 </g>
             `;
@@ -525,7 +575,7 @@ class GameEngine {
                     <strong>${node.name}</strong>
                     <div>${node.desc || ''}</div>
                     <div class="effect">${this.formatNodeGrantText(node)}</div>
-                    <div class="meta">${this.getSkillNodeStateLabel(node.id, unlocked)} · ${node.kind}</div>
+                    <div class="meta">${this.getSkillNodeStateLabelShort(node.id, unlocked)} · ${node.kind}</div>
                 `;
         };
 

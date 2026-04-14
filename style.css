@@ -1207,11 +1207,28 @@ body {
 
 .skill-web-node {
     cursor: pointer;
+    --hue: 205;
 }
 
+/* 계열별 색상 (HSV hue) — 핵심 코어·같은 클러스터가 동일 톤 */
+.skill-web-node.branch-origin { --hue: 43; }
+.skill-web-node.branch-faith_path { --hue: 231; }
+.skill-web-node.branch-valor_path { --hue: 3; }
+.skill-web-node.branch-guard_path { --hue: 145; }
+.skill-web-node.branch-agile_path { --hue: 286; }
+.skill-web-node.branch-keystone_path { --hue: 36; }
+.skill-web-node.branch-contemplation_path { --hue: 172; }
+.skill-web-node.branch-oracle_branch { --hue: 260; }
+.skill-web-node.branch-skirmish_branch { --hue: 12; }
+.skill-web-node.branch-aegis_branch { --hue: 124; }
+.skill-web-node.branch-swift_branch { --hue: 292; }
+.skill-web-node.branch-ascendant_branch { --hue: 48; }
+.skill-web-node.branch-abyss_branch { --hue: 18; }
+.skill-web-node.branch-unknown { --hue: 200; }
+
 .skill-web-node-core {
-    fill: rgba(39, 48, 71, 0.95);
-    stroke: rgba(255, 255, 255, 0.25);
+    fill: hsla(var(--hue), 38%, 28%, 0.55);
+    stroke: hsla(var(--hue), 40%, 44%, 0.6);
     stroke-width: 2;
 }
 
@@ -1229,36 +1246,54 @@ body {
     stroke-width: 2px;
 }
 
+.skill-web-node-lock {
+    font-size: 11px;
+    opacity: 0.92;
+}
+
 .skill-web-node-state {
     fill: #b0bec5;
     font-size: 11px;
 }
 
+.skill-web-node.kind-keystone .skill-web-node-core {
+    stroke-width: 3;
+}
+
+.skill-web-node.kind-active_unlock .skill-web-node-name {
+    font-size: 11.5px;
+}
+
+/* 상태: 잠김 / 해금 가능 / 완료 — 계열 색 위에 덧씌움 */
+.skill-web-node.is-locked .skill-web-node-core {
+    fill: hsla(var(--hue), 32%, 26%, 0.48);
+    stroke: hsla(var(--hue), 28%, 40%, 0.52);
+}
+
 .skill-web-node.is-available .skill-web-node-core {
-    fill: rgba(41, 98, 255, 0.9);
-    stroke: rgba(144, 202, 249, 0.95);
+    fill: hsla(var(--hue), 58%, 44%, 0.92);
+    stroke: hsla(var(--hue), 72%, 58%, 1);
 }
 
 .skill-web-node.is-unlocked .skill-web-node-core {
-    fill: rgba(56, 142, 60, 0.95);
-    stroke: rgba(200, 230, 201, 1);
+    fill: hsla(var(--hue), 46%, 36%, 0.92);
+    stroke: hsla(var(--hue), 50%, 55%, 0.98);
 }
 
 .skill-web-node.is-unlocked .skill-web-node-ring {
-    stroke: rgba(174, 213, 129, 0.65);
-}
-
-.skill-web-node.kind-keystone .skill-web-node-core {
-    stroke-width: 3;
-    stroke: rgba(255, 241, 118, 0.9);
+    stroke: rgba(129, 199, 132, 0.78);
 }
 
 .skill-web-node:hover .skill-web-node-ring {
-    stroke: rgba(79, 195, 247, 0.9);
+    stroke: hsla(var(--hue), 75%, 62%, 0.92);
+}
+
+.skill-web-node.is-unlocked:hover .skill-web-node-ring {
+    stroke: rgba(165, 214, 167, 0.95);
 }
 
 .skill-web-node.is-selected .skill-web-node-ring {
-    stroke: rgba(255, 213, 79, 0.95);
+    stroke: rgba(255, 213, 79, 0.96);
     stroke-width: 3;
 }
 
