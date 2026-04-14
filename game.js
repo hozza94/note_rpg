@@ -266,20 +266,33 @@ class GameEngine {
         return { ok: true };
     }
 
-    unlockSkillNode(nodeId) {
+    emitSkillTreeFeedback(message, notify = 'log', type = 'system') {
+        if (notify === 'toast') {
+            this.showSkillTreeToast(message, type === 'effect' ? 'success' : 'info');
+            return;
+        }
+        if (notify !== 'none') {
+            this.log(`[스킬트리] ${message}`, type);
+        }
+    }
+
+    unlockSkillNode(nodeId, options = {}) {
+        const notify = options.notify || 'log';
         const check = this.canUnlockSkillNode(nodeId);
         if (!check.ok) {
-            this.log(`[스킬트리] ${check.reason}`, "system");
-            return false;
+            this.emitSkillTreeFeedback(check.reason, notify, 'system');
+            return { ok: false, message: check.reason };
         }
 
         this.state.player.unlockedSkillNodes.push(nodeId);
         this.state.player.skillTreePoints = Math.max(0, this.state.player.skillTreePoints - 1);
         this.syncUnlockedActiveSkills();
-        this.log(`[스킬트리] 새로운 노드를 해금했습니다: ${this.getSkillTreeNodeMap()[nodeId].name}`, "effect");
+        const nodeName = this.getSkillTreeNodeMap()[nodeId].name;
+        const message = `새로운 노드를 해금했습니다: ${nodeName}`;
+        this.emitSkillTreeFeedback(message, notify, 'effect');
         this.updateUI();
         this.saveGame();
-        return true;
+        return { ok: true, message, nodeName };
     }
 
     formatNodeGrantText(node) {
@@ -350,9 +363,36 @@ class GameEngine {
         return lines.join('\n');
     }
 
+    showSkillTreeToast(message, kind = 'info') {
+        const stack = document.getElementById('skill-web-toast-stack');
+        if (!stack) {
+            this.log(`[스킬트리] ${message}`, kind === 'success' ? 'effect' : 'system');
+            return;
+        }
+
+        let prefix = 'ℹ️ ';
+        if (kind === 'success') prefix = '✅ ';
+        else if (/부족/.test(message)) prefix = '⚠️ ';
+        else if (/연결된|해금해야/.test(message)) prefix = '🔗 ';
+        else if (/이미/.test(message)) prefix = '🔁 ';
+        else if (/존재하지 않는/.test(message)) prefix = '❌ ';
+        const text = prefix + message;
+
+        const toast = document.createElement('div');
+        toast.className = `skill-web-toast ${kind}`;
+        toast.innerText = text;
+        stack.appendChild(toast);
+
+        requestAnimationFrame(() => toast.classList.add('show'));
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 220);
+        }, 1800);
+    }
+
     getSkillTreeLayout(tree) {
         const unit = 96;
-        const padding = 140;
+        const padding = 180;
         const fallbackRadius = 2.4;
         const positions = {};
         const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
@@ -367,22 +407,19 @@ class GameEngine {
         });
 
         const points = Object.values(positions);
-        const minX = Math.min(...points.map(p => p.x));
-        const maxX = Math.max(...points.map(p => p.x));
-        const minY = Math.min(...points.map(p => p.y));
-        const maxY = Math.max(...points.map(p => p.y));
-
-        const width = Math.max(680, maxX - minX + padding * 2);
-        const height = Math.max(560, maxY - minY + padding * 2);
-        const shiftX = padding - minX;
-        const shiftY = padding - minY;
+        const maxAbsX = Math.max(...points.map(p => Math.abs(p.x)), 0);
+        const maxAbsY = Math.max(...points.map(p => Math.abs(p.y)), 0);
+        const width = Math.max(980, maxAbsX * 2 + padding * 2);
+        const height = Math.max(780, maxAbsY * 2 + padding * 2);
+        const originX = width / 2;
+        const originY = height / 2;
 
         Object.keys(positions).forEach(nodeId => {
-            positions[nodeId].x += shiftX;
-            positions[nodeId].y += shiftY;
+            positions[nodeId].x += originX;
+            positions[nodeId].y += originY;
         });
 
-        return { positions, width, height };
+        return { positions, width, height, originX, originY };
     }
 
     getSkillNodeStateLabel(nodeId, unlocked) {
@@ -405,7 +442,7 @@ class GameEngine {
         const content = document.getElementById('modal-content');
         const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
         const nodeMap = this.getSkillTreeNodeMap();
-        const { positions, width, height } = this.getSkillTreeLayout(tree);
+        const { positions, width, height, originX, originY } = this.getSkillTreeLayout(tree);
 
         const edges = (tree.edges || []).map(([from, to]) => {
             const a = positions[from];
@@ -438,11 +475,12 @@ class GameEngine {
             <h3 style="margin-bottom: 8px;">${tree.className} 스킬트리</h3>
             <p style="margin-bottom: 12px; color:#ffd54f;">남은 포인트: ${this.state.player.skillTreePoints}</p>
             <div class="skill-web-toolbar">
-                <span class="skill-web-help">드래그로 이동, 휠/버튼으로 확대·축소, 노드 클릭으로 해금</span>
+                <span class="skill-web-help">드래그로 이동, 휠/버튼으로 확대·축소 · 노드를 클릭해 선택 후 「배우기」로 해금</span>
                 <div class="skill-web-zoom-buttons">
                     <button id="skill-web-zoom-out" class="action-btn small">-</button>
                     <span id="skill-web-zoom-level">100%</span>
                     <button id="skill-web-zoom-in" class="action-btn small">+</button>
+                    <button id="skill-web-focus-center" class="action-btn small primary">중앙 포커스</button>
                     <button id="skill-web-zoom-reset" class="action-btn small">초기화</button>
                 </div>
             </div>
@@ -454,7 +492,11 @@ class GameEngine {
                     </svg>
                 </div>
             </div>
+            <div id="skill-web-toast-stack" class="skill-web-toast-stack"></div>
             <div id="skill-web-info" class="skill-web-info">노드를 선택하면 상세 효과를 확인할 수 있습니다.</div>
+            <div class="skill-web-learn-row">
+                <button type="button" id="skill-web-learn" class="action-btn primary" disabled>배우기</button>
+            </div>
             <button id="btn-close-skilltree" class="action-btn" style="margin-top: 14px; width: 100%;">닫기</button>
         `;
         modal.classList.remove('hidden');
@@ -462,11 +504,62 @@ class GameEngine {
         const viewport = content.querySelector('#skill-web-viewport');
         const zoomLayer = content.querySelector('#skill-web-zoom-layer');
         const infoBox = content.querySelector('#skill-web-info');
+        const learnBtn = content.querySelector('#skill-web-learn');
         const zoomLabel = content.querySelector('#skill-web-zoom-level');
+
+        let selectedNodeId = null;
+
+        const fillInfoForNode = (nodeId) => {
+            const node = nodeId ? nodeMap[nodeId] : null;
+            if (!node || !infoBox) return;
+            infoBox.innerHTML = `
+                    <strong>${node.name}</strong>
+                    <div>${node.desc || ''}</div>
+                    <div class="effect">${this.formatNodeGrantText(node)}</div>
+                    <div class="meta">${this.getSkillNodeStateLabel(node.id, unlocked)} · ${node.kind}</div>
+                `;
+        };
+
+        const updateLearnButton = () => {
+            if (!learnBtn) return;
+            learnBtn.removeAttribute('title');
+            const unlockedNow = new Set(this.state.player.unlockedSkillNodes || []);
+            if (!selectedNodeId) {
+                learnBtn.disabled = true;
+                learnBtn.textContent = '배우기';
+                learnBtn.title = '노드를 먼저 선택하세요';
+                return;
+            }
+            if (unlockedNow.has(selectedNodeId)) {
+                learnBtn.disabled = true;
+                learnBtn.textContent = '이미 해금됨';
+                return;
+            }
+            const check = this.canUnlockSkillNode(selectedNodeId);
+            if (check.ok) {
+                learnBtn.disabled = false;
+                learnBtn.textContent = '배우기';
+            } else {
+                learnBtn.disabled = true;
+                learnBtn.textContent = '배우기';
+                learnBtn.title = check.reason;
+            }
+        };
+
+        const updateSelectionVisual = () => {
+            content.querySelectorAll('.skill-web-node').forEach(el => {
+                const id = el.getAttribute('data-node-id');
+                el.classList.toggle('is-selected', id === selectedNodeId);
+            });
+        };
 
         if (viewport && zoomLayer && zoomLabel) {
             const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
             let zoom = 1;
+            const centerOnOrigin = () => {
+                viewport.scrollLeft = Math.max(0, originX * zoom - viewport.clientWidth / 2);
+                viewport.scrollTop = Math.max(0, originY * zoom - viewport.clientHeight / 2);
+            };
 
             const setZoom = (nextZoom, focusX, focusY) => {
                 const prevZoom = zoom;
@@ -474,7 +567,10 @@ class GameEngine {
                 zoomLayer.style.transform = `scale(${zoom})`;
                 zoomLabel.innerText = `${Math.round(zoom * 100)}%`;
 
-                if (focusX === undefined || focusY === undefined) return;
+                if (focusX === undefined || focusY === undefined) {
+                    centerOnOrigin();
+                    return;
+                }
                 const worldX = (viewport.scrollLeft + focusX) / prevZoom;
                 const worldY = (viewport.scrollTop + focusY) / prevZoom;
                 viewport.scrollLeft = worldX * zoom - focusX;
@@ -482,8 +578,7 @@ class GameEngine {
             };
 
             setTimeout(() => {
-                viewport.scrollLeft = Math.max(0, (zoomLayer.offsetWidth - viewport.clientWidth) / 2);
-                viewport.scrollTop = Math.max(0, (zoomLayer.offsetHeight - viewport.clientHeight) / 2);
+                centerOnOrigin();
             }, 0);
 
             viewport.addEventListener('wheel', (event) => {
@@ -536,30 +631,39 @@ class GameEngine {
                 setZoom(zoom - 0.15, viewport.clientWidth / 2, viewport.clientHeight / 2);
             });
             content.querySelector('#skill-web-zoom-reset')?.addEventListener('click', () => {
-                setZoom(1, viewport.clientWidth / 2, viewport.clientHeight / 2);
+                setZoom(1);
             });
+            content.querySelector('#skill-web-focus-center')?.addEventListener('click', () => centerOnOrigin());
         }
 
         content.querySelectorAll('.skill-web-node').forEach(nodeEl => {
             nodeEl.addEventListener('mouseenter', () => {
+                if (selectedNodeId) return;
                 const nodeId = nodeEl.getAttribute('data-node-id');
-                const node = nodeId ? nodeMap[nodeId] : null;
-                if (!node || !infoBox) return;
-                infoBox.innerHTML = `
-                    <strong>${node.name}</strong>
-                    <div>${node.desc || ''}</div>
-                    <div class="effect">${this.formatNodeGrantText(node)}</div>
-                    <div class="meta">${this.getSkillNodeStateLabel(node.id, unlocked)} · ${node.kind}</div>
-                `;
+                fillInfoForNode(nodeId);
             });
-            nodeEl.addEventListener('click', () => {
+            nodeEl.addEventListener('click', (e) => {
+                e.stopPropagation();
                 const nodeId = nodeEl.getAttribute('data-node-id');
                 if (!nodeId) return;
-                if (this.unlockSkillNode(nodeId)) {
-                    this.openSkillTreeModal();
-                    this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'skills');
-                }
+                selectedNodeId = nodeId;
+                updateSelectionVisual();
+                fillInfoForNode(selectedNodeId);
+                updateLearnButton();
             });
+        });
+
+        learnBtn?.addEventListener('click', () => {
+            if (!selectedNodeId || learnBtn.disabled) return;
+            const result = this.unlockSkillNode(selectedNodeId, { notify: 'none' });
+            if (result.ok) {
+                this.openSkillTreeModal();
+                this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'skills');
+                this.showSkillTreeToast(result.message, 'success');
+            } else {
+                this.showSkillTreeToast(result.message, 'info');
+                updateLearnButton();
+            }
         });
 
         const closeBtn = document.getElementById('btn-close-skilltree');

@@ -461,8 +461,9 @@ body {
     font-size: 0.74rem;
     color: var(--text-secondary);
     display: flex;
-    justify-content: space-between;
-    gap: 10px;
+    flex-direction: column;
+    gap: 2px;
+    line-height: 1.4;
 }
 
 .equip-choice-section {
@@ -881,6 +882,7 @@ body {
     text-align: center;
     padding: 30px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    position: relative;
 }
 
 /* Utility Classes */
@@ -1148,6 +1150,42 @@ body {
     cursor: grabbing;
 }
 
+.skill-web-toast-stack {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 8px 0 4px;
+    max-height: 96px;
+    overflow-y: auto;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.skill-web-toast {
+    min-width: 220px;
+    max-width: 320px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    background: rgba(12, 14, 22, 0.96);
+    color: #eceff1;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transform: translateY(-6px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.skill-web-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.skill-web-toast.success {
+    border-color: rgba(174, 213, 129, 0.5);
+    color: #dcedc8;
+}
+
 .skill-web-zoom-layer {
     transform-origin: top left;
     will-change: transform;
@@ -1217,6 +1255,23 @@ body {
 
 .skill-web-node:hover .skill-web-node-ring {
     stroke: rgba(79, 195, 247, 0.9);
+}
+
+.skill-web-node.is-selected .skill-web-node-ring {
+    stroke: rgba(255, 213, 79, 0.95);
+    stroke-width: 3;
+}
+
+.skill-web-node.is-selected:hover .skill-web-node-ring {
+    stroke: rgba(255, 241, 118, 1);
+}
+
+.skill-web-learn-row {
+    margin-top: 10px;
+}
+
+.skill-web-learn-row #skill-web-learn {
+    width: 100%;
 }
 
 .skill-web-info {
