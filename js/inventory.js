@@ -76,14 +76,15 @@ class InventoryManager {
     /**
      * Calculate total stat bonuses from equipment
      */
-    getBonuses() {
-        const bonuses = { atk: 0, def: 0, hp: 0, pp: 0, spd: 0, faith: 0 };
+    getBonuses(statResolver = null) {
+        const bonuses = { atk: 0, def: 0, hp: 0, pp: 0, spd: 0, faith: 0, hpRegen: 0, lifeSteal: 0 };
         
         Object.values(this.equipment).forEach(itemId => {
             if (!itemId) return;
             const item = window.GAME_DATA.items[itemId];
-            if (item && item.stats) {
-                for (const [stat, val] of Object.entries(item.stats)) {
+            const stats = statResolver ? statResolver(itemId, item) : item?.stats;
+            if (stats) {
+                for (const [stat, val] of Object.entries(stats)) {
                     if (bonuses[stat] !== undefined) {
                         bonuses[stat] += val;
                     }

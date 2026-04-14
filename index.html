@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260414-7">
 </head>
 <body class="theme-gray">
     <div id="app" class="glass-container">
@@ -25,11 +25,14 @@
 
         <main class="game-layout">
             <!-- Left: Character Info -->
-            <aside class="character-pane card">
+             <aside class="character-pane card">
                 <div class="char-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div>
                         <h2 id="char-name">순례자</h2>
-                        <span id="char-title" class="badge">Pilgrim</span>
+                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+                            <span id="char-title" class="badge">Pilgrim</span>
+                            <span id="char-level" class="badge">Lv.1</span>
+                        </div>
                     </div>
                     <button id="btn-settings" class="action-btn small secondary" style="padding: 5px 10px; font-size: 0.9rem;">⚙️ 설정</button>
                 </div>
@@ -70,26 +73,55 @@
                     </div>
                     <div class="stat-grid">
                         <div class="stat-box">
-                            <span class="label">공격력</span>
+                            <span class="label" title="공격력">⚔️</span>
                             <div class="val-group">
                                 <span id="atk-value" class="val">10</span>
+                                <span id="atk-equip-bonus" class="stat-extra-bonus">+0</span>
                                 <button class="point-btn hidden" data-stat="atk">+</button>
                             </div>
                         </div>
                         <div class="stat-box">
-                            <span class="label">방어력</span>
+                            <span class="label" title="방어력">🛡️</span>
                             <div class="val-group">
                                 <span id="def-value" class="val">5</span>
+                                <span id="def-equip-bonus" class="stat-extra-bonus">+0</span>
                                 <button class="point-btn hidden" data-stat="def">+</button>
                             </div>
                         </div>
                         <div class="stat-box">
-                            <span class="label">신앙심</span>
+                            <span class="label" title="신앙심">✨</span>
                             <div class="val-group">
                                 <span id="faith-value" class="val">1</span>
+                                <span id="faith-equip-bonus" class="stat-extra-bonus">+0</span>
                                 <button class="point-btn hidden" data-stat="faith">+</button>
                             </div>
                         </div>
+                        <div class="stat-box">
+                            <span class="label" title="속도">💨</span>
+                            <div class="val-group">
+                                <span id="spd-value" class="val">95</span>
+                                <span id="spd-equip-bonus" class="stat-extra-bonus">+0</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label" title="체력재생">❤️‍🩹</span>
+                            <div class="val-group">
+                                <span id="hpregen-value" class="val">0</span>
+                                <span id="hpregen-equip-bonus" class="stat-extra-bonus">+0</span>
+                                <button class="point-btn hidden" data-stat="hpRegen">+</button>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <span class="label" title="생명력 흡수">🩸</span>
+                            <div class="val-group">
+                                <span id="lifesteal-value" class="val" title="생명력 흡수">0%</span>
+                                <span id="lifesteal-equip-bonus" class="stat-extra-bonus">+0%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="combat-substats">
+                        <span class="chip" title="치명타 확률"><span class="chip-icon">🎯</span> <strong id="crit-chance-value">10%</strong></span>
+                        <span class="chip" title="치명타 피해"><span class="chip-icon">💥</span> <strong id="crit-damage-value">150%</strong></span>
                     </div>
                     <section class="equip-section">
                         <div class="equip-section-header">
@@ -108,6 +140,11 @@
                 <!-- Battle Enemy Info (Hidden by default) -->
                 <div id="battle-scene" class="battle-scene hidden">
                     <div class="monster-card">
+                        <div class="monster-image-wrap">
+                            <div id="monster-image-placeholder" class="monster-image-placeholder" aria-label="몬스터 이미지 영역">
+                                <span class="monster-image-empty">이미지 준비중</span>
+                            </div>
+                        </div>
                         <div class="monster-header">
                             <span id="monster-grade" class="grade-badge">F</span>
                             <h3 id="monster-name">회색 슬라임</h3>
@@ -122,7 +159,7 @@
                         <div id="battle-status" class="battle-status hidden"></div>
                     </div>
                 </div>
-                
+
                 <div id="game-log" class="log-content">
                     <div class="log-entry system">세상이 회색빛으로 물들었습니다...</div>
                     <div class="log-entry info">당신은 순례의 길을 시작합니다.</div>
@@ -146,17 +183,27 @@
 
         <!-- Footer: Actions -->
         <footer class="action-footer">
-            <div id="explore-actions" class="action-buttons">
-                <button id="btn-explore" class="action-btn primary">👣 탐험하기</button>
-                <button id="btn-worship" class="action-btn secondary">🙏 예배하기</button>
-                <button id="btn-rest" class="action-btn">💤 휴식하기</button>
-                <button id="btn-shop" class="action-btn">🏪 상점</button>
+            <div class="footer-side-spacer" aria-hidden="true"></div>
+            <div class="footer-center-zone">
+                <div id="explore-actions" class="action-buttons">
+                    <button id="btn-explore" class="action-btn primary">👣 탐험하기</button>
+                    <button id="btn-worship" class="action-btn secondary">🙏 예배하기</button>
+                    <button id="btn-rest" class="action-btn">💤 휴식하기</button>
+                    <button id="btn-shop" class="action-btn">🏪 상점</button>
+                    <button id="btn-smith" class="action-btn">🔨 대장간</button>
+                    <button id="btn-boss-dungeon" class="action-btn secondary">🗡️ 보스던전</button>
+                </div>
+                <div id="battle-actions" class="action-buttons hidden">
+                    <button id="btn-attack" class="action-btn primary">⚔️ 공격</button>
+                    <button id="btn-skill" class="action-btn secondary">✨ 기술</button>
+                    <button id="btn-run" class="action-btn">🏃 도망</button>
+                </div>
             </div>
-            <div id="battle-actions" class="action-buttons hidden">
-                <button id="btn-attack" class="action-btn primary">⚔️ 공격</button>
-                <button id="btn-skill" class="action-btn secondary">✨ 기술</button>
-                <button id="btn-run" class="action-btn">🏃 도망</button>
-                <button id="btn-auto-battle" class="action-btn">🤖 자동전투 OFF</button>
+            <div class="footer-right-zone">
+                <div class="center-toggle-dock center-toggle-dock-footer">
+                    <button id="btn-auto-explore" class="action-btn small center-toggle-btn">🧭 자동순례 OFF</button>
+                    <button id="btn-auto-battle" class="action-btn small center-toggle-btn">🤖 자동전투 OFF</button>
+                </div>
             </div>
         </footer>
     </div>
@@ -217,17 +264,8 @@
 
             <div style="margin-bottom: 20px; text-align: left;">
                 <label style="font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 8px;">캐릭터 아바타</label>
-                <div class="settings-avatar-row" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
-                        <input type="radio" name="settings-avatar" id="settings-avatar-male" value="male">
-                        남성
-                    </label>
-                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
-                        <input type="radio" name="settings-avatar" id="settings-avatar-female" value="female">
-                        여성
-                    </label>
-                </div>
-                <p style="font-size: 0.75rem; color: #777; margin-top: 8px; line-height: 1.4;">장비 패널 배경에 표시됩니다. 저장 후 즉시 반영됩니다.</p>
+                <div id="settings-avatar-options" class="settings-avatar-options"></div>
+                <p style="font-size: 0.75rem; color: #777; margin-top: 8px; line-height: 1.4;">해금된 아바타만 선택 가능합니다. 장비 패널 배경에 즉시 반영됩니다.</p>
             </div>
 
             <div class="settings-actions" style="display:flex; flex-direction:column; gap:10px;">
@@ -242,9 +280,13 @@
     </div>
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
-    <script src="js/storage.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/inventory.js"></script>
-    <script src="game.js"></script>
+    <script src="js/storage.js?v=20260414-7"></script>
+    <script src="js/data.js?v=20260414-7"></script>
+    <script src="js/inventory.js?v=20260414-7"></script>
+    <script src="game.js?v=20260414-7"></script>
+    <script src="js/engine/skilltree.js?v=20260414-7"></script>
+    <script src="js/engine/explore.js?v=20260414-7"></script>
+    <script src="js/engine/battle.js?v=20260414-7"></script>
+    <script src="js/engine/smithing.js?v=20260414-7"></script>
 </body>
 </html>

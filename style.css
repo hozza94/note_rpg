@@ -35,6 +35,12 @@ body {
     color: var(--text-primary);
     height: 100vh;
     overflow: hidden;
+}
+
+/* 세계 색채 필터는 메인 플레이 영역에만 적용 (모달 제외) */
+#app > .app-header,
+#app > .game-layout,
+#app > .action-footer {
     filter: grayscale(calc(1 - (var(--world-saturation) / 100)));
     transition: filter 1s ease;
 }
@@ -177,21 +183,65 @@ body {
 }
 
 .stat-box {
+    position: relative;
     text-align: center;
-    padding: 10px;
+    padding: 12px 10px 10px;
     background: rgba(255,255,255,0.05);
     border-radius: 8px;
 }
 
-.stat-box .label { font-size: 0.7rem; color: var(--text-secondary); display: block; }
+.stat-box .label {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    display: block;
+    line-height: 1;
+}
 .stat-box .val { font-size: 1.1rem; font-weight: 600; }
+.stat-box .stat-extra-bonus {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 0.7rem;
+    color: #8bc34a;
+    vertical-align: baseline;
+    line-height: 1;
+}
+
+.stat-box .stat-extra-bonus.is-zero {
+    display: none;
+}
 
 .log-pane {
     display: flex;
     flex-direction: column;
     min-height: 400px;
     height: 100%;
+    position: relative;
     overflow: hidden; /* Prevent parent from expanding infinitely */
+}
+
+.center-toggle-dock {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 8px;
+}
+
+.center-toggle-dock-floating {
+    position: static;
+    flex-direction: column;
+    align-items: stretch;
+    margin-left: 0;
+}
+
+.center-toggle-dock-footer {
+    margin-left: 0;
+}
+
+.center-toggle-btn {
+    min-width: 120px;
+    font-size: 0.72rem;
+    padding: 6px 8px;
+    text-align: center;
 }
 
 .character-pane {
@@ -215,17 +265,21 @@ body {
 .val-group {
     display: flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 4px;
 }
 
 .point-btn {
-    width: 20px;
-    height: 20px;
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 18px;
+    height: 18px;
     border-radius: 50%;
     background: var(--primary);
     color: white;
     border: none;
-    font-size: 14px;
+    font-size: 12px;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -239,6 +293,33 @@ body {
 
 .point-btn.hidden {
     display: none;
+}
+
+.combat-substats {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.combat-substats .chip {
+    flex: 1;
+    padding: 6px 8px;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    color: #cfd8dc;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    text-align: center;
+}
+
+.combat-substats .chip .chip-icon {
+    font-size: 0.86rem;
+    margin-right: 2px;
+    vertical-align: -1px;
+}
+
+.combat-substats .chip strong {
+    color: #ffd54f;
 }
 
 /* 소지품 행: 등급 바와 텍스트 겹침 방지 */
@@ -257,10 +338,9 @@ body {
     padding-left: 6px;
 }
 
-/* 상점 모달 행: 설명이 여러 줄이어도 구매 버튼은 한 줄·고정 폭 */
+/* 상점 모달 행: 설명이 여러 줄이어도 구매 버튼은 한 줄·고정 폭 (행 색은 등급 클래스에 맡김) */
 .shop-item-row.list-item.inventory-item {
     align-items: flex-start;
-    color: var(--text-primary);
 }
 
 .shop-item-row .shop-item-row__main {
@@ -301,13 +381,124 @@ body {
     margin-top: 2px;
 }
 
-/* Item Grades */
-.inventory-item.normal { border-left: 3px solid #ccc; }
-.inventory-item.uncommon { border-left: 3px solid #4CAF50; color: #4CAF50; }
-.inventory-item.rare { border-left: 3px solid #2196F3; color: #2196F3; }
-.inventory-item.unique { border-left: 3px solid #9C27B0; color: #9C27B0; }
-.inventory-item.legendary { border-left: 3px solid #FF9800; color: #FF9800; }
-.inventory-item.mythic { border-left: 3px solid #FFD700; color: #FFD700; font-weight: bold; }
+/* Item Grades — 인벤토리·상점·장비 슬롯·대장간/장비 모달 공통 팔레트 */
+.inventory-item.normal,
+.equip-choice-row.normal,
+.equipment-slot-btn.equipped.normal {
+    border-left: 3px solid #bdbdbd;
+    color: #e0e0e0;
+}
+.inventory-item.uncommon,
+.equip-choice-row.uncommon,
+.equipment-slot-btn.equipped.uncommon {
+    border-left: 3px solid #4caf50;
+    color: #81c784;
+}
+.inventory-item.rare,
+.equip-choice-row.rare,
+.equipment-slot-btn.equipped.rare {
+    border-left: 3px solid #2196f3;
+    color: #64b5f6;
+}
+.inventory-item.epic,
+.equip-choice-row.epic,
+.equipment-slot-btn.equipped.epic {
+    border-left: 3px solid #ab47bc;
+    color: #e1bee7;
+}
+.inventory-item.unique,
+.equip-choice-row.unique,
+.equipment-slot-btn.equipped.unique {
+    border-left: 3px solid #9c27b0;
+    color: #ce93d8;
+}
+.inventory-item.legendary,
+.equip-choice-row.legendary,
+.equipment-slot-btn.equipped.legendary {
+    border-left: 3px solid #ff9800;
+    color: #ffcc80;
+}
+.inventory-item.mythic,
+.equip-choice-row.mythic,
+.equipment-slot-btn.equipped.mythic {
+    border-left: 3px solid #ffd700;
+    color: #ffe082;
+    font-weight: bold;
+}
+
+/* 상점: 제목 색이 별도 규칙으로 덮이지 않도록 */
+.shop-item-row.list-item.inventory-item.normal .shop-item-row__name { color: #e0e0e0; }
+.shop-item-row.list-item.inventory-item.uncommon .shop-item-row__name { color: #81c784; }
+.shop-item-row.list-item.inventory-item.rare .shop-item-row__name { color: #64b5f6; }
+.shop-item-row.list-item.inventory-item.epic .shop-item-row__name { color: #e1bee7; }
+.shop-item-row.list-item.inventory-item.unique .shop-item-row__name { color: #ce93d8; }
+.shop-item-row.list-item.inventory-item.legendary .shop-item-row__name { color: #ffcc80; }
+.shop-item-row.list-item.inventory-item.mythic .shop-item-row__name { color: #ffe082; }
+
+/* 장비 슬롯: 아이템 한 줄에 등급색 */
+.equipment-slot-btn.equipped.normal .slot-item { color: #e0e0e0; }
+.equipment-slot-btn.equipped.uncommon .slot-item { color: #81c784; }
+.equipment-slot-btn.equipped.rare .slot-item { color: #64b5f6; }
+.equipment-slot-btn.equipped.epic .slot-item { color: #e1bee7; }
+.equipment-slot-btn.equipped.unique .slot-item { color: #ce93d8; }
+.equipment-slot-btn.equipped.legendary .slot-item { color: #ffcc80; }
+.equipment-slot-btn.equipped.mythic .slot-item { color: #ffe082; }
+
+/* 장비 선택 모달 — 현재 장착 줄 */
+.equip-choice-current .name.normal { color: #e0e0e0; }
+.equip-choice-current .name.uncommon { color: #81c784; }
+.equip-choice-current .name.rare { color: #64b5f6; }
+.equip-choice-current .name.epic { color: #e1bee7; }
+.equip-choice-current .name.unique { color: #ce93d8; }
+.equip-choice-current .name.legendary { color: #ffcc80; }
+.equip-choice-current .name.mythic { color: #ffe082; }
+
+/* 대장간·장비 모달 후보 행 — 제목에 등급색 명시 (행 상속만으로는 특이 케이스에서 안 먹는 것 방지) */
+.equip-choice-row.normal .name { color: #e0e0e0; }
+.equip-choice-row.uncommon .name { color: #81c784; }
+.equip-choice-row.rare .name { color: #64b5f6; }
+.equip-choice-row.epic .name { color: #e1bee7; }
+.equip-choice-row.unique .name { color: #ce93d8; }
+.equip-choice-row.legendary .name { color: #ffcc80; }
+.equip-choice-row.mythic .name { color: #ffe082; }
+
+/* 보스 전용 아이템: 기존 등급색 위에 크림슨 외곽광 강조 */
+.inventory-item.boss-exclusive {
+    border-left-color: #e53935 !important;
+    box-shadow: inset 0 0 0 1px rgba(229, 57, 53, 0.32), 0 0 10px rgba(229, 57, 53, 0.35);
+}
+.inventory-item.boss-exclusive .name,
+.inventory-item.boss-exclusive .shop-item-row__name {
+    color: #ff8a80;
+    text-shadow: 0 0 8px rgba(229, 57, 53, 0.32);
+}
+
+.equip-choice-row.boss-exclusive,
+.equip-choice-current.boss-exclusive {
+    border-left-color: #e53935 !important;
+    box-shadow: inset 0 0 0 1px rgba(229, 57, 53, 0.32), 0 0 10px rgba(229, 57, 53, 0.35);
+}
+.equip-choice-row.boss-exclusive .name,
+.equip-choice-current.boss-exclusive .name {
+    color: #ff8a80;
+    text-shadow: 0 0 8px rgba(229, 57, 53, 0.32);
+}
+
+/* 장비 슬롯 보스 강조는 enhance-* 규칙 아래에 둠 (덮어쓰기 방지) */
+
+/* 강화 시각 단계 */
+.inventory-item.enhance-mid {
+    box-shadow: inset 0 0 0 1px rgba(79, 195, 247, 0.25);
+}
+
+.inventory-item.enhance-high {
+    box-shadow: 0 0 10px rgba(186, 104, 200, 0.28), inset 0 0 0 1px rgba(186, 104, 200, 0.35);
+}
+
+.inventory-item.enhance-peak {
+    box-shadow: 0 0 14px rgba(255, 214, 102, 0.45), inset 0 0 0 1px rgba(255, 214, 102, 0.55);
+    animation: enhancePulse 1.8s ease-in-out infinite;
+}
 
 .item-info {
     display: flex;
@@ -317,6 +508,14 @@ body {
 .item-info .count {
     font-size: 0.8rem;
     opacity: 0.7;
+}
+
+.item-info .item-meta {
+    margin-top: 3px;
+    font-size: 0.73rem;
+    line-height: 1.35;
+    color: #b0bec5;
+    opacity: 0.95;
 }
 
 .equip-btn, .unequip-btn {
@@ -436,8 +635,31 @@ body {
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-.equipment-slot-btn.equipped {
-    border-color: rgba(174, 213, 129, 0.7);
+/* 장착됨: 등급별 border-left는 위 공통 팔레트에서 처리. 여기서 전체 border-color를 주면 등급 강조가 묻힘 */
+
+.equipment-slot-btn.enhance-mid {
+    border-color: rgba(79, 195, 247, 0.68);
+    box-shadow: 0 0 12px rgba(79, 195, 247, 0.2);
+}
+
+.equipment-slot-btn.enhance-high {
+    border-color: rgba(186, 104, 200, 0.78);
+    box-shadow: 0 0 14px rgba(186, 104, 200, 0.28);
+}
+
+.equipment-slot-btn.enhance-peak {
+    border-color: rgba(255, 214, 102, 0.95);
+    box-shadow: 0 0 18px rgba(255, 214, 102, 0.55);
+    animation: enhancePulse 1.6s ease-in-out infinite;
+}
+
+.equipment-slot-btn.boss-exclusive {
+    border-left-color: #e53935 !important;
+    box-shadow: inset 0 0 0 1px rgba(229, 57, 53, 0.32), 0 0 10px rgba(229, 57, 53, 0.35);
+}
+.equipment-slot-btn.boss-exclusive .slot-item {
+    color: #ff8a80;
+    text-shadow: 0 0 8px rgba(229, 57, 53, 0.32);
 }
 
 .equipment-slot-btn .slot-icon {
@@ -466,6 +688,10 @@ body {
     line-height: 1.4;
 }
 
+.equipment-total-bonus {
+    color: #c5e1a5;
+}
+
 .equip-choice-section {
     margin-top: 12px;
 }
@@ -474,6 +700,24 @@ body {
     margin-bottom: 8px;
     font-size: 0.86rem;
     color: #ffe082;
+}
+
+.smith-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.smith-tabs .action-btn {
+    flex: 1;
+}
+
+.smith-body {
+    max-height: 380px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .equip-choice-current {
@@ -538,6 +782,11 @@ body {
     line-height: 1.35;
 }
 
+@keyframes enhancePulse {
+    0%, 100% { filter: brightness(1); }
+    50% { filter: brightness(1.15); }
+}
+
 .log-content {
     display: flex;
     flex-direction: column;
@@ -597,11 +846,27 @@ body {
 /* Action Footer */
 .action-footer {
     height: var(--footer-height);
-    display: flex;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
     border-top: 1px solid var(--border-color);
     margin-top: var(--gap);
+    padding: 0 10px;
+}
+
+.footer-side-spacer {
+    grid-column: 1;
+}
+
+.footer-center-zone {
+    grid-column: 2;
+    display: flex;
+    justify-content: center;
+}
+
+.footer-right-zone {
+    grid-column: 3;
+    justify-self: end;
 }
 
 .action-buttons {
@@ -647,6 +912,130 @@ body {
     color: #dcedc8;
 }
 
+.boss-dungeon-filter-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+.boss-dungeon-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+    max-height: 54vh;
+    overflow-y: auto;
+    padding-right: 2px;
+}
+
+.boss-dungeon-card {
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 10px;
+    padding: 12px;
+}
+
+.boss-dungeon-card.is-locked {
+    opacity: 0.6;
+}
+
+.boss-dungeon-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.boss-dungeon-head h4 {
+    margin: 0;
+    font-size: 0.98rem;
+}
+
+.boss-dungeon-grade {
+    font-size: 0.72rem;
+    border-radius: 6px;
+    padding: 2px 6px;
+    background: rgba(255, 255, 255, 0.14);
+}
+
+.boss-dungeon-lock {
+    margin-left: 6px;
+    font-size: 0.72rem;
+    color: #ffb3b3;
+}
+
+.boss-dungeon-meta {
+    margin-top: 6px;
+    font-size: 0.8rem;
+    color: #c9c9c9;
+}
+
+.boss-dungeon-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+}
+
+.boss-drop-popup {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 8;
+}
+
+.boss-drop-popup-card {
+    width: min(420px, 92%);
+    max-height: 70%;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: rgba(20, 20, 20, 0.94);
+    padding: 12px;
+}
+
+.boss-drop-popup-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.boss-drop-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.boss-drop-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.88rem;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.boss-drop-row.boss-exclusive {
+    border: 1px solid rgba(229, 57, 53, 0.45);
+    box-shadow: 0 0 10px rgba(229, 57, 53, 0.35);
+}
+
+.boss-drop-name {
+    color: #f2f2f2;
+}
+
+.boss-drop-chance {
+    color: #cde7ff;
+    white-space: nowrap;
+}
+
 /* Battle Scene & Monster Card */
 .battle-scene {
     margin-bottom: 20px;
@@ -659,6 +1048,29 @@ body {
 
 .monster-card {
     text-align: center;
+}
+
+.monster-image-wrap {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 12px;
+}
+
+.monster-image-placeholder {
+    width: 160px;
+    height: 120px;
+    border-radius: 12px;
+    border: 1px dashed rgba(255, 255, 255, 0.28);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.monster-image-empty {
+    font-size: 0.72rem;
+    color: rgba(255, 255, 255, 0.65);
+    letter-spacing: 0.03em;
 }
 
 .monster-header {
@@ -1224,26 +1636,28 @@ body {
 .skill-web-node.branch-swift_branch { --hue: 292; }
 .skill-web-node.branch-ascendant_branch { --hue: 48; }
 .skill-web-node.branch-abyss_branch { --hue: 18; }
+.skill-web-node.branch-convergence_path { --hue: 195; }
+.skill-web-node.branch-martyr_path { --hue: 348; }
 .skill-web-node.branch-unknown { --hue: 200; }
 
 .skill-web-node-core {
-    fill: hsla(var(--hue), 38%, 28%, 0.55);
-    stroke: hsla(var(--hue), 40%, 44%, 0.6);
+    fill: hsl(var(--hue), 58%, 40%);
+    stroke: hsl(var(--hue), 72%, 60%);
     stroke-width: 2;
 }
 
 .skill-web-node-ring {
     fill: none;
-    stroke: transparent;
+    stroke: hsla(var(--hue), 88%, 66%, 0.32);
     stroke-width: 3;
 }
 
 .skill-web-node-name {
-    fill: #eceff1;
+    fill: #ffffff;
     font-size: 12px;
     paint-order: stroke;
-    stroke: rgba(0, 0, 0, 0.7);
-    stroke-width: 2px;
+    stroke: rgba(0, 0, 0, 0.82);
+    stroke-width: 2.2px;
 }
 
 .skill-web-node-lock {
@@ -1252,7 +1666,7 @@ body {
 }
 
 .skill-web-node-state {
-    fill: #b0bec5;
+    fill: #d7e3ea;
     font-size: 11px;
 }
 
@@ -1264,20 +1678,25 @@ body {
     font-size: 11.5px;
 }
 
+.skill-web-node.kind-active_unlock .skill-web-node-core,
+.skill-web-node.kind-active_unlock .skill-web-node-ring {
+    stroke-linejoin: round;
+}
+
 /* 상태: 잠김 / 해금 가능 / 완료 — 계열 색 위에 덧씌움 */
 .skill-web-node.is-locked .skill-web-node-core {
-    fill: hsla(var(--hue), 32%, 26%, 0.48);
-    stroke: hsla(var(--hue), 28%, 40%, 0.52);
+    fill: hsl(var(--hue), 42%, 34%);
+    stroke: hsl(var(--hue), 58%, 52%);
 }
 
 .skill-web-node.is-available .skill-web-node-core {
-    fill: hsla(var(--hue), 58%, 44%, 0.92);
-    stroke: hsla(var(--hue), 72%, 58%, 1);
+    fill: hsl(var(--hue), 78%, 52%);
+    stroke: hsl(var(--hue), 92%, 72%);
 }
 
 .skill-web-node.is-unlocked .skill-web-node-core {
-    fill: hsla(var(--hue), 46%, 36%, 0.92);
-    stroke: hsla(var(--hue), 50%, 55%, 0.98);
+    fill: hsl(var(--hue), 68%, 46%);
+    stroke: hsl(var(--hue), 88%, 68%);
 }
 
 .skill-web-node.is-unlocked .skill-web-node-ring {
@@ -1335,6 +1754,52 @@ body {
     margin-top: 5px;
 }
 
+/* Global Toast */
+.global-toast-stack {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1600;
+    pointer-events: none;
+}
+
+.global-toast {
+    min-width: 220px;
+    max-width: 360px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(15, 17, 26, 0.95);
+    color: #eceff1;
+    box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.global-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.global-toast.success {
+    border-color: rgba(174, 213, 129, 0.62);
+    color: #e8f5e9;
+}
+
+.global-toast.warn {
+    border-color: rgba(255, 224, 130, 0.62);
+    color: #fff8e1;
+}
+
+.global-toast.error {
+    border-color: rgba(239, 154, 154, 0.62);
+    color: #ffebee;
+}
+
 @media (max-width: 900px) {
     .equipment-avatar-stage {
         min-height: 280px;
@@ -1389,6 +1854,56 @@ body {
     border: 1px solid #555;
     border-radius: 8px;
     box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+}
+
+.settings-avatar-options {
+    width: 100%;
+}
+
+.settings-avatar-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+}
+
+.settings-avatar-card {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: rgba(255, 255, 255, 0.05);
+    color: #eee;
+    padding: 10px 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.settings-avatar-card:hover {
+    border-color: #8bc34a;
+    background: rgba(139, 195, 74, 0.12);
+}
+
+.settings-avatar-card.is-selected {
+    border-color: #4caf50;
+    background: rgba(76, 175, 80, 0.22);
+}
+
+.settings-avatar-card.is-locked {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.settings-avatar-card .avatar-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.settings-avatar-card .avatar-unlock {
+    font-size: 0.78rem;
+    color: #cddc39;
 }
 
 .item-list {
