@@ -73,6 +73,7 @@ class StorageManager {
     constructor(authManager) {
         this.auth = authManager;
         this.version = "1.2";
+        this.cloudPrefix = "BASILEIA_CLOUD_";
     }
 
     getSaveKey() {
@@ -124,6 +125,50 @@ class StorageManager {
     exists() {
         const key = this.getSaveKey();
         return key ? localStorage.getItem(key) !== null : false;
+    }
+
+    getCloudKey() {
+        const user = this.auth.getCurrentUser();
+        return user ? `${this.cloudPrefix}${user}` : null;
+    }
+
+    /**
+     * Phase 4 준비: 현재는 로컬스토리지 미러 기반 백업.
+     * 이후 Firebase/Supabase 어댑터로 쉽게 교체할 수 있도록 메서드 형태를 분리했다.
+     */
+    syncToCloud(state) {
+        const key = this.getCloudKey();
+        if (!key || !state) return { success: false, msg: "로그인 후 백업을 사용할 수 있습니다." };
+
+        try {
+            const payload = {
+                version: this.version,
+                timestamp: Date.now(),
+                payload: state
+            };
+            localStorage.setItem(key, JSON.stringify(payload));
+            return { success: true, msg: "클라우드 백업 업로드가 완료되었습니다." };
+        } catch (e) {
+            console.error("Cloud Sync Upload Error:", e);
+            return { success: false, msg: "백업 업로드에 실패했습니다." };
+        }
+    }
+
+    restoreFromCloud() {
+        const key = this.getCloudKey();
+        if (!key) return { success: false, msg: "로그인 후 복원을 사용할 수 있습니다." };
+
+        try {
+            const data = localStorage.getItem(key);
+            if (!data) return { success: false, msg: "복원할 백업 데이터가 없습니다." };
+
+            const parsed = JSON.parse(data);
+            if (!parsed.payload) return { success: false, msg: "백업 데이터 형식이 올바르지 않습니다." };
+            return { success: true, payload: parsed.payload, msg: "클라우드 백업 복원이 완료되었습니다." };
+        } catch (e) {
+            console.error("Cloud Sync Restore Error:", e);
+            return { success: false, msg: "백업 복원에 실패했습니다." };
+        }
     }
 }
 

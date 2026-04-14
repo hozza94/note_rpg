@@ -21,10 +21,13 @@ class GameEngine {
                 nextExp: 80,
                 gold: 0,
                 bonusPoints: 0,
-                skills: [
-                    { id: 'meditation', name: '묵상', cost: 10 },
-                    { id: 'praise', name: '찬양', cost: 15 }
-                ]
+                classId: 'pilgrim',
+                activeSkillIds: ['meditation', 'praise', 'proclaim'],
+                unlockedSkillNodes: ['pilgrim_origin'],
+                skillTreePoints: 0,
+                autoBattleEnabled: false,
+                avatarGender: 'male',
+                equipmentViewMode: 'avatar'
             },
             world: {
                 currentRegionId: "pishon",
@@ -52,14 +55,7 @@ class GameEngine {
         const savedData = window.StorageManager.load();
         if (savedData) {
             this.state = savedData;
-            // Backward compatibility
-            if (!this.state.world.currentRegionId) this.state.world.currentRegionId = "pishon";
-            if (this.state.world.explorationProgress === undefined) this.state.world.explorationProgress = 0;
-            if (this.state.world.bossDefeated === undefined) this.state.world.bossDefeated = false;
-            
-            // 세션 관련 휘발성 상태는 로드 시 초기화
-            this.state.world.isNavigating = false;
-            this.state.battle = null;
+            this.ensureStateSchema();
             
             if (this.state.inventoryData) {
                 this.inventory = new window.InventoryManager(this.state.inventoryData);
@@ -72,12 +68,508 @@ class GameEngine {
             }
         }
 
+        this.ensureStateSchema();
         this.bindEvents();
         this.toggleBattleUI(false);
         this.hideVerseOverlay();
         this.updateUI();
         this.renderTabContent('inventory'); // 추가: 게임 시작 시 인벤토리 목록 렌더링
+        this.renderEquipmentPanel();
         this.log("세상이 회색빛으로 물들었습니다. 당신의 순례는 여기서부터 시작됩니다.", "system");
+    }
+
+    ensureStateSchema() {
+        if (!this.state.player) this.state.player = {};
+        if (!this.state.world) this.state.world = {};
+
+        const playerDefaults = {
+            name: "순례자",
+            title: "Pilgrim",
+            level: 1,
+            hp: 80,
+            maxHp: 80,
+            pp: 30,
+            maxPp: 30,
+            atk: 8,
+            def: 4,
+            spd: 95,
+            faith: 1,
+            exp: 0,
+            nextExp: 80,
+            gold: 0,
+            bonusPoints: 0,
+            classId: 'pilgrim',
+            activeSkillIds: ['meditation', 'praise', 'proclaim'],
+            unlockedSkillNodes: ['pilgrim_origin'],
+            skillTreePoints: 0,
+            autoBattleEnabled: false,
+            avatarGender: 'male',
+            equipmentViewMode: 'avatar'
+        };
+        Object.entries(playerDefaults).forEach(([key, value]) => {
+            if (this.state.player[key] === undefined || this.state.player[key] === null) {
+                this.state.player[key] = value;
+            }
+        });
+
+        // 구버전 세이브 호환: skills[] -> activeSkillIds
+        if ((!Array.isArray(this.state.player.activeSkillIds) || this.state.player.activeSkillIds.length === 0) && Array.isArray(this.state.player.skills)) {
+            this.state.player.activeSkillIds = this.state.player.skills.map(skill => skill.id);
+        }
+
+        if (!Array.isArray(this.state.player.activeSkillIds) || this.state.player.activeSkillIds.length === 0) {
+            this.state.player.activeSkillIds = ['meditation', 'praise', 'proclaim'];
+        }
+        if (!this.state.player.activeSkillIds.includes('proclaim')) {
+            this.state.player.activeSkillIds.push('proclaim');
+        }
+
+        const skillTree = this.getSkillTreeConfig();
+        const startNodeId = skillTree?.startNodeId || 'pilgrim_origin';
+        if (!Array.isArray(this.state.player.unlockedSkillNodes)) {
+            this.state.player.unlockedSkillNodes = [startNodeId];
+        }
+        if (!this.state.player.unlockedSkillNodes.includes(startNodeId)) {
+            this.state.player.unlockedSkillNodes.unshift(startNodeId);
+        }
+
+        this.syncUnlockedActiveSkills();
+        // 구버전 호환 필드 유지(저장 안정성)
+        this.state.player.skills = this.getActiveSkills().map(skill => ({ id: skill.id, name: skill.name, cost: skill.cost }));
+
+        if (this.state.player.avatarGender !== 'male' && this.state.player.avatarGender !== 'female') {
+            this.state.player.avatarGender = 'male';
+        }
+        if (this.state.player.equipmentViewMode !== 'avatar' && this.state.player.equipmentViewMode !== 'edit') {
+            this.state.player.equipmentViewMode = 'avatar';
+        }
+
+        if (!this.state.world.currentRegionId) this.state.world.currentRegionId = "pishon";
+        if (this.state.world.saturation === undefined) this.state.world.saturation = 0;
+        if (this.state.world.explorationProgress === undefined) this.state.world.explorationProgress = 0;
+        if (this.state.world.bossDefeated === undefined) this.state.world.bossDefeated = false;
+
+        // 세션 관련 휘발성 상태는 로드 시 초기화
+        this.state.world.isNavigating = false;
+        this.state.battle = null;
+    }
+
+    getSkillTreeConfig() {
+        const classId = this.state.player.classId || 'pilgrim';
+        return window.GAME_DATA.skillTrees?.[classId] || null;
+    }
+
+    getSkillTreeNodeMap() {
+        const tree = this.getSkillTreeConfig();
+        const map = {};
+        if (!tree || !Array.isArray(tree.nodes)) return map;
+        tree.nodes.forEach(node => { map[node.id] = node; });
+        return map;
+    }
+
+    getActiveSkills() {
+        const ids = this.state.player.activeSkillIds || [];
+        return ids.map(id => ({ id, ...(window.GAME_DATA.skills[id] || { name: id, cost: 0 }) }));
+    }
+
+    syncUnlockedActiveSkills() {
+        const tree = this.getSkillTreeConfig();
+        if (!tree) return;
+        const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
+        const nodeMap = this.getSkillTreeNodeMap();
+        const activeSet = new Set(this.state.player.activeSkillIds || []);
+
+        unlocked.forEach(nodeId => {
+            const node = nodeMap[nodeId];
+            const activeSkillId = node?.grants?.activeSkillId;
+            if (activeSkillId) activeSet.add(activeSkillId);
+        });
+
+        this.state.player.activeSkillIds = Array.from(activeSet).filter(id => !!window.GAME_DATA.skills[id]);
+    }
+
+    getPassiveBonuses() {
+        const bonuses = {
+            atk: 0,
+            def: 0,
+            hp: 0,
+            pp: 0,
+            spd: 0,
+            faith: 0,
+            damageMul: 1,
+            damageTakenMul: 1,
+            critChance: 0,
+            evadeChance: 0,
+            lowHpDamageMul: 1
+        };
+
+        const nodeMap = this.getSkillTreeNodeMap();
+        (this.state.player.unlockedSkillNodes || []).forEach(nodeId => {
+            const grants = nodeMap[nodeId]?.grants;
+            if (!grants) return;
+
+            if (grants.stats) {
+                Object.entries(grants.stats).forEach(([stat, value]) => {
+                    if (bonuses[stat] !== undefined) bonuses[stat] += value;
+                });
+            }
+
+            if (grants.specials) {
+                Object.entries(grants.specials).forEach(([key, value]) => {
+                    if (key === 'damageMul' || key === 'damageTakenMul' || key === 'lowHpDamageMul') {
+                        bonuses[key] *= value;
+                    } else if (key === 'critChance' || key === 'evadeChance') {
+                        bonuses[key] += value;
+                    }
+                });
+            }
+        });
+
+        return bonuses;
+    }
+
+    getPlayerCombinedStats() {
+        const p = this.state.player;
+        const equip = this.inventory.getBonuses();
+        const passive = this.getPassiveBonuses();
+
+        return {
+            atk: p.atk + equip.atk + passive.atk,
+            def: p.def + equip.def + passive.def,
+            hp: p.maxHp + equip.hp + passive.hp,
+            pp: p.maxPp + equip.pp + passive.pp,
+            spd: p.spd + equip.spd + passive.spd,
+            faith: p.faith + (equip.faith || 0) + passive.faith,
+            critChance: Math.max(0, passive.critChance || 0),
+            evadeChance: Math.max(0, passive.evadeChance || 0),
+            damageMul: passive.damageMul || 1,
+            damageTakenMul: passive.damageTakenMul || 1,
+            lowHpDamageMul: passive.lowHpDamageMul || 1
+        };
+    }
+
+    canUnlockSkillNode(nodeId) {
+        const tree = this.getSkillTreeConfig();
+        if (!tree) return { ok: false, reason: '스킬트리 정보를 찾을 수 없습니다.' };
+        const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
+        if (unlocked.has(nodeId)) return { ok: false, reason: '이미 배운 노드입니다.' };
+        if (this.state.player.skillTreePoints <= 0) return { ok: false, reason: '스킬트리 포인트가 부족합니다.' };
+
+        const nodeMap = this.getSkillTreeNodeMap();
+        const node = nodeMap[nodeId];
+        if (!node) return { ok: false, reason: '존재하지 않는 노드입니다.' };
+
+        const isAdjacent = (tree.edges || []).some(([from, to]) =>
+            (from === nodeId && unlocked.has(to)) || (to === nodeId && unlocked.has(from))
+        );
+        if (!isAdjacent) return { ok: false, reason: '연결된 노드부터 해금해야 합니다.' };
+        return { ok: true };
+    }
+
+    unlockSkillNode(nodeId) {
+        const check = this.canUnlockSkillNode(nodeId);
+        if (!check.ok) {
+            this.log(`[스킬트리] ${check.reason}`, "system");
+            return false;
+        }
+
+        this.state.player.unlockedSkillNodes.push(nodeId);
+        this.state.player.skillTreePoints = Math.max(0, this.state.player.skillTreePoints - 1);
+        this.syncUnlockedActiveSkills();
+        this.log(`[스킬트리] 새로운 노드를 해금했습니다: ${this.getSkillTreeNodeMap()[nodeId].name}`, "effect");
+        this.updateUI();
+        this.saveGame();
+        return true;
+    }
+
+    formatNodeGrantText(node) {
+        if (!node || !node.grants) return '효과 정보 없음';
+        const parts = [];
+        const statKo = { atk: '공격', def: '방어', hp: 'HP', pp: 'PP', spd: '속도', faith: '신앙' };
+
+        if (node.grants.stats) {
+            const statStr = Object.entries(node.grants.stats)
+                .map(([k, v]) => `${statKo[k] || k} ${v > 0 ? '+' : ''}${v}`)
+                .join(' · ');
+            parts.push(statStr);
+        }
+        if (node.grants.activeSkillId) {
+            const skill = window.GAME_DATA.skills[node.grants.activeSkillId];
+            parts.push(`액티브 해금: ${skill ? skill.name : node.grants.activeSkillId}`);
+        }
+        if (node.grants.specials) {
+            Object.entries(node.grants.specials).forEach(([k, v]) => {
+                if (k === 'damageMul') parts.push(`피해량 ${Math.round((v - 1) * 100)}% 증가`);
+                if (k === 'damageTakenMul') parts.push(`받는 피해 ${Math.round((1 - v) * 100)}% 감소`);
+                if (k === 'critChance') parts.push(`치명타 +${Math.round(v * 100)}%`);
+                if (k === 'evadeChance') parts.push(`회피 +${Math.round(v * 100)}%`);
+                if (k === 'lowHpDamageMul') parts.push(`HP 50% 이하 피해 +${Math.round((v - 1) * 100)}%`);
+            });
+        }
+
+        return parts.join(' / ') || '효과 정보 없음';
+    }
+
+    formatActiveSkillSummary(skillData) {
+        if (!skillData) return '효과 정보 없음';
+        const effect = skillData.effect || {};
+        const chunks = [];
+        if (effect.atkMul) chunks.push(`피해 x${effect.atkMul.toFixed(2)}`);
+        if (effect.defMul) chunks.push(`방어 x${effect.defMul.toFixed(2)}`);
+        if (effect.evade) chunks.push(`회피 +${Math.round(effect.evade * 100)}%`);
+        if (effect.spdMul) chunks.push(`속도 x${effect.spdMul.toFixed(2)}`);
+        if (effect.nextCrit) chunks.push(`다음 치명 +${Math.round(effect.nextCrit * 100)}%`);
+        if (effect.spdDebuff) chunks.push(`적 속도 ${Math.round(effect.spdDebuff * 100)}%`);
+        if (effect.fear) chunks.push('공포 부여');
+        return chunks.join(' · ') || '기본 효과';
+    }
+
+    formatActiveSkillTooltip(skillData) {
+        if (!skillData) return '상세 정보 없음';
+        const lines = [
+            `타입: ${skillData.type === 'buff' ? '강화' : '공격'}`,
+            `소모 PP: ${skillData.cost || 0}`,
+            `요약: ${this.formatActiveSkillSummary(skillData)}`
+        ];
+        if (skillData.desc) lines.push(`설명: ${skillData.desc}`);
+        return lines.join('\n');
+    }
+
+    formatPassiveSkillSummary(node) {
+        if (!node) return '효과 정보 없음';
+        return this.formatNodeGrantText(node);
+    }
+
+    formatPassiveSkillTooltip(node) {
+        if (!node) return '상세 정보 없음';
+        const lines = [
+            `노드 유형: ${node.kind}`,
+            `요약: ${this.formatPassiveSkillSummary(node)}`
+        ];
+        if (node.desc) lines.push(`설명: ${node.desc}`);
+        return lines.join('\n');
+    }
+
+    getSkillTreeLayout(tree) {
+        const unit = 96;
+        const padding = 140;
+        const fallbackRadius = 2.4;
+        const positions = {};
+        const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
+        const total = Math.max(1, nodes.length);
+
+        nodes.forEach((node, index) => {
+            const p = node.position || {
+                x: Math.cos((Math.PI * 2 * index) / total) * fallbackRadius,
+                y: Math.sin((Math.PI * 2 * index) / total) * fallbackRadius
+            };
+            positions[node.id] = { x: p.x * unit, y: p.y * unit };
+        });
+
+        const points = Object.values(positions);
+        const minX = Math.min(...points.map(p => p.x));
+        const maxX = Math.max(...points.map(p => p.x));
+        const minY = Math.min(...points.map(p => p.y));
+        const maxY = Math.max(...points.map(p => p.y));
+
+        const width = Math.max(680, maxX - minX + padding * 2);
+        const height = Math.max(560, maxY - minY + padding * 2);
+        const shiftX = padding - minX;
+        const shiftY = padding - minY;
+
+        Object.keys(positions).forEach(nodeId => {
+            positions[nodeId].x += shiftX;
+            positions[nodeId].y += shiftY;
+        });
+
+        return { positions, width, height };
+    }
+
+    getSkillNodeStateLabel(nodeId, unlocked) {
+        if (unlocked.has(nodeId)) return '해금 완료';
+        if (this.canUnlockSkillNode(nodeId).ok) return '해금 가능';
+        return '잠김';
+    }
+
+    getSkillNodeClass(nodeId, unlocked) {
+        if (unlocked.has(nodeId)) return 'is-unlocked';
+        if (this.canUnlockSkillNode(nodeId).ok) return 'is-available';
+        return 'is-locked';
+    }
+
+    openSkillTreeModal() {
+        const tree = this.getSkillTreeConfig();
+        if (!tree) return this.log('스킬트리 정보를 찾을 수 없습니다.', 'system');
+
+        const modal = document.getElementById('modal-overlay');
+        const content = document.getElementById('modal-content');
+        const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
+        const nodeMap = this.getSkillTreeNodeMap();
+        const { positions, width, height } = this.getSkillTreeLayout(tree);
+
+        const edges = (tree.edges || []).map(([from, to]) => {
+            const a = positions[from];
+            const b = positions[to];
+            if (!a || !b) return '';
+            const active = unlocked.has(from) && unlocked.has(to);
+            return `<line class="skill-web-edge ${active ? 'active' : ''}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" />`;
+        }).join('');
+
+        const nodes = (tree.nodes || []).map(node => {
+            const pos = positions[node.id];
+            if (!pos) return '';
+            const stateClass = this.getSkillNodeClass(node.id, unlocked);
+            const label = this.getSkillNodeStateLabel(node.id, unlocked);
+            const effect = this.formatNodeGrantText(node);
+            return `
+                <g class="skill-web-node ${stateClass} kind-${node.kind}" data-node-id="${node.id}" transform="translate(${pos.x}, ${pos.y})">
+                    <circle class="skill-web-node-core" r="20"></circle>
+                    <circle class="skill-web-node-ring" r="28"></circle>
+                    <text class="skill-web-node-name" text-anchor="middle" y="-38">${node.name}</text>
+                    <text class="skill-web-node-state" text-anchor="middle" y="47">${label}</text>
+                    <title>${node.name}\n${effect}\n${node.desc || ''}</title>
+                </g>
+            `;
+        }).join('');
+
+        content.style.width = '980px';
+        content.style.maxWidth = '97vw';
+        content.innerHTML = `
+            <h3 style="margin-bottom: 8px;">${tree.className} 스킬트리</h3>
+            <p style="margin-bottom: 12px; color:#ffd54f;">남은 포인트: ${this.state.player.skillTreePoints}</p>
+            <div class="skill-web-toolbar">
+                <span class="skill-web-help">드래그로 이동, 휠/버튼으로 확대·축소, 노드 클릭으로 해금</span>
+                <div class="skill-web-zoom-buttons">
+                    <button id="skill-web-zoom-out" class="action-btn small">-</button>
+                    <span id="skill-web-zoom-level">100%</span>
+                    <button id="skill-web-zoom-in" class="action-btn small">+</button>
+                    <button id="skill-web-zoom-reset" class="action-btn small">초기화</button>
+                </div>
+            </div>
+            <div id="skill-web-viewport" class="skill-web-viewport">
+                <div id="skill-web-zoom-layer" class="skill-web-zoom-layer">
+                    <svg class="skill-web-svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+                        <g class="skill-web-edges">${edges}</g>
+                        <g class="skill-web-nodes">${nodes}</g>
+                    </svg>
+                </div>
+            </div>
+            <div id="skill-web-info" class="skill-web-info">노드를 선택하면 상세 효과를 확인할 수 있습니다.</div>
+            <button id="btn-close-skilltree" class="action-btn" style="margin-top: 14px; width: 100%;">닫기</button>
+        `;
+        modal.classList.remove('hidden');
+
+        const viewport = content.querySelector('#skill-web-viewport');
+        const zoomLayer = content.querySelector('#skill-web-zoom-layer');
+        const infoBox = content.querySelector('#skill-web-info');
+        const zoomLabel = content.querySelector('#skill-web-zoom-level');
+
+        if (viewport && zoomLayer && zoomLabel) {
+            const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+            let zoom = 1;
+
+            const setZoom = (nextZoom, focusX, focusY) => {
+                const prevZoom = zoom;
+                zoom = clamp(nextZoom, 0.55, 2.4);
+                zoomLayer.style.transform = `scale(${zoom})`;
+                zoomLabel.innerText = `${Math.round(zoom * 100)}%`;
+
+                if (focusX === undefined || focusY === undefined) return;
+                const worldX = (viewport.scrollLeft + focusX) / prevZoom;
+                const worldY = (viewport.scrollTop + focusY) / prevZoom;
+                viewport.scrollLeft = worldX * zoom - focusX;
+                viewport.scrollTop = worldY * zoom - focusY;
+            };
+
+            setTimeout(() => {
+                viewport.scrollLeft = Math.max(0, (zoomLayer.offsetWidth - viewport.clientWidth) / 2);
+                viewport.scrollTop = Math.max(0, (zoomLayer.offsetHeight - viewport.clientHeight) / 2);
+            }, 0);
+
+            viewport.addEventListener('wheel', (event) => {
+                event.preventDefault();
+                const rect = viewport.getBoundingClientRect();
+                const focusX = event.clientX - rect.left;
+                const focusY = event.clientY - rect.top;
+                const delta = event.deltaY < 0 ? 0.1 : -0.1;
+                setZoom(zoom + delta, focusX, focusY);
+            }, { passive: false });
+
+            let dragStartX = 0;
+            let dragStartY = 0;
+            let startScrollLeft = 0;
+            let startScrollTop = 0;
+            let dragging = false;
+
+            viewport.addEventListener('pointerdown', (event) => {
+                if (event.target.closest('.skill-web-node')) return;
+                dragging = true;
+                dragStartX = event.clientX;
+                dragStartY = event.clientY;
+                startScrollLeft = viewport.scrollLeft;
+                startScrollTop = viewport.scrollTop;
+                viewport.setPointerCapture(event.pointerId);
+                viewport.classList.add('dragging');
+            });
+
+            viewport.addEventListener('pointermove', (event) => {
+                if (!dragging) return;
+                const dx = event.clientX - dragStartX;
+                const dy = event.clientY - dragStartY;
+                viewport.scrollLeft = startScrollLeft - dx;
+                viewport.scrollTop = startScrollTop - dy;
+            });
+
+            viewport.addEventListener('pointerup', () => {
+                dragging = false;
+                viewport.classList.remove('dragging');
+            });
+            viewport.addEventListener('pointercancel', () => {
+                dragging = false;
+                viewport.classList.remove('dragging');
+            });
+
+            content.querySelector('#skill-web-zoom-in')?.addEventListener('click', () => {
+                setZoom(zoom + 0.15, viewport.clientWidth / 2, viewport.clientHeight / 2);
+            });
+            content.querySelector('#skill-web-zoom-out')?.addEventListener('click', () => {
+                setZoom(zoom - 0.15, viewport.clientWidth / 2, viewport.clientHeight / 2);
+            });
+            content.querySelector('#skill-web-zoom-reset')?.addEventListener('click', () => {
+                setZoom(1, viewport.clientWidth / 2, viewport.clientHeight / 2);
+            });
+        }
+
+        content.querySelectorAll('.skill-web-node').forEach(nodeEl => {
+            nodeEl.addEventListener('mouseenter', () => {
+                const nodeId = nodeEl.getAttribute('data-node-id');
+                const node = nodeId ? nodeMap[nodeId] : null;
+                if (!node || !infoBox) return;
+                infoBox.innerHTML = `
+                    <strong>${node.name}</strong>
+                    <div>${node.desc || ''}</div>
+                    <div class="effect">${this.formatNodeGrantText(node)}</div>
+                    <div class="meta">${this.getSkillNodeStateLabel(node.id, unlocked)} · ${node.kind}</div>
+                `;
+            });
+            nodeEl.addEventListener('click', () => {
+                const nodeId = nodeEl.getAttribute('data-node-id');
+                if (!nodeId) return;
+                if (this.unlockSkillNode(nodeId)) {
+                    this.openSkillTreeModal();
+                    this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'skills');
+                }
+            });
+        });
+
+        const closeBtn = document.getElementById('btn-close-skilltree');
+        if (closeBtn) {
+            closeBtn.addEventListener('click', () => {
+                content.style.width = '';
+                content.style.maxWidth = '';
+                modal.classList.add('hidden');
+            });
+        }
     }
 
     saveGame() {
@@ -90,6 +582,7 @@ class GameEngine {
         document.getElementById('btn-explore').addEventListener('click', () => this.explore());
         document.getElementById('btn-worship').addEventListener('click', () => this.worship());
         document.getElementById('btn-rest').addEventListener('click', () => this.rest());
+        document.getElementById('btn-shop').addEventListener('click', () => this.openShop());
         const bossBtn = document.getElementById('btn-boss-challenge');
         if (bossBtn) bossBtn.addEventListener('click', () => this.bossChallenge());
 
@@ -107,6 +600,7 @@ class GameEngine {
         document.getElementById('btn-attack').addEventListener('click', () => this.playerAttack());
         document.getElementById('btn-skill').addEventListener('click', () => this.showSkillMenu());
         document.getElementById('btn-run').addEventListener('click', () => this.tryEscape());
+        document.getElementById('btn-auto-battle').addEventListener('click', () => this.toggleAutoBattle());
 
         // UI Tabs
         document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -132,7 +626,21 @@ class GameEngine {
                 document.getElementById('settings-nickname').value = window.AuthManager.getNickname();
                 document.getElementById('settings-msg').innerText = '';
             }
+            this.syncSettingsAvatarRadios();
             settingsOverlay.classList.remove('hidden');
+        });
+
+        document.getElementById('settings-avatar-male')?.addEventListener('change', (e) => {
+            if (!e.target.checked) return;
+            this.state.player.avatarGender = 'male';
+            this.saveGame();
+            this.renderEquipmentPanel();
+        });
+        document.getElementById('settings-avatar-female')?.addEventListener('change', (e) => {
+            if (!e.target.checked) return;
+            this.state.player.avatarGender = 'female';
+            this.saveGame();
+            this.renderEquipmentPanel();
         });
         
         document.getElementById('btn-update-nickname').addEventListener('click', () => {
@@ -158,12 +666,83 @@ class GameEngine {
             window.AuthManager.logout();
             window.location.reload();
         });
+        document.getElementById('btn-sync-upload').addEventListener('click', () => this.syncBackup(true));
+        document.getElementById('btn-sync-download').addEventListener('click', () => this.syncBackup(false));
+        document.getElementById('btn-open-skilltree-settings').addEventListener('click', () => {
+            settingsOverlay.classList.add('hidden');
+            this.openSkillTreeModal();
+        });
         document.getElementById('btn-reset').addEventListener('click', () => {
             if (confirm("경고: 모든 플레이 데이터가 삭제됩니다.\n정말 처음부터 다시 시작하시겠습니까?")) {
                 window.StorageManager.clear();
                 window.location.reload();
             }
         });
+    }
+
+    updateAutoBattleButton() {
+        const btn = document.getElementById('btn-auto-battle');
+        if (!btn) return;
+        const enabled = !!this.state.player.autoBattleEnabled;
+        const isBossFight = !!(this.state.battle?.monster?.isBoss);
+        btn.innerText = isBossFight
+            ? '🤖 자동전투 잠금(보스)'
+            : `🤖 자동전투 ${enabled ? 'ON' : 'OFF'}`;
+        btn.classList.toggle('auto-on', enabled);
+        btn.disabled = isBossFight;
+    }
+
+    scheduleAutoBattleTurn(delayMs = 420) {
+        if (!this.state.player.autoBattleEnabled) return;
+        if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
+        if (this.state.battle.monster?.isBoss) return;
+        setTimeout(() => {
+            if (!this.state.player.autoBattleEnabled) return;
+            if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
+            if (this.state.battle.monster?.isBoss) return;
+            this.executeAutoBattleTurn();
+        }, delayMs);
+    }
+
+    executeAutoBattleTurn() {
+        if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
+        if (this.state.battle.monster?.isBoss) return;
+        const combined = this.getPlayerCombinedStats();
+        const hpRatio = combined.hp > 0 ? (this.state.player.hp / combined.hp) : 1;
+        const activeSkills = this.getActiveSkills();
+
+        const meditation = activeSkills.find(s => s.id === 'meditation');
+        if (hpRatio < 0.4 && meditation && this.state.player.pp >= (meditation.cost || 0)) {
+            this.useSkill(meditation);
+            return;
+        }
+
+        const attackSkills = activeSkills
+            .filter(skill => skill.type === 'attack' && this.state.player.pp >= (skill.cost || 0))
+            .sort((a, b) => (b.effect?.atkMul || 1) - (a.effect?.atkMul || 1));
+        if (attackSkills.length > 0) {
+            this.useSkill(attackSkills[0]);
+            return;
+        }
+
+        this.playerAttack();
+    }
+
+    toggleAutoBattle() {
+        if (this.state.battle?.monster?.isBoss) {
+            this.log("[전투] 보스전에서는 자동전투를 사용할 수 없습니다.", "system");
+            this.state.player.autoBattleEnabled = false;
+            this.updateAutoBattleButton();
+            this.saveGame();
+            return;
+        }
+        this.state.player.autoBattleEnabled = !this.state.player.autoBattleEnabled;
+        this.updateAutoBattleButton();
+        this.log(`[전투] 자동전투를 ${this.state.player.autoBattleEnabled ? '활성화' : '비활성화'}했습니다.`, "system");
+        this.saveGame();
+        if (this.state.player.autoBattleEnabled) {
+            this.scheduleAutoBattleTurn(120);
+        }
     }
 
     bindAuthEvents() {
@@ -199,6 +778,7 @@ class GameEngine {
     renderTabContent(tabId) {
         const container = document.getElementById('inventory-list');
         container.innerHTML = '';
+        if (tabId === 'equipment') tabId = 'inventory';
         
         if (tabId === 'inventory') {
             if (this.inventory.items.length === 0) {
@@ -221,38 +801,252 @@ class GameEngine {
                     container.appendChild(div);
                 });
             }
-        } else if (tabId === 'equipment') {
-            const slots = ['weapon', 'armor', 'helmet', 'accessory', 'boots', 'offhand'];
-            slots.forEach(slot => {
-                const itemId = this.inventory.equipment[slot];
-                const div = document.createElement('div');
-                div.className = 'equipment-item';
-                
-                let content = `<span class="slot-name">${slot}</span>`;
-                if (itemId) {
-                    const item = window.GAME_DATA.items[itemId];
-                    content += `
-                        <span class="name ${item.grade.toLowerCase()}">${item.name}</span>
-                        <button class="unequip-btn">해제</button>
-                    `;
-                } else {
-                    content += `<span class="empty-slot">비어있음</span>`;
-                }
-                
-                div.innerHTML = content;
-                if (itemId) {
-                    div.querySelector('.unequip-btn').onclick = () => this.unequipItem(slot);
-                }
-                container.appendChild(div);
-            });
         } else if (tabId === 'skills') {
-            this.state.player.skills.forEach(skill => {
-                const item = document.createElement('div');
-                item.className = 'list-item skill-item';
-                item.innerHTML = `<span>${skill.name}</span> <span class="cost">PP ${skill.cost}</span>`;
-                container.appendChild(item);
-            });
+            const activeSkills = this.getActiveSkills();
+            const nodeMap = this.getSkillTreeNodeMap();
+            const passiveNodes = (this.state.player.unlockedSkillNodes || [])
+                .map(nodeId => nodeMap[nodeId])
+                .filter(node => !!node && node.kind !== 'start' && node.kind !== 'active_unlock');
+
+            const section = document.createElement('div');
+            section.className = 'skill-tab-sections';
+            section.innerHTML = `
+                <div class="skill-tree-header">
+                    <span class="skill-tree-point">스킬트리 포인트: <strong id="skill-tree-points">${this.state.player.skillTreePoints}</strong></span>
+                    <button id="btn-open-skilltree" class="action-btn small primary">스킬트리 열기</button>
+                </div>
+                <div class="skill-group">
+                    <h4>액티브 스킬</h4>
+                    <div id="active-skill-list"></div>
+                </div>
+                <div class="skill-group">
+                    <h4>패시브 스킬</h4>
+                    <div id="passive-skill-list"></div>
+                </div>
+            `;
+            container.appendChild(section);
+
+            const activeList = section.querySelector('#active-skill-list');
+            const passiveList = section.querySelector('#passive-skill-list');
+
+            if (activeSkills.length === 0) {
+                activeList.innerHTML = '<div class="empty-msg">배운 액티브 스킬이 없습니다.</div>';
+            } else {
+                activeSkills.forEach(skillData => {
+                    const item = document.createElement('div');
+                    item.className = 'skill-card active';
+                    const summary = this.formatActiveSkillSummary(skillData);
+                    const tooltip = this.formatActiveSkillTooltip(skillData);
+                    item.innerHTML = `
+                        <div class="skill-card-main">
+                            <div class="skill-card-title-row">
+                                <span class="skill-card-title">${skillData.name}</span>
+                                <span class="skill-card-cost">PP ${skillData.cost || 0}</span>
+                            </div>
+                            <div class="skill-card-meta">${skillData.type === 'buff' ? '강화 스킬' : '공격 스킬'}</div>
+                            <div class="skill-card-summary">${summary}</div>
+                            <div class="skill-card-desc">${skillData.desc || ''}</div>
+                            <div class="skill-tooltip">${tooltip}</div>
+                        </div>
+                    `;
+                    activeList.appendChild(item);
+                });
+            }
+
+            if (passiveNodes.length === 0) {
+                passiveList.innerHTML = '<div class="empty-msg">배운 패시브 스킬이 없습니다.</div>';
+            } else {
+                passiveNodes.forEach(node => {
+                    const item = document.createElement('div');
+                    item.className = 'skill-card passive';
+                    const summary = this.formatPassiveSkillSummary(node);
+                    const tooltip = this.formatPassiveSkillTooltip(node);
+                    item.innerHTML = `
+                        <div class="skill-card-main">
+                            <div class="skill-card-title-row">
+                                <span class="skill-card-title">${node.name}</span>
+                                <span class="skill-card-cost">${node.kind === 'keystone' ? '핵심' : '패시브'}</span>
+                            </div>
+                            <div class="skill-card-meta">패시브 노드</div>
+                            <div class="skill-card-summary">${summary}</div>
+                            <div class="skill-card-desc">${node.desc || ''}</div>
+                            <div class="skill-tooltip">${tooltip}</div>
+                        </div>
+                    `;
+                    passiveList.appendChild(item);
+                });
+            }
+
+            const openTreeBtn = section.querySelector('#btn-open-skilltree');
+            if (openTreeBtn) openTreeBtn.addEventListener('click', () => this.openSkillTreeModal());
         }
+    }
+
+    getAvatarImagePath() {
+        const g = this.state.player.avatarGender === 'female' ? 'female' : 'male';
+        return g === 'female' ? 'assets/Avatar_F.png' : 'assets/Avatar_M.png';
+    }
+
+    toggleEquipmentViewMode() {
+        this.state.player.equipmentViewMode = this.state.player.equipmentViewMode === 'edit' ? 'avatar' : 'edit';
+        this.saveGame();
+        this.renderEquipmentPanel();
+    }
+
+    syncSettingsAvatarRadios() {
+        const male = document.getElementById('settings-avatar-male');
+        const female = document.getElementById('settings-avatar-female');
+        if (!male || !female) return;
+        const g = this.state.player.avatarGender === 'female' ? 'female' : 'male';
+        male.checked = g === 'male';
+        female.checked = g === 'female';
+    }
+
+    getEquipmentSlotConfig() {
+        return [
+            { slot: 'helmet', label: '머리', x: 50, y: 12, icon: '🪖' },
+            { slot: 'armor', label: '갑주', x: 50, y: 34, icon: '🛡️' },
+            { slot: 'accessory', label: '허리', x: 50, y: 58, icon: '🎗️' },
+            { slot: 'boots', label: '발', x: 50, y: 82, icon: '🥾' },
+            { slot: 'weapon', label: '주무기', x: 17, y: 46, icon: '⚔️' },
+            { slot: 'offhand', label: '보조', x: 83, y: 46, icon: '🧿' }
+        ];
+    }
+
+    openEquipmentSlotModal(slot) {
+        const slotKo = {
+            weapon: '주무기',
+            armor: '갑옷',
+            helmet: '투구',
+            accessory: '벨트/장신구',
+            boots: '신발',
+            offhand: '보조장비'
+        };
+        const equippedItemId = this.inventory.equipment[slot];
+        const equippedItem = equippedItemId ? window.GAME_DATA.items[equippedItemId] : null;
+        const candidates = this.inventory.items
+            .filter(itemInfo => window.GAME_DATA.items[itemInfo.id]?.slot === slot)
+            .map(itemInfo => ({ info: itemInfo, data: window.GAME_DATA.items[itemInfo.id] }));
+
+        const modal = document.getElementById('modal-overlay');
+        const content = document.getElementById('modal-content');
+        const equippedSection = equippedItem
+            ? `
+                <div class="equip-choice-current">
+                    <div class="name ${equippedItem.grade.toLowerCase()}">${equippedItem.name}</div>
+                    <div class="effect">${this.formatShopItemDetails(equippedItem)}</div>
+                    <button id="btn-equip-unequip" class="action-btn small secondary">장착 해제</button>
+                </div>
+            `
+            : '<div class="empty-msg" style="padding:14px;">현재 장착된 아이템이 없습니다.</div>';
+
+        const candidateRows = candidates.length > 0
+            ? candidates.map(({ info, data }) => `
+                <div class="equip-choice-row ${data.grade.toLowerCase()}">
+                    <div class="main">
+                        <div class="name">${data.name} <span class="count">x${info.count}</span></div>
+                        <div class="effect">${this.formatShopItemDetails(data)}</div>
+                        <div class="desc">${data.desc || ''}</div>
+                    </div>
+                    <button class="action-btn small primary" data-equip-item="${info.id}">장착</button>
+                </div>
+            `).join('')
+            : '<div class="empty-msg" style="padding:14px;">이 부위에 장착 가능한 아이템이 가방에 없습니다.</div>';
+
+        content.style.width = '620px';
+        content.style.maxWidth = '95vw';
+        content.innerHTML = `
+            <h3 style="margin-bottom: 8px;">${slotKo[slot] || slot} 장비 관리</h3>
+            <section class="equip-choice-section">
+                <h4>현재 장착</h4>
+                ${equippedSection}
+            </section>
+            <section class="equip-choice-section">
+                <h4>가방에서 선택</h4>
+                <div class="equip-choice-list">${candidateRows}</div>
+            </section>
+            <button id="btn-close-equip-modal" class="action-btn" style="margin-top: 12px; width: 100%;">닫기</button>
+        `;
+        modal.classList.remove('hidden');
+
+        const closeModal = () => {
+            content.style.width = '';
+            content.style.maxWidth = '';
+            modal.classList.add('hidden');
+        };
+        document.getElementById('btn-close-equip-modal')?.addEventListener('click', closeModal);
+        document.getElementById('btn-equip-unequip')?.addEventListener('click', () => {
+            this.unequipItem(slot);
+            closeModal();
+        });
+        content.querySelectorAll('[data-equip-item]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const itemId = btn.getAttribute('data-equip-item');
+                if (!itemId) return;
+                this.equipItem(itemId);
+                closeModal();
+            });
+        });
+    }
+
+    renderEquipmentPanel() {
+        const container = document.getElementById('equipment-panel');
+        if (!container) return;
+
+        const slots = this.getEquipmentSlotConfig();
+        const equippedCount = slots.filter(({ slot }) => !!this.inventory.equipment[slot]).length;
+        const isEdit = this.state.player.equipmentViewMode === 'edit';
+        const avatarUrl = this.getAvatarImagePath();
+        const modeClass = isEdit ? 'mode-edit' : 'mode-avatar';
+        const footerHint = isEdit
+            ? '부위를 클릭해 장착·해제'
+            : '「장비 편집」에서 슬롯을 열 수 있습니다';
+        const toggleLabel = isEdit ? '아바타 보기' : '장비 편집';
+
+        container.innerHTML = `
+            <div class="equipment-avatar-panel ${modeClass}">
+                <div class="equipment-avatar-toolbar">
+                    <button type="button" class="action-btn small primary" id="btn-equip-view-toggle">${toggleLabel}</button>
+                    <span class="equipment-avatar-hint">${isEdit ? '편집 모드' : '아바타 모드'}</span>
+                </div>
+                <div class="equipment-avatar-stage" style="--equip-avatar-url: url('${avatarUrl}');">
+                    <div class="equipment-avatar-image" aria-hidden="true"></div>
+                    <div class="equipment-slot-layer"></div>
+                </div>
+                <div class="equipment-avatar-footer">
+                    <span>장착 수: ${equippedCount} / ${slots.length}</span>
+                    <span>${footerHint}</span>
+                </div>
+            </div>
+        `;
+
+        const toggleBtn = container.querySelector('#btn-equip-view-toggle');
+        if (toggleBtn) toggleBtn.addEventListener('click', () => this.toggleEquipmentViewMode());
+
+        if (!isEdit) return;
+
+        const layer = container.querySelector('.equipment-slot-layer');
+        if (!layer) return;
+
+        slots.forEach(meta => {
+            const itemId = this.inventory.equipment[meta.slot];
+            const item = itemId ? window.GAME_DATA.items[itemId] : null;
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = `equipment-slot-btn ${item ? 'equipped' : 'empty'} ${item ? item.grade.toLowerCase() : ''}`;
+            button.style.left = `${meta.x}%`;
+            button.style.top = `${meta.y}%`;
+            button.innerHTML = `
+                <span class="slot-icon">${meta.icon}</span>
+                <span class="slot-label">${meta.label}</span>
+                <span class="slot-item">${item ? item.name : '비어있음'}</span>
+            `;
+            button.title = item
+                ? `${meta.label}: ${item.name}\n${this.formatShopItemDetails(item)}`
+                : `${meta.label}: 비어있음`;
+            button.addEventListener('click', () => this.openEquipmentSlotModal(meta.slot));
+            layer.appendChild(button);
+        });
     }
 
     equipItem(itemId) {
@@ -260,7 +1054,8 @@ class GameEngine {
             const item = window.GAME_DATA.items[itemId];
             this.log(`[장비] ${item.name}을(를) 장착했습니다.`, "system");
             this.updateUI();
-            this.renderTabContent('inventory');
+            this.renderEquipmentPanel();
+            this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
             this.saveGame();
         }
     }
@@ -269,7 +1064,8 @@ class GameEngine {
         if (this.inventory.unequip(slot)) {
             this.log(`[장비] 장비를 해제했습니다.`, "system");
             this.updateUI();
-            this.renderTabContent('equipment');
+            this.renderEquipmentPanel();
+            this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
             this.saveGame();
         }
     }
@@ -299,13 +1095,12 @@ class GameEngine {
     updateUI() {
         const p = this.state.player;
         const w = this.state.world;
-        const b = this.inventory.getBonuses();
-
-        const totalAtk = p.atk + b.atk;
-        const totalDef = p.def + b.def;
-        const totalMaxHp = p.maxHp + b.hp;
-        const totalMaxPp = p.maxPp + b.pp;
-        const totalSpd = p.spd + b.spd;
+        const totals = this.getPlayerCombinedStats();
+        const totalAtk = totals.atk;
+        const totalDef = totals.def;
+        const totalFaith = totals.faith;
+        const totalMaxHp = totals.hp;
+        const totalMaxPp = totals.pp;
 
         const charNameEl = document.getElementById('char-name');
         if (charNameEl) charNameEl.innerText = p.name;
@@ -314,15 +1109,33 @@ class GameEngine {
         document.getElementById('hp-text').innerText = `${Math.round(p.hp)} / ${totalMaxHp}`;
         document.getElementById('pp-bar').style.width = `${(p.pp / totalMaxPp) * 100}%`;
         document.getElementById('pp-text').innerText = `${Math.round(p.pp)} / ${totalMaxPp}`;
+
+        const nextExp = Math.max(1, p.nextExp || 80);
+        const expBar = document.getElementById('exp-bar');
+        const expText = document.getElementById('exp-text');
+        if (expBar && expText) {
+            const expPct = Math.min(100, (p.exp / nextExp) * 100);
+            expBar.style.width = `${expPct}%`;
+            expText.innerText = `${Math.floor(p.exp)} / ${nextExp}`;
+        }
         
         document.getElementById('atk-value').innerText = totalAtk;
         document.getElementById('def-value').innerText = totalDef;
-        document.getElementById('faith-value').innerText = p.faith;
+        document.getElementById('faith-value').innerText = totalFaith;
+        const goldEl = document.getElementById('gold-value');
+        if (goldEl) goldEl.innerText = `${p.gold} G`;
 
         if (this.state.battle) {
             const m = this.state.battle.monster;
             document.getElementById('monster-hp-bar').style.width = `${(m.hp / m.maxHp) * 100}%`;
             document.getElementById('monster-hp-text').innerText = `${Math.round(m.hp)} / ${m.maxHp}`;
+            this.renderBattleStatus();
+        } else {
+            const battleStatusEl = document.getElementById('battle-status');
+            if (battleStatusEl) {
+                battleStatusEl.classList.add('hidden');
+                battleStatusEl.innerHTML = '';
+            }
         }
 
         const questBar = document.getElementById('quest-bar');
@@ -336,7 +1149,7 @@ class GameEngine {
             bossBtn.classList.toggle('hidden', w.bossDefeated);
 
             const nextRegionBtn = document.getElementById('btn-next-region');
-            const hasNextRegion = w.currentRegionId === 'pishon'; // Currently only pishon -> gihon
+            const hasNextRegion = !!regionData.nextRegionId;
             nextRegionBtn.classList.toggle('hidden', !w.bossDefeated || !hasNextRegion);
 
             // Update Theme Color
@@ -355,16 +1168,44 @@ class GameEngine {
 
         const pointEl = document.getElementById('bonus-points');
         if (pointEl) pointEl.innerText = p.bonusPoints;
+        const skillPointEl = document.getElementById('skill-tree-points');
+        if (skillPointEl) skillPointEl.innerText = p.skillTreePoints;
 
         document.querySelectorAll('.point-btn').forEach(btn => {
             btn.classList.toggle('hidden', p.bonusPoints <= 0);
         });
+
+        this.renderEquipmentPanel();
+        this.updateAutoBattleButton();
+    }
+
+    renderBattleStatus() {
+        const statusEl = document.getElementById('battle-status');
+        if (!statusEl || !this.state.battle) return;
+
+        const effects = this.state.battle.effects;
+        const chips = [];
+        if (effects.player.defMulTurns > 0) chips.push(`<span class="status-chip player">수호 ${effects.player.defMulTurns}턴</span>`);
+        if (effects.player.evadeTurns > 0) chips.push(`<span class="status-chip player">회피 ${effects.player.evadeTurns}턴</span>`);
+        if (effects.player.fearTurns > 0) chips.push(`<span class="status-chip player">공포 ${effects.player.fearTurns}턴</span>`);
+        if (effects.monster.spdDebuffTurns > 0) chips.push(`<span class="status-chip monster">적 둔화 ${effects.monster.spdDebuffTurns}턴</span>`);
+
+        if (chips.length === 0) {
+            statusEl.classList.add('hidden');
+            statusEl.innerHTML = '';
+            return;
+        }
+
+        statusEl.classList.remove('hidden');
+        statusEl.innerHTML = chips.join('');
     }
 
     toggleBattleUI(isBattle) {
         document.getElementById('explore-actions').classList.toggle('hidden', isBattle);
         document.getElementById('battle-actions').classList.toggle('hidden', !isBattle);
         document.getElementById('battle-scene').classList.toggle('hidden', !isBattle);
+        this.updateAutoBattleButton();
+        if (isBattle) this.scheduleAutoBattleTurn(500);
     }
 
     // --- FX Functions (Phase 3) ---
@@ -426,9 +1267,13 @@ class GameEngine {
         setTimeout(() => {
             try {
                 if (this.state.world.explorationProgress >= 100 && !this.state.world.bossDefeated) {
-                    this.state.world.isNavigating = false; // 보스 챌린지 전 상태 해제 필수
-                    this.bossChallenge();
-                    return;
+                    if (this.state.player.autoBattleEnabled) {
+                        this.log("[자동전투] 보스전 진입을 건너뛰고 일반 탐험을 계속합니다.", "system");
+                    } else {
+                        this.state.world.isNavigating = false; // 보스 챌린지 전 상태 해제 필수
+                        this.bossChallenge();
+                        return;
+                    }
                 }
 
                 const playerLv = this.state.player.level || 1;
@@ -470,6 +1315,10 @@ class GameEngine {
 
     bossChallenge() {
         if (this.state.world.isNavigating || this.state.battle) return;
+        if (this.state.player.autoBattleEnabled) {
+            this.log("[자동전투] ON 상태에서는 보스전에 진입할 수 없습니다. 자동전투를 OFF로 전환해 주세요.", "system");
+            return;
+        }
         
         const regionData = window.GAME_DATA.regions[this.state.world.currentRegionId];
         const bossId = regionData.bossId; 
@@ -481,13 +1330,14 @@ class GameEngine {
         
         const bossMonster = JSON.parse(JSON.stringify(bossData));
         bossMonster.isBoss = true;
-        
+        this.log("장대한 기운이 흐르며 전장이 뒤틀립니다...", "effect");
+
         this.startBattle(bossMonster);
     }
 
     handleRegionTransition() {
-        // Find next region logic (currently sequential pishon -> gihon)
-        const nextRegionId = this.state.world.currentRegionId === 'pishon' ? 'gihon' : null;
+        const currentRegion = window.GAME_DATA.regions[this.state.world.currentRegionId];
+        const nextRegionId = currentRegion?.nextRegionId || null;
         if (!nextRegionId) return;
 
         const nextRegion = window.GAME_DATA.regions[nextRegionId];
@@ -515,8 +1365,7 @@ class GameEngine {
     }
 
     worship() {
-        const bonus = this.inventory.getBonuses();
-        const totalMaxPp = this.state.player.maxPp + bonus.pp;
+        const totalMaxPp = this.getPlayerCombinedStats().pp;
 
         if (this.state.player.pp >= totalMaxPp) return this.log("이미 영적으로 충만한 상태입니다.", "system");
         this.log("조용히 눈을 감고 예배를 드립니다...", "info");
@@ -537,8 +1386,7 @@ class GameEngine {
     }
 
     rest() {
-        const bonus = this.inventory.getBonuses();
-        const totalMaxHp = this.state.player.maxHp + bonus.hp;
+        const totalMaxHp = this.getPlayerCombinedStats().hp;
 
         this.log("잠시 휴식을 취하며 체력을 회복합니다.", "info");
         this.state.player.hp = Math.min(totalMaxHp, this.state.player.hp + 20);
@@ -546,11 +1394,161 @@ class GameEngine {
         this.saveGame();
     }
 
+    /** 상점·UI용: 장비 슬롯·스탯을 한 줄 요약 문자열로 */
+    formatShopItemDetails(item) {
+        if (!item) return '';
+        const slotKo = {
+            weapon: '무기',
+            armor: '갑옷',
+            helmet: '투구',
+            accessory: '장신구',
+            boots: '신발',
+            offhand: '보조장비'
+        };
+        const statKo = {
+            atk: '공격',
+            def: '방어',
+            hp: 'HP',
+            pp: 'PP',
+            spd: '속도',
+            faith: '신앙'
+        };
+        const parts = [];
+        if (item.slot) parts.push(`[${slotKo[item.slot] || item.slot}]`);
+        if (item.stats && Object.keys(item.stats).length > 0) {
+            const statStr = Object.entries(item.stats)
+                .map(([k, v]) => {
+                    const label = statKo[k] !== undefined ? statKo[k] : k;
+                    const sign = Number(v) > 0 ? '+' : '';
+                    return `${label} ${sign}${v}`;
+                })
+                .join(' · ');
+            parts.push(statStr);
+        } else if (!item.slot) {
+            parts.push('재료 · 전리품');
+        }
+        return parts.join(' ');
+    }
+
+    openShop() {
+        if (this.state.battle) return this.log("전투 중에는 상점을 이용할 수 없습니다.", "system");
+
+        const regionId = this.state.world.currentRegionId;
+        const goods = window.GAME_DATA.shops?.[regionId] || [];
+        if (goods.length === 0) return this.log("이 지역에는 상점이 열려 있지 않습니다.", "system");
+
+        const modal = document.getElementById('modal-overlay');
+        const content = document.getElementById('modal-content');
+        const playerGold = this.state.player.gold;
+
+        const rows = goods.map(entry => {
+            const item = window.GAME_DATA.items[entry.itemId];
+            if (!item) return '';
+            const disabled = playerGold < entry.price ? 'disabled' : '';
+            const detailLine = this.formatShopItemDetails(item);
+            return `
+                <div class="shop-item-row list-item inventory-item ${item.grade.toLowerCase()}">
+                    <div class="shop-item-row__main">
+                        <div class="shop-item-row__name">${item.name}</div>
+                        <div class="shop-item-row__effect">${detailLine}</div>
+                        <div class="shop-item-row__desc">${item.desc || ''}</div>
+                        <div class="shop-item-row__price">가격: ${entry.price}G</div>
+                    </div>
+                    <button type="button" class="action-btn small primary shop-item-row__buy" data-buy-id="${entry.itemId}" data-buy-price="${entry.price}" ${disabled}>구매</button>
+                </div>
+            `;
+        }).join('');
+
+        content.innerHTML = `
+            <h3 style="margin-bottom:14px;">${window.GAME_DATA.regions[regionId].name} 상점</h3>
+            <p style="margin-bottom:12px; color:#ffd54f;">보유 골드: ${playerGold}G</p>
+            <div style="display:flex; flex-direction:column; gap:10px; max-height:330px; overflow-y:auto;">${rows}</div>
+            <button id="btn-close-shop" class="action-btn" style="margin-top:12px; width:100%;">닫기</button>
+        `;
+        modal.classList.remove('hidden');
+
+        content.querySelectorAll('button[data-buy-id]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const itemId = btn.getAttribute('data-buy-id');
+                const price = Number(btn.getAttribute('data-buy-price'));
+                this.buyShopItem(itemId, price);
+                modal.classList.add('hidden');
+            });
+        });
+        document.getElementById('btn-close-shop').addEventListener('click', () => modal.classList.add('hidden'));
+    }
+
+    buyShopItem(itemId, price) {
+        if (this.state.player.gold < price) {
+            this.log("골드가 부족합니다.", "system");
+            return;
+        }
+        this.state.player.gold -= price;
+        this.addItem(itemId);
+        this.log(`[상점] ${window.GAME_DATA.items[itemId].name}을(를) 구매했습니다.`, "effect");
+        this.updateUI();
+        this.saveGame();
+    }
+
+    syncBackup(isUpload) {
+        const settingsMsg = document.getElementById('settings-msg');
+        if (isUpload) {
+            this.state.inventoryData = this.inventory.serialize();
+            const res = window.StorageManager.syncToCloud(this.state);
+            settingsMsg.style.color = res.success ? '#4caf50' : '#ff4b2b';
+            settingsMsg.innerText = res.msg;
+            return;
+        }
+
+        const restoreRes = window.StorageManager.restoreFromCloud();
+        settingsMsg.style.color = restoreRes.success ? '#4caf50' : '#ff4b2b';
+        settingsMsg.innerText = restoreRes.msg;
+        if (!restoreRes.success) return;
+
+        this.state = restoreRes.payload;
+        this.ensureStateSchema();
+        this.inventory = new window.InventoryManager(this.state.inventoryData || {});
+        this.toggleBattleUI(false);
+        this.updateUI();
+        this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
+        this.log("클라우드 백업에서 데이터를 복원했습니다.", "system");
+        this.saveGame();
+    }
+
     // --- Battle Functions ---
     startBattle(monster) {
         monster.maxHp = monster.stats.hp;
         monster.hp = monster.stats.hp;
-        this.state.battle = { monster, isPlayerTurn: true };
+        if (monster.isBoss && this.state.player.autoBattleEnabled) {
+            this.state.player.autoBattleEnabled = false;
+            this.log("[전투] 보스전 진입으로 자동전투가 자동 해제되었습니다.", "system");
+        }
+        this.state.battle = {
+            monster,
+            isPlayerTurn: true,
+            turn: 1,
+            effects: {
+                player: {
+                    defMulTurns: 0,
+                    defMulValue: 1,
+                    evadeTurns: 0,
+                    evadeChance: 0,
+                    spdMulTurns: 0,
+                    spdMulValue: 1,
+                    nextCritChance: 0,
+                    fearTurns: 0,
+                    spdDebuffTurns: 0,
+                    spdDebuffMul: 1
+                },
+                monster: {
+                    spdDebuffTurns: 0,
+                    spdDebuffMul: 1
+                }
+            },
+            flags: {
+                lowHpCutscenePlayed: false
+            }
+        };
         
         document.getElementById('monster-name').innerText = monster.name;
         document.getElementById('monster-grade').innerText = monster.grade;
@@ -561,28 +1559,123 @@ class GameEngine {
         this.updateUI();
 
         const bonus = this.inventory.getBonuses();
-        const totalSpd = this.state.player.spd + bonus.spd;
+        const totalSpd = this.getPlayerSpeed(bonus);
+        const monsterSpeed = this.getMonsterSpeed();
 
-        if (monster.stats.spd > totalSpd) {
+        if (monsterSpeed > totalSpd) {
             this.state.battle.isPlayerTurn = false;
             setTimeout(() => this.monsterTurn(), 1000);
         }
     }
 
+    getBattleEffects() {
+        return this.state.battle?.effects || null;
+    }
+
+    getPlayerSpeed(bonus = this.inventory.getBonuses()) {
+        const passive = this.getPassiveBonuses();
+        const base = this.state.player.spd + bonus.spd + passive.spd;
+        const effects = this.getBattleEffects();
+        if (!effects) return base;
+        const playerFx = effects.player;
+        return Math.max(1, base * playerFx.spdMulValue * playerFx.spdDebuffMul);
+    }
+
+    getMonsterSpeed() {
+        if (!this.state.battle) return 0;
+        const base = this.state.battle.monster.stats.spd;
+        const monsterFx = this.state.battle.effects.monster;
+        return Math.max(1, base * monsterFx.spdDebuffMul);
+    }
+
+    resolveFearCheck() {
+        const effects = this.getBattleEffects();
+        if (!effects || effects.player.fearTurns <= 0) return false;
+
+        const blocked = Math.random() < 0.5;
+        if (blocked) {
+            this.log("공포에 사로잡혀 잠시 움직이지 못했습니다!", "battle");
+            effects.player.fearTurns = Math.max(0, effects.player.fearTurns - 1);
+        }
+        return blocked;
+    }
+
+    applySkillEffectToTarget(effect, isMonsterCaster = false) {
+        const effects = this.getBattleEffects();
+        if (!effects || !effect) return;
+
+        if (isMonsterCaster) {
+            if (effect.fear) {
+                effects.player.fearTurns = Math.max(effects.player.fearTurns, 1);
+                this.log("적의 공포가 당신의 마음을 짓누릅니다.", "battle");
+            }
+            if (effect.spdDebuff) {
+                effects.player.spdDebuffTurns = Math.max(effects.player.spdDebuffTurns, 2);
+                effects.player.spdDebuffMul = Math.min(effects.player.spdDebuffMul, effect.spdDebuff);
+                this.log("당신의 움직임이 둔화되었습니다.", "battle");
+            }
+            return;
+        }
+
+        if (effect.spdDebuff) {
+            effects.monster.spdDebuffTurns = Math.max(effects.monster.spdDebuffTurns, 2);
+            effects.monster.spdDebuffMul = Math.min(effects.monster.spdDebuffMul, effect.spdDebuff);
+            this.log("적의 속도가 감소했습니다.", "effect");
+        }
+    }
+
+    tickBattleEffects(endOfTurnForMonster = false) {
+        const effects = this.getBattleEffects();
+        if (!effects) return;
+
+        const { player, monster } = effects;
+        if (!endOfTurnForMonster) return;
+
+        if (player.defMulTurns > 0 && --player.defMulTurns === 0) player.defMulValue = 1;
+        if (player.evadeTurns > 0 && --player.evadeTurns === 0) player.evadeChance = 0;
+        if (player.spdMulTurns > 0 && --player.spdMulTurns === 0) player.spdMulValue = 1;
+        if (player.fearTurns > 0) player.fearTurns--;
+        if (player.spdDebuffTurns > 0 && --player.spdDebuffTurns === 0) player.spdDebuffMul = 1;
+        if (monster.spdDebuffTurns > 0 && --monster.spdDebuffTurns === 0) monster.spdDebuffMul = 1;
+    }
+
+    applyFaithBonusDamage(dmg, monster) {
+        const totalFaith = this.getPlayerCombinedStats().faith;
+        const faithGap = totalFaith - (monster.requiredFaith || 0);
+        if (faithGap <= 0) return dmg;
+        return dmg * (1 + Math.min(0.2, faithGap * 0.05));
+    }
+
     playerAttack() {
         if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
+        if (this.resolveFearCheck()) {
+            this.state.battle.isPlayerTurn = false;
+            setTimeout(() => this.monsterTurn(), 900);
+            return;
+        }
         
         const p = this.state.player;
-        const b = this.inventory.getBonuses();
+        const combined = this.getPlayerCombinedStats();
         const m = this.state.battle.monster;
-        
-        const isCrit = Math.random() < 0.1; // 10% base crit chance
-        const totalAtk = p.atk + b.atk;
+
+        const effects = this.getBattleEffects();
+        const extraCrit = effects ? effects.player.nextCritChance : 0;
+        const isCrit = Math.random() < Math.min(0.7, 0.1 + combined.critChance + extraCrit);
+        if (effects) effects.player.nextCritChance = 0;
+
+        const totalAtk = combined.atk;
         let dmg = this.calculateDamage(totalAtk, m.stats.def);
+        dmg = this.applyFaithBonusDamage(dmg, m);
+        dmg *= combined.damageMul;
+        if (p.hp <= combined.hp * 0.5) dmg *= combined.lowHpDamageMul;
         if (isCrit) dmg *= 1.5;
         dmg = Math.round(dmg);
         
         m.hp -= dmg;
+        if (m.isBoss && !this.state.battle.flags.lowHpCutscenePlayed && m.hp <= m.maxHp * 0.3) {
+            this.state.battle.flags.lowHpCutscenePlayed = true;
+            this.log(`${m.name}의 형상이 흔들립니다... 마지막 저항이 시작됩니다!`, "effect");
+        }
         
         const targetEl = document.querySelector('.monster-card');
         const sceneEl = document.getElementById('battle-scene');
@@ -600,7 +1693,7 @@ class GameEngine {
         }
 
         this.spawnDamagePopup(targetEl, dmg, isCrit, false);
-        this.log(`${m.name}에게 ${dmg}${isCrit ? '!!! (강력한 일격)' : ''}의 피해를 입혔습니다!`, "info");
+        this.log(`${m.name}에게 ${dmg}${isCrit ? '!!! (강력한 일격)' : ''}의 피해를 입혔습니다!`, "player");
         this.updateUI();
 
         if (m.hp <= 0) return this.winBattle();
@@ -614,25 +1707,60 @@ class GameEngine {
         
         const m = this.state.battle.monster;
         const p = this.state.player;
-        const b = this.inventory.getBonuses();
+        const combined = this.getPlayerCombinedStats();
+        const effects = this.getBattleEffects();
+        const playerFx = effects?.player;
 
-        const totalDef = p.def + b.def;
-        const dmg = Math.round(this.calculateDamage(m.stats.atk, totalDef));
-        p.hp -= dmg;
+        const totalEvadeChance = Math.min(0.5, (playerFx?.evadeChance || 0) + combined.evadeChance);
+        if (totalEvadeChance > 0 && Math.random() < totalEvadeChance) {
+            this.log("찬양의 은혜로 공격을 회피했습니다!", "effect");
+            this.tickBattleEffects(true);
+            this.state.battle.turn++;
+            this.state.battle.isPlayerTurn = true;
+            this.updateUI();
+            this.log("▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.", "system");
+            this.scheduleAutoBattleTurn();
+            return;
+        }
+
+        const monsterSkillId = this.chooseMonsterSkill(m);
+        const skillData = monsterSkillId ? window.GAME_DATA.skills[monsterSkillId] : null;
+        const skillEffect = skillData?.effect || { atkMul: 1 };
+        const atkMul = skillEffect.atkMul || 1;
+
+        const totalDef = combined.def * (playerFx?.defMulValue || 1);
+        const dmg = Math.round(this.calculateDamage(m.stats.atk * atkMul, totalDef));
+        const appliedDmg = Math.round(dmg * combined.damageTakenMul);
+        p.hp -= appliedDmg;
+        this.applySkillEffectToTarget(skillEffect, true);
 
         const targetEl = document.querySelector('.character-pane');
-        this.spawnDamagePopup(targetEl, dmg, false, true);
+        this.spawnDamagePopup(targetEl, appliedDmg, false, true);
 
         document.getElementById('app').classList.add('hit-flash');
         setTimeout(() => document.getElementById('app').classList.remove('hit-flash'), 200);
 
-        this.log(`${m.name}의 공격! ${dmg}의 피해를 입었습니다.`, "battle");
+        if (skillData) {
+            this.log(`${m.name}의 [${skillData.name}]! ${appliedDmg}의 피해를 입었습니다.`, "enemy");
+        } else {
+            this.log(`${m.name}의 공격! ${appliedDmg}의 피해를 입었습니다.`, "enemy");
+        }
         this.updateUI();
 
         if (p.hp <= 0) return this.loseBattle();
-        
+
+        this.tickBattleEffects(true);
+        this.state.battle.turn++;
         this.state.battle.isPlayerTurn = true;
         this.log("▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.", "system");
+        this.scheduleAutoBattleTurn();
+    }
+
+    chooseMonsterSkill(monster) {
+        if (!monster.skills || monster.skills.length === 0) return null;
+        if (Math.random() > 0.45) return null;
+        const index = Math.floor(Math.random() * monster.skills.length);
+        return monster.skills[index];
     }
 
     calculateDamage(atk, def) {
@@ -659,7 +1787,7 @@ class GameEngine {
             this.state.world.saturation = Math.min(100, this.state.world.saturation + 10);
         } else {
             if (!this.state.world.bossDefeated) {
-                this.state.world.explorationProgress = Math.min(100, this.state.world.explorationProgress + 10);
+                this.state.world.explorationProgress = Math.min(100, this.state.world.explorationProgress + 2);
             }
             this.state.world.saturation = Math.min(100, this.state.world.saturation + 0.1);
         }
@@ -721,14 +1849,15 @@ class GameEngine {
 
             // 보너스 포인트 지급
             this.state.player.bonusPoints += 2;
+            this.state.player.skillTreePoints += 1;
 
             this.log(`🎉 레벨 업! 이제 Lv.${this.state.player.level} 순례자입니다!`, "system");
-            this.log(`[성장] HP+12 PP+4 공격+2 방어+1 속도+2 / 보너스 포인트 +2`, "system");
+            this.log(`[성장] HP+12 PP+4 공격+2 방어+1 속도+2 / 보너스 포인트 +2 / 스킬트리 포인트 +1`, "system");
 
             // HP/PP 전량 회복
-            const bonus = this.inventory.getBonuses();
-            this.state.player.hp = this.state.player.maxHp + bonus.hp;
-            this.state.player.pp = this.state.player.maxPp + bonus.pp;
+            const totals = this.getPlayerCombinedStats();
+            this.state.player.hp = totals.hp;
+            this.state.player.pp = totals.pp;
 
             this.updateUI();
         }
@@ -743,10 +1872,10 @@ class GameEngine {
         let html = `<h3 style="margin-bottom: 20px;">어떤 능력을 사용하시겠습니까?</h3>`;
         html += `<div style="display:flex; flex-direction:column; gap:10px;">`;
         
-        this.state.player.skills.forEach(skill => {
-            const canUse = this.state.player.pp >= skill.cost;
-            html += `<button class="action-btn ${canUse ? 'primary' : 'secondary'}" data-skill="${skill.id}" ${canUse ? '' : 'disabled'} style="width: 100%;">
-                ${skill.name} <span style="font-size: 0.8rem; opacity: 0.7;">(PP ${skill.cost} 소모)</span>
+        this.getActiveSkills().forEach(skillData => {
+            const canUse = this.state.player.pp >= skillData.cost;
+            html += `<button class="action-btn ${canUse ? 'primary' : 'secondary'}" data-skill="${skillData.id}" ${canUse ? '' : 'disabled'} style="width: 100%;">
+                ${skillData.name} <span style="font-size: 0.8rem; opacity: 0.7;">(PP ${skillData.cost} 소모)</span>
             </button>`;
         });
         
@@ -759,7 +1888,7 @@ class GameEngine {
         content.querySelectorAll('button[data-skill]').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const skillId = e.currentTarget.getAttribute('data-skill');
-                const selectedSkill = this.state.player.skills.find(s => s.id === skillId);
+                const selectedSkill = this.getActiveSkills().find(s => s.id === skillId);
                 modal.classList.add('hidden');
                 if (selectedSkill) this.useSkill(selectedSkill);
             });
@@ -771,27 +1900,63 @@ class GameEngine {
     }
 
     useSkill(skill) {
+        if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
+        if (this.resolveFearCheck()) {
+            this.state.battle.isPlayerTurn = false;
+            setTimeout(() => this.monsterTurn(), 900);
+            return;
+        }
+
         const p = this.state.player;
-        const b = this.inventory.getBonuses();
-        const totalMaxPp = p.maxPp + b.pp;
+        const combined = this.getPlayerCombinedStats();
+        const skillData = window.GAME_DATA.skills[skill.id];
+        if (!skillData) return this.log("스킬 데이터가 존재하지 않습니다.", "system");
 
-        if (p.pp < skill.cost) return this.log("PP가 부족합니다!", "system");
+        if (p.pp < skillData.cost) return this.log("PP가 부족합니다!", "system");
 
-        p.pp -= skill.cost;
-        this.log(`${p.name}의 기술: [${skill.name}]!`, "info");
+        p.pp -= skillData.cost;
+        this.log(`${p.name}의 기술: [${skillData.name}]!`, "player");
 
-        if (skill.id === 'meditation') {
-            const totalMaxHp = p.maxHp + b.hp;
-            p.hp = Math.min(totalMaxHp, p.hp + 30);
-            this.log("HP를 30 회복했습니다.", "info");
+        if (skillData.type === 'buff') {
+            const effects = this.getBattleEffects();
+            const effect = skillData.effect || {};
+            if (skill.id === 'meditation') {
+                p.hp = Math.min(combined.hp, p.hp + 30);
+                this.log("HP를 30 회복했습니다.", "info");
+            }
+
+            if (effect.defMul) {
+                effects.player.defMulValue = Math.max(effects.player.defMulValue, effect.defMul);
+                effects.player.defMulTurns = Math.max(effects.player.defMulTurns, 2);
+            }
+            if (effect.evade) {
+                effects.player.evadeChance = Math.max(effects.player.evadeChance, effect.evade);
+                effects.player.evadeTurns = Math.max(effects.player.evadeTurns, 2);
+            }
+            if (effect.spdMul) {
+                effects.player.spdMulValue = Math.max(effects.player.spdMulValue, effect.spdMul);
+                effects.player.spdMulTurns = Math.max(effects.player.spdMulTurns, 2);
+            }
+            if (effect.nextCrit) {
+                effects.player.nextCritChance = Math.max(effects.player.nextCritChance, effect.nextCrit);
+            }
+            this.log("강화 효과가 적용되었습니다.", "effect");
         } else {
+            const effect = skillData.effect || {};
             const m = this.state.battle.monster;
             const targetEl = document.querySelector('.monster-card');
-            const totalAtk = p.atk + b.atk;
-            const dmg = Math.round(this.calculateDamage(totalAtk * 1.5, m.stats.def));
+            const totalAtk = combined.atk;
+            const atkMul = effect.atkMul || 1.2;
+            const critLike = atkMul >= 1.5;
+            let dmg = this.calculateDamage(totalAtk * atkMul, m.stats.def);
+            dmg = this.applyFaithBonusDamage(dmg, m);
+            dmg *= combined.damageMul;
+            if (p.hp <= combined.hp * 0.5) dmg *= combined.lowHpDamageMul;
+            dmg = Math.round(dmg);
             m.hp -= dmg;
-            this.spawnDamagePopup(targetEl, dmg, true, false); // Skills often count as crit-like visual
-            this.log(`${m.name}에게 ${Math.floor(dmg)}의 강력한 피해를 입혔습니다!`, "info");
+            this.applySkillEffectToTarget(effect, false);
+            this.spawnDamagePopup(targetEl, dmg, critLike, false);
+            this.log(`${m.name}에게 ${Math.floor(dmg)}의 강력한 피해를 입혔습니다!`, "player");
         }
 
         this.updateUI();
@@ -802,13 +1967,21 @@ class GameEngine {
     }
 
     tryEscape() {
-        if (Math.random() > 0.4) {
+        if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
+        const bonus = this.inventory.getBonuses();
+        const playerSpd = this.getPlayerSpeed(bonus);
+        const monsterSpd = this.getMonsterSpeed();
+        const rawRate = playerSpd / (playerSpd + monsterSpd);
+        const escapeRate = Math.max(0.05, Math.min(0.9, rawRate));
+
+        if (Math.random() < escapeRate) {
             this.log("무사히 도망쳤습니다!", "info");
             this.state.battle = null;
             this.toggleBattleUI(false);
             this.updateUI();
+            this.saveGame();
         } else {
-            this.log("도망치는 데 실패했습니다!", "battle");
+            this.log(`도망치는 데 실패했습니다! (성공 확률 ${Math.round(escapeRate * 100)}%)`, "battle");
             this.state.battle.isPlayerTurn = false;
             setTimeout(() => this.monsterTurn(), 1000);
         }

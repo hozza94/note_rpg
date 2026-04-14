@@ -45,6 +45,10 @@
                 </div>
 
                 <div class="stats-group">
+                    <div class="resource-row">
+                        <span class="resource-label">보유 골드</span>
+                        <span id="gold-value" class="resource-gold">0 G</span>
+                    </div>
                     <div class="stat-item">
                         <label>체력 (HP)</label>
                         <div class="bar-container"><div id="hp-bar" class="bar hp" style="width: 100%;"></div></div>
@@ -54,6 +58,11 @@
                         <label>기도 (PP)</label>
                         <div class="bar-container"><div id="pp-bar" class="bar pp" style="width: 100%;"></div></div>
                         <span id="pp-text">50 / 50</span>
+                    </div>
+                    <div class="stat-item">
+                        <label>경험치 (EXP)</label>
+                        <div class="bar-container"><div id="exp-bar" class="bar exp" style="width: 0%;"></div></div>
+                        <span id="exp-text">0 / 80</span>
                     </div>
                     <div class="bonus-points-container">
                         <span class="label">남은 포인트:</span>
@@ -82,6 +91,15 @@
                             </div>
                         </div>
                     </div>
+                    <section class="equip-section">
+                        <div class="equip-section-header">
+                            <h4>장비</h4>
+                            <span class="equip-help">장착 효과는 스탯에 즉시 반영됩니다.</span>
+                        </div>
+                        <div id="equipment-panel" class="equip-panel-list">
+                            <div class="empty-slot">장비 정보가 없습니다.</div>
+                        </div>
+                    </section>
                 </div>
             </aside>
 
@@ -101,6 +119,7 @@
                             </div>
                             <span id="monster-hp-text">150 / 150</span>
                         </div>
+                        <div id="battle-status" class="battle-status hidden"></div>
                     </div>
                 </div>
                 
@@ -114,7 +133,6 @@
             <aside class="data-pane card">
                 <nav class="tab-nav">
                     <button class="tab-btn active" data-tab="inventory">소지품</button>
-                    <button class="tab-btn" data-tab="equipment">장비</button>
                     <button class="tab-btn" data-tab="skills">스킬</button>
                 </nav>
                 <div class="tab-content">
@@ -132,11 +150,13 @@
                 <button id="btn-explore" class="action-btn primary">👣 탐험하기</button>
                 <button id="btn-worship" class="action-btn secondary">🙏 예배하기</button>
                 <button id="btn-rest" class="action-btn">💤 휴식하기</button>
+                <button id="btn-shop" class="action-btn">🏪 상점</button>
             </div>
             <div id="battle-actions" class="action-buttons hidden">
                 <button id="btn-attack" class="action-btn primary">⚔️ 공격</button>
                 <button id="btn-skill" class="action-btn secondary">✨ 기술</button>
                 <button id="btn-run" class="action-btn">🏃 도망</button>
+                <button id="btn-auto-battle" class="action-btn">🤖 자동전투 OFF</button>
             </div>
         </footer>
     </div>
@@ -195,7 +215,25 @@
                 <p id="settings-msg" style="color: #4caf50; font-size: 0.85rem; margin-top: 5px; min-height: 1.2em;"></p>
             </div>
 
+            <div style="margin-bottom: 20px; text-align: left;">
+                <label style="font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 8px;">캐릭터 아바타</label>
+                <div class="settings-avatar-row" style="display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                        <input type="radio" name="settings-avatar" id="settings-avatar-male" value="male">
+                        남성
+                    </label>
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.9rem;">
+                        <input type="radio" name="settings-avatar" id="settings-avatar-female" value="female">
+                        여성
+                    </label>
+                </div>
+                <p style="font-size: 0.75rem; color: #777; margin-top: 8px; line-height: 1.4;">장비 패널 배경에 표시됩니다. 저장 후 즉시 반영됩니다.</p>
+            </div>
+
             <div class="settings-actions" style="display:flex; flex-direction:column; gap:10px;">
+                <button id="btn-open-skilltree-settings" class="action-btn primary">🌿 스킬트리</button>
+                <button id="btn-sync-upload" class="action-btn">☁️ 백업 업로드</button>
+                <button id="btn-sync-download" class="action-btn">☁️ 백업 복원</button>
                 <button id="btn-logout" class="action-btn secondary">로그아웃</button>
                 <button id="btn-reset" class="action-btn danger">⚠️ 데이터 초기화 (처음부터)</button>
                 <button id="btn-close-settings" class="action-btn" style="margin-top: 10px; background: #333; border-color: #555;">닫기</button>

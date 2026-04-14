@@ -10,6 +10,7 @@ const GAME_DATA = {
             name: '비손 유역',
             minLevel: 1,
             bossId: 'wraith',
+            nextRegionId: 'gihon',
             themeColor: '#00bcd4', // Cyan
             description: '금과 베델리엄이 풍부하여 화려하지만, 탐욕으로 인해 가장 먼저 색이 바랜 땅.'
         },
@@ -18,8 +19,18 @@ const GAME_DATA = {
             name: '기혼 유역',
             minLevel: 8,
             bossId: 'mud_giant',
+            nextRegionId: 'hidekel',
             themeColor: '#4caf50', // Emerald Green
             description: '구스 온 땅을 둘렀으며, 짙은 눅눅함과 생명력이 공존하는 늪지대.'
+        },
+        'hidekel': {
+            id: 'hidekel',
+            name: '히데겔 협곡',
+            minLevel: 14,
+            bossId: 'stone_seraph',
+            nextRegionId: null,
+            themeColor: '#ff9800',
+            description: '메마른 협곡과 붉은 바람이 지배하는 땅. 신념이 약하면 방향을 잃기 쉽습니다.'
         }
     },
 
@@ -47,7 +58,17 @@ const GAME_DATA = {
         { id: "swamp_stalker", regionId: "gihon", grade: "C", name: "습지의 추격자", level: 18, minPlayerLv: 8, maxPlayerLv: 99, stats: { hp: 1200, atk: 120, def: 50, spd: 190 }, reward: { exp: 780, gold: 320 }, dropTableId: "drop_c_stalker", skills: ["fear"] },
         
         // 보스: 진흙 거인 (기혼)
-        { id: "mud_giant", regionId: "gihon", grade: "B", name: "진흙 거인", level: 25, minPlayerLv: 10, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 2500, gold: 1000 }, dropTableId: "drop_b_giant", skills: ["telekinesis"] }
+        { id: "mud_giant", regionId: "gihon", grade: "B", name: "진흙 거인", level: 25, minPlayerLv: 10, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 2500, gold: 1000 }, dropTableId: "drop_b_giant", skills: ["telekinesis"] },
+
+        // ========================
+        // 히데겔 협곡 (hidekel) 몬스터
+        // ========================
+        { id: "canyon_hyena", regionId: "hidekel", grade: "C", name: "협곡 하이에나", level: 19, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 1450, atk: 130, def: 70, spd: 185 }, reward: { exp: 920, gold: 360 }, dropTableId: "drop_c_hidekel", skills: ["bite"] },
+        { id: "burning_imp", regionId: "hidekel", grade: "C", name: "화염 임프", level: 20, minPlayerLv: 13, maxPlayerLv: 99, stats: { hp: 1500, atk: 145, def: 65, spd: 170 }, reward: { exp: 980, gold: 380 }, dropTableId: "drop_c_hidekel", skills: ["small_fire"] },
+        { id: "ash_knight", regionId: "hidekel", grade: "B", name: "잿빛 기사", level: 23, minPlayerLv: 14, maxPlayerLv: 99, stats: { hp: 2600, atk: 185, def: 120, spd: 120 }, reward: { exp: 1550, gold: 620 }, dropTableId: "drop_b_hidekel", skills: ["wail", "root_bind"] },
+
+        // 보스: 석화 세라프 (히데겔)
+        { id: "stone_seraph", regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 16, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 4200, gold: 2000 }, dropTableId: "drop_a_seraph", skills: ["fear", "telekinesis", "root_bind"] }
     ],
 
     // 스킬 데이터
@@ -55,12 +76,74 @@ const GAME_DATA = {
         'meditation': { name: '묵상', cost: 10, type: 'buff', effect: { defMul: 1.5, nextCrit: 0.2 }, desc: '방어력을 높이고 다음 공격의 치명타 확률을 증가시킵니다.' },
         'praise':     { name: '찬양', cost: 15, type: 'buff', effect: { evade: 0.1, spdMul: 1.15 }, desc: '회피율과 속도를 일시적으로 높입니다.' },
         'proclaim':   { name: '선포', cost: 20, type: 'attack', effect: { atkMul: 1.8 }, desc: '성스러운 데미지를 입힙니다.' },
+        'smite':      { name: '심판의 강타', cost: 22, type: 'attack', effect: { atkMul: 2.0 }, desc: '신념을 모아 강력한 일격을 가합니다.' },
+        'holy_wall':  { name: '거룩한 방벽', cost: 18, type: 'buff', effect: { defMul: 1.8, nextCrit: 0.1 }, desc: '잠시 동안 견고한 보호를 얻습니다.' },
         'stick':      { name: '끈적이기',  type: 'attack', effect: { atkMul: 1.0, spdDebuff: 0.8 } },
         'bite':       { name: '물어뜯기',  type: 'attack', effect: { atkMul: 1.2 } },
         'wail':       { name: '통곡',      type: 'attack', effect: { atkMul: 0.8, fear: true } },
         'small_fire': { name: '작은 불꽃', type: 'attack', effect: { atkMul: 1.3 } },
         'fear':       { name: '공포',      type: 'attack', effect: { atkMul: 1.1, fear: true } },
-        'telekinesis':{ name: '염동력',    type: 'attack', effect: { atkMul: 1.4 } }
+        'telekinesis':{ name: '염동력',    type: 'attack', effect: { atkMul: 1.4 } },
+        'root_bind':  { name: '속박의 뿌리', type: 'attack', effect: { atkMul: 0.9, spdDebuff: 0.75, fear: true } }
+    },
+
+    // 직업 고정형 스킬트리 (PoE 스타일의 연결형 노드 구조, 1차 소규모)
+    skillTrees: {
+        pilgrim: {
+            classId: 'pilgrim',
+            className: '순례자',
+            startNodeId: 'pilgrim_origin',
+            clusters: [
+                { id: 'faith_path', name: '신앙의 길', nodeIds: ['pilgrim_faith_1', 'pilgrim_faith_2', 'pilgrim_active_holy_wall'] },
+                { id: 'valor_path', name: '전투의 길', nodeIds: ['pilgrim_atk_1', 'pilgrim_atk_2', 'pilgrim_active_smite'] },
+                { id: 'guard_path', name: '수호의 길', nodeIds: ['pilgrim_def_1', 'pilgrim_def_2', 'pilgrim_endurance'] },
+                { id: 'agile_path', name: '기동의 길', nodeIds: ['pilgrim_spd_1', 'pilgrim_grace', 'pilgrim_pp_1'] },
+                { id: 'keystone_path', name: '서약의 길', nodeIds: ['pilgrim_zeal', 'pilgrim_resolve', 'pilgrim_vow'] }
+            ],
+            nodes: [
+                { id: 'pilgrim_origin', name: '순례의 서약', kind: 'start', desc: '빛을 향한 여정의 시작점입니다.', grants: { stats: { faith: 1 } }, position: { x: 0, y: 0 } },
+                { id: 'pilgrim_faith_1', name: '기도의 숨결', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -2, y: -1 } },
+                { id: 'pilgrim_faith_2', name: '축복의 공명', kind: 'notable', desc: '신앙 +1, 공격 +1', grants: { stats: { faith: 1, atk: 1 } }, position: { x: -3, y: -2 } },
+                { id: 'pilgrim_active_holy_wall', name: '거룩한 방벽 해금', kind: 'active_unlock', desc: '액티브 스킬 [거룩한 방벽]을 배웁니다.', grants: { activeSkillId: 'holy_wall' }, position: { x: -4, y: -3 } },
+
+                { id: 'pilgrim_atk_1', name: '신념의 일격', kind: 'small', desc: '공격 +2', grants: { stats: { atk: 2 } }, position: { x: 2, y: -1 } },
+                { id: 'pilgrim_atk_2', name: '맹세의 검', kind: 'notable', desc: '공격 +3, 속도 +2', grants: { stats: { atk: 3, spd: 2 } }, position: { x: 3, y: -2 } },
+                { id: 'pilgrim_active_smite', name: '심판의 강타 해금', kind: 'active_unlock', desc: '액티브 스킬 [심판의 강타]를 배웁니다.', grants: { activeSkillId: 'smite' }, position: { x: 4, y: -3 } },
+
+                { id: 'pilgrim_def_1', name: '견고한 걸음', kind: 'small', desc: '방어 +1, HP +10', grants: { stats: { def: 1, hp: 10 } }, position: { x: 1, y: 1 } },
+                { id: 'pilgrim_def_2', name: '강인한 의지', kind: 'small', desc: '방어 +2', grants: { stats: { def: 2 } }, position: { x: 2, y: 2 } },
+                { id: 'pilgrim_endurance', name: '수호자 본능', kind: 'notable', desc: 'HP +25, 받는 피해 8% 감소', grants: { stats: { hp: 25 }, specials: { damageTakenMul: 0.92 } }, position: { x: 3, y: 3 } },
+
+                { id: 'pilgrim_spd_1', name: '빠른 발', kind: 'small', desc: '속도 +4', grants: { stats: { spd: 4 } }, position: { x: -1, y: 1 } },
+                { id: 'pilgrim_grace', name: '은총의 회피', kind: 'notable', desc: '속도 +4, 회피 +5%', grants: { stats: { spd: 4 }, specials: { evadeChance: 0.05 } }, position: { x: -2, y: 2 } },
+                { id: 'pilgrim_pp_1', name: '영적 축적', kind: 'small', desc: 'PP +10', grants: { stats: { pp: 10 } }, position: { x: -3, y: 3 } },
+
+                { id: 'pilgrim_zeal', name: '열망의 심장', kind: 'notable', desc: '공격 피해 8% 증가', grants: { specials: { damageMul: 1.08 } }, position: { x: 0, y: -2 } },
+                { id: 'pilgrim_resolve', name: '불굴의 심장', kind: 'notable', desc: '치명타 확률 +5%', grants: { specials: { critChance: 0.05 } }, position: { x: 0, y: 2 } },
+                { id: 'pilgrim_vow', name: '순교자의 서약', kind: 'keystone', desc: 'HP 50% 이하일 때 공격 피해 20% 증가', grants: { specials: { lowHpDamageMul: 1.2 } }, position: { x: 0, y: 4 } }
+            ],
+            edges: [
+                ['pilgrim_origin', 'pilgrim_faith_1'],
+                ['pilgrim_faith_1', 'pilgrim_faith_2'],
+                ['pilgrim_faith_2', 'pilgrim_active_holy_wall'],
+
+                ['pilgrim_origin', 'pilgrim_atk_1'],
+                ['pilgrim_atk_1', 'pilgrim_atk_2'],
+                ['pilgrim_atk_2', 'pilgrim_active_smite'],
+
+                ['pilgrim_origin', 'pilgrim_def_1'],
+                ['pilgrim_def_1', 'pilgrim_def_2'],
+                ['pilgrim_def_2', 'pilgrim_endurance'],
+
+                ['pilgrim_origin', 'pilgrim_spd_1'],
+                ['pilgrim_spd_1', 'pilgrim_grace'],
+                ['pilgrim_grace', 'pilgrim_pp_1'],
+
+                ['pilgrim_origin', 'pilgrim_zeal'],
+                ['pilgrim_origin', 'pilgrim_resolve'],
+                ['pilgrim_resolve', 'pilgrim_vow']
+            ]
+        }
     },
 
     items: {
@@ -102,7 +185,19 @@ const GAME_DATA = {
         'soldier_boots': { name: '병사의 전투화', grade: 'Uncommon', slot: 'boots', stats: { spd: 10, hp: 15 }, desc: '왕국군의 규격에 맞춰 제작된 실용적인 군화입니다.' },
         'steel_boots': { name: '강철 군화', grade: 'Rare', slot: 'boots', stats: { spd: 12, def: 5 }, desc: '무겁지만 날카로운 공격으로부터 발을 완벽히 보호합니다.' },
         'wind_shoes': { name: '바람의 신', grade: 'Rare', slot: 'boots', stats: { spd: 20 }, desc: '바람 정령의 축복을 받아 발걸음을 깃털처럼 가볍게 해줍니다.' },
-        'mud_boots': { name: '진흙장화', grade: 'Epic', slot: 'boots', stats: { spd: 25, def: 8 }, desc: '어떠한 험비나 늪지대에서도 달릴 수 있게 해주는 마법의 장화입니다.' }
+        'mud_boots': { name: '진흙장화', grade: 'Epic', slot: 'boots', stats: { spd: 25, def: 8 }, desc: '어떠한 험비나 늪지대에서도 달릴 수 있게 해주는 마법의 장화입니다.' },
+
+        // --- 투구 (Helmet) ---
+        'pilgrim_hood': { name: '순례자의 두건', grade: 'Normal', slot: 'helmet', stats: { def: 2, hp: 8 }, desc: '먼지와 바람을 막아주는 평범한 두건입니다.' },
+        'seraph_crown': { name: '세라프의 왕관', grade: 'Epic', slot: 'helmet', stats: { def: 15, faith: 2 }, desc: '석화 세라프의 잔재가 스며든 왕관입니다.' },
+
+        // --- 장신구 (Accessory) ---
+        'prayer_ring': { name: '기도의 반지', grade: 'Uncommon', slot: 'accessory', stats: { pp: 12, faith: 1 }, desc: '간결한 기도문이 새겨진 은빛 반지입니다.' },
+        'ember_necklace': { name: '잿빛 목걸이', grade: 'Rare', slot: 'accessory', stats: { atk: 6, pp: 10 }, desc: '숨겨진 불씨가 미세하게 맥동하는 목걸이입니다.' },
+
+        // --- 방패 (Off-hand) ---
+        'wooden_shield': { name: '나무 방패', grade: 'Normal', slot: 'offhand', stats: { def: 4, hp: 15 }, desc: '기초 방어를 위한 단단한 원형 방패입니다.' },
+        'covenant_shield': { name: '언약의 방패', grade: 'Rare', slot: 'offhand', stats: { def: 12, hp: 40, faith: 1 }, desc: '진동하는 문양이 새겨진 신성한 방패입니다.' }
     },
 
     dropTables: {
@@ -118,7 +213,33 @@ const GAME_DATA = {
         'drop_d_snake': [ { itemId: 'snake_scale', chance: 0.4 }, { itemId: 'hunter_bow', chance: 0.08 }, { itemId: 'bronze_breastplate', chance: 0.05 } ],
         'drop_c_skeleton': [ { itemId: 'tainted_moss', chance: 0.5 }, { itemId: 'steel_longsword', chance: 0.1 }, { itemId: 'steel_armor', chance: 0.1 }, { itemId: 'soldier_boots', chance: 0.08 } ],
         'drop_c_stalker': [ { itemId: 'tainted_moss', chance: 0.4 }, { itemId: 'silver_dagger', chance: 0.1 }, { itemId: 'swamp_leather', chance: 0.1 }, { itemId: 'wind_shoes', chance: 0.08 } ],
-        'drop_b_giant': [ { itemId: 'giant_core', chance: 1.0 }, { itemId: 'earth_hammer', chance: 0.2 }, { itemId: 'thorn_armor', chance: 0.15 }, { itemId: 'mud_boots', chance: 0.15 } ]
+        'drop_b_giant': [ { itemId: 'giant_core', chance: 1.0 }, { itemId: 'earth_hammer', chance: 0.2 }, { itemId: 'thorn_armor', chance: 0.15 }, { itemId: 'mud_boots', chance: 0.15 } ],
+
+        // 히데겔 협곡 (Hidekel)
+        'drop_c_hidekel': [ { itemId: 'tainted_moss', chance: 0.45 }, { itemId: 'ember_necklace', chance: 0.08 }, { itemId: 'wooden_shield', chance: 0.1 } ],
+        'drop_b_hidekel': [ { itemId: 'giant_core', chance: 0.5 }, { itemId: 'covenant_shield', chance: 0.12 }, { itemId: 'steel_longsword', chance: 0.1 } ],
+        'drop_a_seraph': [ { itemId: 'seraph_crown', chance: 0.25 }, { itemId: 'covenant_shield', chance: 0.2 }, { itemId: 'earth_hammer', chance: 0.15 } ]
+    },
+
+    shops: {
+        pishon: [
+            { itemId: 'wooden_sword', price: 60 },
+            { itemId: 'ragged_cloak', price: 50 },
+            { itemId: 'straw_shoes', price: 45 },
+            { itemId: 'pilgrim_hood', price: 55 }
+        ],
+        gihon: [
+            { itemId: 'bronze_sword', price: 180 },
+            { itemId: 'leather_vest', price: 170 },
+            { itemId: 'prayer_ring', price: 210 },
+            { itemId: 'wooden_shield', price: 160 }
+        ],
+        hidekel: [
+            { itemId: 'steel_longsword', price: 520 },
+            { itemId: 'swamp_leather', price: 480 },
+            { itemId: 'ember_necklace', price: 560 },
+            { itemId: 'covenant_shield', price: 600 }
+        ]
     }
 };
 

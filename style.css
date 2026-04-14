@@ -124,6 +124,27 @@ body {
     margin-bottom: 15px;
 }
 
+.resource-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.resource-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+}
+
+.resource-gold {
+    color: var(--gold-color);
+    font-weight: 700;
+}
+
 .stat-item label {
     display: block;
     font-size: 0.8rem;
@@ -146,6 +167,7 @@ body {
 
 .bar.hp { background: var(--hp-color); }
 .bar.pp { background: var(--pp-color); }
+.bar.exp { background: linear-gradient(90deg, #6a1b9a, #ba68c8); }
 
 .stat-grid {
     display: grid;
@@ -170,6 +192,11 @@ body {
     min-height: 400px;
     height: 100%;
     overflow: hidden; /* Prevent parent from expanding infinitely */
+}
+
+.character-pane {
+    overflow-y: auto;
+    min-height: 0;
 }
 
 /* Stats Enhancement */
@@ -214,6 +241,66 @@ body {
     display: none;
 }
 
+/* 소지품 행: 등급 바와 텍스트 겹침 방지 */
+.list-item.inventory-item {
+    display: flex;
+    padding: 10px 12px 10px 14px;
+    border-radius: 8px;
+    background: rgba(0, 0, 0, 0.15);
+    align-items: center;
+    gap: 10px;
+}
+
+.list-item.inventory-item .item-info {
+    flex: 1;
+    min-width: 0;
+    padding-left: 6px;
+}
+
+/* 상점 모달 행: 설명이 여러 줄이어도 구매 버튼은 한 줄·고정 폭 */
+.shop-item-row.list-item.inventory-item {
+    align-items: flex-start;
+    color: var(--text-primary);
+}
+
+.shop-item-row .shop-item-row__main {
+    flex: 1;
+    min-width: 0;
+    padding-left: 6px;
+}
+
+.shop-item-row .shop-item-row__name {
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+}
+
+.shop-item-row .shop-item-row__effect {
+    font-size: 0.82rem;
+    color: #aed581;
+    line-height: 1.45;
+    margin-bottom: 6px;
+}
+
+.shop-item-row .shop-item-row__desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin-bottom: 6px;
+}
+
+.shop-item-row .shop-item-row__price {
+    font-size: 0.8rem;
+    color: #ffd54f;
+}
+
+.shop-item-row .shop-item-row__buy {
+    flex-shrink: 0;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 2px;
+}
+
 /* Item Grades */
 .inventory-item.normal { border-left: 3px solid #ccc; }
 .inventory-item.uncommon { border-left: 3px solid #4CAF50; color: #4CAF50; }
@@ -245,22 +332,209 @@ body {
 .equip-btn:hover { background: rgba(var(--primary-rgb), 0.2); }
 .unequip-btn:hover { background: rgba(200, 50, 50, 0.2); }
 
-/* Equipment Slot Item */
-.equipment-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background: rgba(255,255,255,0.03);
-    border-radius: 6px;
-    margin-bottom: 6px;
+.equip-section {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.15);
 }
 
-.slot-name {
+.equip-section-header {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    margin-bottom: 10px;
+}
+
+.equip-section-header h4 {
+    font-size: 0.92rem;
+}
+
+.equip-help {
     font-size: 0.75rem;
-    text-transform: uppercase;
-    opacity: 0.5;
-    width: 60px;
+    color: var(--text-secondary);
+}
+
+.equip-panel-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.equipment-avatar-panel {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 10px;
+}
+
+.equipment-avatar-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+}
+
+.equipment-avatar-hint {
+    font-size: 0.72rem;
+    color: #90a4ae;
+}
+
+.equipment-avatar-panel.mode-avatar .equipment-slot-layer {
+    display: none;
+}
+
+.equipment-avatar-stage {
+    position: relative;
+    width: 100%;
+    min-height: 330px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.25);
+}
+
+.equipment-avatar-image {
+    position: absolute;
+    inset: 0;
+    background-image: var(--equip-avatar-url, url('assets/Avatar_M.png'));
+    background-size: cover;
+    background-position: center top;
+    filter: saturate(0.95) brightness(0.92);
+}
+
+.equipment-slot-layer {
+    position: absolute;
+    inset: 0;
+}
+
+.equipment-slot-btn {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    min-width: 70px;
+    max-width: 92px;
+    padding: 6px 7px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(8, 10, 15, 0.9);
+    color: #eceff1;
+    cursor: pointer;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    text-align: center;
+}
+
+.equipment-slot-btn:hover {
+    transform: translate(-50%, -50%) scale(1.04);
+    box-shadow: 0 0 12px rgba(66, 165, 245, 0.28);
+}
+
+.equipment-slot-btn.empty {
+    border-style: dashed;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.equipment-slot-btn.equipped {
+    border-color: rgba(174, 213, 129, 0.7);
+}
+
+.equipment-slot-btn .slot-icon {
+    font-size: 0.88rem;
+}
+
+.equipment-slot-btn .slot-label {
+    font-size: 0.67rem;
+    opacity: 0.85;
+}
+
+.equipment-slot-btn .slot-item {
+    font-size: 0.64rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.equipment-avatar-footer {
+    margin-top: 8px;
+    font-size: 0.74rem;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.equip-choice-section {
+    margin-top: 12px;
+}
+
+.equip-choice-section h4 {
+    margin-bottom: 8px;
+    font-size: 0.86rem;
+    color: #ffe082;
+}
+
+.equip-choice-current {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.equip-choice-current .name {
+    font-weight: 700;
+    margin-bottom: 4px;
+}
+
+.equip-choice-current .effect {
+    font-size: 0.78rem;
+    color: #c5e1a5;
+    margin-bottom: 8px;
+}
+
+.equip-choice-list {
+    max-height: 280px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.equip-choice-row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.equip-choice-row .main {
+    min-width: 0;
+}
+
+.equip-choice-row .name {
+    font-weight: 600;
+}
+
+.equip-choice-row .count {
+    font-size: 0.76rem;
+    color: #b0bec5;
+}
+
+.equip-choice-row .effect {
+    font-size: 0.76rem;
+    color: #c5e1a5;
+    margin-top: 3px;
+}
+
+.equip-choice-row .desc {
+    font-size: 0.76rem;
+    color: var(--text-secondary);
+    margin-top: 4px;
+    line-height: 1.35;
 }
 
 .log-content {
@@ -278,11 +552,41 @@ body {
     font-size: 0.95rem;
     line-height: 1.5;
     animation: fadeIn 0.3s ease;
+    box-sizing: border-box;
 }
 
 .log-entry.system { color: #888; font-style: italic; border-left: 3px solid #444; }
 .log-entry.info { color: #ddd; }
-.log-entry.battle { color: #fcc; }
+.log-entry.effect { color: #c5e1a5; }
+/* 전투 로그: 플레이어 좌측 / 몬스터·적 행동 우측 (색은 이후 채도와 함께 조정 가능) */
+.log-entry.player {
+    color: #81d4fa;
+    border-left: 3px solid #29b6f6;
+    align-self: flex-start;
+    width: fit-content;
+    max-width: 92%;
+    text-align: left;
+}
+
+.log-entry.enemy {
+    color: #ffab91;
+    border-left: none;
+    border-right: 3px solid #ff7043;
+    padding: 10px 14px 10px 12px;
+    align-self: flex-end;
+    width: fit-content;
+    max-width: 92%;
+    text-align: right;
+}
+
+.log-entry.battle {
+    color: #fcc;
+    align-self: flex-end;
+    width: fit-content;
+    max-width: 92%;
+    text-align: right;
+    padding: 10px 12px 10px 10px;
+}
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(5px); }
@@ -302,6 +606,8 @@ body {
 .action-buttons {
     display: flex;
     gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
 }
 
 .action-btn {
@@ -332,6 +638,12 @@ body {
 
 .action-btn.secondary {
     border-color: #666;
+}
+
+.action-btn.auto-on {
+    border-color: #4caf50;
+    background: rgba(76, 175, 80, 0.25);
+    color: #dcedc8;
 }
 
 /* Battle Scene & Monster Card */
@@ -368,6 +680,30 @@ body {
 .monster-stats {
     max-width: 250px;
     margin: 0 auto;
+}
+
+.battle-status {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+}
+
+.status-chip {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.status-chip.player {
+    color: #b3e5fc;
+}
+
+.status-chip.monster {
+    color: #ffcdd2;
 }
 
 .bar-container.mini {
@@ -655,6 +991,283 @@ body {
     flex: 1;
     overflow-y: auto;
     padding-right: 5px;
+}
+
+.skill-tab-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.skill-tree-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.skill-tree-point {
+    font-size: 0.88rem;
+    color: #ffd54f;
+}
+
+.skill-group {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+}
+
+.skill-group h4 {
+    font-size: 0.88rem;
+    margin-bottom: 8px;
+    color: #cfd8dc;
+}
+
+.skill-card {
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 10px 11px;
+    background: rgba(0, 0, 0, 0.2);
+    overflow: visible;
+}
+
+.skill-card.active {
+    border-left: 3px solid #4fc3f7;
+}
+
+.skill-card.passive {
+    border-left: 3px solid #aed581;
+}
+
+.skill-card-main {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.skill-card-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.skill-card-title {
+    font-weight: 700;
+}
+
+.skill-card-cost {
+    font-size: 0.85rem;
+    color: #e0e0e0;
+    white-space: nowrap;
+}
+
+.skill-card-meta {
+    font-size: 0.74rem;
+    color: #9fb3bf;
+}
+
+.skill-card-summary {
+    font-size: 0.79rem;
+    color: #c5e1a5;
+    line-height: 1.4;
+}
+
+.skill-card-desc {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.skill-tooltip {
+    display: none;
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    top: calc(100% + 6px);
+    z-index: 30;
+    background: rgba(15, 15, 18, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: #eceff1;
+    white-space: pre-line;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.skill-card:hover .skill-tooltip {
+    display: block;
+}
+
+/* Skill Tree Web Modal */
+.skill-web-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.skill-web-help {
+    font-size: 0.78rem;
+    color: #b0bec5;
+}
+
+.skill-web-zoom-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.skill-web-zoom-buttons #skill-web-zoom-level {
+    font-size: 0.78rem;
+    color: #e0e0e0;
+    min-width: 45px;
+    text-align: center;
+}
+
+.skill-web-viewport {
+    position: relative;
+    width: 100%;
+    max-height: 58vh;
+    min-height: 420px;
+    overflow: auto;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    background:
+        radial-gradient(circle at 50% 45%, rgba(130, 170, 255, 0.12), transparent 40%),
+        rgba(12, 14, 22, 0.92);
+    cursor: grab;
+}
+
+.skill-web-viewport.dragging {
+    cursor: grabbing;
+}
+
+.skill-web-zoom-layer {
+    transform-origin: top left;
+    will-change: transform;
+}
+
+.skill-web-svg {
+    display: block;
+}
+
+.skill-web-edge {
+    stroke: rgba(255, 255, 255, 0.28);
+    stroke-width: 2;
+}
+
+.skill-web-edge.active {
+    stroke: rgba(174, 213, 129, 0.9);
+    stroke-width: 3;
+}
+
+.skill-web-node {
+    cursor: pointer;
+}
+
+.skill-web-node-core {
+    fill: rgba(39, 48, 71, 0.95);
+    stroke: rgba(255, 255, 255, 0.25);
+    stroke-width: 2;
+}
+
+.skill-web-node-ring {
+    fill: none;
+    stroke: transparent;
+    stroke-width: 3;
+}
+
+.skill-web-node-name {
+    fill: #eceff1;
+    font-size: 12px;
+    paint-order: stroke;
+    stroke: rgba(0, 0, 0, 0.7);
+    stroke-width: 2px;
+}
+
+.skill-web-node-state {
+    fill: #b0bec5;
+    font-size: 11px;
+}
+
+.skill-web-node.is-available .skill-web-node-core {
+    fill: rgba(41, 98, 255, 0.9);
+    stroke: rgba(144, 202, 249, 0.95);
+}
+
+.skill-web-node.is-unlocked .skill-web-node-core {
+    fill: rgba(56, 142, 60, 0.95);
+    stroke: rgba(200, 230, 201, 1);
+}
+
+.skill-web-node.is-unlocked .skill-web-node-ring {
+    stroke: rgba(174, 213, 129, 0.65);
+}
+
+.skill-web-node.kind-keystone .skill-web-node-core {
+    stroke-width: 3;
+    stroke: rgba(255, 241, 118, 0.9);
+}
+
+.skill-web-node:hover .skill-web-node-ring {
+    stroke: rgba(79, 195, 247, 0.9);
+}
+
+.skill-web-info {
+    margin-top: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    font-size: 0.82rem;
+    line-height: 1.45;
+}
+
+.skill-web-info strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.skill-web-info .effect {
+    color: #c5e1a5;
+    margin-top: 4px;
+}
+
+.skill-web-info .meta {
+    color: #90a4ae;
+    font-size: 0.76rem;
+    margin-top: 5px;
+}
+
+@media (max-width: 900px) {
+    .equipment-avatar-stage {
+        min-height: 280px;
+    }
+
+    .equipment-slot-btn {
+        min-width: 62px;
+        max-width: 74px;
+        padding: 5px 6px;
+    }
+
+    .equipment-slot-btn .slot-item {
+        font-size: 0.6rem;
+    }
+
+    .skill-web-toolbar {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .skill-web-viewport {
+        min-height: 340px;
+    }
 }
 
 /* -------------------------------------
