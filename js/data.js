@@ -94,54 +94,153 @@ const GAME_DATA = {
             className: '순례자',
             startNodeId: 'pilgrim_origin',
             clusters: [
-                { id: 'faith_path', name: '신앙의 길', nodeIds: ['pilgrim_faith_1', 'pilgrim_faith_2', 'pilgrim_active_holy_wall'] },
-                { id: 'valor_path', name: '전투의 길', nodeIds: ['pilgrim_atk_1', 'pilgrim_atk_2', 'pilgrim_active_smite'] },
-                { id: 'guard_path', name: '수호의 길', nodeIds: ['pilgrim_def_1', 'pilgrim_def_2', 'pilgrim_endurance'] },
-                { id: 'agile_path', name: '기동의 길', nodeIds: ['pilgrim_spd_1', 'pilgrim_grace', 'pilgrim_pp_1'] },
-                { id: 'keystone_path', name: '서약의 길', nodeIds: ['pilgrim_zeal', 'pilgrim_resolve', 'pilgrim_vow'] }
+                { id: 'faith_path', name: '신앙의 길', nodeIds: ['pilgrim_faith_1', 'pilgrim_faith_2', 'pilgrim_faith_3', 'pilgrim_faith_core', 'pilgrim_faith_4', 'pilgrim_active_holy_wall', 'pilgrim_faith_final'] },
+                { id: 'valor_path', name: '전투의 길', nodeIds: ['pilgrim_atk_1', 'pilgrim_atk_2', 'pilgrim_atk_3', 'pilgrim_valor_core', 'pilgrim_atk_4', 'pilgrim_active_smite', 'pilgrim_valor_final'] },
+                { id: 'guard_path', name: '수호의 길', nodeIds: ['pilgrim_def_1', 'pilgrim_def_2', 'pilgrim_def_3', 'pilgrim_guard_core', 'pilgrim_endurance', 'pilgrim_guard_hp_1', 'pilgrim_guard_final'] },
+                { id: 'agile_path', name: '기동의 길', nodeIds: ['pilgrim_spd_1', 'pilgrim_grace', 'pilgrim_pp_1', 'pilgrim_agile_core', 'pilgrim_spd_2', 'pilgrim_pp_2', 'pilgrim_agile_final'] },
+                { id: 'keystone_path', name: '서약의 길', nodeIds: ['pilgrim_zeal', 'pilgrim_zeal_2', 'pilgrim_resolve', 'pilgrim_resolve_2', 'pilgrim_vow_mid', 'pilgrim_vow_final'] },
+                { id: 'contemplation_path', name: '수양의 길', nodeIds: ['pilgrim_cont_1', 'pilgrim_cont_2', 'pilgrim_cont_notable', 'pilgrim_cont_sanctum'] },
+                { id: 'oracle_branch', name: '예언의 가지', nodeIds: ['pilgrim_oracle_1', 'pilgrim_oracle_2', 'pilgrim_oracle_notable'] },
+                { id: 'skirmish_branch', name: '전장의 측면', nodeIds: ['pilgrim_skirm_1', 'pilgrim_skirm_line'] },
+                { id: 'aegis_branch', name: '방패선', nodeIds: ['pilgrim_aegis_1', 'pilgrim_aegis_2'] },
+                { id: 'swift_branch', name: '질주선', nodeIds: ['pilgrim_swift_1', 'pilgrim_swift_notable'] },
+                { id: 'ascendant_branch', name: '천상 상승', nodeIds: ['pilgrim_sky_1', 'pilgrim_sky_crown'] },
+                { id: 'abyss_branch', name: '심연 저항', nodeIds: ['pilgrim_abyss_1', 'pilgrim_abyss_anchor'] }
             ],
             nodes: [
                 { id: 'pilgrim_origin', name: '순례의 서약', kind: 'start', desc: '빛을 향한 여정의 시작점입니다.', grants: { stats: { faith: 1 } }, position: { x: 0, y: 0 } },
-                { id: 'pilgrim_faith_1', name: '기도의 숨결', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -2, y: -1 } },
-                { id: 'pilgrim_faith_2', name: '축복의 공명', kind: 'notable', desc: '신앙 +1, 공격 +1', grants: { stats: { faith: 1, atk: 1 } }, position: { x: -3, y: -2 } },
-                { id: 'pilgrim_active_holy_wall', name: '거룩한 방벽 해금', kind: 'active_unlock', desc: '액티브 스킬 [거룩한 방벽]을 배웁니다.', grants: { activeSkillId: 'holy_wall' }, position: { x: -4, y: -3 } },
 
-                { id: 'pilgrim_atk_1', name: '신념의 일격', kind: 'small', desc: '공격 +2', grants: { stats: { atk: 2 } }, position: { x: 2, y: -1 } },
-                { id: 'pilgrim_atk_2', name: '맹세의 검', kind: 'notable', desc: '공격 +3, 속도 +2', grants: { stats: { atk: 3, spd: 2 } }, position: { x: 3, y: -2 } },
-                { id: 'pilgrim_active_smite', name: '심판의 강타 해금', kind: 'active_unlock', desc: '액티브 스킬 [심판의 강타]를 배웁니다.', grants: { activeSkillId: 'smite' }, position: { x: 4, y: -3 } },
+                { id: 'pilgrim_faith_1', name: '기도의 숨결', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -1.2, y: -0.6 } },
+                { id: 'pilgrim_faith_2', name: '축복의 공명', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -2.2, y: -1.2 } },
+                { id: 'pilgrim_faith_3', name: '응답의 속삭임', kind: 'notable', desc: '신앙 +2, PP +8', grants: { stats: { faith: 2, pp: 8 } }, position: { x: -3.2, y: -1.8 } },
+                { id: 'pilgrim_faith_core', name: '은총의 중핵', kind: 'keystone', desc: '신앙 기반 피해 10% 증가', grants: { specials: { damageMul: 1.1 } }, position: { x: -4.4, y: -2.4 } },
+                { id: 'pilgrim_faith_4', name: '성가의 파문', kind: 'small', desc: '신앙 +1, 속도 +2', grants: { stats: { faith: 1, spd: 2 } }, position: { x: -5.6, y: -3.0 } },
+                { id: 'pilgrim_active_holy_wall', name: '거룩한 방벽 해금', kind: 'active_unlock', desc: '액티브 스킬 [거룩한 방벽]을 배웁니다.', grants: { activeSkillId: 'holy_wall' }, position: { x: -6.8, y: -3.6 } },
+                { id: 'pilgrim_faith_final', name: '성역의 서약', kind: 'keystone', desc: '받는 피해 10% 감소', grants: { specials: { damageTakenMul: 0.9 } }, position: { x: -8.0, y: -4.2 } },
 
-                { id: 'pilgrim_def_1', name: '견고한 걸음', kind: 'small', desc: '방어 +1, HP +10', grants: { stats: { def: 1, hp: 10 } }, position: { x: 1, y: 1 } },
-                { id: 'pilgrim_def_2', name: '강인한 의지', kind: 'small', desc: '방어 +2', grants: { stats: { def: 2 } }, position: { x: 2, y: 2 } },
-                { id: 'pilgrim_endurance', name: '수호자 본능', kind: 'notable', desc: 'HP +25, 받는 피해 8% 감소', grants: { stats: { hp: 25 }, specials: { damageTakenMul: 0.92 } }, position: { x: 3, y: 3 } },
+                { id: 'pilgrim_atk_1', name: '신념의 일격', kind: 'small', desc: '공격 +2', grants: { stats: { atk: 2 } }, position: { x: 1.2, y: -0.7 } },
+                { id: 'pilgrim_atk_2', name: '맹세의 검', kind: 'small', desc: '공격 +2, 속도 +1', grants: { stats: { atk: 2, spd: 1 } }, position: { x: 2.4, y: -1.3 } },
+                { id: 'pilgrim_atk_3', name: '철의 전진', kind: 'notable', desc: '공격 +3, HP +10', grants: { stats: { atk: 3, hp: 10 } }, position: { x: 3.6, y: -1.9 } },
+                { id: 'pilgrim_valor_core', name: '심판의 중핵', kind: 'keystone', desc: '피해량 10% 증가', grants: { specials: { damageMul: 1.1 } }, position: { x: 4.8, y: -2.5 } },
+                { id: 'pilgrim_atk_4', name: '단죄의 발걸음', kind: 'small', desc: '공격 +3', grants: { stats: { atk: 3 } }, position: { x: 6.0, y: -3.1 } },
+                { id: 'pilgrim_active_smite', name: '심판의 강타 해금', kind: 'active_unlock', desc: '액티브 스킬 [심판의 강타]를 배웁니다.', grants: { activeSkillId: 'smite' }, position: { x: 7.2, y: -3.7 } },
+                { id: 'pilgrim_valor_final', name: '순결한 심판', kind: 'keystone', desc: '치명타 확률 +8%', grants: { specials: { critChance: 0.08 } }, position: { x: 8.4, y: -4.3 } },
 
-                { id: 'pilgrim_spd_1', name: '빠른 발', kind: 'small', desc: '속도 +4', grants: { stats: { spd: 4 } }, position: { x: -1, y: 1 } },
-                { id: 'pilgrim_grace', name: '은총의 회피', kind: 'notable', desc: '속도 +4, 회피 +5%', grants: { stats: { spd: 4 }, specials: { evadeChance: 0.05 } }, position: { x: -2, y: 2 } },
-                { id: 'pilgrim_pp_1', name: '영적 축적', kind: 'small', desc: 'PP +10', grants: { stats: { pp: 10 } }, position: { x: -3, y: 3 } },
+                { id: 'pilgrim_def_1', name: '견고한 걸음', kind: 'small', desc: '방어 +1, HP +10', grants: { stats: { def: 1, hp: 10 } }, position: { x: 1.0, y: 1.0 } },
+                { id: 'pilgrim_def_2', name: '강인한 의지', kind: 'small', desc: '방어 +2', grants: { stats: { def: 2 } }, position: { x: 2.0, y: 2.0 } },
+                { id: 'pilgrim_def_3', name: '갑주의 기도', kind: 'small', desc: '방어 +2, HP +8', grants: { stats: { def: 2, hp: 8 } }, position: { x: 3.0, y: 3.0 } },
+                { id: 'pilgrim_guard_core', name: '수호의 중핵', kind: 'keystone', desc: '받는 피해 8% 감소', grants: { specials: { damageTakenMul: 0.92 } }, position: { x: 4.0, y: 4.0 } },
+                { id: 'pilgrim_endurance', name: '수호자 본능', kind: 'notable', desc: 'HP +25, 방어 +2', grants: { stats: { hp: 25, def: 2 } }, position: { x: 5.0, y: 5.0 } },
+                { id: 'pilgrim_guard_hp_1', name: '침착한 호흡', kind: 'small', desc: 'HP +20', grants: { stats: { hp: 20 } }, position: { x: 6.0, y: 6.0 } },
+                { id: 'pilgrim_guard_final', name: '철벽의 맹세', kind: 'keystone', desc: '받는 피해 12% 감소', grants: { specials: { damageTakenMul: 0.88 } }, position: { x: 7.0, y: 7.0 } },
 
-                { id: 'pilgrim_zeal', name: '열망의 심장', kind: 'notable', desc: '공격 피해 8% 증가', grants: { specials: { damageMul: 1.08 } }, position: { x: 0, y: -2 } },
-                { id: 'pilgrim_resolve', name: '불굴의 심장', kind: 'notable', desc: '치명타 확률 +5%', grants: { specials: { critChance: 0.05 } }, position: { x: 0, y: 2 } },
-                { id: 'pilgrim_vow', name: '순교자의 서약', kind: 'keystone', desc: 'HP 50% 이하일 때 공격 피해 20% 증가', grants: { specials: { lowHpDamageMul: 1.2 } }, position: { x: 0, y: 4 } }
+                { id: 'pilgrim_spd_1', name: '빠른 발', kind: 'small', desc: '속도 +4', grants: { stats: { spd: 4 } }, position: { x: -1.0, y: 1.0 } },
+                { id: 'pilgrim_grace', name: '은총의 회피', kind: 'small', desc: '속도 +4, 회피 +3%', grants: { stats: { spd: 4 }, specials: { evadeChance: 0.03 } }, position: { x: -2.0, y: 2.0 } },
+                { id: 'pilgrim_pp_1', name: '영적 축적', kind: 'small', desc: 'PP +10', grants: { stats: { pp: 10 } }, position: { x: -3.0, y: 3.0 } },
+                { id: 'pilgrim_agile_core', name: '기민의 중핵', kind: 'keystone', desc: '회피 +5%', grants: { specials: { evadeChance: 0.05 } }, position: { x: -4.0, y: 4.0 } },
+                { id: 'pilgrim_spd_2', name: '빛의 보폭', kind: 'small', desc: '속도 +5', grants: { stats: { spd: 5 } }, position: { x: -5.0, y: 5.0 } },
+                { id: 'pilgrim_pp_2', name: '고요한 축적', kind: 'notable', desc: 'PP +12, 신앙 +1', grants: { stats: { pp: 12, faith: 1 } }, position: { x: -6.0, y: 6.0 } },
+                { id: 'pilgrim_agile_final', name: '바람의 서약', kind: 'keystone', desc: '속도 +6, 회피 +7%', grants: { stats: { spd: 6 }, specials: { evadeChance: 0.07 } }, position: { x: -7.0, y: 7.0 } },
+
+                { id: 'pilgrim_zeal', name: '열망의 심장', kind: 'notable', desc: '공격 피해 8% 증가', grants: { specials: { damageMul: 1.08 } }, position: { x: 0, y: -2.0 } },
+                { id: 'pilgrim_zeal_2', name: '타오르는 선서', kind: 'small', desc: '공격 +2, 피해 5% 증가', grants: { stats: { atk: 2 }, specials: { damageMul: 1.05 } }, position: { x: 0, y: -3.3 } },
+                { id: 'pilgrim_resolve', name: '불굴의 심장', kind: 'notable', desc: '치명타 확률 +5%', grants: { specials: { critChance: 0.05 } }, position: { x: 0, y: 2.0 } },
+                { id: 'pilgrim_resolve_2', name: '굳건한 맹세', kind: 'small', desc: '방어 +2, 치명타 +3%', grants: { stats: { def: 2 }, specials: { critChance: 0.03 } }, position: { x: 0, y: 3.3 } },
+                { id: 'pilgrim_vow_mid', name: '중심 서약', kind: 'keystone', desc: 'HP 50% 이하일 때 피해 12% 증가', grants: { specials: { lowHpDamageMul: 1.12 } }, position: { x: 0, y: 4.8 } },
+                { id: 'pilgrim_vow_final', name: '순교자의 대서약', kind: 'keystone', desc: 'HP 50% 이하일 때 피해 20% 증가, 치명타 +5%', grants: { specials: { lowHpDamageMul: 1.2, critChance: 0.05 } }, position: { x: 0, y: 6.5 } },
+
+                { id: 'pilgrim_cont_1', name: '침묵의 첫걸음', kind: 'small', desc: '신앙 +1, HP +8', grants: { stats: { faith: 1, hp: 8 } }, position: { x: -0.85, y: 0.55 } },
+                { id: 'pilgrim_cont_2', name: '내면의 성소', kind: 'small', desc: '방어 +1, PP +6', grants: { stats: { def: 1, pp: 6 } }, position: { x: -1.7, y: 1.15 } },
+                { id: 'pilgrim_cont_notable', name: '길잃은 자의 위로', kind: 'notable', desc: 'HP +22, 신앙 +1', grants: { stats: { hp: 22, faith: 1 } }, position: { x: -2.55, y: 1.75 } },
+                { id: 'pilgrim_cont_sanctum', name: '고요의 성역', kind: 'keystone', desc: '받는 피해 6% 감소', grants: { specials: { damageTakenMul: 0.94 } }, position: { x: -3.38, y: 2.38 } },
+
+                { id: 'pilgrim_oracle_1', name: '작은 징조', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -3.0, y: -0.35 } },
+                { id: 'pilgrim_oracle_2', name: '흐릿한 계시', kind: 'small', desc: '신앙 +1, 속도 +2', grants: { stats: { faith: 1, spd: 2 } }, position: { x: -3.9, y: 0.15 } },
+                { id: 'pilgrim_oracle_notable', name: '파편 예언', kind: 'notable', desc: '치명타 확률 +4%', grants: { specials: { critChance: 0.04 } }, position: { x: -4.78, y: 0.72 } },
+
+                { id: 'pilgrim_skirm_1', name: '교전 숙달', kind: 'small', desc: '공격 +2', grants: { stats: { atk: 2 } }, position: { x: 2.05, y: -0.28 } },
+                { id: 'pilgrim_skirm_line', name: '돌파선', kind: 'notable', desc: '공격 +2, 속도 +3', grants: { stats: { atk: 2, spd: 3 } }, position: { x: 2.75, y: 0.38 } },
+
+                { id: 'pilgrim_aegis_1', name: '방패 들기', kind: 'small', desc: 'HP +14', grants: { stats: { hp: 14 } }, position: { x: 1.55, y: 1.55 } },
+                { id: 'pilgrim_aegis_2', name: '얇은 성역', kind: 'small', desc: '방어 +3, HP +8', grants: { stats: { def: 3, hp: 8 } }, position: { x: 2.18, y: 2.18 } },
+
+                { id: 'pilgrim_swift_1', name: '보조 가속', kind: 'small', desc: '속도 +4', grants: { stats: { spd: 4 } }, position: { x: -1.48, y: 1.55 } },
+                { id: 'pilgrim_swift_notable', name: '숨 고르기', kind: 'notable', desc: 'PP +10, 회피 +2%', grants: { stats: { pp: 10 }, specials: { evadeChance: 0.02 } }, position: { x: -2.15, y: 2.18 } },
+
+                { id: 'pilgrim_sky_1', name: '상승 기도', kind: 'small', desc: '피해량 4% 증가', grants: { specials: { damageMul: 1.04 } }, position: { x: 0.48, y: -4.15 } },
+                { id: 'pilgrim_sky_crown', name: '빛의 면류관', kind: 'keystone', desc: '피해량 8% 증가, 공격 +2', grants: { stats: { atk: 2 }, specials: { damageMul: 1.08 } }, position: { x: 0.95, y: -5.05 } },
+
+                { id: 'pilgrim_abyss_1', name: '낭떠러지 걸음', kind: 'small', desc: 'HP +18, 방어 +1', grants: { stats: { hp: 18, def: 1 } }, position: { x: 0.52, y: 3.95 } },
+                { id: 'pilgrim_abyss_anchor', name: '심연의 닻', kind: 'notable', desc: 'HP 50% 이하일 때 피해 6% 증가, HP +12', grants: { stats: { hp: 12 }, specials: { lowHpDamageMul: 1.06 } }, position: { x: 0.95, y: 4.42 } }
             ],
             edges: [
                 ['pilgrim_origin', 'pilgrim_faith_1'],
                 ['pilgrim_faith_1', 'pilgrim_faith_2'],
-                ['pilgrim_faith_2', 'pilgrim_active_holy_wall'],
+                ['pilgrim_faith_2', 'pilgrim_faith_3'],
+                ['pilgrim_faith_3', 'pilgrim_faith_core'],
+                ['pilgrim_faith_core', 'pilgrim_faith_4'],
+                ['pilgrim_faith_4', 'pilgrim_active_holy_wall'],
+                ['pilgrim_active_holy_wall', 'pilgrim_faith_final'],
 
                 ['pilgrim_origin', 'pilgrim_atk_1'],
                 ['pilgrim_atk_1', 'pilgrim_atk_2'],
-                ['pilgrim_atk_2', 'pilgrim_active_smite'],
+                ['pilgrim_atk_2', 'pilgrim_atk_3'],
+                ['pilgrim_atk_3', 'pilgrim_valor_core'],
+                ['pilgrim_valor_core', 'pilgrim_atk_4'],
+                ['pilgrim_atk_4', 'pilgrim_active_smite'],
+                ['pilgrim_active_smite', 'pilgrim_valor_final'],
 
                 ['pilgrim_origin', 'pilgrim_def_1'],
                 ['pilgrim_def_1', 'pilgrim_def_2'],
-                ['pilgrim_def_2', 'pilgrim_endurance'],
+                ['pilgrim_def_2', 'pilgrim_def_3'],
+                ['pilgrim_def_3', 'pilgrim_guard_core'],
+                ['pilgrim_guard_core', 'pilgrim_endurance'],
+                ['pilgrim_endurance', 'pilgrim_guard_hp_1'],
+                ['pilgrim_guard_hp_1', 'pilgrim_guard_final'],
 
                 ['pilgrim_origin', 'pilgrim_spd_1'],
                 ['pilgrim_spd_1', 'pilgrim_grace'],
                 ['pilgrim_grace', 'pilgrim_pp_1'],
+                ['pilgrim_pp_1', 'pilgrim_agile_core'],
+                ['pilgrim_agile_core', 'pilgrim_spd_2'],
+                ['pilgrim_spd_2', 'pilgrim_pp_2'],
+                ['pilgrim_pp_2', 'pilgrim_agile_final'],
 
                 ['pilgrim_origin', 'pilgrim_zeal'],
+                ['pilgrim_zeal', 'pilgrim_zeal_2'],
                 ['pilgrim_origin', 'pilgrim_resolve'],
-                ['pilgrim_resolve', 'pilgrim_vow']
+                ['pilgrim_resolve', 'pilgrim_resolve_2'],
+                ['pilgrim_resolve_2', 'pilgrim_vow_mid'],
+                ['pilgrim_vow_mid', 'pilgrim_vow_final'],
+
+                ['pilgrim_faith_core', 'pilgrim_zeal_2'],
+                ['pilgrim_valor_core', 'pilgrim_zeal_2'],
+                ['pilgrim_guard_core', 'pilgrim_vow_mid'],
+                ['pilgrim_agile_core', 'pilgrim_vow_mid'],
+
+                ['pilgrim_origin', 'pilgrim_cont_1'],
+                ['pilgrim_cont_1', 'pilgrim_cont_2'],
+                ['pilgrim_cont_2', 'pilgrim_cont_notable'],
+                ['pilgrim_cont_notable', 'pilgrim_cont_sanctum'],
+
+                ['pilgrim_faith_2', 'pilgrim_oracle_1'],
+                ['pilgrim_oracle_1', 'pilgrim_oracle_2'],
+                ['pilgrim_oracle_2', 'pilgrim_oracle_notable'],
+
+                ['pilgrim_atk_2', 'pilgrim_skirm_1'],
+                ['pilgrim_skirm_1', 'pilgrim_skirm_line'],
+
+                ['pilgrim_def_1', 'pilgrim_aegis_1'],
+                ['pilgrim_aegis_1', 'pilgrim_aegis_2'],
+
+                ['pilgrim_spd_1', 'pilgrim_swift_1'],
+                ['pilgrim_swift_1', 'pilgrim_swift_notable'],
+
+                ['pilgrim_zeal_2', 'pilgrim_sky_1'],
+                ['pilgrim_sky_1', 'pilgrim_sky_crown'],
+
+                ['pilgrim_resolve_2', 'pilgrim_abyss_1'],
+                ['pilgrim_abyss_1', 'pilgrim_abyss_anchor']
             ]
         }
     },
