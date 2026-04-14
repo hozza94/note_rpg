@@ -36,39 +36,39 @@ const GAME_DATA = {
 
     monsters: [
         // ========================
-        // 비손 유역 (pishon) 몬스터
+        // 비손 유역 (pishon) 몬스터 — skillTreeId로 스킬 풀 참조 (dropTableId와 동일 패턴)
         // ========================
-        { id: "gray_slime", regionId: "pishon", grade: "F", name: "회색 슬라임", level: 1, minPlayerLv: 1, maxPlayerLv: 99, stats: { hp: 40, atk: 4, def: 2, spd: 60 }, reward: { exp: 30, gold: 8 }, dropTableId: "drop_f_slime", skills: ["stick"] },
-        { id: "dust_wisp", regionId: "pishon", grade: "F", name: "먼지 정령", level: 2, minPlayerLv: 1, maxPlayerLv: 99, stats: { hp: 55, atk: 6, def: 1, spd: 90 }, reward: { exp: 40, gold: 10 }, dropTableId: "drop_f_slime", skills: ["stick"] },
-        { id: "gray_moth", regionId: "pishon", grade: "F", name: "재색 나방", level: 3, minPlayerLv: 1, maxPlayerLv: 99, stats: { hp: 45, atk: 5, def: 3, spd: 110 }, reward: { exp: 45, gold: 12 }, dropTableId: "drop_f_slime", skills: ["stick"] },
-        { id: "greedy_rat", regionId: "pishon", grade: "E", name: "탐욕스러운 쥐", level: 4, minPlayerLv: 2, maxPlayerLv: 99, stats: { hp: 100, atk: 10, def: 6, spd: 105 }, reward: { exp: 100, gold: 30 }, dropTableId: "drop_e_rat", skills: ["bite"] },
-        { id: "dark_crow", regionId: "pishon", grade: "E", name: "어둠까마귀", level: 5, minPlayerLv: 2, maxPlayerLv: 99, stats: { hp: 90, atk: 12, def: 4, spd: 140 }, reward: { exp: 110, gold: 28 }, dropTableId: "drop_e_rat", skills: ["bite"] },
-        { id: "weak_wraith", regionId: "pishon", grade: "D", name: "약한 원령", level: 9, minPlayerLv: 4, maxPlayerLv: 99, stats: { hp: 280, atk: 28, def: 15, spd: 115 }, reward: { exp: 250, gold: 70 }, dropTableId: "drop_d_wraith", skills: ["wail"] },
-        { id: "mini_imp", regionId: "pishon", grade: "D", name: "미니 임프", level: 11, minPlayerLv: 5, maxPlayerLv: 99, stats: { hp: 320, atk: 35, def: 20, spd: 135 }, reward: { exp: 290, gold: 80 }, dropTableId: "drop_d_imp", skills: ["small_fire"] },
-        
+        { id: "gray_slime", regionId: "pishon", grade: "F", name: "회색 슬라임", level: 1, minPlayerLv: 1, maxPlayerLv: 99, stats: { hp: 40, atk: 4, def: 2, spd: 60 }, reward: { exp: 30, gold: 8 }, dropTableId: "drop_f_slime", skillTreeId: "st_stick_only" },
+        { id: "dust_wisp", regionId: "pishon", grade: "F", name: "먼지 정령", level: 2, minPlayerLv: 1, maxPlayerLv: 99, stats: { hp: 55, atk: 6, def: 1, spd: 90 }, reward: { exp: 40, gold: 10 }, dropTableId: "drop_f_slime", skillTreeId: "st_stick_only" },
+        { id: "gray_moth", regionId: "pishon", grade: "F", name: "재색 나방", level: 3, minPlayerLv: 1, maxPlayerLv: 99, stats: { hp: 45, atk: 5, def: 3, spd: 110 }, reward: { exp: 45, gold: 12 }, dropTableId: "drop_f_slime", skillTreeId: "st_stick_only" },
+        { id: "greedy_rat", regionId: "pishon", grade: "E", name: "탐욕스러운 쥐", level: 4, minPlayerLv: 2, maxPlayerLv: 99, stats: { hp: 100, atk: 10, def: 6, spd: 105 }, reward: { exp: 100, gold: 30 }, dropTableId: "drop_e_rat", skillTreeId: "st_bite_only" },
+        { id: "dark_crow", regionId: "pishon", grade: "E", name: "어둠까마귀", level: 5, minPlayerLv: 2, maxPlayerLv: 99, stats: { hp: 90, atk: 12, def: 4, spd: 140 }, reward: { exp: 110, gold: 28 }, dropTableId: "drop_e_rat", skillTreeId: "st_bite_only" },
+        { id: "weak_wraith", regionId: "pishon", grade: "D", name: "약한 원령", level: 9, minPlayerLv: 4, maxPlayerLv: 99, stats: { hp: 280, atk: 28, def: 15, spd: 115 }, reward: { exp: 250, gold: 70 }, dropTableId: "drop_d_wraith", skillTreeId: "st_wail_only" },
+        { id: "mini_imp", regionId: "pishon", grade: "D", name: "미니 임프", level: 11, minPlayerLv: 5, maxPlayerLv: 99, stats: { hp: 320, atk: 35, def: 20, spd: 135 }, reward: { exp: 290, gold: 80 }, dropTableId: "drop_d_imp", skillTreeId: "st_small_fire_only" },
+
         // 보스: 원혼 (비손)
-        { id: "wraith", regionId: "pishon", grade: "C", name: "원혼", level: 20, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1200, atk: 85, def: 55, spd: 160 }, reward: { exp: 700, gold: 200 }, dropTableId: "drop_c_wraith", skills: ["fear"] },
+        { id: "wraith", regionId: "pishon", grade: "C", name: "원혼", level: 20, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1200, atk: 85, def: 55, spd: 160 }, reward: { exp: 700, gold: 200 }, dropTableId: "drop_c_wraith", skillTreeId: "st_wraith_boss", isBoss: true },
 
         // ========================
         // 기혼 유역 (gihon) 몬스터
         // ========================
-        { id: "swamp_frog", regionId: "gihon", grade: "D", name: "늪의 독개구리", level: 10, minPlayerLv: 5, maxPlayerLv: 99, stats: { hp: 450, atk: 45, def: 25, spd: 90 }, reward: { exp: 350, gold: 120 }, dropTableId: "drop_d_frog", skills: ["stick"] },
-        { id: "mud_snake", regionId: "gihon", grade: "D", name: "진흙 구렁이", level: 12, minPlayerLv: 6, maxPlayerLv: 99, stats: { hp: 550, atk: 55, def: 30, spd: 150 }, reward: { exp: 420, gold: 150 }, dropTableId: "drop_d_snake", skills: ["bite"] },
-        { id: "moss_skeleton", regionId: "gihon", grade: "C", name: "이끼 낀 해골전사", level: 16, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1000, atk: 90, def: 70, spd: 110 }, reward: { exp: 650, gold: 250 }, dropTableId: "drop_c_skeleton", skills: ["wail"] },
-        { id: "swamp_stalker", regionId: "gihon", grade: "C", name: "습지의 추격자", level: 18, minPlayerLv: 8, maxPlayerLv: 99, stats: { hp: 1200, atk: 120, def: 50, spd: 190 }, reward: { exp: 780, gold: 320 }, dropTableId: "drop_c_stalker", skills: ["fear"] },
-        
+        { id: "swamp_frog", regionId: "gihon", grade: "D", name: "늪의 독개구리", level: 10, minPlayerLv: 5, maxPlayerLv: 99, stats: { hp: 450, atk: 45, def: 25, spd: 90 }, reward: { exp: 350, gold: 120 }, dropTableId: "drop_d_frog", skillTreeId: "st_stick_only" },
+        { id: "mud_snake", regionId: "gihon", grade: "D", name: "진흙 구렁이", level: 12, minPlayerLv: 6, maxPlayerLv: 99, stats: { hp: 550, atk: 55, def: 30, spd: 150 }, reward: { exp: 420, gold: 150 }, dropTableId: "drop_d_snake", skillTreeId: "st_bite_only" },
+        { id: "moss_skeleton", regionId: "gihon", grade: "C", name: "이끼 낀 해골전사", level: 16, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1000, atk: 90, def: 70, spd: 110 }, reward: { exp: 650, gold: 250 }, dropTableId: "drop_c_skeleton", skillTreeId: "st_wail_only" },
+        { id: "swamp_stalker", regionId: "gihon", grade: "C", name: "습지의 추격자", level: 18, minPlayerLv: 8, maxPlayerLv: 99, stats: { hp: 1200, atk: 120, def: 50, spd: 190 }, reward: { exp: 780, gold: 320 }, dropTableId: "drop_c_stalker", skillTreeId: "st_fear_only" },
+
         // 보스: 진흙 거인 (기혼)
-        { id: "mud_giant", regionId: "gihon", grade: "B", name: "진흙 거인", level: 25, minPlayerLv: 10, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 2500, gold: 1000 }, dropTableId: "drop_b_giant", skills: ["telekinesis"] },
+        { id: "mud_giant", regionId: "gihon", grade: "B", name: "진흙 거인", level: 25, minPlayerLv: 10, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 2500, gold: 1000 }, dropTableId: "drop_b_giant", skillTreeId: "st_mud_giant_boss", isBoss: true },
 
         // ========================
         // 히데겔 협곡 (hidekel) 몬스터
         // ========================
-        { id: "canyon_hyena", regionId: "hidekel", grade: "C", name: "협곡 하이에나", level: 19, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 1450, atk: 130, def: 70, spd: 185 }, reward: { exp: 920, gold: 360 }, dropTableId: "drop_c_hidekel", skills: ["bite"] },
-        { id: "burning_imp", regionId: "hidekel", grade: "C", name: "화염 임프", level: 20, minPlayerLv: 13, maxPlayerLv: 99, stats: { hp: 1500, atk: 145, def: 65, spd: 170 }, reward: { exp: 980, gold: 380 }, dropTableId: "drop_c_hidekel", skills: ["small_fire"] },
-        { id: "ash_knight", regionId: "hidekel", grade: "B", name: "잿빛 기사", level: 23, minPlayerLv: 14, maxPlayerLv: 99, stats: { hp: 2600, atk: 185, def: 120, spd: 120 }, reward: { exp: 1550, gold: 620 }, dropTableId: "drop_b_hidekel", skills: ["wail", "root_bind"] },
+        { id: "canyon_hyena", regionId: "hidekel", grade: "C", name: "협곡 하이에나", level: 19, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 1450, atk: 130, def: 70, spd: 185 }, reward: { exp: 920, gold: 360 }, dropTableId: "drop_c_hidekel", skillTreeId: "st_bite_only" },
+        { id: "burning_imp", regionId: "hidekel", grade: "C", name: "화염 임프", level: 20, minPlayerLv: 13, maxPlayerLv: 99, stats: { hp: 1500, atk: 145, def: 65, spd: 170 }, reward: { exp: 980, gold: 380 }, dropTableId: "drop_c_hidekel", skillTreeId: "st_small_fire_only" },
+        { id: "ash_knight", regionId: "hidekel", grade: "B", name: "잿빛 기사", level: 23, minPlayerLv: 14, maxPlayerLv: 99, stats: { hp: 2600, atk: 185, def: 120, spd: 120 }, reward: { exp: 1550, gold: 620 }, dropTableId: "drop_b_hidekel", skillTreeId: "st_wail_root" },
 
         // 보스: 석화 세라프 (히데겔)
-        { id: "stone_seraph", regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 16, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 4200, gold: 2000 }, dropTableId: "drop_a_seraph", skills: ["fear", "telekinesis", "root_bind"] }
+        { id: "stone_seraph", regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 16, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 4200, gold: 2000 }, dropTableId: "drop_a_seraph", skillTreeId: "st_stone_seraph_boss", isBoss: true }
     ],
 
     // 스킬 데이터
@@ -84,7 +84,103 @@ const GAME_DATA = {
         'small_fire': { name: '작은 불꽃', type: 'attack', effect: { atkMul: 1.3 } },
         'fear':       { name: '공포',      type: 'attack', effect: { atkMul: 1.1, fear: true } },
         'telekinesis':{ name: '염동력',    type: 'attack', effect: { atkMul: 1.4 } },
-        'root_bind':  { name: '속박의 뿌리', type: 'attack', effect: { atkMul: 0.9, spdDebuff: 0.75, fear: true } }
+        'root_bind':  { name: '속박의 뿌리', type: 'attack', effect: { atkMul: 0.9, spdDebuff: 0.75, fear: true } },
+
+        // 보스 전용 (플레이어·스킬트리 해금 불가, monsterSkillTrees에서만 참조)
+        'boss_wraith_haunt': {
+            name: '영혼 잠식', type: 'attack', bossOnly: true,
+            effect: { atkMul: 1.18, fear: true },
+            desc: '원혼이 그림자처럼 당신의 기력을 긁어냅니다.'
+        },
+        'boss_wraith_soul_split': {
+            name: '분열하는 절규', type: 'attack', bossOnly: true,
+            effect: { atkMul: 1.32, fear: true },
+            desc: '비명이 여러 갈래로 흩어지며 정신을 갉아먹습니다.'
+        },
+        'boss_mud_grasp': {
+            name: '진흙 손아귀', type: 'attack', bossOnly: true,
+            effect: { atkMul: 1.22, spdDebuff: 0.88 },
+            desc: '늪이 발목을 잡아당깁니다.'
+        },
+        'boss_mud_quake': {
+            name: '대지의 격동', type: 'attack', bossOnly: true,
+            effect: { atkMul: 1.55, spdDebuff: 0.72 },
+            desc: '거인이 몸을 부딪쳐 땅이 꺼집니다.'
+        },
+        'boss_seraph_gaze': {
+            name: '석화의 시선', type: 'attack', bossOnly: true,
+            effect: { atkMul: 1.28, fear: true, spdDebuff: 0.9 },
+            desc: '빛이 시야를 얼려 움직임을 봉쇄합니다.'
+        },
+        'boss_seraph_petrify': {
+            name: '완전 석화', type: 'attack', bossOnly: true,
+            effect: { atkMul: 1.42, fear: true, spdDebuff: 0.82 },
+            desc: '발끝부터 돌이 되어가는 감각이 옵니다.'
+        }
+    },
+
+    // 몬스터 스킬 풀 (dropTableId와 동일하게 ID로 참조, HP 구간별 가중치 선택 가능)
+    monsterSkillTrees: {
+        st_stick_only: {
+            id: 'st_stick_only',
+            label: '끈적임',
+            defaultPool: { skillIds: ['stick'], weights: [1] }
+        },
+        st_bite_only: {
+            id: 'st_bite_only',
+            label: '교합',
+            defaultPool: { skillIds: ['bite'], weights: [1] }
+        },
+        st_wail_only: {
+            id: 'st_wail_only',
+            label: '애가',
+            defaultPool: { skillIds: ['wail'], weights: [1] }
+        },
+        st_small_fire_only: {
+            id: 'st_small_fire_only',
+            label: '불꽃',
+            defaultPool: { skillIds: ['small_fire'], weights: [1] }
+        },
+        st_fear_only: {
+            id: 'st_fear_only',
+            label: '압박',
+            defaultPool: { skillIds: ['fear'], weights: [1] }
+        },
+        st_wail_root: {
+            id: 'st_wail_root',
+            label: '기사',
+            defaultPool: { skillIds: ['wail', 'root_bind'], weights: [2, 1] }
+        },
+        st_wraith_boss: {
+            id: 'st_wraith_boss',
+            label: '원혼',
+            defaultPool: { skillIds: ['fear', 'boss_wraith_haunt'], weights: [1, 2] },
+            lowHp: {
+                threshold: 0.5,
+                skillIds: ['boss_wraith_soul_split', 'fear', 'boss_wraith_haunt'],
+                weights: [2, 1, 1]
+            }
+        },
+        st_mud_giant_boss: {
+            id: 'st_mud_giant_boss',
+            label: '진흙 거인',
+            defaultPool: { skillIds: ['telekinesis', 'boss_mud_grasp'], weights: [1, 1] },
+            lowHp: {
+                threshold: 0.45,
+                skillIds: ['boss_mud_quake', 'telekinesis', 'boss_mud_grasp'],
+                weights: [2, 1, 1]
+            }
+        },
+        st_stone_seraph_boss: {
+            id: 'st_stone_seraph_boss',
+            label: '석화 세라프',
+            defaultPool: { skillIds: ['fear', 'boss_seraph_gaze', 'telekinesis'], weights: [1, 2, 1] },
+            lowHp: {
+                threshold: 0.5,
+                skillIds: ['boss_seraph_petrify', 'root_bind', 'boss_seraph_gaze', 'fear'],
+                weights: [2, 1, 1, 1]
+            }
+        }
     },
 
     // 직업 고정형 스킬트리 (PoE 스타일의 연결형 노드 구조, 1차 소규모)

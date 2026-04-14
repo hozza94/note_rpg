@@ -123,6 +123,12 @@ class GameEngine {
         if (!this.state.player.activeSkillIds.includes('proclaim')) {
             this.state.player.activeSkillIds.push('proclaim');
         }
+        if (typeof window !== 'undefined' && window.GAME_DATA?.skills) {
+            this.state.player.activeSkillIds = (this.state.player.activeSkillIds || []).filter(id => {
+                const s = window.GAME_DATA.skills[id];
+                return s && !s.bossOnly;
+            });
+        }
 
         const skillTree = this.getSkillTreeConfig();
         const startNodeId = skillTree?.startNodeId || 'pilgrim_origin';
@@ -168,7 +174,7 @@ class GameEngine {
     }
 
     getActiveSkills() {
-        const ids = this.state.player.activeSkillIds || [];
+        const ids = (this.state.player.activeSkillIds || []).filter(id => !window.GAME_DATA.skills[id]?.bossOnly);
         return ids.map(id => ({ id, ...(window.GAME_DATA.skills[id] || { name: id, cost: 0 }) }));
     }
 
@@ -185,7 +191,10 @@ class GameEngine {
             if (activeSkillId) activeSet.add(activeSkillId);
         });
 
-        this.state.player.activeSkillIds = Array.from(activeSet).filter(id => !!window.GAME_DATA.skills[id]);
+        this.state.player.activeSkillIds = Array.from(activeSet).filter(id => {
+            const s = window.GAME_DATA.skills[id];
+            return s && !s.bossOnly;
+        });
     }
 
     getPassiveBonuses() {
@@ -1860,11 +1869,41 @@ class GameEngine {
         this.scheduleAutoBattleTurn();
     }
 
+    /** 가중치 기반으로 스킬 ID 하나 선택 */
+    pickWeightedSkillId(skillIds, weights) {
+        if (!skillIds || skillIds.length === 0) return null;
+        const w = weights && weights.length === skillIds.length ? weights : skillIds.map(() => 1);
+        const sum = w.reduce((a, b) => a + b, 0);
+        let r = Math.random() * sum;
+        for (let i = 0; i < skillIds.length; i++) {
+            r -= w[i];
+            if (r <= 0) return skillIds[i];
+        }
+        return skillIds[skillIds.length - 1];
+    }
+
+    /** monsterSkillTrees 또는 레거시 monster.skills 에서 현재 HP 구간 풀 반환 */
+    getMonsterSkillTreePool(monster) {
+        const trees = window.GAME_DATA.monsterSkillTrees;
+        const tree = monster.skillTreeId && trees ? trees[monster.skillTreeId] : null;
+        if (tree) {
+            const ratio = monster.maxHp > 0 ? monster.hp / monster.maxHp : 1;
+            if (tree.lowHp && ratio < tree.lowHp.threshold) {
+                return { skillIds: tree.lowHp.skillIds, weights: tree.lowHp.weights };
+            }
+            return { skillIds: tree.defaultPool.skillIds, weights: tree.defaultPool.weights };
+        }
+        if (monster.skills && monster.skills.length) {
+            return { skillIds: monster.skills, weights: null };
+        }
+        return null;
+    }
+
     chooseMonsterSkill(monster) {
-        if (!monster.skills || monster.skills.length === 0) return null;
+        const pool = this.getMonsterSkillTreePool(monster);
+        if (!pool || !pool.skillIds.length) return null;
         if (Math.random() > 0.45) return null;
-        const index = Math.floor(Math.random() * monster.skills.length);
-        return monster.skills[index];
+        return this.pickWeightedSkillId(pool.skillIds, pool.weights);
     }
 
     calculateDamage(atk, def) {
@@ -2015,8 +2054,9 @@ class GameEngine {
         const combined = this.getPlayerCombinedStats();
         const skillData = window.GAME_DATA.skills[skill.id];
         if (!skillData) return this.log("스킬 데이터가 존재하지 않습니다.", "system");
+        if (skillData.bossOnly) return this.log("이 스킬은 플레이어가 사용할 수 없습니다.", "system");
 
-        if (p.pp < skillData.cost) return this.log("PP가 부족합니다!", "system");
+        if (p.pp < (skillData.cost || 0)) return this.log("PP가 부족합니다!", "system");
 
         p.pp -= skillData.cost;
         this.log(`${p.name}의 기술: [${skillData.name}]!`, "player");
