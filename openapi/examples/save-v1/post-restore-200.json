@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "data": {
+    "restored": true,
+    "saveDataVersion": 3,
+    "updatedAt": "2026-04-15T13:00:00.000Z"
+  },
+  "requestId": "req_restore"
+}

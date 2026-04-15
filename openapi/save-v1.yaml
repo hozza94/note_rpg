@@ -1,0 +1,605 @@
+openapi: 3.0.3
+info:
+  title: note_rpg Save API
+  version: 1.0.0
+  description: 저장/로드/마이그레이션 API 명세 (v1)
+servers:
+  - url: /api/v1
+    description: Relative API base path
+tags:
+  - name: Save
+    description: 세이브 데이터 조회/저장/복원
+
+paths:
+  /save:
+    get:
+      tags: [Save]
+      summary: 현재 유저 저장 데이터 조회
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: 저장 데이터 조회 성공
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/XRequestId"
+            X-Server-Version:
+              $ref: "#/components/headers/XServerVersion"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSaveResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+    post:
+      tags: [Save]
+      summary: 현재 유저 저장 데이터 저장(업서트)
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SaveUpsertRequest"
+      responses:
+        "200":
+          description: 저장 성공
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/XRequestId"
+            X-Server-Version:
+              $ref: "#/components/headers/XServerVersion"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SaveUpsertResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "409":
+          $ref: "#/components/responses/VersionConflictError"
+        "422":
+          $ref: "#/components/responses/IntegrityError"
+
+  /save/migrate:
+    post:
+      tags: [Save]
+      summary: 구버전 저장 데이터 최신 버전 변환
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MigrateSaveRequest"
+      responses:
+        "200":
+          description: 마이그레이션 성공
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/XRequestId"
+            X-Server-Version:
+              $ref: "#/components/headers/XServerVersion"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/MigrateSaveResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "422":
+          $ref: "#/components/responses/MigrationError"
+
+  /save/snapshots:
+    get:
+      tags: [Save]
+      summary: 저장 스냅샷 목록 조회
+      security:
+        - bearerAuth: []
+      parameters:
+        - in: query
+          name: limit
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+      responses:
+        "200":
+          description: 스냅샷 조회 성공
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/XRequestId"
+            X-Server-Version:
+              $ref: "#/components/headers/XServerVersion"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetSnapshotsResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+
+  /save/restore:
+    post:
+      tags: [Save]
+      summary: 특정 스냅샷으로 저장 상태 복원
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RestoreSaveRequest"
+      responses:
+        "200":
+          description: 복원 성공
+          headers:
+            X-Request-Id:
+              $ref: "#/components/headers/XRequestId"
+            X-Server-Version:
+              $ref: "#/components/headers/XServerVersion"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RestoreSaveResponse"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "409":
+          $ref: "#/components/responses/VersionConflictError"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  headers:
+    XRequestId:
+      description: 요청 추적 ID
+      schema:
+        type: string
+    XServerVersion:
+      description: 서버 배포 버전
+      schema:
+        type: string
+
+  responses:
+    UnauthorizedError:
+      description: 인증 실패
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            ok: false
+            error:
+              code: UNAUTHORIZED
+              message: 인증이 필요합니다.
+              details: {}
+            requestId: req_auth_001
+    ValidationError:
+      description: 요청 데이터 유효성 실패
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            ok: false
+            error:
+              code: VALIDATION_FAILED
+              message: 요청 데이터가 유효하지 않습니다.
+              details: {}
+            requestId: req_val_001
+    NotFoundError:
+      description: 리소스 없음
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            ok: false
+            error:
+              code: NOT_FOUND
+              message: 요청한 리소스를 찾을 수 없습니다.
+              details: {}
+            requestId: req_nf_001
+    VersionConflictError:
+      description: 저장 버전 충돌
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            ok: false
+            error:
+              code: SAVE_VERSION_CONFLICT
+              message: 클라이언트 저장 버전이 서버 버전보다 낮습니다.
+              details: {}
+            requestId: req_ver_001
+    IntegrityError:
+      description: 저장 무결성 검증 실패
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            ok: false
+            error:
+              code: SAVE_INTEGRITY_FAILED
+              message: 장착 아이템 무결성 검증 실패
+              details: {}
+            requestId: req_int_001
+    MigrationError:
+      description: 마이그레이션 실패
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          example:
+            ok: false
+            error:
+              code: MIGRATION_FAILED
+              message: 마이그레이션 함수 적용 중 오류가 발생했습니다.
+              details: {}
+            requestId: req_mig_001
+
+  schemas:
+    ErrorBody:
+      type: object
+      required: [code, message, details]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+        details:
+          type: object
+          additionalProperties: true
+    ErrorResponse:
+      type: object
+      required: [ok, error, requestId]
+      properties:
+        ok:
+          type: boolean
+          enum: [false]
+        error:
+          $ref: "#/components/schemas/ErrorBody"
+        requestId:
+          type: string
+
+    Profile:
+      type: object
+      required: [nickname, title, level, exp, bonusPoints]
+      properties:
+        nickname:
+          type: string
+        title:
+          type: string
+        level:
+          type: integer
+          minimum: 1
+        exp:
+          type: integer
+          minimum: 0
+        bonusPoints:
+          type: integer
+          minimum: 0
+    Currencies:
+      type: object
+      required: [gold, talent]
+      properties:
+        gold:
+          type: integer
+          minimum: 0
+        talent:
+          type: string
+          description: Decimal 문자열 (예: "12.3500")
+    InventoryItem:
+      type: object
+      required: [itemId, count]
+      properties:
+        itemId:
+          type: string
+        count:
+          type: integer
+          minimum: 0
+    Equipment:
+      type: object
+      additionalProperties:
+        type: string
+        nullable: true
+      example:
+        weapon: iron_sword
+        armor: null
+    SkillUnlock:
+      type: object
+      required: [skillTreeId, nodeId, unlocked]
+      properties:
+        skillTreeId:
+          type: string
+        nodeId:
+          type: string
+        unlocked:
+          type: boolean
+    RelicOwned:
+      type: object
+      required: [relicId, level, isEquipped]
+      properties:
+        relicId:
+          type: string
+        level:
+          type: integer
+          minimum: 1
+        isEquipped:
+          type: boolean
+    Relics:
+      type: object
+      required: [owned, gachaPity]
+      properties:
+        owned:
+          type: array
+          items:
+            $ref: "#/components/schemas/RelicOwned"
+        gachaPity:
+          type: object
+          required: [premiumWithoutEpic]
+          properties:
+            premiumWithoutEpic:
+              type: integer
+              minimum: 0
+    Progress:
+      type: object
+      required: [currentRegionId, questProgress, highestRegionId]
+      properties:
+        currentRegionId:
+          type: string
+        questProgress:
+          type: number
+          minimum: 0
+        highestRegionId:
+          type: string
+    Settings:
+      type: object
+      required: [avatarId, autoExplore, autoBattle]
+      properties:
+        avatarId:
+          type: string
+          nullable: true
+        autoExplore:
+          type: boolean
+        autoBattle:
+          type: boolean
+    ClientMeta:
+      type: object
+      required: [clientBuild, platform]
+      properties:
+        clientBuild:
+          type: string
+        platform:
+          type: string
+
+    SaveState:
+      type: object
+      required:
+        - userId
+        - saveDataVersion
+        - profile
+        - currencies
+        - inventory
+        - equipment
+        - skills
+        - relics
+        - progress
+        - settings
+        - updatedAt
+      properties:
+        userId:
+          type: string
+        saveDataVersion:
+          type: integer
+          minimum: 1
+        profile:
+          $ref: "#/components/schemas/Profile"
+        currencies:
+          $ref: "#/components/schemas/Currencies"
+        inventory:
+          type: array
+          items:
+            $ref: "#/components/schemas/InventoryItem"
+        equipment:
+          $ref: "#/components/schemas/Equipment"
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillUnlock"
+        relics:
+          $ref: "#/components/schemas/Relics"
+        progress:
+          $ref: "#/components/schemas/Progress"
+        settings:
+          $ref: "#/components/schemas/Settings"
+        updatedAt:
+          type: string
+          format: date-time
+
+    SaveUpsertRequest:
+      type: object
+      required:
+        - saveDataVersion
+        - profile
+        - currencies
+        - inventory
+        - equipment
+        - skills
+        - relics
+        - progress
+        - settings
+      properties:
+        saveDataVersion:
+          type: integer
+          minimum: 1
+        profile:
+          $ref: "#/components/schemas/Profile"
+        currencies:
+          $ref: "#/components/schemas/Currencies"
+        inventory:
+          type: array
+          items:
+            $ref: "#/components/schemas/InventoryItem"
+        equipment:
+          $ref: "#/components/schemas/Equipment"
+        skills:
+          type: array
+          items:
+            $ref: "#/components/schemas/SkillUnlock"
+        relics:
+          $ref: "#/components/schemas/Relics"
+        progress:
+          $ref: "#/components/schemas/Progress"
+        settings:
+          $ref: "#/components/schemas/Settings"
+        clientMeta:
+          $ref: "#/components/schemas/ClientMeta"
+
+    GetSaveResponse:
+      type: object
+      required: [ok, data, requestId]
+      properties:
+        ok:
+          type: boolean
+          enum: [true]
+        data:
+          $ref: "#/components/schemas/SaveState"
+        requestId:
+          type: string
+
+    SaveUpsertResponse:
+      type: object
+      required: [ok, data, requestId]
+      properties:
+        ok:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [saved, saveDataVersion, updatedAt]
+          properties:
+            saved:
+              type: boolean
+              enum: [true]
+            saveDataVersion:
+              type: integer
+              minimum: 1
+            updatedAt:
+              type: string
+              format: date-time
+        requestId:
+          type: string
+
+    MigrateSaveRequest:
+      type: object
+      required: [fromVersion, payload]
+      properties:
+        fromVersion:
+          type: integer
+          minimum: 1
+        payload:
+          type: object
+          additionalProperties: true
+
+    MigrateSaveResponse:
+      type: object
+      required: [ok, data, requestId]
+      properties:
+        ok:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [fromVersion, toVersion, appliedMigrations, payload]
+          properties:
+            fromVersion:
+              type: integer
+            toVersion:
+              type: integer
+            appliedMigrations:
+              type: array
+              items:
+                type: string
+            payload:
+              type: object
+              additionalProperties: true
+        requestId:
+          type: string
+
+    SnapshotMeta:
+      type: object
+      required: [snapshotId, saveDataVersion, createdAt]
+      properties:
+        snapshotId:
+          type: string
+        saveDataVersion:
+          type: integer
+          minimum: 1
+        createdAt:
+          type: string
+          format: date-time
+
+    GetSnapshotsResponse:
+      type: object
+      required: [ok, data, requestId]
+      properties:
+        ok:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [snapshots]
+          properties:
+            snapshots:
+              type: array
+              items:
+                $ref: "#/components/schemas/SnapshotMeta"
+        requestId:
+          type: string
+
+    RestoreSaveRequest:
+      type: object
+      required: [snapshotId]
+      properties:
+        snapshotId:
+          type: string
+
+    RestoreSaveResponse:
+      type: object
+      required: [ok, data, requestId]
+      properties:
+        ok:
+          type: boolean
+          enum: [true]
+        data:
+          type: object
+          required: [restored, saveDataVersion, updatedAt]
+          properties:
+            restored:
+              type: boolean
+              enum: [true]
+            saveDataVersion:
+              type: integer
+              minimum: 1
+            updatedAt:
+              type: string
+              format: date-time
+        requestId:
+          type: string

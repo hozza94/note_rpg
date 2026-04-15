@@ -4,7 +4,7 @@ Basileia RPG의 핵심 엔진 고도화 및 시스템 확립 작업을 완료했
 
 ## 🛠️ 주요 구현 내용
 
-### 1. 게임 시스템 정의 ([features.md](file:///Users/nk/git/note_rpg/Docs/features.md))
+### 1. 게임 시스템 정의 ([features.md](file:///Users/nk/git/note_rpg/Docs/specs/features.md))
 - 전투 공식(데미지, 치명타, 적중률)을 상세히 정의했습니다.
 - 레벨업 시 3포인트를 지급하며, 사용자가 직접 공격력(ATK), 방어력(DEF), 신앙(FAITH)을 올릴 수 있도록 설계했습니다.
 - 전신갑주 6종 슬롯(검, 호심경, 투구, 허리띠, 신발, 방패) 체계를 확립했습니다.

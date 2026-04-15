@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "data": {
+    "snapshots": [
+      {
+        "snapshotId": "snap_003",
+        "saveDataVersion": 3,
+        "createdAt": "2026-04-15T12:00:00.000Z"
+      },
+      {
+        "snapshotId": "snap_002",
+        "saveDataVersion": 3,
+        "createdAt": "2026-04-14T08:30:00.000Z"
+      },
+      {
+        "snapshotId": "snap_001",
+        "saveDataVersion": 2,
+        "createdAt": "2026-04-10T18:00:00.000Z"
+      }
+    ]
+  },
+  "requestId": "req_snap"
+}

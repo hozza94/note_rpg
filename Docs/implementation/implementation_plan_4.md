@@ -13,7 +13,7 @@
    - 도주 확률을 속도 기반 공식으로 변경.
 
 2. 스탯·문서 정합
-   - 현재 구현 기준(atk/def/spd/faith + HP/PP)으로 `Docs/features.md`를 갱신.
+   - 현재 구현 기준(atk/def/spd/faith + HP/PP)으로 `Docs/specs/features.md`를 갱신.
    - 전투 규칙과 성장 규칙을 실제 코드 기준으로 일치시킴.
 
 3. 콘텐츠 확장

@@ -1,0 +1,47 @@
+{
+  "ok": true,
+  "data": {
+    "userId": "u_123",
+    "saveDataVersion": 3,
+    "profile": {
+      "nickname": "순례자",
+      "title": "Pilgrim",
+      "level": 12,
+      "exp": 455,
+      "bonusPoints": 3
+    },
+    "currencies": {
+      "gold": 12050,
+      "talent": "12.3500"
+    },
+    "inventory": [
+      { "itemId": "gray_dust", "count": 45 },
+      { "itemId": "iron_sword", "count": 1 }
+    ],
+    "equipment": {
+      "weapon": "iron_sword",
+      "armor": null
+    },
+    "skills": [
+      { "skillTreeId": "pilgrim", "nodeId": "node_smite_1", "unlocked": true }
+    ],
+    "relics": {
+      "owned": [
+        { "relicId": "relic_ashen_rosary", "level": 3, "isEquipped": true }
+      ],
+      "gachaPity": { "premiumWithoutEpic": 4 }
+    },
+    "progress": {
+      "currentRegionId": "gihon",
+      "questProgress": 42.5,
+      "highestRegionId": "gihon"
+    },
+    "settings": {
+      "avatarId": "avatar_pilgrim_default",
+      "autoExplore": false,
+      "autoBattle": false
+    },
+    "updatedAt": "2026-04-15T12:34:56.000Z"
+  },
+  "requestId": "req_abc"
+}

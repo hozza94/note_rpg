@@ -40,7 +40,7 @@
 
 ### Phase 0 — 의존성 그래프·용어 정리
 
-- **산출물**: `Docs/data_model_14.md` (또는 본 문서 부록)에 다음 다이어그램/표:
+- **산출물**: `Docs/specs/data_model_14.md` (또는 본 문서 부록)에 다음 다이어그램/표:
   - `regions` → `monsters` (regionId, bossId)
   - `monsters` → `dropTables` / `bossExclusiveDropTables`
   - `monsters` → `monsterSkillTrees`
@@ -159,7 +159,7 @@
 
 ## 7. 다음 액션 (체크리스트)
 
-- [x] Phase 0: `Docs/data_model_14.md`에 의존성 다이어그램·용어표 작성
+- [x] Phase 0: `Docs/specs/data_model_14.md`에 의존성 다이어그램·용어표 작성
 - [x] Phase 1: `js/data/constants.js` + `GAME_DATA.meta`에 열거형 정리
 - [x] Phase 2: `items`에 `kind: material | equipment` 도입, `inventory.equip`에서 `kind` 확인
 - [x] Phase 3: `regions`에 `fieldGradeMin/Max`, `recommendedPlayerLv`, `enemyPowerTier` 추가
@@ -173,5 +173,5 @@
 
 ## 8. 관련 문서
 
-- 기존 기능/구현 흐름: `Docs/features.md`, `Docs/implementation_plan_*.md`
+- 기존 기능/구현 흐름: `Docs/specs/features.md`, `Docs/implementation/implementation_plan_*.md`
 - 본 계획은 **데이터 레이어 전반**을 다루며, 이후 세부 작업은 별도 Task/Plan으로 쪼개도 됨.

@@ -21,7 +21,7 @@
 
 ### 1. 기획 및 설정 보완 (Phase 1 마무리)
 
-#### [NEW] [features.md](file:///Users/nk/git/note_rpg/Docs/features.md)
+#### [NEW] [features.md](file:///Users/nk/git/note_rpg/Docs/specs/features.md)
 - **전투 공식**: 물리/마법 데미지, 치명타, 회피 계산식 상세 정의.
 - **성장 테이블**: 레벨별 필요 경험치 및 레벨업 시 지급 포인트 수치화.
 - **아이템 체계**: 등급별 드랍 확률 및 접두사(Prefix) 규칙 초안.

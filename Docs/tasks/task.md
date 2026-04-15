@@ -3,7 +3,7 @@
 ## 📖 Phase 1: 세계관 및 시스템 확립
 - [x] `Lore Book.md` 최신화 (순례자 스킬, 예배 시스템, 비손 유역 설정 반영)
 - [x] `Lore Book _ Monster.md` 최신화 (E, F 등급 추가)
-- [ ] `Docs/features.md` 생성 (구체적인 게임 기능 정의서)
+- [ ] `Docs/specs/features.md` 생성 (구체적인 게임 기능 정의서)
 
 ## 🏗️ Phase 2: 핵심 엔진 고도화 및 내실 다지기
 - [/] 핵심 엔진 구현

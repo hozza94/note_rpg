@@ -1,7 +1,7 @@
 # ✅ Basileia 개발 Task List #2
 
 ## 📖 Phase 1: 세계관 및 시스템 확립 (마무리)
-- [x] `Docs/features.md` 생성 (전투 공식, 성장 테이블 상세 정의)
+- [x] `Docs/specs/features.md` 생성 (전투 공식, 성장 테이블 상세 정의)
 
 ## 🏗️ Phase 2: 핵심 엔진 고도화 및 내실 다지기
 - [x] **저장소 레이어 (`js/storage.js`) 개선** 및 데이터 검증 로직 추가

@@ -1,0 +1,14 @@
+{
+  "fromVersion": 1,
+  "payload": {
+    "profile": {
+      "nickname": "순례자",
+      "title": "Pilgrim",
+      "level": 5,
+      "exp": 100,
+      "bonusPoints": 0
+    },
+    "currencies": { "gold": 5000, "talent": "0" },
+    "inventory": [{ "itemId": "gray_dust", "count": 10 }]
+  }
+}

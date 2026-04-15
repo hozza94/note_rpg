@@ -112,7 +112,7 @@
   - **시설 허브 고도화**: `js/engine/ui-facility-hub.js`를 탭형 허브로 개선하여 상점/성물 소환/대장간을 한 모달에서 전환·진입.
   - **성물 탭 역할 정리**: `js/engine/ui-tabs-inventory.js`에서 `이 지역 성물 상인` UI 및 `buyRelic` 구매 흐름 제거, 장착/정보 확인 전용으로 고정.
   - **데이터 단일화**: `js/data.js`의 `relicShops`를 빈 객체로 정리하고, `data/parts/relicShops.json`도 `{}`로 동기화하여 라운드트립 시 재생성 방지.
-  - **연계 문서**: 성물 소환 밸런스 기준은 `Docs/relic_gacha_balance_1.md`를 기준으로 유지.
+  - **연계 문서**: 성물 소환 밸런스 기준은 `Docs/plans/relic_gacha_balance_1.md`를 기준으로 유지.
 
 ---
 

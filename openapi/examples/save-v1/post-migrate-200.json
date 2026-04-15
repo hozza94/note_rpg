@@ -1,0 +1,37 @@
+{
+  "ok": true,
+  "data": {
+    "fromVersion": 1,
+    "toVersion": 3,
+    "appliedMigrations": [
+      "migrate_v1_to_v2",
+      "migrate_v2_to_v3"
+    ],
+    "payload": {
+      "saveDataVersion": 3,
+      "profile": {
+        "nickname": "순례자",
+        "title": "Pilgrim",
+        "level": 5,
+        "exp": 100,
+        "bonusPoints": 0
+      },
+      "currencies": { "gold": 5000, "talent": "0.0000" },
+      "inventory": [{ "itemId": "gray_dust", "count": 10 }],
+      "equipment": {},
+      "skills": [],
+      "relics": { "owned": [], "gachaPity": { "premiumWithoutEpic": 0 } },
+      "progress": {
+        "currentRegionId": "pishon",
+        "questProgress": 0,
+        "highestRegionId": "pishon"
+      },
+      "settings": {
+        "avatarId": null,
+        "autoExplore": false,
+        "autoBattle": false
+      }
+    }
+  },
+  "requestId": "req_mig"
+}

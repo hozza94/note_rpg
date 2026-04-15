@@ -26,7 +26,7 @@
 ### `assets/avatars/pilgrim_avatar.svg`
 - 장비 아바타 UI 배경으로 사용할 순례자 기본 실루엣 SVG(아바타 이미지는 `assets/avatars/`에 둠)
 
-### `Docs/features.md`
+### `Docs/specs/features.md`
 - 장비 아바타 UI와 거미줄 스킬트리 조작 규칙을 시스템 문서에 반영
 
 ## 3) 검증 체크리스트

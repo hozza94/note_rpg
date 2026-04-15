@@ -47,4 +47,4 @@
 ## 3. 관련 파일
 - `js/data.js` — `skills`(보스 전용), `monsterSkillTrees`, `monsters[].skillTreeId`
 - `game.js` — `pickWeightedSkillId`, `getMonsterSkillTreePool`, `chooseMonsterSkill`, 플레이어 `bossOnly` 필터
-- `Docs/features.md` — 전투·몬스터 스킬 풀 요약
+- `Docs/specs/features.md` — 전투·몬스터 스킬 풀 요약
