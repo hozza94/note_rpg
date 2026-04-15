@@ -33,7 +33,7 @@
             content.innerHTML = `
                 ${this.renderModalTopBar('🔨 대장간', { showBack: fromFacility })}
                 <p style="font-size:0.82rem; color:#b0bec5; margin-bottom:10px;">
-                    대장장이 레벨 ${this.state.player.smithLevel || 1} · 등급별 강화 상한 일반 +10 · 고급 +14 · 희귀 +17 · 에픽 +20 · 보스 전용 +30 · 보유 골드 ${this.state.player.gold}G
+                    등급별 강화 상한 일반 +10 · 고급 +14 · 희귀 +17 · 에픽 +20 · 보스 전용 +30 · 보유 골드 ${this.state.player.gold}G
                 </p>
                 <div class="smith-tabs">
                     ${tabs.map(t => `<button class="action-btn small ${t.id === currentTab ? 'primary' : ''}" data-smith-tab="${t.id}">${t.label}</button>`).join('')}
@@ -92,7 +92,8 @@
                     ? (smithing.bossSuccessRates || smithing.successRates || [])
                     : (smithing.successRates || [1, 1, 1, 1, 0.8, 0.65]);
                 const successRate = isMax ? 0 : Number(successRates[lv] ?? 0.04);
-                const canPay = this.state.player.gold >= goldCost && this.getInventoryCount(costRule.materialId) >= matCount;
+                const ownMat = this.getInventoryCount(costRule.materialId);
+                const canPay = this.state.player.gold >= goldCost && ownMat >= matCount;
                 const disabled = isMax || !canPay ? 'disabled' : '';
                 const statPreview = this.getEnhancePreviewText(itemId, lv, nextLv);
                 return `
@@ -101,7 +102,7 @@
                             <div class="name">${this.getItemDisplayName(itemId, item)} <span class="count">보유 x${this.getInventoryCount(itemId)}${Object.values(this.inventory.equipment).includes(itemId) ? ' · 장착중' : ''}</span></div>
                             <div class="effect">${this.formatShopItemDetails(item, itemId)}</div>
                             <div class="desc">${statPreview}</div>
-                            <div class="desc">비용: ${goldCost}G + ${window.GAME_DATA.items[costRule.materialId]?.name || costRule.materialId} x${matCount} · 성공률 ${(successRate * 100).toFixed(0)}%</div>
+                            <div class="desc">비용: ${goldCost}G + ${window.GAME_DATA.items[costRule.materialId]?.name || costRule.materialId} ${ownMat}/${matCount} · 성공률 ${(successRate * 100).toFixed(0)}%</div>
                         </div>
                         <button class="action-btn small primary" data-smith-enhance="${itemId}" ${disabled}>강화</button>
                     </div>

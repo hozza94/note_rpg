@@ -197,11 +197,7 @@ class GameEngine {
             window.AuthManager.logout();
             window.location.reload();
         });
-        document.getElementById('btn-sync-upload').addEventListener('click', () => {
-            settingsOverlay.classList.add('hidden');
-            this.openBackupManagerModal();
-        });
-        document.getElementById('btn-sync-download').addEventListener('click', () => {
+        document.getElementById('btn-open-backup-manager')?.addEventListener('click', () => {
             settingsOverlay.classList.add('hidden');
             this.openBackupManagerModal();
         });

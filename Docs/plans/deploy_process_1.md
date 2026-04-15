@@ -124,6 +124,7 @@
 ## 10. 관련 문서
 
 - `Docs/plans/deploy_plan_1.md` — 배포 준비 계획(큰 그림)
+- `Docs/plans/github_pages_deploy_1.md` — **무료 정적 호스팅(GitHub Pages)** 과 현재 `localStorage` 세이브·백업 범위
 - `Docs/plans/logging_plan_1.md` — 로그·알람
 - `Docs/specs/data_model_15.md` — 서버 저장 스키마
 - `Docs/specs/api_spec_1.md` — Save API 계약
@@ -133,3 +134,4 @@
 ## 변경 이력
 
 - **1판**: URL/DNS/TLS·배포 파이프라인·OpenAPI 예시 연동 정리.
+- **2판**: GitHub Pages 무료 배포 설계 문서 링크 추가.

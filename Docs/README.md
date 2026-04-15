@@ -11,6 +11,7 @@
 |------|------|
 | [deploy_plan_1.md](plans/deploy_plan_1.md) | 대규모 배포 준비 계획 |
 | [deploy_process_1.md](plans/deploy_process_1.md) | URL·DNS·HTTPS·배포 파이프라인 실무 |
+| [github_pages_deploy_1.md](plans/github_pages_deploy_1.md) | GitHub Pages 무료 배포·현재 세이브/백업 범위 |
 | [logging_plan_1.md](plans/logging_plan_1.md) | 로그 설계(앱/감사/게임 이벤트) |
 | [refactoring_plan_1.md](plans/refactoring_plan_1.md) | 엔진·`game.js` 리팩터링 계획 |
 | [relic_gacha_balance_1.md](plans/relic_gacha_balance_1.md) | 성물 가챠 밸런스 기준 |

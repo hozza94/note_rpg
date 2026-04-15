@@ -8,6 +8,11 @@ Basileia는 성경적 세계관을 바탕으로 한 웹 기반 텍스트 RPG(Not
 
 ## 🚀 시작하기 (How to Play)
 
+### 웹에서 바로 플레이 (GitHub Pages)
+
+- **플레이 URL:** [https://hozza94.github.io/note_rpg/](https://hozza94.github.io/note_rpg/)
+- 브라우저만 있으면 설치 없이 실행할 수 있습니다. 세이브는 해당 브라우저의 `localStorage`에 저장됩니다.
+
 ### 1. 간단히 실행하기
 - 프로젝트 폴더 내의 `index.html` 파일을 크롬이나 웨일 등 웹 브라우저로 직접 엽니다.
 - *주의: 일부 브라우저 환경에서는 로컬 보안 정책으로 인해 스크립트 실행이 제한될 수 있습니다.*

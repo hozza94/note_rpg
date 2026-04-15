@@ -1100,7 +1100,7 @@ body {
     position: fixed;
     right: 18px;
     bottom: calc(var(--footer-height) + 14px);
-    z-index: 1800;
+    z-index: 900;
     padding: 10px 14px;
     border-radius: 999px;
     border: 1px solid rgba(255, 255, 255, 0.25);

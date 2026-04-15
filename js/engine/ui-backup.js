@@ -1,4 +1,4 @@
-/** 백업 매니저·파일 내보내기·syncBackup */
+/** 백업 매니저·파일 내보내기·가져오기 */
 (function () {
     if (typeof window === 'undefined' || typeof window.GameEngine === 'undefined') return;
     Object.assign(window.GameEngine.prototype, {
@@ -205,36 +205,6 @@
                 this.showToast("파일 저장에 실패했습니다.", "warn");
                 return false;
             }
-        }
-,
-        syncBackup(isUpload) {
-            const settingsMsg = document.getElementById('settings-msg');
-            const slots = window.StorageManager.listCloudBackups();
-            const slotGuide = slots.map(s => s.label).join('\n');
-            const rawSlot = prompt(`백업 슬롯을 선택하세요 (1~3)\n${slotGuide}`, '1');
-            if (rawSlot === null) return;
-            const slot = Math.max(1, Math.min(3, Math.floor(Number(rawSlot) || 1)));
-            if (isUpload) {
-                this.state.inventoryData = this.inventory.serialize();
-                const res = window.StorageManager.syncToCloudSlot(this.state, slot);
-                settingsMsg.style.color = res.success ? '#4caf50' : '#ff4b2b';
-                settingsMsg.innerText = res.msg;
-                return;
-            }
-
-            const restoreRes = window.StorageManager.restoreFromCloudSlot(slot);
-            settingsMsg.style.color = restoreRes.success ? '#4caf50' : '#ff4b2b';
-            settingsMsg.innerText = restoreRes.msg;
-            if (!restoreRes.success) return;
-
-            this.state = restoreRes.payload;
-            this.ensureStateSchema();
-            this.inventory = new window.InventoryManager(this.state.inventoryData || {});
-            this.toggleBattleUI(false);
-            this.updateUI();
-            this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
-            this.log("클라우드 백업에서 데이터를 복원했습니다.", "system");
-            this.saveGame();
         }
     });
 })();
