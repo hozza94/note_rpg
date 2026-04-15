@@ -1,0 +1,114 @@
+{
+  "pishon": {
+    "id": "pishon",
+    "name": "비손 유역",
+    "minLevel": 1,
+    "bossId": "wraith",
+    "nextRegionId": "gihon",
+    "themeColor": "#00bcd4",
+    "description": "금과 베델리엄이 풍부하여 화려하지만, 탐욕으로 인해 가장 먼저 색이 바랜 땅.",
+    "fieldGradeMin": "F",
+    "fieldGradeMax": "D",
+    "recommendedPlayerLv": {
+      "min": 1,
+      "max": 14
+    },
+    "enemyPowerTier": 1
+  },
+  "gihon": {
+    "id": "gihon",
+    "name": "기혼 유역",
+    "minLevel": 10,
+    "bossId": "mud_giant",
+    "nextRegionId": "hidekel",
+    "themeColor": "#4caf50",
+    "description": "구스 온 땅을 둘렀으며, 짙은 눅눅함과 생명력이 공존하는 늪지대.",
+    "fieldGradeMin": "D",
+    "fieldGradeMax": "C",
+    "recommendedPlayerLv": {
+      "min": 8,
+      "max": 22
+    },
+    "enemyPowerTier": 2
+  },
+  "hidekel": {
+    "id": "hidekel",
+    "name": "히데겔 협곡",
+    "minLevel": 18,
+    "bossId": "stone_seraph",
+    "nextRegionId": "euphrates",
+    "themeColor": "#ff9800",
+    "description": "메마른 협곡과 붉은 바람이 지배하는 땅. 신념이 약하면 방향을 잃기 쉽습니다.",
+    "fieldGradeMin": "C",
+    "fieldGradeMax": "B",
+    "recommendedPlayerLv": {
+      "min": 16,
+      "max": 30
+    },
+    "enemyPowerTier": 3
+  },
+  "euphrates": {
+    "id": "euphrates",
+    "name": "유브라데 전장",
+    "minLevel": 26,
+    "bossId": "abyss_hydra",
+    "nextRegionId": "eden_core",
+    "themeColor": "#7e57c2",
+    "description": "부서진 성벽과 잿빛 강이 맞닿은 전장. 끝없는 소모전이 이어집니다.",
+    "fieldGradeMin": "B",
+    "fieldGradeMax": "S",
+    "recommendedPlayerLv": {
+      "min": 24,
+      "max": 38
+    },
+    "enemyPowerTier": 4
+  },
+  "eden_core": {
+    "id": "eden_core",
+    "name": "에덴 심연",
+    "minLevel": 34,
+    "bossId": "throne_guardian",
+    "nextRegionId": "periphery",
+    "themeColor": "#ef5350",
+    "description": "고요하지만 압도적인 심연의 중심. 마지막 시련이 잠들어 있습니다.",
+    "fieldGradeMin": "A",
+    "fieldGradeMax": "S",
+    "recommendedPlayerLv": {
+      "min": 32,
+      "max": 45
+    },
+    "enemyPowerTier": 5
+  },
+  "periphery": {
+    "id": "periphery",
+    "name": "변방의 회랑",
+    "minLevel": 40,
+    "bossId": "border_warden",
+    "nextRegionId": "void_remnant",
+    "themeColor": "#9c27b0",
+    "description": "에덴 둘레를 도는 잔향의 복도. 떠난 자들의 기억이 아직 걸려 있다.",
+    "fieldGradeMin": "A",
+    "fieldGradeMax": "SS",
+    "recommendedPlayerLv": {
+      "min": 38,
+      "max": 48
+    },
+    "enemyPowerTier": 6
+  },
+  "void_remnant": {
+    "id": "void_remnant",
+    "name": "공허 잔해",
+    "minLevel": 46,
+    "bossId": "void_sovereign",
+    "nextRegionId": null,
+    "themeColor": "#455a64",
+    "description": "세계 끝자락, 색이 완전히 사라진 잔해. 군주만이 그 중심에 선다.",
+    "fieldGradeMin": "S",
+    "fieldGradeMax": "SSS",
+    "recommendedPlayerLv": {
+      "min": 44,
+      "max": 55
+    },
+    "enemyPowerTier": 7
+  }
+}

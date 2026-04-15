@@ -118,6 +118,185 @@ body {
     margin-bottom: 20px;
 }
 
+/* 닉네임·ⓘ 호버 시 최종 스탯(패시브 배율 포함) */
+.char-title-hover-zone {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.char-title-hover-zone #char-name {
+    margin: 0;
+    line-height: 1.2;
+}
+
+.char-stat-info-btn {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    line-height: 1;
+    font-size: 0.75rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.06);
+    color: #b0bec5;
+    cursor: help;
+}
+
+.char-stat-info-btn:hover,
+.char-stat-info-btn:focus-visible {
+    border-color: rgba(129, 199, 132, 0.6);
+    color: #c5e1a5;
+    outline: none;
+}
+
+.char-stat-tooltip {
+    position: fixed;
+    z-index: 10000;
+    box-sizing: border-box;
+    width: auto;
+    max-width: min(232px, calc(100vw - 24px));
+    min-width: 0;
+    padding: 9px 10px;
+    border-radius: 8px;
+    background: rgba(18, 22, 28, 0.97);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    font-size: 0.7rem;
+    font-weight: 400;
+    line-height: 1.4;
+    color: var(--text-primary);
+    text-align: left;
+    overflow-x: hidden;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.12s ease, visibility 0.12s ease;
+}
+
+.char-title-hover-zone:hover .char-stat-tooltip,
+.char-title-hover-zone:focus-within .char-stat-tooltip {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.char-stat-tooltip__head {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+    margin-bottom: 6px;
+    padding-bottom: 5px;
+    border-bottom: 1px dashed rgba(255, 255, 255, 0.12);
+    line-height: 1.35;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+.char-stat-tooltip__head-sub {
+    opacity: 0.92;
+    font-size: 0.62rem;
+}
+
+.char-stat-tooltip__row {
+    display: grid;
+    grid-template-columns: minmax(56px, 0.42fr) minmax(0, 1fr);
+    gap: 4px 8px;
+    margin-bottom: 3px;
+    align-items: start;
+}
+
+.char-stat-tooltip__row span:first-child {
+    color: #90a4ae;
+    min-width: 0;
+}
+
+.char-stat-tooltip__row span:last-child {
+    font-weight: 600;
+    color: #eceff1;
+    text-align: right;
+    min-width: 0;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.char-stat-tooltip__battle-note {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.12);
+    font-size: 0.62rem;
+    line-height: 1.38;
+    color: #81d4fa;
+    word-break: keep-all;
+    overflow-wrap: break-word;
+}
+
+/* 전투 중 자기강화·디버프 — 좌측 패널 (탐험 스탯과 별개로 전투 시만) */
+.char-battle-effects {
+    margin: 10px 0 12px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    background: rgba(66, 165, 245, 0.08);
+    border: 1px solid rgba(66, 165, 245, 0.22);
+    font-size: 0.72rem;
+    line-height: 1.4;
+    color: #b0bec5;
+}
+
+.char-battle-effects__head {
+    font-weight: 600;
+    color: #81d4fa;
+    margin-bottom: 6px;
+    font-size: 0.74rem;
+}
+
+.char-battle-effects__hint {
+    font-weight: 400;
+    font-size: 0.68rem;
+    color: #78909c;
+}
+
+.char-battle-effects__row {
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 6px 8px;
+    margin-bottom: 5px;
+    align-items: start;
+}
+
+.char-battle-effects__row span:first-child {
+    color: #90caf9;
+}
+
+.char-battle-effects__row em {
+    font-style: normal;
+    color: #ffd54f;
+    font-size: 0.68rem;
+    margin-left: 4px;
+}
+
+.char-battle-effects__row.is-debuff {
+    border-left: 2px solid #e57373;
+    padding-left: 6px;
+    margin-left: -4px;
+}
+
+.char-battle-effects__row.is-debuff span:first-child {
+    color: #ef9a9a;
+}
+
+.char-battle-effects__row.is-enemy {
+    border-left: 2px solid #81c784;
+    padding-left: 6px;
+    margin-left: -4px;
+}
+
+.char-battle-effects__row.is-enemy span:first-child {
+    color: #a5d6a7;
+}
+
 .badge {
     padding: 4px 12px;
     background: var(--accent-gray);
@@ -596,7 +775,7 @@ body {
 .equipment-avatar-image {
     position: absolute;
     inset: 0;
-    background-image: var(--equip-avatar-url, url('assets/Avatar_M.png'));
+    background-image: var(--equip-avatar-url, url('assets/avatars/Avatar_M.png'));
     background-size: cover;
     background-position: center top;
     filter: saturate(0.95) brightness(0.92);
@@ -1119,6 +1298,18 @@ body {
     color: #ffcdd2;
 }
 
+.status-chip.player.crit {
+    border-color: rgba(255, 213, 79, 0.45);
+    background: rgba(255, 213, 79, 0.12);
+    color: #ffe082;
+}
+
+.status-chip.player.debuff {
+    border-color: rgba(239, 154, 154, 0.45);
+    background: rgba(229, 57, 53, 0.12);
+    color: #ffcdd2;
+}
+
 .bar-container.mini {
     height: 6px;
     margin-bottom: 4px;
@@ -1399,6 +1590,52 @@ body {
     box-shadow: 0 0 10px var(--accent-glow);
 }
 
+.tab-nav--triple .tab-btn {
+    font-size: 0.82rem;
+    padding: 9px 6px;
+}
+
+.tab-btn--skill {
+    position: relative;
+    min-height: 2.5rem;
+}
+
+.tab-btn--skill .tab-btn__label {
+    display: block;
+    padding-top: 2px;
+}
+
+.tab-badge {
+    display: inline-block;
+    min-width: 1.1em;
+    margin-left: 4px;
+    padding: 1px 6px;
+    border-radius: 999px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    background: #ff7043;
+    color: #fff;
+    vertical-align: middle;
+}
+
+.tab-badge.tab-badge--corner {
+    position: absolute;
+    top: 4px;
+    right: 5px;
+    margin-left: 0;
+    min-width: 1.2em;
+    padding: 2px 5px;
+    font-size: 0.68rem;
+    line-height: 1.2;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.35);
+    z-index: 1;
+}
+
+.tab-badge.hidden {
+    display: none;
+}
+
 .tab-content {
     display: flex;
     flex-direction: column;
@@ -1418,6 +1655,50 @@ body {
     align-items: center;
     justify-content: space-between;
     gap: 10px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(33, 150, 243, 0.08));
+    border: 1px solid rgba(129, 199, 132, 0.35);
+}
+
+#btn-open-skilltree {
+    font-weight: 600;
+    box-shadow: 0 0 12px rgba(76, 175, 80, 0.25);
+}
+
+.relic-tab-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.relic-tab-panel .relic-hint {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.relic-card {
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 8px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.relic-card.equipped {
+    border-color: rgba(255, 213, 79, 0.55);
+    box-shadow: 0 0 12px rgba(255, 213, 79, 0.12);
+}
+
+.relic-card .relic-name {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.relic-card .relic-meta {
+    font-size: 0.78rem;
+    color: #90a4ae;
+    margin-bottom: 6px;
 }
 
 .skill-tree-point {
@@ -1610,11 +1891,22 @@ body {
 .skill-web-edge {
     stroke: rgba(255, 255, 255, 0.28);
     stroke-width: 2;
+    fill: none;
+}
+
+/* 지도 전체를 가로지르는 장거리 연결: 직선 대신 점선으로 구분해 한눈에 읽기 쉽게 */
+.skill-web-edge.long-hop {
+    stroke-dasharray: 8 12;
+    stroke-opacity: 0.42;
 }
 
 .skill-web-edge.active {
     stroke: rgba(174, 213, 129, 0.9);
     stroke-width: 3;
+}
+
+.skill-web-edge.active.long-hop {
+    stroke-opacity: 0.88;
 }
 
 .skill-web-node {
@@ -1638,6 +1930,19 @@ body {
 .skill-web-node.branch-abyss_branch { --hue: 18; }
 .skill-web-node.branch-convergence_path { --hue: 195; }
 .skill-web-node.branch-martyr_path { --hue: 348; }
+.skill-web-node.branch-boss_hunt_path { --hue: 24; }
+.skill-web-node.branch-sanctuary_path { --hue: 158; }
+.skill-web-node.branch-revelation_path { --hue: 268; }
+.skill-web-node.branch-bulwark_path { --hue: 132; }
+.skill-web-node.branch-flux_path { --hue: 188; }
+.skill-web-node.branch-stellar_path { --hue: 210; }
+.skill-web-node.branch-radiant_volley_branch { --hue: 218; }
+.skill-web-node.branch-solemn_bastion_branch { --hue: 132; }
+.skill-web-node.branch-mercy_breath_branch { --hue: 168; }
+.skill-web-node.branch-ember_sigil_branch { --hue: 14; }
+.skill-web-node.branch-devotion_twig { --hue: 226; }
+.skill-web-node.branch-steadfast_twig { --hue: 136; }
+.skill-web-node.branch-quickness_twig { --hue: 284; }
 .skill-web-node.branch-unknown { --hue: 200; }
 
 .skill-web-node-core {
@@ -1860,50 +2165,34 @@ body {
     width: 100%;
 }
 
-.settings-avatar-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 8px;
-}
-
-.settings-avatar-card {
+/* 설정 패널: 아바타는 드롭다운 한 줄로 (목록 나열로 모달이 길어지지 않게) */
+.settings-avatar-select {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
+    max-width: 100%;
+    box-sizing: border-box;
+    padding: 10px 12px;
     border-radius: 8px;
     border: 1px solid #555;
-    background: rgba(255, 255, 255, 0.05);
+    background: rgba(0, 0, 0, 0.45);
     color: #eee;
-    padding: 10px 12px;
-    cursor: pointer;
-    transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.settings-avatar-card:hover {
-    border-color: #8bc34a;
-    background: rgba(139, 195, 74, 0.12);
-}
-
-.settings-avatar-card.is-selected {
-    border-color: #4caf50;
-    background: rgba(76, 175, 80, 0.22);
-}
-
-.settings-avatar-card.is-locked {
-    opacity: 0.55;
-    cursor: not-allowed;
-}
-
-.settings-avatar-card .avatar-label {
     font-size: 0.9rem;
-    font-weight: 600;
+    cursor: pointer;
+    appearance: auto;
 }
 
-.settings-avatar-card .avatar-unlock {
-    font-size: 0.78rem;
-    color: #cddc39;
+.settings-avatar-select:focus {
+    outline: none;
+    border-color: #8bc34a;
+    box-shadow: 0 0 0 2px rgba(139, 195, 74, 0.25);
+}
+
+.settings-avatar-select option {
+    background: #1e1e22;
+    color: #eee;
+}
+
+.settings-avatar-select option:disabled {
+    color: #666;
 }
 
 .item-list {

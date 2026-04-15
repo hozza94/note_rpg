@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260414-7">
+    <link rel="stylesheet" href="style.css?v=20260415-6">
 </head>
 <body class="theme-gray">
     <div id="app" class="glass-container">
@@ -28,7 +28,11 @@
              <aside class="character-pane card">
                 <div class="char-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div>
-                        <h2 id="char-name">순례자</h2>
+                        <div class="char-title-hover-zone">
+                            <h2 id="char-name">순례자</h2>
+                            <button type="button" id="char-stat-info-btn" class="char-stat-info-btn" aria-label="전체 스탯 보기" title="전체 스탯">ⓘ</button>
+                            <div id="char-stat-tooltip" class="char-stat-tooltip" role="tooltip"></div>
+                        </div>
                         <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
                             <span id="char-title" class="badge">Pilgrim</span>
                             <span id="char-level" class="badge">Lv.1</span>
@@ -36,6 +40,8 @@
                     </div>
                     <button id="btn-settings" class="action-btn small secondary" style="padding: 5px 10px; font-size: 0.9rem;">⚙️ 설정</button>
                 </div>
+
+                <div id="char-battle-effects" class="char-battle-effects hidden" aria-live="polite" aria-label="전투 중 자기강화 및 상태"></div>
                 
                 <!-- Quest/Progress Section -->
                 <div class="quest-section">
@@ -168,9 +174,13 @@
 
             <!-- Right: Inventory/Skills -->
             <aside class="data-pane card">
-                <nav class="tab-nav">
+                <nav class="tab-nav tab-nav--triple">
                     <button class="tab-btn active" data-tab="inventory">소지품</button>
-                    <button class="tab-btn" data-tab="skills">스킬</button>
+                    <button type="button" class="tab-btn tab-btn--skill" data-tab="skills" title="스킬 / 스킬트리">
+                        <span class="tab-btn__label">스킬</span>
+                        <span id="skill-tree-tab-badge" class="tab-badge tab-badge--corner hidden" title="미사용 스킬 포인트">0</span>
+                    </button>
+                    <button class="tab-btn" data-tab="relics">성물</button>
                 </nav>
                 <div class="tab-content">
                     <div id="inventory-list" class="item-list">
@@ -265,7 +275,7 @@
             <div style="margin-bottom: 20px; text-align: left;">
                 <label style="font-size: 0.9rem; color: #aaa; display: block; margin-bottom: 8px;">캐릭터 아바타</label>
                 <div id="settings-avatar-options" class="settings-avatar-options"></div>
-                <p style="font-size: 0.75rem; color: #777; margin-top: 8px; line-height: 1.4;">해금된 아바타만 선택 가능합니다. 장비 패널 배경에 즉시 반영됩니다.</p>
+                <p style="font-size: 0.75rem; color: #777; margin-top: 8px; line-height: 1.4;">목록에서 아바타를 고릅니다. 잠금 항목은 비활성입니다. 장비 패널 배경에 바로 반영됩니다.</p>
             </div>
 
             <div class="settings-actions" style="display:flex; flex-direction:column; gap:10px;">
@@ -281,12 +291,13 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="js/storage.js?v=20260414-7"></script>
-    <script src="js/data.js?v=20260414-7"></script>
+    <script src="js/data/constants.js?v=20260415-2"></script>
+    <script src="js/data.js?v=20260415-5"></script>
     <script src="js/inventory.js?v=20260414-7"></script>
-    <script src="game.js?v=20260414-7"></script>
-    <script src="js/engine/skilltree.js?v=20260414-7"></script>
-    <script src="js/engine/explore.js?v=20260414-7"></script>
-    <script src="js/engine/battle.js?v=20260414-7"></script>
+    <script src="game.js?v=20260415-2"></script>
+    <script src="js/engine/skilltree.js?v=20260415-1"></script>
+    <script src="js/engine/explore.js?v=20260415-2"></script>
+    <script src="js/engine/battle.js?v=20260415-1"></script>
     <script src="js/engine/smithing.js?v=20260414-7"></script>
 </body>
 </html>

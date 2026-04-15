@@ -1,0 +1,673 @@
+{
+  "gray_dust": {
+    "kind": "material",
+    "name": "회색 가루",
+    "grade": "Normal",
+    "desc": "세계를 덮고 있는 무채색의 가루입니다."
+  },
+  "rat_tail": {
+    "kind": "material",
+    "name": "쥐 꼬리",
+    "grade": "Normal",
+    "desc": "탐욕스러운 쥐의 꼬리입니다."
+  },
+  "tiny_horn": {
+    "kind": "material",
+    "name": "작은 뿔",
+    "grade": "Uncommon",
+    "desc": "어린 마귀의 뿔입니다."
+  },
+  "ghost_dust": {
+    "kind": "material",
+    "name": "영혼의 먼지",
+    "grade": "Uncommon",
+    "desc": "원령이 흩어지며 남긴 불길한 먼지입니다."
+  },
+  "frog_poison": {
+    "kind": "material",
+    "name": "개구리 독샘",
+    "grade": "Uncommon",
+    "desc": "늪의 독개구리에게서 채취한 맹독 물질입니다."
+  },
+  "snake_scale": {
+    "kind": "material",
+    "name": "뱀 비늘",
+    "grade": "Uncommon",
+    "desc": "진흙 구렁이의 단단하고 질긴 비늘입니다."
+  },
+  "tainted_moss": {
+    "kind": "material",
+    "name": "오염된 이끼",
+    "grade": "Rare",
+    "desc": "해골전사에게 붙어있던 죽음의 이끼입니다."
+  },
+  "giant_core": {
+    "kind": "material",
+    "name": "거인의 핵",
+    "grade": "Epic",
+    "desc": "진흙 거인의 몸체 중심에서 맥동하던 코어입니다."
+  },
+  "smithing_shard": {
+    "kind": "material",
+    "name": "제련 파편",
+    "grade": "Uncommon",
+    "desc": "대장간에서 강화 촉매로 쓰이는 금속 파편입니다."
+  },
+  "blessed_iron": {
+    "kind": "material",
+    "name": "축성 강철",
+    "grade": "Rare",
+    "desc": "기도로 정련된 단단한 합금 재료입니다."
+  },
+  "seraph_ember": {
+    "kind": "material",
+    "name": "세라프 잔화",
+    "grade": "Epic",
+    "desc": "고위 존재의 잔열이 남은 희귀한 단조 촉매입니다."
+  },
+  "abyss_scale": {
+    "kind": "material",
+    "name": "심연 비늘",
+    "grade": "Rare",
+    "desc": "심연 수계 괴수에게서 떨어져 나온 단단한 비늘입니다."
+  },
+  "throne_fragment": {
+    "kind": "material",
+    "name": "왕좌 파편",
+    "grade": "Epic",
+    "desc": "오래된 왕좌의 조각. 고밀도 광휘가 남아 있습니다."
+  },
+  "echo_of_wraith": {
+    "kind": "material",
+    "name": "원혼의 잔향",
+    "grade": "Rare",
+    "desc": "원혼 보스를 쓰러뜨렸다는 증표가 되는 잔향 조각입니다."
+  },
+  "heart_of_giant": {
+    "kind": "material",
+    "name": "거인의 심핵",
+    "grade": "Epic",
+    "desc": "진흙 거인의 심부에서만 떨어지는 무거운 핵입니다."
+  },
+  "seraph_feather": {
+    "kind": "material",
+    "name": "석화 깃편",
+    "grade": "Epic",
+    "desc": "석화 세라프의 날개에서 흩어진 희귀 깃편입니다."
+  },
+  "hydra_venom_gem": {
+    "kind": "material",
+    "name": "히드라 맹독핵",
+    "grade": "Epic",
+    "desc": "심연 히드라의 독이 응축된 광물 결정입니다."
+  },
+  "guardian_oath": {
+    "kind": "material",
+    "name": "수호자의 맹세",
+    "grade": "Epic",
+    "desc": "왕좌 수호자의 의지가 봉인된 성물 조각입니다."
+  },
+  "border_reliquary": {
+    "kind": "material",
+    "name": "변방 성구함 조각",
+    "grade": "Epic",
+    "desc": "회랑 끝 의식장에서 떨어진 성구함의 파편입니다."
+  },
+  "void_sliver": {
+    "kind": "material",
+    "name": "공허의 파편",
+    "grade": "Epic",
+    "desc": "색이 사라진 틈새에만 남는 결정질 잔재입니다."
+  },
+  "wooden_sword": {
+    "kind": "equipment",
+    "name": "부러진 나무검",
+    "grade": "Normal",
+    "slot": "weapon",
+    "stats": {
+      "atk": 3
+    },
+    "desc": "장난감에 가까운 낡은 나무검입니다."
+  },
+  "chipped_dagger": {
+    "kind": "equipment",
+    "name": "이 빠진 단검",
+    "grade": "Normal",
+    "slot": "weapon",
+    "stats": {
+      "atk": 4,
+      "spd": 3
+    },
+    "desc": "날이 많이 상한 녹슨 단검입니다."
+  },
+  "iron_sword": {
+    "kind": "equipment",
+    "name": "낡은 철검",
+    "grade": "Uncommon",
+    "slot": "weapon",
+    "stats": {
+      "atk": 7
+    },
+    "desc": "녹이 슬었지만 제법 날카로운 철검입니다."
+  },
+  "hunter_bow": {
+    "kind": "equipment",
+    "name": "사냥꾼의 활",
+    "grade": "Uncommon",
+    "slot": "weapon",
+    "stats": {
+      "atk": 8,
+      "spd": 5
+    },
+    "desc": "가볍게 다루기 좋은 수렵용 활입니다."
+  },
+  "bronze_sword": {
+    "kind": "equipment",
+    "name": "청동 검",
+    "grade": "Uncommon",
+    "slot": "weapon",
+    "stats": {
+      "atk": 9,
+      "hp": 10
+    },
+    "desc": "무겁지만 튼튼한 청동 재질의 검입니다."
+  },
+  "silver_dagger": {
+    "kind": "equipment",
+    "name": "은장도",
+    "grade": "Rare",
+    "slot": "weapon",
+    "stats": {
+      "atk": 12,
+      "spd": 8
+    },
+    "desc": "어둠을 베어내는 신성한 은빛 단검입니다."
+  },
+  "steel_longsword": {
+    "kind": "equipment",
+    "name": "강철 장검",
+    "grade": "Rare",
+    "slot": "weapon",
+    "stats": {
+      "atk": 14,
+      "hp": 15
+    },
+    "desc": "숙련된 대장장이가 벼려낸 매끄러운 강철 장검입니다."
+  },
+  "bone_spear": {
+    "kind": "equipment",
+    "name": "기혼의 뼈창",
+    "grade": "Rare",
+    "slot": "weapon",
+    "stats": {
+      "atk": 16,
+      "def": 2
+    },
+    "desc": "거대한 늪 괴수의 뼈로 깎아 만든 날카로운 창입니다."
+  },
+  "wraith_blade": {
+    "kind": "equipment",
+    "name": "원혼을 베는 검",
+    "grade": "Epic",
+    "slot": "weapon",
+    "stats": {
+      "atk": 22,
+      "spd": 10
+    },
+    "desc": "원혼 보스가 사용하던 서늘한 기운을 내뿜는 마검입니다."
+  },
+  "earth_hammer": {
+    "kind": "equipment",
+    "name": "대지의 둔기",
+    "grade": "Epic",
+    "slot": "weapon",
+    "stats": {
+      "atk": 28,
+      "def": 10,
+      "spd": -5
+    },
+    "desc": "진흙 거인이 대지를 내리칠 때 쓰던 거대한 둔기입니다."
+  },
+  "ragged_cloak": {
+    "kind": "equipment",
+    "name": "누더기 망토",
+    "grade": "Normal",
+    "slot": "armor",
+    "stats": {
+      "def": 1,
+      "hp": 5,
+      "spd": 2
+    },
+    "desc": "거적때기를 이어 붙여 만든 엉성한 망토입니다."
+  },
+  "rusty_armor": {
+    "kind": "equipment",
+    "name": "녹슨 호심경",
+    "grade": "Normal",
+    "slot": "armor",
+    "stats": {
+      "def": 2,
+      "hp": 10
+    },
+    "desc": "가슴 부분만을 간신히 가려주는 낡은 철판입니다."
+  },
+  "leather_vest": {
+    "kind": "equipment",
+    "name": "가죽 조끼",
+    "grade": "Uncommon",
+    "slot": "armor",
+    "stats": {
+      "def": 5,
+      "hp": 20
+    },
+    "desc": "질긴 코뿔소 가죽으로 만든 훌륭한 조끼입니다."
+  },
+  "bronze_breastplate": {
+    "kind": "equipment",
+    "name": "청동 흉갑",
+    "grade": "Uncommon",
+    "slot": "armor",
+    "stats": {
+      "def": 7,
+      "hp": 30
+    },
+    "desc": "심장을 보호하기 위해 설계된 청동 마갑입니다."
+  },
+  "swamp_leather": {
+    "kind": "equipment",
+    "name": "습지의 가죽옷",
+    "grade": "Rare",
+    "slot": "armor",
+    "stats": {
+      "def": 9,
+      "hp": 35,
+      "spd": 5
+    },
+    "desc": "독늪의 습기를 차단해주는 부드럽고 가벼운 가죽옷입니다."
+  },
+  "steel_armor": {
+    "kind": "equipment",
+    "name": "강철 갑옷",
+    "grade": "Rare",
+    "slot": "armor",
+    "stats": {
+      "def": 12,
+      "hp": 50,
+      "spd": -2
+    },
+    "desc": "이름 없는 기사가 남기고 간 견고한 판금 갑옷입니다."
+  },
+  "thorn_armor": {
+    "kind": "equipment",
+    "name": "가시나무 흉갑",
+    "grade": "Epic",
+    "slot": "armor",
+    "stats": {
+      "def": 18,
+      "hp": 80
+    },
+    "desc": "강력한 가시덤불 마력이 얽혀 만들어진 전설적인 방어구입니다."
+  },
+  "straw_shoes": {
+    "kind": "equipment",
+    "name": "짚신",
+    "grade": "Normal",
+    "slot": "boots",
+    "stats": {
+      "spd": 3,
+      "hp": 5
+    },
+    "desc": "가난한 순례자들이 흔히 매고 다니는 짚신입니다."
+  },
+  "old_boots": {
+    "kind": "equipment",
+    "name": "해진 가죽신",
+    "grade": "Normal",
+    "slot": "boots",
+    "stats": {
+      "spd": 5
+    },
+    "desc": "뒤축이 완전히 닳아버린 장화입니다."
+  },
+  "sturdy_boots": {
+    "kind": "equipment",
+    "name": "튼튼한 가죽화",
+    "grade": "Uncommon",
+    "slot": "boots",
+    "stats": {
+      "spd": 8,
+      "def": 2
+    },
+    "desc": "마감 처리가 훌륭한 여행자용 가죽 신발입니다."
+  },
+  "soldier_boots": {
+    "kind": "equipment",
+    "name": "병사의 전투화",
+    "grade": "Uncommon",
+    "slot": "boots",
+    "stats": {
+      "spd": 10,
+      "hp": 15
+    },
+    "desc": "왕국군의 규격에 맞춰 제작된 실용적인 군화입니다."
+  },
+  "steel_boots": {
+    "kind": "equipment",
+    "name": "강철 군화",
+    "grade": "Rare",
+    "slot": "boots",
+    "stats": {
+      "spd": 12,
+      "def": 5
+    },
+    "desc": "무겁지만 날카로운 공격으로부터 발을 완벽히 보호합니다."
+  },
+  "wind_shoes": {
+    "kind": "equipment",
+    "name": "바람의 신",
+    "grade": "Rare",
+    "slot": "boots",
+    "stats": {
+      "spd": 20
+    },
+    "desc": "바람 정령의 축복을 받아 발걸음을 깃털처럼 가볍게 해줍니다."
+  },
+  "mud_boots": {
+    "kind": "equipment",
+    "name": "진흙장화",
+    "grade": "Epic",
+    "slot": "boots",
+    "stats": {
+      "spd": 25,
+      "def": 8
+    },
+    "desc": "어떠한 험비나 늪지대에서도 달릴 수 있게 해주는 마법의 장화입니다."
+  },
+  "pilgrim_hood": {
+    "kind": "equipment",
+    "name": "순례자의 두건",
+    "grade": "Normal",
+    "slot": "helmet",
+    "stats": {
+      "def": 2,
+      "hp": 8
+    },
+    "desc": "먼지와 바람을 막아주는 평범한 두건입니다."
+  },
+  "seraph_crown": {
+    "kind": "equipment",
+    "name": "세라프의 왕관",
+    "grade": "Epic",
+    "slot": "helmet",
+    "stats": {
+      "def": 15,
+      "faith": 2
+    },
+    "desc": "석화 세라프의 잔재가 스며든 왕관입니다."
+  },
+  "pilgrim_beads": {
+    "kind": "equipment",
+    "name": "순례 염주",
+    "grade": "Normal",
+    "slot": "accessory",
+    "stats": {
+      "pp": 6,
+      "faith": 1
+    },
+    "desc": "짧은 기도문이 새겨진 초심자용 염주입니다."
+  },
+  "prayer_ring": {
+    "kind": "equipment",
+    "name": "기도의 반지",
+    "grade": "Uncommon",
+    "slot": "accessory",
+    "stats": {
+      "pp": 12,
+      "faith": 1
+    },
+    "desc": "간결한 기도문이 새겨진 은빛 반지입니다."
+  },
+  "ember_necklace": {
+    "kind": "equipment",
+    "name": "잿빛 목걸이",
+    "grade": "Rare",
+    "slot": "accessory",
+    "stats": {
+      "atk": 6,
+      "pp": 10
+    },
+    "desc": "숨겨진 불씨가 미세하게 맥동하는 목걸이입니다."
+  },
+  "oracle_pendant": {
+    "kind": "equipment",
+    "name": "신탁의 펜던트",
+    "grade": "Rare",
+    "slot": "accessory",
+    "stats": {
+      "faith": 2,
+      "pp": 16
+    },
+    "desc": "희미한 계시가 머무는 청명한 펜던트입니다."
+  },
+  "battle_rosary": {
+    "kind": "equipment",
+    "name": "전장의 묵주",
+    "grade": "Rare",
+    "slot": "accessory",
+    "stats": {
+      "atk": 5,
+      "faith": 1,
+      "pp": 8
+    },
+    "desc": "전투 기도를 위해 매듭이 촘촘히 엮인 묵주입니다."
+  },
+  "wraith_locket": {
+    "kind": "equipment",
+    "name": "원혼 로켓",
+    "grade": "Epic",
+    "slot": "accessory",
+    "stats": {
+      "faith": 3,
+      "pp": 18,
+      "lifeSteal": 0.04
+    },
+    "desc": "서늘한 잔향이 맴도는 보스 전용 장신구입니다."
+  },
+  "wooden_shield": {
+    "kind": "equipment",
+    "name": "나무 방패",
+    "grade": "Normal",
+    "slot": "offhand",
+    "stats": {
+      "def": 4,
+      "hp": 15
+    },
+    "desc": "기초 방어를 위한 단단한 원형 방패입니다."
+  },
+  "covenant_shield": {
+    "kind": "equipment",
+    "name": "언약의 방패",
+    "grade": "Rare",
+    "slot": "offhand",
+    "stats": {
+      "def": 12,
+      "hp": 40,
+      "faith": 1
+    },
+    "desc": "진동하는 문양이 새겨진 신성한 방패입니다."
+  },
+  "mirror_buckler": {
+    "kind": "equipment",
+    "name": "반향 버클러",
+    "grade": "Rare",
+    "slot": "offhand",
+    "stats": {
+      "def": 9,
+      "spd": 6,
+      "pp": 6
+    },
+    "desc": "충격을 흘려보내는 얇은 경량 보조 방패입니다."
+  },
+  "giant_heart_shield": {
+    "kind": "equipment",
+    "name": "거인의 심장 방패",
+    "grade": "Epic",
+    "slot": "offhand",
+    "stats": {
+      "def": 18,
+      "hp": 75,
+      "spd": -2
+    },
+    "desc": "진흙 거인의 심핵으로 단조된 중량형 방패입니다."
+  },
+  "pilgrim_lance": {
+    "kind": "equipment",
+    "name": "순례 창",
+    "grade": "Uncommon",
+    "slot": "weapon",
+    "stats": {
+      "atk": 10,
+      "spd": 2
+    },
+    "desc": "긴 사거리로 균형 잡힌 전투를 돕는 창입니다."
+  },
+  "sanctum_mail": {
+    "kind": "equipment",
+    "name": "성역 쇄자갑",
+    "grade": "Rare",
+    "slot": "armor",
+    "stats": {
+      "def": 10,
+      "hp": 42,
+      "faith": 1
+    },
+    "desc": "성소 문양이 새겨진 중갑입니다."
+  },
+  "watcher_hood": {
+    "kind": "equipment",
+    "name": "감시자의 후드",
+    "grade": "Rare",
+    "slot": "helmet",
+    "stats": {
+      "def": 7,
+      "spd": 6
+    },
+    "desc": "시야를 잃지 않도록 도와주는 경량 투구입니다."
+  },
+  "pilgrim_greaves": {
+    "kind": "equipment",
+    "name": "순례 경갑",
+    "grade": "Uncommon",
+    "slot": "boots",
+    "stats": {
+      "spd": 11,
+      "def": 3
+    },
+    "desc": "장거리 이동과 전투를 함께 고려한 다용도 경갑입니다."
+  },
+  "river_trident": {
+    "kind": "equipment",
+    "name": "강의 삼지창",
+    "grade": "Rare",
+    "slot": "weapon",
+    "stats": {
+      "atk": 20,
+      "spd": 6
+    },
+    "desc": "급류를 가르며 단련된 날카로운 삼지창입니다."
+  },
+  "dusk_plate": {
+    "kind": "equipment",
+    "name": "황혼 판금갑",
+    "grade": "Epic",
+    "slot": "armor",
+    "stats": {
+      "def": 16,
+      "hp": 70
+    },
+    "desc": "황혼빛 합금으로 단조된 중후한 판금갑입니다."
+  },
+  "halo_boots": {
+    "kind": "equipment",
+    "name": "광륜 장화",
+    "grade": "Epic",
+    "slot": "boots",
+    "stats": {
+      "spd": 18,
+      "faith": 1
+    },
+    "desc": "미세한 광륜 잔광이 발끝을 감싸는 장화입니다."
+  },
+  "oath_diadem": {
+    "kind": "equipment",
+    "name": "서약의 디아뎀",
+    "grade": "Epic",
+    "slot": "helmet",
+    "stats": {
+      "def": 12,
+      "faith": 2,
+      "pp": 14
+    },
+    "desc": "서약 문장이 새겨진 의식용 관입니다."
+  },
+  "relic_talisman": {
+    "kind": "equipment",
+    "name": "유물 부적",
+    "grade": "Epic",
+    "slot": "accessory",
+    "stats": {
+      "atk": 8,
+      "faith": 2,
+      "pp": 12
+    },
+    "desc": "봉인된 유물의 파편을 엮은 부적입니다."
+  },
+  "aegis_core": {
+    "kind": "equipment",
+    "name": "아이기스 코어",
+    "grade": "Epic",
+    "slot": "offhand",
+    "stats": {
+      "def": 14,
+      "hp": 55,
+      "faith": 2
+    },
+    "desc": "집중 방어 결계를 생성하는 핵심 장치입니다."
+  },
+  "seraphite_mail": {
+    "kind": "equipment",
+    "name": "세라파이트 성갑",
+    "grade": "Epic",
+    "slot": "armor",
+    "stats": {
+      "def": 20,
+      "hp": 85,
+      "faith": 2
+    },
+    "desc": "석화 세라프의 깃편으로 엮은 보스 전용 갑주입니다."
+  },
+  "hydra_fang_blade": {
+    "kind": "equipment",
+    "name": "히드라 송곳니도",
+    "grade": "Epic",
+    "slot": "weapon",
+    "stats": {
+      "atk": 32,
+      "spd": 10,
+      "lifeSteal": 0.03
+    },
+    "desc": "심연 히드라의 송곳니를 제련한 포식자의 검입니다."
+  },
+  "guardian_halo": {
+    "kind": "equipment",
+    "name": "수호자의 광륜",
+    "grade": "Epic",
+    "slot": "helmet",
+    "stats": {
+      "def": 16,
+      "faith": 3,
+      "pp": 20
+    },
+    "desc": "왕좌 수호자의 맹세가 남은 최상급 투구입니다."
+  }
+}

@@ -1,0 +1,2511 @@
+{
+  "pilgrim": {
+    "classId": "pilgrim",
+    "className": "순례자",
+    "startNodeId": "pilgrim_origin",
+    "clusters": [
+      {
+        "id": "faith_path",
+        "name": "신앙의 길",
+        "nodeIds": [
+          "pilgrim_faith_1",
+          "pilgrim_faith_2",
+          "pilgrim_faith_3",
+          "pilgrim_faith_core",
+          "pilgrim_faith_4",
+          "pilgrim_faith_5",
+          "pilgrim_faith_6",
+          "pilgrim_active_holy_wall",
+          "pilgrim_faith_final"
+        ]
+      },
+      {
+        "id": "valor_path",
+        "name": "전투의 길",
+        "nodeIds": [
+          "pilgrim_atk_1",
+          "pilgrim_atk_2",
+          "pilgrim_atk_bridge",
+          "pilgrim_atk_3",
+          "pilgrim_valor_core",
+          "pilgrim_atk_4",
+          "pilgrim_atk_5",
+          "pilgrim_atk_6",
+          "pilgrim_active_smite",
+          "pilgrim_valor_final"
+        ]
+      },
+      {
+        "id": "guard_path",
+        "name": "수호의 길",
+        "nodeIds": [
+          "pilgrim_def_1",
+          "pilgrim_def_2",
+          "pilgrim_def_bridge",
+          "pilgrim_def_3",
+          "pilgrim_guard_core",
+          "pilgrim_endurance",
+          "pilgrim_guard_hp_1",
+          "pilgrim_guard_hp_2",
+          "pilgrim_active_aegis_prayer",
+          "pilgrim_guard_final"
+        ]
+      },
+      {
+        "id": "agile_path",
+        "name": "기동의 길",
+        "nodeIds": [
+          "pilgrim_spd_1",
+          "pilgrim_grace",
+          "pilgrim_spd_bridge",
+          "pilgrim_pp_1",
+          "pilgrim_agile_core",
+          "pilgrim_spd_2",
+          "pilgrim_pp_2",
+          "pilgrim_swift_2",
+          "pilgrim_active_light_dash",
+          "pilgrim_agile_final"
+        ]
+      },
+      {
+        "id": "keystone_path",
+        "name": "서약의 길",
+        "nodeIds": [
+          "pilgrim_zeal",
+          "pilgrim_zeal_2",
+          "pilgrim_resolve",
+          "pilgrim_resolve_2",
+          "pilgrim_vow_mid",
+          "pilgrim_vow_final"
+        ]
+      },
+      {
+        "id": "contemplation_path",
+        "name": "수양의 길",
+        "nodeIds": [
+          "pilgrim_cont_1",
+          "pilgrim_cont_2",
+          "pilgrim_cont_notable",
+          "pilgrim_cont_sanctum"
+        ]
+      },
+      {
+        "id": "oracle_branch",
+        "name": "예언의 가지",
+        "nodeIds": [
+          "pilgrim_oracle_1",
+          "pilgrim_oracle_2",
+          "pilgrim_oracle_notable"
+        ]
+      },
+      {
+        "id": "skirmish_branch",
+        "name": "전장의 측면",
+        "nodeIds": [
+          "pilgrim_skirm_1",
+          "pilgrim_skirm_line"
+        ]
+      },
+      {
+        "id": "aegis_branch",
+        "name": "방패선",
+        "nodeIds": [
+          "pilgrim_aegis_1",
+          "pilgrim_aegis_2"
+        ]
+      },
+      {
+        "id": "swift_branch",
+        "name": "질주선",
+        "nodeIds": [
+          "pilgrim_swift_1",
+          "pilgrim_swift_notable"
+        ]
+      },
+      {
+        "id": "ascendant_branch",
+        "name": "천상 상승",
+        "nodeIds": [
+          "pilgrim_sky_1",
+          "pilgrim_sky_crown"
+        ]
+      },
+      {
+        "id": "abyss_branch",
+        "name": "심연 저항",
+        "nodeIds": [
+          "pilgrim_abyss_1",
+          "pilgrim_cleanse_1",
+          "pilgrim_cleanse_2",
+          "pilgrim_active_purify",
+          "pilgrim_abyss_anchor"
+        ]
+      },
+      {
+        "id": "convergence_path",
+        "name": "합일의 길",
+        "nodeIds": [
+          "pilgrim_convergence_minor",
+          "pilgrim_convergence_major"
+        ]
+      },
+      {
+        "id": "martyr_path",
+        "name": "순교의 길",
+        "nodeIds": [
+          "pilgrim_martyr_1",
+          "pilgrim_martyr_2",
+          "pilgrim_martyr_3",
+          "pilgrim_martyr_4",
+          "pilgrim_active_martyr_brand",
+          "pilgrim_martyr_keystone"
+        ]
+      },
+      {
+        "id": "boss_hunt_path",
+        "name": "보스 사냥의 길",
+        "nodeIds": [
+          "pilgrim_hunt_1",
+          "pilgrim_hunt_2",
+          "pilgrim_hunt_3",
+          "pilgrim_hunt_core"
+        ]
+      },
+      {
+        "id": "sanctuary_path",
+        "name": "성역 수호의 길",
+        "nodeIds": [
+          "pilgrim_sanct_1",
+          "pilgrim_sanct_2",
+          "pilgrim_sanct_3",
+          "pilgrim_sanct_keystone"
+        ]
+      },
+      {
+        "id": "revelation_path",
+        "name": "계시의 길",
+        "nodeIds": [
+          "pilgrim_rev_1",
+          "pilgrim_rev_2",
+          "pilgrim_rev_3",
+          "pilgrim_rev_keystone"
+        ]
+      },
+      {
+        "id": "bulwark_path",
+        "name": "성채의 길",
+        "nodeIds": [
+          "pilgrim_bulwark_1",
+          "pilgrim_bulwark_2",
+          "pilgrim_bulwark_3",
+          "pilgrim_bulwark_keystone"
+        ]
+      },
+      {
+        "id": "flux_path",
+        "name": "영력의 길",
+        "nodeIds": [
+          "pilgrim_flux_1",
+          "pilgrim_flux_2",
+          "pilgrim_flux_3",
+          "pilgrim_flux_keystone"
+        ]
+      },
+      {
+        "id": "stellar_path",
+        "name": "천궁의 길",
+        "nodeIds": [
+          "pilgrim_stellar_1",
+          "pilgrim_stellar_2",
+          "pilgrim_stellar_crown"
+        ]
+      },
+      {
+        "id": "radiant_volley_branch",
+        "name": "광휘 난사",
+        "nodeIds": [
+          "pilgrim_radiant_1",
+          "pilgrim_radiant_2",
+          "pilgrim_active_radiant_volley"
+        ]
+      },
+      {
+        "id": "solemn_bastion_branch",
+        "name": "엄숙한 요새",
+        "nodeIds": [
+          "pilgrim_bastion_1",
+          "pilgrim_active_solemn_bastion"
+        ]
+      },
+      {
+        "id": "mercy_breath_branch",
+        "name": "자비의 숨",
+        "nodeIds": [
+          "pilgrim_mercy_1",
+          "pilgrim_active_mercy_breath"
+        ]
+      },
+      {
+        "id": "ember_sigil_branch",
+        "name": "잔화 인장",
+        "nodeIds": [
+          "pilgrim_ember_1",
+          "pilgrim_active_ember_sigil"
+        ]
+      },
+      {
+        "id": "devotion_twig",
+        "name": "헌신의 가지",
+        "nodeIds": [
+          "pilgrim_devotion_1",
+          "pilgrim_devotion_2"
+        ]
+      },
+      {
+        "id": "steadfast_twig",
+        "name": "불굴의 가지",
+        "nodeIds": [
+          "pilgrim_steadfast_1"
+        ]
+      },
+      {
+        "id": "quickness_twig",
+        "name": "기민의 가지",
+        "nodeIds": [
+          "pilgrim_quickness_1"
+        ]
+      }
+    ],
+    "nodes": [
+      {
+        "id": "pilgrim_origin",
+        "name": "순례의 서약",
+        "kind": "start",
+        "desc": "빛을 향한 여정의 시작점입니다.",
+        "grants": {
+          "stats": {
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": 0,
+          "y": 0
+        }
+      },
+      {
+        "id": "pilgrim_faith_1",
+        "name": "기도의 숨결",
+        "kind": "small",
+        "desc": "신앙 +1, PP +5",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "pp": 5
+          }
+        },
+        "position": {
+          "x": -1.55,
+          "y": -0.72
+        }
+      },
+      {
+        "id": "pilgrim_faith_2",
+        "name": "축복의 공명",
+        "kind": "small",
+        "desc": "신앙 +1, PP +5",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "pp": 5
+          }
+        },
+        "position": {
+          "x": -2.85,
+          "y": -1.58
+        }
+      },
+      {
+        "id": "pilgrim_faith_3",
+        "name": "응답의 속삭임",
+        "kind": "notable",
+        "desc": "신앙 +2, PP +8",
+        "grants": {
+          "stats": {
+            "faith": 2,
+            "pp": 8
+          }
+        },
+        "position": {
+          "x": -4.35,
+          "y": -2.48
+        }
+      },
+      {
+        "id": "pilgrim_faith_core",
+        "name": "은총의 중핵",
+        "kind": "keystone",
+        "desc": "신앙 기반 피해 10% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.1
+          }
+        },
+        "position": {
+          "x": -5.9,
+          "y": -3.4
+        }
+      },
+      {
+        "id": "pilgrim_faith_4",
+        "name": "성가의 파문",
+        "kind": "small",
+        "desc": "신앙 +1, 속도 +2",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "spd": 2
+          }
+        },
+        "position": {
+          "x": -7.2,
+          "y": -4.4
+        }
+      },
+      {
+        "id": "pilgrim_faith_5",
+        "name": "기도의 연쇄",
+        "kind": "small",
+        "desc": "신앙 +1, PP +6",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "pp": 6
+          }
+        },
+        "position": {
+          "x": -8.6,
+          "y": -5.3
+        }
+      },
+      {
+        "id": "pilgrim_faith_6",
+        "name": "신성 결속",
+        "kind": "notable",
+        "desc": "신앙 +2, 받는 피해 4% 감소",
+        "grants": {
+          "stats": {
+            "faith": 2
+          },
+          "specials": {
+            "damageTakenMul": 0.96
+          }
+        },
+        "position": {
+          "x": -9.8,
+          "y": -6.2
+        }
+      },
+      {
+        "id": "pilgrim_active_holy_wall",
+        "name": "거룩한 방벽 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 스킬 [거룩한 방벽]을 배웁니다.",
+        "grants": {
+          "activeSkillId": "holy_wall"
+        },
+        "position": {
+          "x": -11.2,
+          "y": -7.2
+        }
+      },
+      {
+        "id": "pilgrim_faith_final",
+        "name": "성역의 서약",
+        "kind": "keystone",
+        "desc": "받는 피해 10% 감소",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.9
+          }
+        },
+        "position": {
+          "x": -12.7,
+          "y": -8.3
+        }
+      },
+      {
+        "id": "pilgrim_atk_1",
+        "name": "신념의 일격",
+        "kind": "small",
+        "desc": "공격 +2",
+        "grants": {
+          "stats": {
+            "atk": 2
+          }
+        },
+        "position": {
+          "x": 1.55,
+          "y": -0.72
+        }
+      },
+      {
+        "id": "pilgrim_atk_2",
+        "name": "맹세의 검",
+        "kind": "small",
+        "desc": "공격 +2, 속도 +1",
+        "grants": {
+          "stats": {
+            "atk": 2,
+            "spd": 1
+          }
+        },
+        "position": {
+          "x": 2.85,
+          "y": -1.58
+        }
+      },
+      {
+        "id": "pilgrim_atk_bridge",
+        "name": "연속 가르기",
+        "kind": "small",
+        "desc": "공격 +1",
+        "grants": {
+          "stats": {
+            "atk": 1
+          }
+        },
+        "position": {
+          "x": 3.5,
+          "y": -2.05
+        }
+      },
+      {
+        "id": "pilgrim_atk_3",
+        "name": "철의 전진",
+        "kind": "notable",
+        "desc": "공격 +3, HP +10",
+        "grants": {
+          "stats": {
+            "atk": 3,
+            "hp": 10
+          }
+        },
+        "position": {
+          "x": 4.35,
+          "y": -2.52
+        }
+      },
+      {
+        "id": "pilgrim_valor_core",
+        "name": "심판의 중핵",
+        "kind": "keystone",
+        "desc": "피해량 10% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.1
+          }
+        },
+        "position": {
+          "x": 5.9,
+          "y": -3.4
+        }
+      },
+      {
+        "id": "pilgrim_atk_4",
+        "name": "단죄의 발걸음",
+        "kind": "small",
+        "desc": "공격 +3",
+        "grants": {
+          "stats": {
+            "atk": 3
+          }
+        },
+        "position": {
+          "x": 7.2,
+          "y": -4.4
+        }
+      },
+      {
+        "id": "pilgrim_atk_5",
+        "name": "성전의 박차",
+        "kind": "small",
+        "desc": "공격 +2, 속도 +1",
+        "grants": {
+          "stats": {
+            "atk": 2,
+            "spd": 1
+          }
+        },
+        "position": {
+          "x": 8.6,
+          "y": -5.3
+        }
+      },
+      {
+        "id": "pilgrim_atk_6",
+        "name": "심판 예열",
+        "kind": "notable",
+        "desc": "공격 +2, 치명타 +4%",
+        "grants": {
+          "stats": {
+            "atk": 2
+          },
+          "specials": {
+            "critChance": 0.04
+          }
+        },
+        "position": {
+          "x": 9.8,
+          "y": -6.2
+        }
+      },
+      {
+        "id": "pilgrim_active_smite",
+        "name": "심판의 강타 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 스킬 [심판의 강타]를 배웁니다.",
+        "grants": {
+          "activeSkillId": "smite"
+        },
+        "position": {
+          "x": 11.2,
+          "y": -7.2
+        }
+      },
+      {
+        "id": "pilgrim_valor_final",
+        "name": "순결한 심판",
+        "kind": "keystone",
+        "desc": "치명타 확률 +8%",
+        "grants": {
+          "specials": {
+            "critChance": 0.08
+          }
+        },
+        "position": {
+          "x": 12.7,
+          "y": -8.3
+        }
+      },
+      {
+        "id": "pilgrim_def_1",
+        "name": "견고한 걸음",
+        "kind": "small",
+        "desc": "방어 +1, HP +10",
+        "grants": {
+          "stats": {
+            "def": 1,
+            "hp": 10
+          }
+        },
+        "position": {
+          "x": 1.25,
+          "y": 1.35
+        }
+      },
+      {
+        "id": "pilgrim_def_2",
+        "name": "강인한 의지",
+        "kind": "small",
+        "desc": "방어 +2",
+        "grants": {
+          "stats": {
+            "def": 2
+          }
+        },
+        "position": {
+          "x": 2.45,
+          "y": 2.65
+        }
+      },
+      {
+        "id": "pilgrim_def_bridge",
+        "name": "판금 보강",
+        "kind": "small",
+        "desc": "방어 +1, HP +6",
+        "grants": {
+          "stats": {
+            "def": 1,
+            "hp": 6
+          }
+        },
+        "position": {
+          "x": 3.1,
+          "y": 3.28
+        }
+      },
+      {
+        "id": "pilgrim_def_3",
+        "name": "갑주의 기도",
+        "kind": "small",
+        "desc": "방어 +2, HP +8",
+        "grants": {
+          "stats": {
+            "def": 2,
+            "hp": 8
+          }
+        },
+        "position": {
+          "x": 3.85,
+          "y": 3.95
+        }
+      },
+      {
+        "id": "pilgrim_guard_core",
+        "name": "수호의 중핵",
+        "kind": "keystone",
+        "desc": "받는 피해 8% 감소",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.92
+          }
+        },
+        "position": {
+          "x": 5.2,
+          "y": 5.2
+        }
+      },
+      {
+        "id": "pilgrim_endurance",
+        "name": "수호자 본능",
+        "kind": "notable",
+        "desc": "HP +25, 방어 +2",
+        "grants": {
+          "stats": {
+            "hp": 25,
+            "def": 2
+          }
+        },
+        "position": {
+          "x": 6.5,
+          "y": 6.5
+        }
+      },
+      {
+        "id": "pilgrim_guard_hp_1",
+        "name": "침착한 호흡",
+        "kind": "small",
+        "desc": "HP +20",
+        "grants": {
+          "stats": {
+            "hp": 20
+          }
+        },
+        "position": {
+          "x": 7.8,
+          "y": 7.8
+        }
+      },
+      {
+        "id": "pilgrim_guard_hp_2",
+        "name": "철의 기도문",
+        "kind": "small",
+        "desc": "HP +20, 방어 +1",
+        "grants": {
+          "stats": {
+            "hp": 20,
+            "def": 1
+          }
+        },
+        "position": {
+          "x": 9.1,
+          "y": 9.2
+        }
+      },
+      {
+        "id": "pilgrim_active_aegis_prayer",
+        "name": "수호의 기도 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 스킬 [수호의 기도]를 배웁니다.",
+        "grants": {
+          "activeSkillId": "aegis_prayer"
+        },
+        "position": {
+          "x": 10.6,
+          "y": 10.5
+        }
+      },
+      {
+        "id": "pilgrim_guard_final",
+        "name": "철벽의 맹세",
+        "kind": "keystone",
+        "desc": "받는 피해 12% 감소",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.88
+          }
+        },
+        "position": {
+          "x": 12.2,
+          "y": 12.1
+        }
+      },
+      {
+        "id": "pilgrim_spd_1",
+        "name": "빠른 발",
+        "kind": "small",
+        "desc": "속도 +4",
+        "grants": {
+          "stats": {
+            "spd": 4
+          }
+        },
+        "position": {
+          "x": -1.25,
+          "y": 1.35
+        }
+      },
+      {
+        "id": "pilgrim_grace",
+        "name": "은총의 회피",
+        "kind": "small",
+        "desc": "속도 +4, 회피 +3%",
+        "grants": {
+          "stats": {
+            "spd": 4
+          },
+          "specials": {
+            "evadeChance": 0.03
+          }
+        },
+        "position": {
+          "x": -2.45,
+          "y": 2.65
+        }
+      },
+      {
+        "id": "pilgrim_spd_bridge",
+        "name": "발끝 집중",
+        "kind": "small",
+        "desc": "속도 +3",
+        "grants": {
+          "stats": {
+            "spd": 3
+          }
+        },
+        "position": {
+          "x": -3.1,
+          "y": 3.28
+        }
+      },
+      {
+        "id": "pilgrim_pp_1",
+        "name": "영적 축적",
+        "kind": "small",
+        "desc": "PP +10",
+        "grants": {
+          "stats": {
+            "pp": 10
+          }
+        },
+        "position": {
+          "x": -3.85,
+          "y": 3.95
+        }
+      },
+      {
+        "id": "pilgrim_agile_core",
+        "name": "기민의 중핵",
+        "kind": "keystone",
+        "desc": "회피 +5%",
+        "grants": {
+          "specials": {
+            "evadeChance": 0.05
+          }
+        },
+        "position": {
+          "x": -5.2,
+          "y": 5.2
+        }
+      },
+      {
+        "id": "pilgrim_spd_2",
+        "name": "빛의 보폭",
+        "kind": "small",
+        "desc": "속도 +5",
+        "grants": {
+          "stats": {
+            "spd": 5
+          }
+        },
+        "position": {
+          "x": -6.5,
+          "y": 6.5
+        }
+      },
+      {
+        "id": "pilgrim_pp_2",
+        "name": "고요한 축적",
+        "kind": "notable",
+        "desc": "PP +12, 신앙 +1",
+        "grants": {
+          "stats": {
+            "pp": 12,
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": -7.8,
+          "y": 7.8
+        }
+      },
+      {
+        "id": "pilgrim_swift_2",
+        "name": "순풍 포착",
+        "kind": "small",
+        "desc": "속도 +4, PP +6",
+        "grants": {
+          "stats": {
+            "spd": 4,
+            "pp": 6
+          }
+        },
+        "position": {
+          "x": -9.1,
+          "y": 9.2
+        }
+      },
+      {
+        "id": "pilgrim_active_light_dash",
+        "name": "광휘 질주 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 스킬 [광휘 질주]를 배웁니다.",
+        "grants": {
+          "activeSkillId": "light_dash"
+        },
+        "position": {
+          "x": -10.6,
+          "y": 10.5
+        }
+      },
+      {
+        "id": "pilgrim_agile_final",
+        "name": "바람의 서약",
+        "kind": "keystone",
+        "desc": "속도 +6, 회피 +7%",
+        "grants": {
+          "stats": {
+            "spd": 6
+          },
+          "specials": {
+            "evadeChance": 0.07
+          }
+        },
+        "position": {
+          "x": -12.2,
+          "y": 12.1
+        }
+      },
+      {
+        "id": "pilgrim_zeal",
+        "name": "열망의 심장",
+        "kind": "notable",
+        "desc": "공격 피해 8% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.08
+          }
+        },
+        "position": {
+          "x": 0.08,
+          "y": -2.45
+        }
+      },
+      {
+        "id": "pilgrim_zeal_2",
+        "name": "타오르는 선서",
+        "kind": "small",
+        "desc": "공격 +2, 피해 5% 증가",
+        "grants": {
+          "stats": {
+            "atk": 2
+          },
+          "specials": {
+            "damageMul": 1.05
+          }
+        },
+        "position": {
+          "x": 0.08,
+          "y": -4.28
+        }
+      },
+      {
+        "id": "pilgrim_resolve",
+        "name": "불굴의 심장",
+        "kind": "notable",
+        "desc": "치명타 확률 +5%",
+        "grants": {
+          "specials": {
+            "critChance": 0.05
+          }
+        },
+        "position": {
+          "x": -0.08,
+          "y": 2.52
+        }
+      },
+      {
+        "id": "pilgrim_resolve_2",
+        "name": "굳건한 맹세",
+        "kind": "small",
+        "desc": "방어 +2, 치명타 +3%",
+        "grants": {
+          "stats": {
+            "def": 2
+          },
+          "specials": {
+            "critChance": 0.03
+          }
+        },
+        "position": {
+          "x": -0.08,
+          "y": 4.35
+        }
+      },
+      {
+        "id": "pilgrim_vow_mid",
+        "name": "중심 서약",
+        "kind": "keystone",
+        "desc": "HP 50% 이하일 때 피해 12% 증가",
+        "grants": {
+          "specials": {
+            "lowHpDamageMul": 1.12
+          }
+        },
+        "position": {
+          "x": 0,
+          "y": 6.4
+        }
+      },
+      {
+        "id": "pilgrim_vow_final",
+        "name": "순교자의 대서약",
+        "kind": "keystone",
+        "desc": "HP 50% 이하일 때 피해 20% 증가, 치명타 +5%",
+        "grants": {
+          "specials": {
+            "lowHpDamageMul": 1.2,
+            "critChance": 0.05
+          }
+        },
+        "position": {
+          "x": 0,
+          "y": 8.8
+        }
+      },
+      {
+        "id": "pilgrim_cont_1",
+        "name": "침묵의 첫걸음",
+        "kind": "small",
+        "desc": "신앙 +1, HP +8",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "hp": 8
+          }
+        },
+        "position": {
+          "x": -1.42,
+          "y": 0.95
+        }
+      },
+      {
+        "id": "pilgrim_cont_2",
+        "name": "내면의 성소",
+        "kind": "small",
+        "desc": "방어 +1, PP +6",
+        "grants": {
+          "stats": {
+            "def": 1,
+            "pp": 6
+          }
+        },
+        "position": {
+          "x": -2.72,
+          "y": 1.98
+        }
+      },
+      {
+        "id": "pilgrim_cont_notable",
+        "name": "길잃은 자의 위로",
+        "kind": "notable",
+        "desc": "HP +22, 신앙 +1",
+        "grants": {
+          "stats": {
+            "hp": 22,
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": -4.05,
+          "y": 3.02
+        }
+      },
+      {
+        "id": "pilgrim_cont_sanctum",
+        "name": "고요의 성역",
+        "kind": "keystone",
+        "desc": "받는 피해 6% 감소",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.94
+          }
+        },
+        "position": {
+          "x": -5.35,
+          "y": 4.05
+        }
+      },
+      {
+        "id": "pilgrim_oracle_1",
+        "name": "작은 징조",
+        "kind": "small",
+        "desc": "신앙 +1, PP +5",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "pp": 5
+          }
+        },
+        "position": {
+          "x": -3.78,
+          "y": -0.32
+        }
+      },
+      {
+        "id": "pilgrim_oracle_2",
+        "name": "흐릿한 계시",
+        "kind": "small",
+        "desc": "신앙 +1, 속도 +2",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "spd": 2
+          }
+        },
+        "position": {
+          "x": -5.25,
+          "y": 0.52
+        }
+      },
+      {
+        "id": "pilgrim_oracle_notable",
+        "name": "파편 예언",
+        "kind": "notable",
+        "desc": "치명타 확률 +4%",
+        "grants": {
+          "specials": {
+            "critChance": 0.04
+          }
+        },
+        "position": {
+          "x": -6.55,
+          "y": 1.42
+        }
+      },
+      {
+        "id": "pilgrim_skirm_1",
+        "name": "교전 숙달",
+        "kind": "small",
+        "desc": "공격 +2",
+        "grants": {
+          "stats": {
+            "atk": 2
+          }
+        },
+        "position": {
+          "x": 3.48,
+          "y": -0.28
+        }
+      },
+      {
+        "id": "pilgrim_skirm_line",
+        "name": "돌파선",
+        "kind": "notable",
+        "desc": "공격 +2, 속도 +3",
+        "grants": {
+          "stats": {
+            "atk": 2,
+            "spd": 3
+          }
+        },
+        "position": {
+          "x": 4.82,
+          "y": 0.92
+        }
+      },
+      {
+        "id": "pilgrim_aegis_1",
+        "name": "방패 들기",
+        "kind": "small",
+        "desc": "HP +14",
+        "grants": {
+          "stats": {
+            "hp": 14
+          }
+        },
+        "position": {
+          "x": 2.18,
+          "y": 1.92
+        }
+      },
+      {
+        "id": "pilgrim_aegis_2",
+        "name": "얇은 성역",
+        "kind": "small",
+        "desc": "방어 +3, HP +8",
+        "grants": {
+          "stats": {
+            "def": 3,
+            "hp": 8
+          }
+        },
+        "position": {
+          "x": 3.52,
+          "y": 3.08
+        }
+      },
+      {
+        "id": "pilgrim_swift_1",
+        "name": "보조 가속",
+        "kind": "small",
+        "desc": "속도 +4",
+        "grants": {
+          "stats": {
+            "spd": 4
+          }
+        },
+        "position": {
+          "x": -2.18,
+          "y": 1.92
+        }
+      },
+      {
+        "id": "pilgrim_swift_notable",
+        "name": "숨 고르기",
+        "kind": "notable",
+        "desc": "PP +10, 회피 +2%",
+        "grants": {
+          "stats": {
+            "pp": 10
+          },
+          "specials": {
+            "evadeChance": 0.02
+          }
+        },
+        "position": {
+          "x": -3.52,
+          "y": 3.08
+        }
+      },
+      {
+        "id": "pilgrim_sky_1",
+        "name": "상승 기도",
+        "kind": "small",
+        "desc": "피해량 4% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.04
+          }
+        },
+        "position": {
+          "x": 0.8,
+          "y": -5.4
+        }
+      },
+      {
+        "id": "pilgrim_sky_crown",
+        "name": "빛의 면류관",
+        "kind": "keystone",
+        "desc": "피해량 8% 증가, 공격 +2",
+        "grants": {
+          "stats": {
+            "atk": 2
+          },
+          "specials": {
+            "damageMul": 1.08
+          }
+        },
+        "position": {
+          "x": 1.5,
+          "y": -6.9
+        }
+      },
+      {
+        "id": "pilgrim_abyss_1",
+        "name": "낭떠러지 걸음",
+        "kind": "small",
+        "desc": "HP +18, 방어 +1",
+        "grants": {
+          "stats": {
+            "hp": 18,
+            "def": 1
+          }
+        },
+        "position": {
+          "x": 0.58,
+          "y": 5.05
+        }
+      },
+      {
+        "id": "pilgrim_cleanse_1",
+        "name": "맑은 이성",
+        "kind": "small",
+        "desc": "상태이상 저항 +8%",
+        "grants": {
+          "specials": {
+            "ailmentResist": 0.08
+          }
+        },
+        "position": {
+          "x": 0.88,
+          "y": 5.55
+        }
+      },
+      {
+        "id": "pilgrim_cleanse_2",
+        "name": "새벽의 각성",
+        "kind": "notable",
+        "desc": "턴 시작 시 10% 확률로 상태이상 해제",
+        "grants": {
+          "specials": {
+            "turnStartCleanseChance": 0.1
+          }
+        },
+        "position": {
+          "x": 1.18,
+          "y": 6.05
+        }
+      },
+      {
+        "id": "pilgrim_active_purify",
+        "name": "정화의 숨 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 스킬 [정화의 숨]을 배웁니다.",
+        "grants": {
+          "activeSkillId": "purify"
+        },
+        "position": {
+          "x": 1.48,
+          "y": 6.55
+        }
+      },
+      {
+        "id": "pilgrim_abyss_anchor",
+        "name": "심연의 닻",
+        "kind": "notable",
+        "desc": "HP 50% 이하일 때 피해 6% 증가, HP +12",
+        "grants": {
+          "stats": {
+            "hp": 12
+          },
+          "specials": {
+            "lowHpDamageMul": 1.06
+          }
+        },
+        "position": {
+          "x": 1.78,
+          "y": 7.05
+        }
+      },
+      {
+        "id": "pilgrim_convergence_minor",
+        "name": "조화의 심장",
+        "kind": "notable",
+        "desc": "공격 +2, 방어 +2, HP +20",
+        "grants": {
+          "stats": {
+            "atk": 2,
+            "def": 2,
+            "hp": 20
+          }
+        },
+        "requiresAll": [
+          "pilgrim_faith_core",
+          "pilgrim_valor_core"
+        ],
+        "position": {
+          "x": 0.58,
+          "y": -1.22
+        }
+      },
+      {
+        "id": "pilgrim_convergence_major",
+        "name": "성광의 합일",
+        "kind": "keystone",
+        "desc": "공격 +3, 방어 +3, HP +30, PP +10",
+        "grants": {
+          "stats": {
+            "atk": 3,
+            "def": 3,
+            "hp": 30,
+            "pp": 10
+          }
+        },
+        "requiresAll": [
+          "pilgrim_guard_core",
+          "pilgrim_agile_core",
+          "pilgrim_convergence_minor"
+        ],
+        "position": {
+          "x": 0.38,
+          "y": 2.22
+        }
+      },
+      {
+        "id": "pilgrim_martyr_1",
+        "name": "피의 서원",
+        "kind": "small",
+        "desc": "공격 +2, 받는 피해 4% 증가",
+        "grants": {
+          "stats": {
+            "atk": 2
+          },
+          "specials": {
+            "damageTakenMul": 1.04
+          }
+        },
+        "position": {
+          "x": 2.6,
+          "y": 8.7
+        }
+      },
+      {
+        "id": "pilgrim_martyr_2",
+        "name": "극한의 각성",
+        "kind": "small",
+        "desc": "피해량 8% 증가, 받는 피해 6% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.08,
+            "damageTakenMul": 1.06
+          }
+        },
+        "position": {
+          "x": 3.8,
+          "y": 10
+        }
+      },
+      {
+        "id": "pilgrim_martyr_3",
+        "name": "순교의 광휘",
+        "kind": "notable",
+        "desc": "치명타 +5%, 받는 피해 8% 증가",
+        "grants": {
+          "specials": {
+            "critChance": 0.05,
+            "damageTakenMul": 1.08
+          }
+        },
+        "position": {
+          "x": 5.1,
+          "y": 11.3
+        }
+      },
+      {
+        "id": "pilgrim_martyr_4",
+        "name": "붉은 단심",
+        "kind": "small",
+        "desc": "공격 +2, 피해량 6% 증가",
+        "grants": {
+          "stats": {
+            "atk": 2
+          },
+          "specials": {
+            "damageMul": 1.06
+          }
+        },
+        "position": {
+          "x": 6.3,
+          "y": 12.6
+        }
+      },
+      {
+        "id": "pilgrim_active_martyr_brand",
+        "name": "순교자의 낙인 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 스킬 [순교자의 낙인]을 배웁니다.",
+        "grants": {
+          "activeSkillId": "martyr_brand"
+        },
+        "position": {
+          "x": 7.6,
+          "y": 13.8
+        }
+      },
+      {
+        "id": "pilgrim_martyr_keystone",
+        "name": "잔혹한 신탁",
+        "kind": "keystone",
+        "desc": "하이 리스크 하이 리턴: 피해량 22% 증가, 받는 피해 18% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.22,
+            "damageTakenMul": 1.18
+          }
+        },
+        "position": {
+          "x": 9,
+          "y": 15.1
+        }
+      },
+      {
+        "id": "pilgrim_hunt_1",
+        "name": "사냥의 감각",
+        "kind": "small",
+        "desc": "공격 +2, 치명타 +2%",
+        "grants": {
+          "stats": {
+            "atk": 2
+          },
+          "specials": {
+            "critChance": 0.02
+          }
+        },
+        "position": {
+          "x": 8.3,
+          "y": -1.2
+        }
+      },
+      {
+        "id": "pilgrim_hunt_2",
+        "name": "급소 분석",
+        "kind": "small",
+        "desc": "피해량 6% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.06
+          }
+        },
+        "position": {
+          "x": 9.8,
+          "y": -2.4
+        }
+      },
+      {
+        "id": "pilgrim_hunt_3",
+        "name": "처형 호흡",
+        "kind": "notable",
+        "desc": "공격 +3, 치명타 +4%",
+        "grants": {
+          "stats": {
+            "atk": 3
+          },
+          "specials": {
+            "critChance": 0.04
+          }
+        },
+        "position": {
+          "x": 11.3,
+          "y": -3.6
+        }
+      },
+      {
+        "id": "pilgrim_hunt_core",
+        "name": "절대 추적자",
+        "kind": "keystone",
+        "desc": "피해량 12% 증가, 치명타 +6%",
+        "grants": {
+          "specials": {
+            "damageMul": 1.12,
+            "critChance": 0.06
+          }
+        },
+        "position": {
+          "x": 12.9,
+          "y": -4.8
+        }
+      },
+      {
+        "id": "pilgrim_sanct_1",
+        "name": "성역의 숨결",
+        "kind": "small",
+        "desc": "방어 +2, HP +18",
+        "grants": {
+          "stats": {
+            "def": 2,
+            "hp": 18
+          }
+        },
+        "position": {
+          "x": -8.2,
+          "y": 0.9
+        }
+      },
+      {
+        "id": "pilgrim_sanct_2",
+        "name": "평정의 진",
+        "kind": "small",
+        "desc": "받는 피해 4% 감소",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.96
+          }
+        },
+        "position": {
+          "x": -9.8,
+          "y": 2
+        }
+      },
+      {
+        "id": "pilgrim_sanct_3",
+        "name": "복원의 기도",
+        "kind": "notable",
+        "desc": "체력재생 +12, HP +20",
+        "grants": {
+          "stats": {
+            "hpRegen": 12,
+            "hp": 20
+          }
+        },
+        "position": {
+          "x": -11.2,
+          "y": 3.2
+        }
+      },
+      {
+        "id": "pilgrim_sanct_keystone",
+        "name": "영원의 성벽",
+        "kind": "keystone",
+        "desc": "받는 피해 10% 감소, 체력재생 +18",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.9
+          },
+          "stats": {
+            "hpRegen": 18
+          }
+        },
+        "position": {
+          "x": -12.8,
+          "y": 4.5
+        }
+      },
+      {
+        "id": "pilgrim_rev_1",
+        "name": "계시의 불꽃",
+        "kind": "small",
+        "desc": "신앙 +2, PP +8",
+        "grants": {
+          "stats": {
+            "faith": 2,
+            "pp": 8
+          }
+        },
+        "position": {
+          "x": -6.8,
+          "y": -8.9
+        }
+      },
+      {
+        "id": "pilgrim_rev_2",
+        "name": "성광의 파편",
+        "kind": "small",
+        "desc": "피해량 6% 증가, 치명타 +2%",
+        "grants": {
+          "specials": {
+            "damageMul": 1.06,
+            "critChance": 0.02
+          }
+        },
+        "position": {
+          "x": -8.4,
+          "y": -9.9
+        }
+      },
+      {
+        "id": "pilgrim_rev_3",
+        "name": "예언의 합창",
+        "kind": "notable",
+        "desc": "신앙 +3, 치명타 +4%",
+        "grants": {
+          "stats": {
+            "faith": 3
+          },
+          "specials": {
+            "critChance": 0.04
+          }
+        },
+        "position": {
+          "x": -9.9,
+          "y": -11
+        }
+      },
+      {
+        "id": "pilgrim_rev_keystone",
+        "name": "종말의 계시",
+        "kind": "keystone",
+        "desc": "피해량 12% 증가, 신앙 +4",
+        "grants": {
+          "stats": {
+            "faith": 4
+          },
+          "specials": {
+            "damageMul": 1.12
+          }
+        },
+        "position": {
+          "x": -11.4,
+          "y": -12.1
+        }
+      },
+      {
+        "id": "pilgrim_bulwark_1",
+        "name": "방진 대형",
+        "kind": "small",
+        "desc": "방어 +3, HP +25",
+        "grants": {
+          "stats": {
+            "def": 3,
+            "hp": 25
+          }
+        },
+        "position": {
+          "x": 7.2,
+          "y": 8.4
+        }
+      },
+      {
+        "id": "pilgrim_bulwark_2",
+        "name": "역류 차단",
+        "kind": "small",
+        "desc": "받는 피해 5% 감소",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.95
+          }
+        },
+        "position": {
+          "x": 8.8,
+          "y": 9.7
+        }
+      },
+      {
+        "id": "pilgrim_bulwark_3",
+        "name": "신성 완충",
+        "kind": "notable",
+        "desc": "HP +35, 방어 +3",
+        "grants": {
+          "stats": {
+            "hp": 35,
+            "def": 3
+          }
+        },
+        "position": {
+          "x": 10.3,
+          "y": 11
+        }
+      },
+      {
+        "id": "pilgrim_bulwark_keystone",
+        "name": "불멸의 방패",
+        "kind": "keystone",
+        "desc": "받는 피해 12% 감소, HP +40",
+        "grants": {
+          "specials": {
+            "damageTakenMul": 0.88
+          },
+          "stats": {
+            "hp": 40
+          }
+        },
+        "position": {
+          "x": 11.9,
+          "y": 12.3
+        }
+      },
+      {
+        "id": "pilgrim_flux_1",
+        "name": "영력의 맥동",
+        "kind": "small",
+        "desc": "적중 시 10% 확률로 PP +1",
+        "grants": {
+          "specials": {
+            "ppOnHitChance": 0.1,
+            "ppOnHitAmount": 1
+          }
+        },
+        "position": {
+          "x": -10.8,
+          "y": -13.4
+        }
+      },
+      {
+        "id": "pilgrim_flux_2",
+        "name": "잔광의 호흡",
+        "kind": "notable",
+        "desc": "적중 시 8% 확률로 PP +1 (중첩)",
+        "grants": {
+          "specials": {
+            "ppOnHitChance": 0.08,
+            "ppOnHitAmount": 1
+          }
+        },
+        "position": {
+          "x": -10,
+          "y": -14.6
+        }
+      },
+      {
+        "id": "pilgrim_flux_3",
+        "name": "유성의 궤적",
+        "kind": "notable",
+        "desc": "적중 시 PP회복 확률 +6%",
+        "grants": {
+          "specials": {
+            "ppOnHitChance": 0.06,
+            "ppOnHitAmount": 1
+          }
+        },
+        "position": {
+          "x": -9.2,
+          "y": -15.8
+        }
+      },
+      {
+        "id": "pilgrim_flux_keystone",
+        "name": "쌍연의 각인",
+        "kind": "keystone",
+        "desc": "평타·공격 스킬에 10% 확률로 추가 일격(피해 약 56%)",
+        "grants": {
+          "specials": {
+            "doubleStrikeChance": 0.1
+          }
+        },
+        "position": {
+          "x": -8.4,
+          "y": -17
+        }
+      },
+      {
+        "id": "pilgrim_stellar_1",
+        "name": "성운의 발판",
+        "kind": "small",
+        "desc": "신앙 +1, 속도 +3",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "spd": 3
+          }
+        },
+        "position": {
+          "x": -7.5,
+          "y": -18.4
+        }
+      },
+      {
+        "id": "pilgrim_stellar_2",
+        "name": "천구의 호흡",
+        "kind": "notable",
+        "desc": "피해량 7% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.07
+          }
+        },
+        "position": {
+          "x": -6.6,
+          "y": -19.8
+        }
+      },
+      {
+        "id": "pilgrim_stellar_crown",
+        "name": "천궁의 왕관",
+        "kind": "keystone",
+        "desc": "치명타 +5%, 치명 피해 +8%",
+        "grants": {
+          "specials": {
+            "critChance": 0.05,
+            "critDamageMul": 0.08
+          }
+        },
+        "position": {
+          "x": -5.7,
+          "y": -21.2
+        }
+      },
+      {
+        "id": "pilgrim_radiant_1",
+        "name": "광휘 침전",
+        "kind": "small",
+        "desc": "신앙 +1, PP +4",
+        "grants": {
+          "stats": {
+            "faith": 1,
+            "pp": 4
+          }
+        },
+        "position": {
+          "x": -13.35,
+          "y": -9.05
+        }
+      },
+      {
+        "id": "pilgrim_radiant_2",
+        "name": "폭광 정렬",
+        "kind": "notable",
+        "desc": "피해량 5% 증가",
+        "grants": {
+          "specials": {
+            "damageMul": 1.05
+          }
+        },
+        "position": {
+          "x": -14.05,
+          "y": -9.75
+        }
+      },
+      {
+        "id": "pilgrim_active_radiant_volley",
+        "name": "광휘 난사 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 [광휘 난사]를 배웁니다.",
+        "grants": {
+          "activeSkillId": "radiant_volley"
+        },
+        "position": {
+          "x": -14.75,
+          "y": -10.45
+        }
+      },
+      {
+        "id": "pilgrim_bastion_1",
+        "name": "침묵의 방벽",
+        "kind": "small",
+        "desc": "방어 +2, HP +14",
+        "grants": {
+          "stats": {
+            "def": 2,
+            "hp": 14
+          }
+        },
+        "position": {
+          "x": 12.95,
+          "y": 12.95
+        }
+      },
+      {
+        "id": "pilgrim_active_solemn_bastion",
+        "name": "엄숙한 요새 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 [엄숙한 요새]를 배웁니다.",
+        "grants": {
+          "activeSkillId": "solemn_bastion"
+        },
+        "position": {
+          "x": 13.65,
+          "y": 13.75
+        }
+      },
+      {
+        "id": "pilgrim_mercy_1",
+        "name": "은총의 잔물결",
+        "kind": "small",
+        "desc": "PP +8, 방어 +1",
+        "grants": {
+          "stats": {
+            "pp": 8,
+            "def": 1
+          }
+        },
+        "position": {
+          "x": -6.15,
+          "y": 4.78
+        }
+      },
+      {
+        "id": "pilgrim_active_mercy_breath",
+        "name": "자비의 숨 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 [자비의 숨]을 배웁니다.",
+        "grants": {
+          "activeSkillId": "mercy_breath"
+        },
+        "position": {
+          "x": -6.88,
+          "y": 5.48
+        }
+      },
+      {
+        "id": "pilgrim_ember_1",
+        "name": "불꽃 각인",
+        "kind": "small",
+        "desc": "공격 +2, 속도 +2",
+        "grants": {
+          "stats": {
+            "atk": 2,
+            "spd": 2
+          }
+        },
+        "position": {
+          "x": 13.45,
+          "y": -9.05
+        }
+      },
+      {
+        "id": "pilgrim_active_ember_sigil",
+        "name": "잔화 인장 해금",
+        "kind": "active_unlock",
+        "desc": "액티브 [잔화 인장]을 배웁니다.",
+        "grants": {
+          "activeSkillId": "ember_sigil"
+        },
+        "position": {
+          "x": 14.15,
+          "y": -9.75
+        }
+      },
+      {
+        "id": "pilgrim_devotion_1",
+        "name": "헌신의 첫걸음",
+        "kind": "small",
+        "desc": "신앙 +1",
+        "grants": {
+          "stats": {
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": -2.28,
+          "y": -0.38
+        }
+      },
+      {
+        "id": "pilgrim_devotion_2",
+        "name": "헌신의 결속",
+        "kind": "notable",
+        "desc": "HP +14, PP +6",
+        "grants": {
+          "stats": {
+            "hp": 14,
+            "pp": 6
+          }
+        },
+        "position": {
+          "x": -3.05,
+          "y": 0.05
+        }
+      },
+      {
+        "id": "pilgrim_steadfast_1",
+        "name": "불굴의 버팀",
+        "kind": "notable",
+        "desc": "방어 +3, HP +16",
+        "grants": {
+          "stats": {
+            "def": 3,
+            "hp": 16
+          }
+        },
+        "position": {
+          "x": 0.95,
+          "y": 2.15
+        }
+      },
+      {
+        "id": "pilgrim_quickness_1",
+        "name": "가벼운 발놀림",
+        "kind": "notable",
+        "desc": "속도 +5, 회피 +2%",
+        "grants": {
+          "stats": {
+            "spd": 5
+          },
+          "specials": {
+            "evadeChance": 0.02
+          }
+        },
+        "position": {
+          "x": -1.95,
+          "y": 0.55
+        }
+      }
+    ],
+    "edges": [
+      [
+        "pilgrim_origin",
+        "pilgrim_faith_1"
+      ],
+      [
+        "pilgrim_faith_1",
+        "pilgrim_faith_2"
+      ],
+      [
+        "pilgrim_faith_2",
+        "pilgrim_faith_3"
+      ],
+      [
+        "pilgrim_faith_3",
+        "pilgrim_faith_core"
+      ],
+      [
+        "pilgrim_faith_core",
+        "pilgrim_faith_4"
+      ],
+      [
+        "pilgrim_faith_4",
+        "pilgrim_faith_5"
+      ],
+      [
+        "pilgrim_faith_5",
+        "pilgrim_faith_6"
+      ],
+      [
+        "pilgrim_faith_6",
+        "pilgrim_active_holy_wall"
+      ],
+      [
+        "pilgrim_active_holy_wall",
+        "pilgrim_faith_final"
+      ],
+      [
+        "pilgrim_origin",
+        "pilgrim_atk_1"
+      ],
+      [
+        "pilgrim_atk_1",
+        "pilgrim_atk_2"
+      ],
+      [
+        "pilgrim_atk_2",
+        "pilgrim_atk_bridge"
+      ],
+      [
+        "pilgrim_atk_bridge",
+        "pilgrim_atk_3"
+      ],
+      [
+        "pilgrim_atk_3",
+        "pilgrim_valor_core"
+      ],
+      [
+        "pilgrim_valor_core",
+        "pilgrim_atk_4"
+      ],
+      [
+        "pilgrim_atk_4",
+        "pilgrim_atk_5"
+      ],
+      [
+        "pilgrim_atk_5",
+        "pilgrim_atk_6"
+      ],
+      [
+        "pilgrim_atk_6",
+        "pilgrim_active_smite"
+      ],
+      [
+        "pilgrim_active_smite",
+        "pilgrim_valor_final"
+      ],
+      [
+        "pilgrim_origin",
+        "pilgrim_def_1"
+      ],
+      [
+        "pilgrim_def_1",
+        "pilgrim_def_2"
+      ],
+      [
+        "pilgrim_def_2",
+        "pilgrim_def_bridge"
+      ],
+      [
+        "pilgrim_def_bridge",
+        "pilgrim_def_3"
+      ],
+      [
+        "pilgrim_def_3",
+        "pilgrim_guard_core"
+      ],
+      [
+        "pilgrim_guard_core",
+        "pilgrim_endurance"
+      ],
+      [
+        "pilgrim_endurance",
+        "pilgrim_guard_hp_1"
+      ],
+      [
+        "pilgrim_guard_hp_1",
+        "pilgrim_guard_hp_2"
+      ],
+      [
+        "pilgrim_guard_hp_2",
+        "pilgrim_active_aegis_prayer"
+      ],
+      [
+        "pilgrim_active_aegis_prayer",
+        "pilgrim_guard_final"
+      ],
+      [
+        "pilgrim_origin",
+        "pilgrim_spd_1"
+      ],
+      [
+        "pilgrim_spd_1",
+        "pilgrim_grace"
+      ],
+      [
+        "pilgrim_grace",
+        "pilgrim_spd_bridge"
+      ],
+      [
+        "pilgrim_spd_bridge",
+        "pilgrim_pp_1"
+      ],
+      [
+        "pilgrim_pp_1",
+        "pilgrim_agile_core"
+      ],
+      [
+        "pilgrim_agile_core",
+        "pilgrim_spd_2"
+      ],
+      [
+        "pilgrim_spd_2",
+        "pilgrim_pp_2"
+      ],
+      [
+        "pilgrim_pp_2",
+        "pilgrim_swift_2"
+      ],
+      [
+        "pilgrim_swift_2",
+        "pilgrim_active_light_dash"
+      ],
+      [
+        "pilgrim_active_light_dash",
+        "pilgrim_agile_final"
+      ],
+      [
+        "pilgrim_origin",
+        "pilgrim_zeal"
+      ],
+      [
+        "pilgrim_zeal",
+        "pilgrim_zeal_2"
+      ],
+      [
+        "pilgrim_origin",
+        "pilgrim_resolve"
+      ],
+      [
+        "pilgrim_resolve",
+        "pilgrim_resolve_2"
+      ],
+      [
+        "pilgrim_resolve_2",
+        "pilgrim_vow_mid"
+      ],
+      [
+        "pilgrim_vow_mid",
+        "pilgrim_vow_final"
+      ],
+      [
+        "pilgrim_faith_core",
+        "pilgrim_zeal_2"
+      ],
+      [
+        "pilgrim_valor_core",
+        "pilgrim_zeal_2"
+      ],
+      [
+        "pilgrim_guard_core",
+        "pilgrim_vow_mid"
+      ],
+      [
+        "pilgrim_agile_core",
+        "pilgrim_vow_mid"
+      ],
+      [
+        "pilgrim_faith_core",
+        "pilgrim_convergence_minor"
+      ],
+      [
+        "pilgrim_valor_core",
+        "pilgrim_convergence_minor"
+      ],
+      [
+        "pilgrim_convergence_minor",
+        "pilgrim_convergence_major"
+      ],
+      [
+        "pilgrim_guard_core",
+        "pilgrim_convergence_major"
+      ],
+      [
+        "pilgrim_agile_core",
+        "pilgrim_convergence_major"
+      ],
+      [
+        "pilgrim_convergence_major",
+        "pilgrim_vow_mid"
+      ],
+      [
+        "pilgrim_origin",
+        "pilgrim_cont_1"
+      ],
+      [
+        "pilgrim_cont_1",
+        "pilgrim_cont_2"
+      ],
+      [
+        "pilgrim_cont_2",
+        "pilgrim_cont_notable"
+      ],
+      [
+        "pilgrim_cont_notable",
+        "pilgrim_cont_sanctum"
+      ],
+      [
+        "pilgrim_faith_2",
+        "pilgrim_oracle_1"
+      ],
+      [
+        "pilgrim_oracle_1",
+        "pilgrim_oracle_2"
+      ],
+      [
+        "pilgrim_oracle_2",
+        "pilgrim_oracle_notable"
+      ],
+      [
+        "pilgrim_atk_2",
+        "pilgrim_skirm_1"
+      ],
+      [
+        "pilgrim_skirm_1",
+        "pilgrim_skirm_line"
+      ],
+      [
+        "pilgrim_def_1",
+        "pilgrim_aegis_1"
+      ],
+      [
+        "pilgrim_aegis_1",
+        "pilgrim_aegis_2"
+      ],
+      [
+        "pilgrim_spd_1",
+        "pilgrim_swift_1"
+      ],
+      [
+        "pilgrim_swift_1",
+        "pilgrim_swift_notable"
+      ],
+      [
+        "pilgrim_zeal_2",
+        "pilgrim_sky_1"
+      ],
+      [
+        "pilgrim_sky_1",
+        "pilgrim_sky_crown"
+      ],
+      [
+        "pilgrim_resolve_2",
+        "pilgrim_abyss_1"
+      ],
+      [
+        "pilgrim_abyss_1",
+        "pilgrim_cleanse_1"
+      ],
+      [
+        "pilgrim_cleanse_1",
+        "pilgrim_cleanse_2"
+      ],
+      [
+        "pilgrim_cleanse_2",
+        "pilgrim_active_purify"
+      ],
+      [
+        "pilgrim_active_purify",
+        "pilgrim_abyss_anchor"
+      ],
+      [
+        "pilgrim_vow_final",
+        "pilgrim_martyr_1"
+      ],
+      [
+        "pilgrim_martyr_1",
+        "pilgrim_martyr_2"
+      ],
+      [
+        "pilgrim_martyr_2",
+        "pilgrim_martyr_3"
+      ],
+      [
+        "pilgrim_martyr_3",
+        "pilgrim_martyr_4"
+      ],
+      [
+        "pilgrim_martyr_4",
+        "pilgrim_active_martyr_brand"
+      ],
+      [
+        "pilgrim_active_martyr_brand",
+        "pilgrim_martyr_keystone"
+      ],
+      [
+        "pilgrim_valor_core",
+        "pilgrim_hunt_1"
+      ],
+      [
+        "pilgrim_hunt_1",
+        "pilgrim_hunt_2"
+      ],
+      [
+        "pilgrim_hunt_2",
+        "pilgrim_hunt_3"
+      ],
+      [
+        "pilgrim_hunt_3",
+        "pilgrim_hunt_core"
+      ],
+      [
+        "pilgrim_hunt_core",
+        "pilgrim_valor_final"
+      ],
+      [
+        "pilgrim_faith_core",
+        "pilgrim_sanct_1"
+      ],
+      [
+        "pilgrim_sanct_1",
+        "pilgrim_sanct_2"
+      ],
+      [
+        "pilgrim_sanct_2",
+        "pilgrim_sanct_3"
+      ],
+      [
+        "pilgrim_sanct_3",
+        "pilgrim_sanct_keystone"
+      ],
+      [
+        "pilgrim_sanct_keystone",
+        "pilgrim_guard_final"
+      ],
+      [
+        "pilgrim_faith_final",
+        "pilgrim_rev_1"
+      ],
+      [
+        "pilgrim_rev_1",
+        "pilgrim_rev_2"
+      ],
+      [
+        "pilgrim_rev_2",
+        "pilgrim_rev_3"
+      ],
+      [
+        "pilgrim_rev_3",
+        "pilgrim_rev_keystone"
+      ],
+      [
+        "pilgrim_rev_keystone",
+        "pilgrim_flux_1"
+      ],
+      [
+        "pilgrim_flux_1",
+        "pilgrim_flux_2"
+      ],
+      [
+        "pilgrim_flux_2",
+        "pilgrim_flux_3"
+      ],
+      [
+        "pilgrim_flux_3",
+        "pilgrim_flux_keystone"
+      ],
+      [
+        "pilgrim_flux_keystone",
+        "pilgrim_stellar_1"
+      ],
+      [
+        "pilgrim_stellar_1",
+        "pilgrim_stellar_2"
+      ],
+      [
+        "pilgrim_stellar_2",
+        "pilgrim_stellar_crown"
+      ],
+      [
+        "pilgrim_stellar_crown",
+        "pilgrim_hunt_core"
+      ],
+      [
+        "pilgrim_guard_final",
+        "pilgrim_bulwark_1"
+      ],
+      [
+        "pilgrim_bulwark_1",
+        "pilgrim_bulwark_2"
+      ],
+      [
+        "pilgrim_bulwark_2",
+        "pilgrim_bulwark_3"
+      ],
+      [
+        "pilgrim_bulwark_3",
+        "pilgrim_bulwark_keystone"
+      ],
+      [
+        "pilgrim_bulwark_keystone",
+        "pilgrim_martyr_1"
+      ],
+      [
+        "pilgrim_faith_final",
+        "pilgrim_radiant_1"
+      ],
+      [
+        "pilgrim_radiant_1",
+        "pilgrim_radiant_2"
+      ],
+      [
+        "pilgrim_radiant_2",
+        "pilgrim_active_radiant_volley"
+      ],
+      [
+        "pilgrim_guard_final",
+        "pilgrim_bastion_1"
+      ],
+      [
+        "pilgrim_bastion_1",
+        "pilgrim_active_solemn_bastion"
+      ],
+      [
+        "pilgrim_cont_sanctum",
+        "pilgrim_mercy_1"
+      ],
+      [
+        "pilgrim_mercy_1",
+        "pilgrim_active_mercy_breath"
+      ],
+      [
+        "pilgrim_valor_final",
+        "pilgrim_ember_1"
+      ],
+      [
+        "pilgrim_ember_1",
+        "pilgrim_active_ember_sigil"
+      ],
+      [
+        "pilgrim_faith_1",
+        "pilgrim_devotion_1"
+      ],
+      [
+        "pilgrim_devotion_1",
+        "pilgrim_devotion_2"
+      ],
+      [
+        "pilgrim_def_1",
+        "pilgrim_steadfast_1"
+      ],
+      [
+        "pilgrim_spd_1",
+        "pilgrim_quickness_1"
+      ]
+    ]
+  }
+}

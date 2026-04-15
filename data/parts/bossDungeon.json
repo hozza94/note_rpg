@@ -1,0 +1,46 @@
+{
+  "entries": [
+    {
+      "bossId": "wraith",
+      "regionId": "pishon",
+      "recommendedLv": 14,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "mud_giant",
+      "regionId": "gihon",
+      "recommendedLv": 22,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "stone_seraph",
+      "regionId": "hidekel",
+      "recommendedLv": 30,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "abyss_hydra",
+      "regionId": "euphrates",
+      "recommendedLv": 38,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "throne_guardian",
+      "regionId": "eden_core",
+      "recommendedLv": 45,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "border_warden",
+      "regionId": "periphery",
+      "recommendedLv": 47,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "void_sovereign",
+      "regionId": "void_remnant",
+      "recommendedLv": 52,
+      "unlockType": "region_reached"
+    }
+  ]
+}

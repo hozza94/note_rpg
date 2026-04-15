@@ -37,7 +37,12 @@
             });
         },
         getPassiveBonuses() {
-            const bonuses = { atk: 0, def: 0, hp: 0, pp: 0, spd: 0, faith: 0, hpRegen: 0, lifeSteal: 0, damageMul: 1, damageTakenMul: 1, critChance: 0, critDamageMul: 0, evadeChance: 0, lowHpDamageMul: 1 };
+            const bonuses = {
+                atk: 0, def: 0, hp: 0, pp: 0, spd: 0, faith: 0, hpRegen: 0, lifeSteal: 0,
+                damageMul: 1, damageTakenMul: 1, critChance: 0, critDamageMul: 0, evadeChance: 0, lowHpDamageMul: 1,
+                ailmentResist: 0, turnStartCleanseChance: 0,
+                ppOnHitChance: 0, ppOnHitAmount: 0, doubleStrikeChance: 0
+            };
             const nodeMap = this.getSkillTreeNodeMap();
             (this.state.player.unlockedSkillNodes || []).forEach(nodeId => {
                 const grants = nodeMap[nodeId]?.grants;
@@ -51,11 +56,16 @@
                 if (grants.specials) {
                     Object.entries(grants.specials).forEach(([key, value]) => {
                         if (key === 'damageMul' || key === 'damageTakenMul' || key === 'lowHpDamageMul') bonuses[key] *= value;
-                        else if (key === 'critChance' || key === 'evadeChance') bonuses[key] += value;
+                        else if (key === 'critChance' || key === 'evadeChance' || key === 'ailmentResist' || key === 'turnStartCleanseChance'
+                            || key === 'ppOnHitChance' || key === 'doubleStrikeChance') bonuses[key] += value;
+                        else if (key === 'ppOnHitAmount') bonuses[key] += value;
                         else if (key === 'hpRegen' || key === 'lifeSteal' || key === 'critDamageMul') bonuses[key] += value;
                     });
                 }
             });
+            if (typeof this.applyRelicPassivesToBonuses === 'function') {
+                this.applyRelicPassivesToBonuses(bonuses);
+            }
             return bonuses;
         },
         getPlayerCombinedStats() {
@@ -140,8 +150,14 @@
                         if (v > 1) parts.push(`받는 피해 ${Math.round((v - 1) * 100)}% 증가`);
                     }
                     if (k === 'critChance') parts.push(`치명타 +${Math.round(v * 100)}%`);
+                    if (k === 'critDamageMul') parts.push(`치명 피해 배율 +${Math.round(v * 100)}%p`);
                     if (k === 'evadeChance') parts.push(`회피 +${Math.round(v * 100)}%`);
                     if (k === 'lowHpDamageMul') parts.push(`HP 50% 이하 피해 +${Math.round((v - 1) * 100)}%`);
+                    if (k === 'ailmentResist') parts.push(`상태이상 저항 +${Math.round(v * 100)}%`);
+                    if (k === 'turnStartCleanseChance') parts.push(`턴 시작 시 ${Math.round(v * 100)}%로 상태이상 해제 시도`);
+                    if (k === 'ppOnHitChance') parts.push(`적중 PP회복 확률 +${Math.round(v * 100)}%p`);
+                    if (k === 'ppOnHitAmount') parts.push(`적중 PP회복량 +${v}`);
+                    if (k === 'doubleStrikeChance') parts.push(`추가 일격 ${Math.round(v * 100)}%`);
                 });
             }
             return parts.join(' / ') || '효과 정보 없음';
@@ -157,6 +173,7 @@
             if (effect.nextCrit) chunks.push(`다음 치명 +${Math.round(effect.nextCrit * 100)}%`);
             if (effect.spdDebuff) chunks.push(`적 속도 ${Math.round(effect.spdDebuff * 100)}%`);
             if (effect.fear) chunks.push('공포 부여');
+            if (effect.cleanse) chunks.push('자신의 공포·둔화 해제');
             return chunks.join(' · ') || '기본 효과';
         },
         formatActiveSkillBattleDetail(skillData) {
@@ -170,6 +187,7 @@
             if (effect.nextCrit) lines.push(`강화: 다음 치명 +${Math.round(effect.nextCrit * 100)}%`);
             if (effect.spdDebuff) lines.push(`약화: 적 속도 ${Math.round(effect.spdDebuff * 100)}%`);
             if (effect.fear) lines.push('약화: 공포 부여');
+            if (effect.cleanse) lines.push('정화: 공포·이동 둔화 제거');
             return lines.join(' · ') || '기본 공격 기반 스킬';
         },
         formatSkillTreeInfo(node) {
@@ -197,6 +215,7 @@
         formatActiveSkillTooltip(skillData) {
             if (!skillData) return '상세 정보 없음';
             const lines = [`타입: ${skillData.type === 'buff' ? '강화' : '공격'}`, `소모 PP: ${skillData.cost || 0}`];
+            if (skillData.effect?.cleanse) lines.push('즉시: 공포·이동 둔화 해제');
             const healScale = skillData.scaling?.heal;
             if (healScale) {
                 lines.push(`회복식: 최소 ${Number(healScale.base || 0)} + 공격×${Number(healScale.atk || 0)} + 방어×${Number(healScale.def || 0)} + 신앙×${Number(healScale.faith || 0)}`);
@@ -279,8 +298,26 @@
                 setTimeout(() => toast.remove(), 220);
             }, 1800);
         },
+        getSkillTreeEdgePath(ax, ay, bx, by, edgeIndex = 0) {
+            const dx = bx - ax;
+            const dy = by - ay;
+            const len = Math.hypot(dx, dy) || 1;
+            const ux = dx / len;
+            const uy = dy / len;
+            const px = -uy;
+            const py = ux;
+            const sign = (edgeIndex % 2 === 0) ? 1 : -1;
+            const bow = Math.min(len * 0.2, 130) * sign;
+            const c1x = ax + ux * len * 0.32 + px * bow;
+            const c1y = ay + uy * len * 0.32 + py * bow;
+            const c2x = bx - ux * len * 0.32 + px * bow * 0.65;
+            const c2y = by - uy * len * 0.32 + py * bow * 0.65;
+            const f = (n) => Number(n.toFixed(2));
+            return `M ${f(ax)} ${f(ay)} C ${f(c1x)} ${f(c1y)} ${f(c2x)} ${f(c2y)} ${f(bx)} ${f(by)}`;
+        },
         getSkillTreeLayout(tree) { /* truncated in module extraction safety; keep same behavior via copied logic below */
-            const unit = 96, padding = 180, fallbackRadius = 2.4;
+            /** 노드 좌표 단위(px). 작을수록 같은 그리드에서 노드가 가깝게 보임 */
+            const unit = 88, padding = 180, fallbackRadius = 2.4;
             const positions = {};
             const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
             const total = Math.max(1, nodes.length);
@@ -295,7 +332,11 @@
             const height = Math.max(780, maxAbsY * 2 + padding * 2);
             const originX = width / 2, originY = height / 2;
             Object.keys(positions).forEach(nodeId => { positions[nodeId].x += originX; positions[nodeId].y += originY; });
-            return { positions, width, height, originX, originY };
+            const xs = Object.values(positions).map(p => p.x);
+            const ys = Object.values(positions).map(p => p.y);
+            const viewCenterX = xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : originX;
+            const viewCenterY = ys.length ? (Math.min(...ys) + Math.max(...ys)) / 2 : originY;
+            return { positions, width, height, originX, originY, viewCenterX, viewCenterY };
         },
         getSkillNodeStateLabel(nodeId, unlocked) {
             if (unlocked.has(nodeId)) return '해금 완료';
@@ -350,12 +391,17 @@
             const content = document.getElementById('modal-content');
             const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
             const nodeMap = this.getSkillTreeNodeMap();
-            const { positions, width, height, originX, originY } = this.getSkillTreeLayout(tree);
-            const edges = (tree.edges || []).map(([from, to]) => {
+            const { positions, width, height, originX, originY, viewCenterX, viewCenterY } = this.getSkillTreeLayout(tree);
+            const edges = (tree.edges || []).map(([from, to], edgeIdx) => {
                 const a = positions[from], b = positions[to];
                 if (!a || !b) return '';
                 const active = unlocked.has(from) && unlocked.has(to);
-                return `<line class="skill-web-edge ${active ? 'active' : ''}" x1="${a.x}" y1="${a.y}" x2="${b.x}" y2="${b.y}" />`;
+                const dx = b.x - a.x, dy = b.y - a.y;
+                const len = Math.hypot(dx, dy) || 1;
+                const longHop = len > 400;
+                const d = this.getSkillTreeEdgePath(a.x, a.y, b.x, b.y, edgeIdx);
+                const cls = `skill-web-edge ${active ? 'active' : ''}${longHop ? ' long-hop' : ''}`;
+                return `<path class="${cls}" d="${d}" fill="none" />`;
             }).join('');
             const nodes = (tree.nodes || []).map(node => {
                 const pos = positions[node.id];
@@ -397,7 +443,7 @@
                         <button id="skill-web-zoom-out" class="action-btn small">-</button>
                         <span id="skill-web-zoom-level">100%</span>
                         <button id="skill-web-zoom-in" class="action-btn small">+</button>
-                        <button id="skill-web-focus-center" class="action-btn small primary">중앙 포커스</button>
+                        <button id="skill-web-focus-center" class="action-btn small primary" title="전체 노드가 균형 있게 보이도록 화면 중심 이동">트리 중심</button>
                         <button id="skill-web-zoom-reset" class="action-btn small">초기화</button>
                     </div>
                 </div>
@@ -424,6 +470,21 @@
             const learnBtn = content.querySelector('#skill-web-learn');
             const zoomLabel = content.querySelector('#skill-web-zoom-level');
             let selectedNodeId = null;
+
+            /** 모달이 다시 그려져도 팬·줌 위치 유지 (배우기 후·닫았다 열기) */
+            const persistSkillTreeView = () => {
+                const vp = content.querySelector('#skill-web-viewport');
+                const zl = content.querySelector('#skill-web-zoom-layer');
+                if (!vp || !zl) return;
+                const m = String(zl.style.transform || '').match(/scale\(([\d.]+)\)/);
+                const z = m ? parseFloat(m[1]) : 1;
+                this._skillTreeViewState = this._skillTreeViewState || {};
+                this._skillTreeViewState[tree.classId] = {
+                    zoom: z,
+                    scrollLeft: vp.scrollLeft,
+                    scrollTop: vp.scrollTop
+                };
+            };
 
             const fillInfoForNode = (nodeId) => {
                 const node = nodeId ? nodeMap[nodeId] : null;
@@ -469,10 +530,12 @@
             };
             if (viewport && zoomLayer && zoomLabel) {
                 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
-                let zoom = 1;
-                const centerOnOrigin = () => {
-                    viewport.scrollLeft = Math.max(0, originX * zoom - viewport.clientWidth / 2);
-                    viewport.scrollTop = Math.max(0, originY * zoom - viewport.clientHeight / 2);
+                const savedView = this._skillTreeViewState && this._skillTreeViewState[tree.classId];
+                let zoom = savedView && typeof savedView.zoom === 'number' ? clamp(savedView.zoom, 0.55, 2.4) : 1;
+                /** 시작점만 보면 상단(음수 그리드 y) 노드가 화면 밖으로 나가므로, 전체 분포의 중심을 기준으로 맞춤 */
+                const centerOnView = () => {
+                    viewport.scrollLeft = Math.max(0, viewCenterX * zoom - viewport.clientWidth / 2);
+                    viewport.scrollTop = Math.max(0, viewCenterY * zoom - viewport.clientHeight / 2);
                 };
                 const setZoom = (nextZoom, focusX, focusY) => {
                     const prevZoom = zoom;
@@ -480,7 +543,7 @@
                     zoomLayer.style.transform = `scale(${zoom})`;
                     zoomLabel.innerText = `${Math.round(zoom * 100)}%`;
                     if (focusX === undefined || focusY === undefined) {
-                        centerOnOrigin();
+                        centerOnView();
                         return;
                     }
                     const worldX = (viewport.scrollLeft + focusX) / prevZoom;
@@ -488,7 +551,18 @@
                     viewport.scrollLeft = worldX * zoom - focusX;
                     viewport.scrollTop = worldY * zoom - focusY;
                 };
-                setTimeout(() => centerOnOrigin(), 0);
+                zoomLayer.style.transform = `scale(${zoom})`;
+                zoomLabel.innerText = `${Math.round(zoom * 100)}%`;
+                setTimeout(() => {
+                    if (savedView && typeof savedView.scrollLeft === 'number') {
+                        const maxL = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
+                        const maxT = Math.max(0, viewport.scrollHeight - viewport.clientHeight);
+                        viewport.scrollLeft = Math.min(Math.max(0, savedView.scrollLeft), maxL);
+                        viewport.scrollTop = Math.min(Math.max(0, savedView.scrollTop), maxT);
+                    } else {
+                        centerOnView();
+                    }
+                }, 0);
                 viewport.addEventListener('wheel', (event) => {
                     event.preventDefault();
                     const rect = viewport.getBoundingClientRect();
@@ -526,7 +600,7 @@
                 content.querySelector('#skill-web-zoom-in')?.addEventListener('click', () => setZoom(zoom + 0.15, viewport.clientWidth / 2, viewport.clientHeight / 2));
                 content.querySelector('#skill-web-zoom-out')?.addEventListener('click', () => setZoom(zoom - 0.15, viewport.clientWidth / 2, viewport.clientHeight / 2));
                 content.querySelector('#skill-web-zoom-reset')?.addEventListener('click', () => setZoom(1));
-                content.querySelector('#skill-web-focus-center')?.addEventListener('click', () => centerOnOrigin());
+                content.querySelector('#skill-web-focus-center')?.addEventListener('click', () => centerOnView());
             }
             content.querySelectorAll('.skill-web-node').forEach(nodeEl => {
                 nodeEl.addEventListener('mouseenter', () => {
@@ -548,6 +622,7 @@
                 if (!selectedNodeId || learnBtn.disabled) return;
                 const result = this.unlockSkillNode(selectedNodeId, { notify: 'none' });
                 if (result.ok) {
+                    persistSkillTreeView();
                     this.openSkillTreeModal();
                     this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'skills');
                     this.showSkillTreeToast(result.message, 'success');
@@ -557,6 +632,7 @@
                 }
             });
             document.getElementById('btn-close-skilltree')?.addEventListener('click', () => {
+                persistSkillTreeView();
                 content.style.width = '';
                 content.style.maxWidth = '';
                 modal.classList.add('hidden');

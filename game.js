@@ -29,9 +29,13 @@ class GameEngine {
                 autoBattleEnabled: false,
                 autoExploreEnabled: false,
                 selectedAvatarId: 'male_base',
-                unlockedAvatarIds: ['male_base', 'female_aa', 'female_swim'],
+                unlockedAvatarIds: (Array.isArray(window.GAME_DATA?.avatars?.defaultUnlockedIds) && window.GAME_DATA.avatars.defaultUnlockedIds.length
+                    ? [...window.GAME_DATA.avatars.defaultUnlockedIds]
+                    : ['male_base', 'female_aa', 'female_swim']),
                 avatarGender: 'male',
-                equipmentViewMode: 'avatar'
+                equipmentViewMode: 'avatar',
+                equippedRelicId: null,
+                ownedRelicIds: []
             },
             world: {
                 currentRegionId: "pishon",
@@ -116,9 +120,13 @@ class GameEngine {
             autoBattleEnabled: false,
             autoExploreEnabled: false,
             selectedAvatarId: 'male_base',
-            unlockedAvatarIds: ['male_base', 'female_aa', 'female_swim'],
+            unlockedAvatarIds: (Array.isArray(window.GAME_DATA?.avatars?.defaultUnlockedIds) && window.GAME_DATA.avatars.defaultUnlockedIds.length
+                ? [...window.GAME_DATA.avatars.defaultUnlockedIds]
+                : ['male_base', 'female_aa', 'female_swim']),
             avatarGender: 'male',
-            equipmentViewMode: 'avatar'
+            equipmentViewMode: 'avatar',
+            equippedRelicId: null,
+            ownedRelicIds: []
         };
         Object.entries(playerDefaults).forEach(([key, value]) => {
             if (this.state.player[key] === undefined || this.state.player[key] === null) {
@@ -240,9 +248,32 @@ class GameEngine {
         }
         this.updateBossDungeonUnlocks();
 
+        if (!Array.isArray(this.state.player.ownedRelicIds)) this.state.player.ownedRelicIds = [];
+        if (this.state.player.equippedRelicId === undefined) this.state.player.equippedRelicId = null;
+        if (this.state.player.ownedRelicIds.length === 0 && window.GAME_DATA?.relics?.relic_morning_dew) {
+            this.state.player.ownedRelicIds.push('relic_morning_dew');
+            if (!this.state.player.equippedRelicId) this.state.player.equippedRelicId = 'relic_morning_dew';
+        }
+        this.state.player.ownedRelicIds = Array.from(new Set(
+            this.state.player.ownedRelicIds.filter(id => window.GAME_DATA?.relics?.[id])
+        ));
+        if (this.state.player.equippedRelicId && !this.state.player.ownedRelicIds.includes(this.state.player.equippedRelicId)) {
+            this.state.player.equippedRelicId = null;
+        }
+
         // 세션 관련 휘발성 상태는 로드 시 초기화
         this.state.world.isNavigating = false;
         this.state.battle = null;
+    }
+
+    /** 성물 장착 시 스킬트리 패시브 합산 */
+    applyRelicPassivesToBonuses(bonuses) {
+        const rid = this.state.player?.equippedRelicId;
+        const spec = rid && window.GAME_DATA?.relics?.[rid]?.specials;
+        if (!spec || !bonuses) return;
+        if (spec.ppOnHitChance) bonuses.ppOnHitChance = (bonuses.ppOnHitChance || 0) + spec.ppOnHitChance;
+        if (spec.ppOnHitAmount) bonuses.ppOnHitAmount = (bonuses.ppOnHitAmount || 0) + spec.ppOnHitAmount;
+        if (spec.doubleStrikeChance) bonuses.doubleStrikeChance = (bonuses.doubleStrikeChance || 0) + spec.doubleStrikeChance;
     }
 
     // 스킬트리/토스트 관련 메서드는 js/engine/skilltree.js에서 GameEngine.prototype에 주입
@@ -289,9 +320,13 @@ class GameEngine {
         document.getElementById('btn-run').addEventListener('click', () => this.tryEscape());
         document.getElementById('btn-auto-battle').addEventListener('click', () => this.toggleAutoBattle());
 
-        // UI Tabs
+        // UI Tabs (배지 span 클릭 대응)
         document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => this.switchTab(e.target.dataset.tab));
+            btn.addEventListener('click', (e) => {
+                const t = e.target.closest('.tab-btn');
+                const id = t && t.dataset ? t.dataset.tab : null;
+                if (id) this.switchTab(id);
+            });
         });
 
         // Stat Point Buttons
@@ -317,11 +352,11 @@ class GameEngine {
             settingsOverlay.classList.remove('hidden');
         });
 
-        document.getElementById('settings-avatar-options')?.addEventListener('click', (e) => {
-            const btn = e.target.closest('[data-avatar-id]');
-            if (!btn) return;
-            const avatarId = btn.getAttribute('data-avatar-id');
-            this.selectAvatar(avatarId);
+        document.getElementById('settings-avatar-options')?.addEventListener('change', (e) => {
+            const t = e.target;
+            if (!t || t.id !== 'settings-avatar-select') return;
+            const avatarId = t.value;
+            if (avatarId) this.selectAvatar(avatarId);
         });
         
         document.getElementById('btn-update-nickname').addEventListener('click', () => {
@@ -365,6 +400,100 @@ class GameEngine {
                 window.location.reload();
             }
         });
+
+        this.bindCharacterStatTooltipEvents();
+    }
+
+    /** 닉네임/ⓘ 호버 시 툴팁 — 좌측 캐릭터 블록 옆에 붙여 표시(뷰포트 밖으로 밀리지 않음) */
+    bindCharacterStatTooltipEvents() {
+        const zone = document.querySelector('.char-title-hover-zone');
+        const tip = document.getElementById('char-stat-tooltip');
+        const infoBtn = document.getElementById('char-stat-info-btn');
+        if (!zone || !tip) return;
+
+        const GAP = 8;
+        const PAD = 8;
+
+        const placeAnchored = () => {
+            const z = document.querySelector('.char-title-hover-zone');
+            if (!z || !tip) return;
+            const r = z.getBoundingClientRect();
+            const maxW = Math.min(232, window.innerWidth - 24);
+            tip.style.position = 'fixed';
+            tip.style.maxWidth = `${maxW}px`;
+            tip.style.width = 'auto';
+
+            const apply = () => {
+                const tw = tip.getBoundingClientRect().width || maxW;
+                const th = tip.getBoundingClientRect().height || 120;
+                let left = r.right + GAP;
+                let top = r.top;
+                if (left + tw > window.innerWidth - PAD) {
+                    left = r.left - tw - GAP;
+                }
+                if (left < PAD) left = PAD;
+                if (left + tw > window.innerWidth - PAD) {
+                    left = Math.max(PAD, window.innerWidth - tw - PAD);
+                }
+                if (top + th > window.innerHeight - PAD) {
+                    top = Math.max(PAD, window.innerHeight - th - PAD);
+                }
+                if (top < PAD) top = PAD;
+                tip.style.left = `${left}px`;
+                tip.style.top = `${top}px`;
+            };
+
+            requestAnimationFrame(apply);
+        };
+
+        zone.addEventListener('mouseenter', placeAnchored);
+        zone.addEventListener('focusin', () => {
+            if (infoBtn) placeAnchored();
+        });
+
+        window.addEventListener('resize', placeAnchored);
+        document.querySelector('.character-pane')?.addEventListener('scroll', placeAnchored, { passive: true });
+
+        this._repositionCharStatTooltip = placeAnchored;
+    }
+
+    buildCharacterStatTooltipHtml() {
+        const t = this.getPlayerCombinedStats();
+        const row = (label, val) => `<div class="char-stat-tooltip__row"><span>${label}</span><span>${val}</span></div>`;
+        const parts = ['<div class="char-stat-tooltip__head">최종 합산<br><span class="char-stat-tooltip__head-sub">기본·장비·패시브</span></div>'];
+        parts.push(row('공격', t.atk));
+        parts.push(row('방어', t.def));
+        parts.push(row('최대 HP', t.hp));
+        parts.push(row('최대 PP', t.pp));
+        parts.push(row('속도', t.spd));
+        parts.push(row('신앙', t.faith));
+        parts.push(row('체력재생', t.hpRegen));
+        parts.push(row('생명력 흡수', `${Math.round((t.lifeSteal || 0) * 100)}%`));
+        const critPct = Math.round((0.1 + (t.critChance || 0)) * 100);
+        parts.push(row('치명타 확률', `${critPct}%`));
+        parts.push(row('치명타 피해', `${Math.round((t.critDamageMul || 1.5) * 100)}%`));
+        if ((t.evadeChance || 0) > 0) {
+            parts.push(row('회피', `${Math.round(t.evadeChance * 100)}%`));
+        }
+        const dm = t.damageMul || 1;
+        if (Math.abs(dm - 1) > 1e-5) {
+            const p = Math.round((dm - 1) * 100);
+            parts.push(row('가하는 피해', `${p >= 0 ? '+' : ''}${p}%`));
+        }
+        const dtm = t.damageTakenMul || 1;
+        if (Math.abs(dtm - 1) > 1e-5) {
+            if (dtm < 1) parts.push(row('받는 피해', `-${Math.round((1 - dtm) * 100)}%`));
+            else parts.push(row('받는 피해', `+${Math.round((dtm - 1) * 100)}%`));
+        }
+        const low = t.lowHpDamageMul || 1;
+        if (Math.abs(low - 1) > 1e-5) {
+            const p = Math.round((low - 1) * 100);
+            parts.push(row('HP 50% 이하 피해', `${p >= 0 ? '+' : ''}${p}%`));
+        }
+        if (this.state.battle) {
+            parts.push('<div class="char-stat-tooltip__battle-note">전투 중 강화·다음 치명·선공 속도는<br>닉네임 아래 「전투 중 효과」 참고</div>');
+        }
+        return parts.join('');
     }
 
     // 자동전투/자동순례 관련 메서드는 js/engine/explore.js에서 GameEngine.prototype에 주입
@@ -403,7 +532,12 @@ class GameEngine {
         const container = document.getElementById('inventory-list');
         container.innerHTML = '';
         if (tabId === 'equipment') tabId = 'inventory';
-        
+
+        if (tabId === 'relics') {
+            this.renderRelicsTab(container);
+            return;
+        }
+
         if (tabId === 'inventory') {
             if (this.inventory.items.length === 0) {
                 container.innerHTML = '<div class="empty-msg">가방이 비어있습니다.</div>';
@@ -508,10 +642,129 @@ class GameEngine {
         }
     }
 
+    renderRelicsTab(container) {
+        const regionId = this.state.world.currentRegionId || 'pishon';
+        const offers = window.GAME_DATA.relicShops?.[regionId] || [];
+        const owned = this.state.player.ownedRelicIds || [];
+        const eq = this.state.player.equippedRelicId;
+        const relics = window.GAME_DATA.relics || {};
+
+        const wrap = document.createElement('div');
+        wrap.className = 'relic-tab-panel';
+        wrap.innerHTML = `
+            <p class="relic-hint">성물은 <strong>1개만 장착</strong>하며 효과가 스킬트리 패시브와 <strong>합산</strong>됩니다.
+            우측 <strong>스킬</strong> 탭에서 <strong>스킬트리 열기</strong>로 노드 그래프를 열 수 있습니다.</p>
+            <div class="skill-group">
+                <h4>장착 중</h4>
+                <div id="relic-equipped-slot"></div>
+            </div>
+            <div class="skill-group">
+                <h4>보유 성물</h4>
+                <div id="relic-owned-wrap"></div>
+            </div>
+            <div class="skill-group" id="relic-shop-section" style="display:${offers.length ? 'block' : 'none'}">
+                <h4>이 지역 성물 상인</h4>
+                <div id="relic-shop-wrap"></div>
+            </div>
+        `;
+        container.appendChild(wrap);
+
+        const eqSlot = wrap.querySelector('#relic-equipped-slot');
+        if (eq && relics[eq]) {
+            const r = relics[eq];
+            const card = document.createElement('div');
+            card.className = 'relic-card equipped';
+            card.innerHTML = `
+                <div class="relic-name">${r.name}</div>
+                <div class="relic-meta">${r.grade || ''}</div>
+                <p style="font-size:0.85rem;margin:6px 0;">${r.desc || ''}</p>
+                <button type="button" class="action-btn small secondary btn-relic-unequip">장착 해제</button>
+            `;
+            card.querySelector('.btn-relic-unequip').addEventListener('click', () => {
+                this.state.player.equippedRelicId = null;
+                this.saveGame();
+                this.updateUI();
+                this.renderTabContent('relics');
+                this.log('[성물] 장착을 해제했습니다.', 'system');
+            });
+            eqSlot.appendChild(card);
+        } else {
+            eqSlot.innerHTML = '<div class="empty-msg">장착한 성물이 없습니다.</div>';
+        }
+
+        const ownedWrap = wrap.querySelector('#relic-owned-wrap');
+        if (owned.length === 0) {
+            ownedWrap.innerHTML = '<div class="empty-msg">보유한 성물이 없습니다.</div>';
+        } else {
+            owned.forEach(rid => {
+                const r = relics[rid];
+                if (!r) return;
+                const row = document.createElement('div');
+                row.className = 'relic-card';
+                row.style.marginBottom = '8px';
+                const isEq = eq === rid;
+                row.innerHTML = `
+                    <div class="relic-name">${r.name}</div>
+                    <div class="relic-meta">${r.grade || ''}${isEq ? ' · 장착 중' : ''}</div>
+                    <p style="font-size:0.85rem;margin:6px 0;">${r.desc || ''}</p>
+                    ${isEq ? '' : '<button type="button" class="action-btn small primary btn-relic-equip">장착</button>'}
+                `;
+                const b = row.querySelector('.btn-relic-equip');
+                if (b) {
+                    b.addEventListener('click', () => {
+                        this.state.player.equippedRelicId = rid;
+                        this.saveGame();
+                        this.updateUI();
+                        this.renderTabContent('relics');
+                        this.log(`[성물] ${r.name}을(를) 장착했습니다.`, 'effect');
+                    });
+                }
+                ownedWrap.appendChild(row);
+            });
+        }
+
+        const shopWrap = wrap.querySelector('#relic-shop-wrap');
+        offers.forEach(entry => {
+            const r = relics[entry.relicId];
+            if (!r) return;
+            const ownedHere = owned.includes(entry.relicId);
+            const row = document.createElement('div');
+            row.className = 'relic-card';
+            row.style.marginBottom = '8px';
+            row.innerHTML = `
+                <div class="relic-name">${r.name}</div>
+                <div class="relic-meta">${r.grade || ''} · ${entry.price}G</div>
+                <p style="font-size:0.85rem;margin:6px 0;">${r.desc || ''}</p>
+                <button type="button" class="action-btn small primary btn-relic-buy" ${ownedHere ? 'disabled' : ''}>${ownedHere ? '이미 보유' : '구매'}</button>
+            `;
+            if (!ownedHere) {
+                row.querySelector('.btn-relic-buy').addEventListener('click', () => this.buyRelic(entry.relicId, entry.price));
+            }
+            shopWrap.appendChild(row);
+        });
+    }
+
+    buyRelic(relicId, price) {
+        if (this.state.battle) return this.log('전투 중에는 구매할 수 없습니다.', 'system');
+        const r = window.GAME_DATA.relics?.[relicId];
+        if (!r) return;
+        const owned = this.state.player.ownedRelicIds || [];
+        if (owned.includes(relicId)) return this.log('이미 보유한 성물입니다.', 'system');
+        const p = price || 0;
+        if (this.state.player.gold < p) return this.log('골드가 부족합니다.', 'system');
+        this.state.player.gold -= p;
+        owned.push(relicId);
+        this.state.player.ownedRelicIds = owned;
+        this.log(`[성물] ${r.name}을(를) ${p}G에 구입했습니다.`, 'effect');
+        this.saveGame();
+        this.updateUI();
+        this.renderTabContent('relics');
+    }
+
     getAvatarCatalog() {
         const dataList = window.GAME_DATA?.avatars?.list;
         if (Array.isArray(dataList) && dataList.length) return dataList;
-        return [{ id: 'male_base', label: '남성 기본', gender: 'male', image: 'assets/Avatar_M.png', unlockType: 'default', unlockHint: '기본 해금' }];
+        return [{ id: 'male_base', label: '남성 기본', gender: 'male', image: 'assets/avatars/Avatar_M.png', unlockType: 'default', unlockHint: '기본 해금' }];
     }
 
     getAvatarImagePath() {
@@ -519,7 +772,7 @@ class GameEngine {
         const selected = catalog.find(a => a.id === this.state.player.selectedAvatarId);
         if (selected?.image) return selected.image;
         const g = this.state.player.avatarGender === 'female' ? 'female' : 'male';
-        return g === 'female' ? 'assets/Avatar_F_AA.png' : 'assets/Avatar_M.png';
+        return g === 'female' ? 'assets/avatars/Avatar_F_AA.png' : 'assets/avatars/Avatar_M.png';
     }
 
     toggleEquipmentViewMode() {
@@ -547,19 +800,32 @@ class GameEngine {
     syncSettingsAvatarRadios() {
         const host = document.getElementById('settings-avatar-options');
         if (!host) return;
-        const selectedId = this.state.player.selectedAvatarId || 'male_base';
+        const catalog = this.getAvatarCatalog();
         const unlockedIds = this.state.player.unlockedAvatarIds || [];
-        const cards = this.getAvatarCatalog().map(avatar => {
+        let selectedId = this.state.player.selectedAvatarId || 'male_base';
+        if (!unlockedIds.includes(selectedId)) {
+            selectedId = catalog.find((a) => unlockedIds.includes(a.id))?.id || unlockedIds[0] || 'male_base';
+        }
+
+        const sel = document.createElement('select');
+        sel.id = 'settings-avatar-select';
+        sel.className = 'settings-avatar-select';
+        sel.setAttribute('aria-label', '캐릭터 아바타');
+        catalog.forEach((avatar) => {
             const isUnlocked = unlockedIds.includes(avatar.id);
-            const selected = selectedId === avatar.id;
-            return `
-                <button type="button" class="settings-avatar-card ${selected ? 'is-selected' : ''} ${isUnlocked ? '' : 'is-locked'}" data-avatar-id="${avatar.id}" ${isUnlocked ? '' : 'disabled'}>
-                    <span class="avatar-label">${avatar.label}</span>
-                    <span class="avatar-unlock">${isUnlocked ? '사용 가능' : (avatar.unlockHint || '잠금')}</span>
-                </button>
-            `;
-        }).join('');
-        host.innerHTML = `<div class="settings-avatar-grid">${cards}</div>`;
+            const opt = document.createElement('option');
+            opt.value = avatar.id;
+            opt.textContent = isUnlocked ? avatar.label : `${avatar.label} (잠금)`;
+            if (!isUnlocked) opt.disabled = true;
+            sel.appendChild(opt);
+        });
+        sel.value = selectedId;
+        if (sel.value !== selectedId) {
+            const firstOk = catalog.find((a) => unlockedIds.includes(a.id));
+            if (firstOk) sel.value = firstOk.id;
+        }
+
+        host.replaceChildren(sel);
     }
 
     getEquipmentSlotConfig() {
@@ -776,6 +1042,14 @@ class GameEngine {
 
         const charNameEl = document.getElementById('char-name');
         if (charNameEl) charNameEl.innerText = p.name;
+        const charStatTip = document.getElementById('char-stat-tooltip');
+        if (charStatTip) {
+            charStatTip.innerHTML = this.buildCharacterStatTooltipHtml();
+            const hoverZone = document.querySelector('.char-title-hover-zone');
+            if (hoverZone?.matches(':hover') && typeof this._repositionCharStatTooltip === 'function') {
+                requestAnimationFrame(() => this._repositionCharStatTooltip());
+            }
+        }
         const charLevelEl = document.getElementById('char-level');
         if (charLevelEl) charLevelEl.innerText = `Lv.${p.level || 1}`;
 
@@ -897,6 +1171,12 @@ class GameEngine {
         if (pointEl) pointEl.innerText = p.bonusPoints;
         const skillPointEl = document.getElementById('skill-tree-points');
         if (skillPointEl) skillPointEl.innerText = p.skillTreePoints;
+        const stBadge = document.getElementById('skill-tree-tab-badge');
+        if (stBadge) {
+            const pts = Math.max(0, Number(p.skillTreePoints || 0));
+            stBadge.textContent = String(pts);
+            stBadge.classList.toggle('hidden', pts <= 0);
+        }
 
         document.querySelectorAll('.point-btn').forEach(btn => {
             btn.classList.toggle('hidden', p.bonusPoints <= 0);
@@ -905,6 +1185,9 @@ class GameEngine {
         this.renderEquipmentPanel();
         this.updateAutoBattleButton();
         this.updateAutoExploreButton();
+        if (typeof this.renderCharacterBattleEffectsStrip === 'function') {
+            this.renderCharacterBattleEffectsStrip();
+        }
     }
 
     // 전투 UI/FX, 말씀 오버레이 메서드는 모듈에서 주입됨

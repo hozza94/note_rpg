@@ -85,6 +85,39 @@
             }
             return false;
         },
+        /** 지역이 올라갈수록 필드 일반몹 스탯 배율(보스·보스던전 제외) */
+        getRegionFieldStatScale(regionId) {
+            const table = { pishon: 1, gihon: 1.1, hidekel: 1.22, euphrates: 1.45, eden_core: 1.68, periphery: 1.82, void_remnant: 1.95 };
+            return table[regionId] || 1;
+        },
+        applyFieldMonsterRegionScaling(monster, regionId) {
+            if (!monster || monster.isBoss || !monster.stats) return;
+            const s = this.getRegionFieldStatScale(regionId);
+            if (s === 1) return;
+            const st = monster.stats;
+            st.hp = Math.max(1, Math.round(st.hp * s));
+            st.atk = Math.max(1, Math.round(st.atk * s));
+            st.def = Math.max(0, Math.round(st.def * s));
+            st.spd = Math.max(1, Math.round(st.spd * s));
+        },
+        /** 같은 지역 풀 안에서 등급·레벨이 높은 몹이 더 잘 나오도록 가중 랜덤 */
+        pickWeightedFieldMonster(monsterList) {
+            if (!monsterList || monsterList.length === 0) return null;
+            if (monsterList.length === 1) return monsterList[0];
+            const gradeWeight = { F: 1, E: 1.4, D: 2.1, C: 3.2, B: 5, A: 8, S: 12, SS: 18, SSS: 26 };
+            const weights = monsterList.map(m => {
+                const gw = gradeWeight[m.grade] || 1;
+                const lv = m.level || 1;
+                return gw * (1 + lv * 0.035);
+            });
+            const total = weights.reduce((a, b) => a + b, 0);
+            let r = Math.random() * total;
+            for (let i = 0; i < monsterList.length; i++) {
+                r -= weights[i];
+                if (r <= 0) return monsterList[i];
+            }
+            return monsterList[monsterList.length - 1];
+        },
         scheduleAutoExplore(delayMs = 800) {
             if (!this.state.player.autoExploreEnabled) return;
             if (this.autoExploreTimer) clearTimeout(this.autoExploreTimer);
@@ -188,7 +221,7 @@
                     const regionId = this.state.world.currentRegionId || 'pishon';
                     const regionData = window.GAME_DATA.regions[regionId];
                     if (roll < 0.75) {
-                        const normalGrades = ['F', 'E', 'D', 'C', 'B', 'A', 'S'];
+                        const normalGrades = window.GAME_DATA.meta?.monsterGradeOrder || ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
                         const monsterList = window.GAME_DATA.monsters.filter(m =>
                             m.regionId === regionId &&
                             normalGrades.includes(m.grade) &&
@@ -198,9 +231,14 @@
                         );
                         if (monsterList.length === 0) {
                             const fallback = window.GAME_DATA.monsters.filter(m => m.grade === 'F');
-                            this.startBattle(JSON.parse(JSON.stringify(fallback[Math.floor(Math.random() * fallback.length)])));
+                            const raw = JSON.parse(JSON.stringify(fallback[Math.floor(Math.random() * fallback.length)]));
+                            this.applyFieldMonsterRegionScaling(raw, regionId);
+                            this.startBattle(raw);
                         } else {
-                            this.startBattle(JSON.parse(JSON.stringify(monsterList[Math.floor(Math.random() * monsterList.length)])));
+                            const picked = this.pickWeightedFieldMonster(monsterList);
+                            const raw = JSON.parse(JSON.stringify(picked));
+                            this.applyFieldMonsterRegionScaling(raw, regionId);
+                            this.startBattle(raw);
                         }
                     } else {
                         this.log("고요한 길을 따라 걷습니다. 아무 일도 일어나지 않았습니다.", "info");

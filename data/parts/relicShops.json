@@ -1,0 +1,20 @@
+{
+  "pishon": [
+    {
+      "relicId": "relic_twin_sigil",
+      "price": 920
+    }
+  ],
+  "gihon": [
+    {
+      "relicId": "relic_well_spring",
+      "price": 5600
+    }
+  ],
+  "void_remnant": [
+    {
+      "relicId": "relic_well_spring",
+      "price": 5200
+    }
+  ]
+}

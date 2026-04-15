@@ -1,0 +1,884 @@
+[
+  {
+    "id": "gray_slime",
+    "tags": [
+      "field",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "F",
+    "name": "회색 슬라임",
+    "level": 1,
+    "minPlayerLv": 1,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 40,
+      "atk": 4,
+      "def": 2,
+      "spd": 60
+    },
+    "reward": {
+      "exp": 30,
+      "gold": 8
+    },
+    "dropTableId": "drop_f_slime",
+    "skillTreeId": "st_stick_only"
+  },
+  {
+    "id": "dust_wisp",
+    "tags": [
+      "field",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "F",
+    "name": "먼지 정령",
+    "level": 2,
+    "minPlayerLv": 1,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 55,
+      "atk": 6,
+      "def": 1,
+      "spd": 90
+    },
+    "reward": {
+      "exp": 40,
+      "gold": 10
+    },
+    "dropTableId": "drop_f_slime",
+    "skillTreeId": "st_stick_only"
+  },
+  {
+    "id": "gray_moth",
+    "tags": [
+      "field",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "F",
+    "name": "재색 나방",
+    "level": 3,
+    "minPlayerLv": 1,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 45,
+      "atk": 5,
+      "def": 3,
+      "spd": 110
+    },
+    "reward": {
+      "exp": 45,
+      "gold": 12
+    },
+    "dropTableId": "drop_f_slime",
+    "skillTreeId": "st_stick_only"
+  },
+  {
+    "id": "greedy_rat",
+    "tags": [
+      "field",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "E",
+    "name": "탐욕스러운 쥐",
+    "level": 4,
+    "minPlayerLv": 2,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 100,
+      "atk": 10,
+      "def": 6,
+      "spd": 105
+    },
+    "reward": {
+      "exp": 100,
+      "gold": 30
+    },
+    "dropTableId": "drop_e_rat",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "dark_crow",
+    "tags": [
+      "field",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "E",
+    "name": "어둠까마귀",
+    "level": 5,
+    "minPlayerLv": 2,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 90,
+      "atk": 12,
+      "def": 4,
+      "spd": 140
+    },
+    "reward": {
+      "exp": 110,
+      "gold": 28
+    },
+    "dropTableId": "drop_e_rat",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "weak_wraith",
+    "tags": [
+      "field",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "D",
+    "name": "약한 원령",
+    "level": 8,
+    "minPlayerLv": 4,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 280,
+      "atk": 28,
+      "def": 15,
+      "spd": 115
+    },
+    "reward": {
+      "exp": 250,
+      "gold": 70
+    },
+    "dropTableId": "drop_d_wraith",
+    "skillTreeId": "st_wail_only"
+  },
+  {
+    "id": "mini_imp",
+    "tags": [
+      "field",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "D",
+    "name": "미니 임프",
+    "level": 10,
+    "minPlayerLv": 5,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 320,
+      "atk": 35,
+      "def": 20,
+      "spd": 135
+    },
+    "reward": {
+      "exp": 290,
+      "gold": 80
+    },
+    "dropTableId": "drop_d_imp",
+    "skillTreeId": "st_small_fire_only"
+  },
+  {
+    "id": "wraith",
+    "tags": [
+      "boss",
+      "pishon"
+    ],
+    "regionId": "pishon",
+    "grade": "C",
+    "name": "원혼",
+    "level": 14,
+    "minPlayerLv": 7,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 1200,
+      "atk": 85,
+      "def": 55,
+      "spd": 160
+    },
+    "reward": {
+      "exp": 1225,
+      "gold": 250
+    },
+    "dropTableId": "drop_c_wraith",
+    "skillTreeId": "st_wraith_boss",
+    "isBoss": true
+  },
+  {
+    "id": "swamp_frog",
+    "tags": [
+      "field",
+      "gihon"
+    ],
+    "regionId": "gihon",
+    "grade": "D",
+    "name": "늪의 독개구리",
+    "level": 11,
+    "minPlayerLv": 8,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 450,
+      "atk": 45,
+      "def": 25,
+      "spd": 90
+    },
+    "reward": {
+      "exp": 350,
+      "gold": 120
+    },
+    "dropTableId": "drop_d_frog",
+    "skillTreeId": "st_stick_only"
+  },
+  {
+    "id": "mud_snake",
+    "tags": [
+      "field",
+      "gihon"
+    ],
+    "regionId": "gihon",
+    "grade": "D",
+    "name": "진흙 구렁이",
+    "level": 13,
+    "minPlayerLv": 9,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 550,
+      "atk": 55,
+      "def": 30,
+      "spd": 150
+    },
+    "reward": {
+      "exp": 420,
+      "gold": 150
+    },
+    "dropTableId": "drop_d_snake",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "moss_skeleton",
+    "tags": [
+      "field",
+      "gihon"
+    ],
+    "regionId": "gihon",
+    "grade": "C",
+    "name": "이끼 낀 해골전사",
+    "level": 16,
+    "minPlayerLv": 10,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 1000,
+      "atk": 90,
+      "def": 70,
+      "spd": 110
+    },
+    "reward": {
+      "exp": 650,
+      "gold": 250
+    },
+    "dropTableId": "drop_c_skeleton",
+    "skillTreeId": "st_wail_only"
+  },
+  {
+    "id": "swamp_stalker",
+    "tags": [
+      "field",
+      "gihon"
+    ],
+    "regionId": "gihon",
+    "grade": "C",
+    "name": "습지의 추격자",
+    "level": 19,
+    "minPlayerLv": 11,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 1200,
+      "atk": 120,
+      "def": 50,
+      "spd": 190
+    },
+    "reward": {
+      "exp": 780,
+      "gold": 320
+    },
+    "dropTableId": "drop_c_stalker",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "mud_giant",
+    "tags": [
+      "boss",
+      "gihon"
+    ],
+    "regionId": "gihon",
+    "grade": "B",
+    "name": "진흙 거인",
+    "level": 22,
+    "minPlayerLv": 12,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 4500,
+      "atk": 220,
+      "def": 180,
+      "spd": 70
+    },
+    "reward": {
+      "exp": 4375,
+      "gold": 1250
+    },
+    "dropTableId": "drop_b_giant",
+    "skillTreeId": "st_mud_giant_boss",
+    "isBoss": true
+  },
+  {
+    "id": "canyon_hyena",
+    "tags": [
+      "field",
+      "hidekel"
+    ],
+    "regionId": "hidekel",
+    "grade": "C",
+    "name": "협곡 하이에나",
+    "level": 20,
+    "minPlayerLv": 16,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 1450,
+      "atk": 130,
+      "def": 70,
+      "spd": 185
+    },
+    "reward": {
+      "exp": 920,
+      "gold": 360
+    },
+    "dropTableId": "drop_c_hidekel",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "burning_imp",
+    "tags": [
+      "field",
+      "hidekel"
+    ],
+    "regionId": "hidekel",
+    "grade": "C",
+    "name": "화염 임프",
+    "level": 23,
+    "minPlayerLv": 17,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 1500,
+      "atk": 145,
+      "def": 65,
+      "spd": 170
+    },
+    "reward": {
+      "exp": 980,
+      "gold": 380
+    },
+    "dropTableId": "drop_c_hidekel",
+    "skillTreeId": "st_small_fire_only"
+  },
+  {
+    "id": "ash_knight",
+    "tags": [
+      "field",
+      "hidekel"
+    ],
+    "regionId": "hidekel",
+    "grade": "B",
+    "name": "잿빛 기사",
+    "level": 27,
+    "minPlayerLv": 18,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 2600,
+      "atk": 185,
+      "def": 120,
+      "spd": 120
+    },
+    "reward": {
+      "exp": 1550,
+      "gold": 620
+    },
+    "dropTableId": "drop_b_hidekel",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "stone_seraph",
+    "tags": [
+      "boss",
+      "hidekel"
+    ],
+    "regionId": "hidekel",
+    "grade": "A",
+    "name": "석화 세라프",
+    "level": 30,
+    "minPlayerLv": 20,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 7800,
+      "atk": 290,
+      "def": 220,
+      "spd": 180
+    },
+    "reward": {
+      "exp": 7350,
+      "gold": 2500
+    },
+    "dropTableId": "drop_a_seraph",
+    "skillTreeId": "st_stone_seraph_boss",
+    "isBoss": true
+  },
+  {
+    "id": "rift_reaver",
+    "tags": [
+      "field",
+      "euphrates"
+    ],
+    "regionId": "euphrates",
+    "grade": "B",
+    "name": "균열 약탈자",
+    "level": 28,
+    "minPlayerLv": 24,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 2900,
+      "atk": 210,
+      "def": 135,
+      "spd": 170
+    },
+    "reward": {
+      "exp": 1850,
+      "gold": 760
+    },
+    "dropTableId": "drop_b_euphrates",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "obsidian_hound",
+    "tags": [
+      "field",
+      "euphrates"
+    ],
+    "regionId": "euphrates",
+    "grade": "B",
+    "name": "흑요 사냥개",
+    "level": 31,
+    "minPlayerLv": 25,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 3200,
+      "atk": 230,
+      "def": 145,
+      "spd": 185
+    },
+    "reward": {
+      "exp": 2100,
+      "gold": 820
+    },
+    "dropTableId": "drop_b_euphrates",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "warlock_remnant",
+    "tags": [
+      "field",
+      "euphrates"
+    ],
+    "regionId": "euphrates",
+    "grade": "A",
+    "name": "전장의 주술 잔재",
+    "level": 35,
+    "minPlayerLv": 26,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 4100,
+      "atk": 265,
+      "def": 165,
+      "spd": 160
+    },
+    "reward": {
+      "exp": 2800,
+      "gold": 980
+    },
+    "dropTableId": "drop_a_euphrates",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "void_marauder",
+    "tags": [
+      "field",
+      "euphrates"
+    ],
+    "regionId": "euphrates",
+    "grade": "S",
+    "name": "공허의 약탈자",
+    "level": 36,
+    "minPlayerLv": 28,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 6500,
+      "atk": 295,
+      "def": 185,
+      "spd": 178
+    },
+    "reward": {
+      "exp": 3400,
+      "gold": 1050
+    },
+    "dropTableId": "drop_a_euphrates",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "abyss_hydra",
+    "tags": [
+      "boss",
+      "euphrates"
+    ],
+    "regionId": "euphrates",
+    "grade": "A",
+    "name": "심연 히드라",
+    "level": 38,
+    "minPlayerLv": 28,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 9800,
+      "atk": 360,
+      "def": 250,
+      "spd": 210
+    },
+    "reward": {
+      "exp": 10850,
+      "gold": 3500
+    },
+    "dropTableId": "drop_a_hydra",
+    "skillTreeId": "st_abyss_hydra_boss",
+    "isBoss": true
+  },
+  {
+    "id": "throne_sentinel",
+    "tags": [
+      "field",
+      "eden_core"
+    ],
+    "regionId": "eden_core",
+    "grade": "A",
+    "name": "왕좌 감시병",
+    "level": 36,
+    "minPlayerLv": 32,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 4600,
+      "atk": 285,
+      "def": 190,
+      "spd": 170
+    },
+    "reward": {
+      "exp": 3200,
+      "gold": 1200
+    },
+    "dropTableId": "drop_a_eden",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "halo_wraith",
+    "tags": [
+      "field",
+      "eden_core"
+    ],
+    "regionId": "eden_core",
+    "grade": "A",
+    "name": "고리 원령",
+    "level": 39,
+    "minPlayerLv": 33,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 5100,
+      "atk": 315,
+      "def": 210,
+      "spd": 195
+    },
+    "reward": {
+      "exp": 3700,
+      "gold": 1380
+    },
+    "dropTableId": "drop_a_eden",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "eden_judicator",
+    "tags": [
+      "field",
+      "eden_core"
+    ],
+    "regionId": "eden_core",
+    "grade": "S",
+    "name": "에덴 심판관",
+    "level": 42,
+    "minPlayerLv": 34,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 5800,
+      "atk": 340,
+      "def": 230,
+      "spd": 185
+    },
+    "reward": {
+      "exp": 4300,
+      "gold": 1600
+    },
+    "dropTableId": "drop_s_eden",
+    "skillTreeId": "st_stone_seraph_boss"
+  },
+  {
+    "id": "core_devourer",
+    "tags": [
+      "field",
+      "eden_core"
+    ],
+    "regionId": "eden_core",
+    "grade": "S",
+    "name": "심연 심장의 포식자",
+    "level": 44,
+    "minPlayerLv": 34,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 9200,
+      "atk": 380,
+      "def": 245,
+      "spd": 200
+    },
+    "reward": {
+      "exp": 6200,
+      "gold": 2100
+    },
+    "dropTableId": "drop_s_eden",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "throne_guardian",
+    "tags": [
+      "boss",
+      "eden_core"
+    ],
+    "regionId": "eden_core",
+    "grade": "S",
+    "name": "왕좌 수호자",
+    "level": 45,
+    "minPlayerLv": 36,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 13000,
+      "atk": 420,
+      "def": 300,
+      "spd": 220
+    },
+    "reward": {
+      "exp": 15750,
+      "gold": 5250
+    },
+    "dropTableId": "drop_s_guardian",
+    "skillTreeId": "st_throne_guardian_boss",
+    "isBoss": true
+  },
+  {
+    "id": "periphery_sentinel",
+    "tags": [
+      "field",
+      "periphery"
+    ],
+    "regionId": "periphery",
+    "grade": "A",
+    "name": "회랑의 파수꾼",
+    "level": 40,
+    "minPlayerLv": 38,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 5200,
+      "atk": 300,
+      "def": 195,
+      "spd": 175
+    },
+    "reward": {
+      "exp": 4800,
+      "gold": 1500
+    },
+    "dropTableId": "drop_periphery_field",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "periphery_stalker",
+    "tags": [
+      "field",
+      "periphery"
+    ],
+    "regionId": "periphery",
+    "grade": "A",
+    "name": "변두리 추적자",
+    "level": 42,
+    "minPlayerLv": 38,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 5800,
+      "atk": 318,
+      "def": 205,
+      "spd": 188
+    },
+    "reward": {
+      "exp": 5400,
+      "gold": 1680
+    },
+    "dropTableId": "drop_periphery_field",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "periphery_harbinger",
+    "tags": [
+      "field",
+      "periphery"
+    ],
+    "regionId": "periphery",
+    "grade": "SS",
+    "name": "잔향의 선구자",
+    "level": 44,
+    "minPlayerLv": 38,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 6800,
+      "atk": 335,
+      "def": 218,
+      "spd": 182
+    },
+    "reward": {
+      "exp": 6200,
+      "gold": 1900
+    },
+    "dropTableId": "drop_periphery_field",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "border_warden",
+    "tags": [
+      "boss",
+      "periphery"
+    ],
+    "regionId": "periphery",
+    "grade": "SS",
+    "name": "변방 감시자",
+    "level": 47,
+    "minPlayerLv": 40,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 15800,
+      "atk": 445,
+      "def": 315,
+      "spd": 228
+    },
+    "reward": {
+      "exp": 18200,
+      "gold": 5800
+    },
+    "dropTableId": "drop_border_warden",
+    "skillTreeId": "st_border_warden_boss",
+    "isBoss": true
+  },
+  {
+    "id": "void_lurker",
+    "tags": [
+      "field",
+      "void_remnant"
+    ],
+    "regionId": "void_remnant",
+    "grade": "SS",
+    "name": "공허의 잠복자",
+    "level": 46,
+    "minPlayerLv": 44,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 7800,
+      "atk": 355,
+      "def": 232,
+      "spd": 195
+    },
+    "reward": {
+      "exp": 7200,
+      "gold": 2200
+    },
+    "dropTableId": "drop_void_field",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "void_executioner",
+    "tags": [
+      "field",
+      "void_remnant"
+    ],
+    "regionId": "void_remnant",
+    "grade": "SS",
+    "name": "잔해의 집행자",
+    "level": 48,
+    "minPlayerLv": 44,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 8500,
+      "atk": 375,
+      "def": 245,
+      "spd": 188
+    },
+    "reward": {
+      "exp": 8100,
+      "gold": 2450
+    },
+    "dropTableId": "drop_void_field",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "void_colossus",
+    "tags": [
+      "field",
+      "void_remnant"
+    ],
+    "regionId": "void_remnant",
+    "grade": "SSS",
+    "name": "공허 거신",
+    "level": 50,
+    "minPlayerLv": 44,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 9800,
+      "atk": 395,
+      "def": 268,
+      "spd": 165
+    },
+    "reward": {
+      "exp": 9200,
+      "gold": 2800
+    },
+    "dropTableId": "drop_void_field",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "void_sovereign",
+    "tags": [
+      "boss",
+      "void_remnant"
+    ],
+    "regionId": "void_remnant",
+    "grade": "SSS",
+    "name": "공허의 군주",
+    "level": 52,
+    "minPlayerLv": 46,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 19800,
+      "atk": 495,
+      "def": 355,
+      "spd": 238
+    },
+    "reward": {
+      "exp": 22000,
+      "gold": 7200
+    },
+    "dropTableId": "drop_void_sovereign",
+    "skillTreeId": "st_void_sovereign_boss",
+    "isBoss": true
+  }
+]

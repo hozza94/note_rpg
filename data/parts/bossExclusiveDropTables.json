@@ -1,0 +1,124 @@
+{
+  "wraith": [
+    {
+      "itemId": "echo_of_wraith",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "wraith_locket",
+      "chance": 0.04,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "mud_giant": [
+    {
+      "itemId": "heart_of_giant",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "giant_heart_shield",
+      "chance": 0.035,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "stone_seraph": [
+    {
+      "itemId": "seraph_feather",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "seraphite_mail",
+      "chance": 0.03,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "abyss_hydra": [
+    {
+      "itemId": "hydra_venom_gem",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "hydra_fang_blade",
+      "chance": 0.025,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "throne_guardian": [
+    {
+      "itemId": "guardian_oath",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "guardian_halo",
+      "chance": 0.02,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "border_warden": [
+    {
+      "itemId": "border_reliquary",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 2
+    },
+    {
+      "itemId": "throne_fragment",
+      "chance": 1,
+      "minQty": 2,
+      "maxQty": 4
+    },
+    {
+      "itemId": "hydra_fang_blade",
+      "chance": 0.028,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "seraphite_mail",
+      "chance": 0.022,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "void_sovereign": [
+    {
+      "itemId": "void_sliver",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 2
+    },
+    {
+      "itemId": "guardian_oath",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 2
+    },
+    {
+      "itemId": "guardian_halo",
+      "chance": 0.045,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "aegis_core",
+      "chance": 0.08,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ]
+}

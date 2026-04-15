@@ -1,0 +1,252 @@
+{
+  "pishon": [
+    {
+      "itemId": "wooden_sword",
+      "price": 60
+    },
+    {
+      "itemId": "ragged_cloak",
+      "price": 50
+    },
+    {
+      "itemId": "straw_shoes",
+      "price": 45
+    },
+    {
+      "itemId": "pilgrim_hood",
+      "price": 55
+    },
+    {
+      "itemId": "pilgrim_beads",
+      "price": 70
+    },
+    {
+      "itemId": "wooden_shield",
+      "price": 75
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "blessed_iron",
+      "price": 240
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 560
+    },
+    {
+      "itemId": "pilgrim_lance",
+      "price": 140
+    }
+  ],
+  "gihon": [
+    {
+      "itemId": "bronze_sword",
+      "price": 180
+    },
+    {
+      "itemId": "leather_vest",
+      "price": 170
+    },
+    {
+      "itemId": "prayer_ring",
+      "price": 210
+    },
+    {
+      "itemId": "wooden_shield",
+      "price": 160
+    },
+    {
+      "itemId": "pilgrim_greaves",
+      "price": 260
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "blessed_iron",
+      "price": 220
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 560
+    }
+  ],
+  "hidekel": [
+    {
+      "itemId": "steel_longsword",
+      "price": 520
+    },
+    {
+      "itemId": "swamp_leather",
+      "price": 480
+    },
+    {
+      "itemId": "ember_necklace",
+      "price": 560
+    },
+    {
+      "itemId": "covenant_shield",
+      "price": 600
+    },
+    {
+      "itemId": "watcher_hood",
+      "price": 630
+    },
+    {
+      "itemId": "oracle_pendant",
+      "price": 720
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "blessed_iron",
+      "price": 220
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 540
+    }
+  ],
+  "euphrates": [
+    {
+      "itemId": "river_trident",
+      "price": 860
+    },
+    {
+      "itemId": "dusk_plate",
+      "price": 980
+    },
+    {
+      "itemId": "mirror_buckler",
+      "price": 770
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "blessed_iron",
+      "price": 280
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 520
+    }
+  ],
+  "eden_core": [
+    {
+      "itemId": "halo_boots",
+      "price": 1320
+    },
+    {
+      "itemId": "oath_diadem",
+      "price": 1280
+    },
+    {
+      "itemId": "relic_talisman",
+      "price": 1390
+    },
+    {
+      "itemId": "aegis_core",
+      "price": 1500
+    },
+    {
+      "itemId": "throne_fragment",
+      "price": 780
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "blessed_iron",
+      "price": 300
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 520
+    }
+  ],
+  "periphery": [
+    {
+      "itemId": "border_reliquary",
+      "price": 680
+    },
+    {
+      "itemId": "oath_diadem",
+      "price": 1360
+    },
+    {
+      "itemId": "relic_talisman",
+      "price": 1420
+    },
+    {
+      "itemId": "aegis_core",
+      "price": 1540
+    },
+    {
+      "itemId": "dusk_plate",
+      "price": 1180
+    },
+    {
+      "itemId": "throne_fragment",
+      "price": 820
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "blessed_iron",
+      "price": 310
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 510
+    }
+  ],
+  "void_remnant": [
+    {
+      "itemId": "void_sliver",
+      "price": 740
+    },
+    {
+      "itemId": "guardian_halo",
+      "price": 1680
+    },
+    {
+      "itemId": "hydra_fang_blade",
+      "price": 1750
+    },
+    {
+      "itemId": "aegis_core",
+      "price": 1580
+    },
+    {
+      "itemId": "relic_talisman",
+      "price": 1450
+    },
+    {
+      "itemId": "guardian_oath",
+      "price": 920
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "blessed_iron",
+      "price": 320
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 500
+    }
+  ]
+}

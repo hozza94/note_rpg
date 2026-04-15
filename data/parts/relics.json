@@ -1,0 +1,31 @@
+{
+  "relic_morning_dew": {
+    "id": "relic_morning_dew",
+    "name": "이슬 맺힌 조각",
+    "grade": "Common",
+    "desc": "기도가 맺힌 작은 성물. 적중 시 가끔 영력(PP)이 돌아옵니다.",
+    "specials": {
+      "ppOnHitChance": 0.07,
+      "ppOnHitAmount": 1
+    }
+  },
+  "relic_twin_sigil": {
+    "id": "relic_twin_sigil",
+    "name": "쌍날 인장",
+    "grade": "Rare",
+    "desc": "잔광이 한 번 더 베어 가릅니다.",
+    "specials": {
+      "doubleStrikeChance": 0.06
+    }
+  },
+  "relic_well_spring": {
+    "id": "relic_well_spring",
+    "name": "우물의 심장",
+    "grade": "Epic",
+    "desc": "깊은 샘에서 흘러나온 회복의 기운.",
+    "specials": {
+      "ppOnHitChance": 0.12,
+      "ppOnHitAmount": 2
+    }
+  }
+}

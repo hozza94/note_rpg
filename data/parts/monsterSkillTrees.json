@@ -1,0 +1,277 @@
+{
+  "st_stick_only": {
+    "id": "st_stick_only",
+    "label": "끈적임",
+    "defaultPool": {
+      "skillIds": [
+        "stick"
+      ],
+      "weights": [
+        1
+      ]
+    }
+  },
+  "st_bite_only": {
+    "id": "st_bite_only",
+    "label": "교합",
+    "defaultPool": {
+      "skillIds": [
+        "bite"
+      ],
+      "weights": [
+        1
+      ]
+    }
+  },
+  "st_wail_only": {
+    "id": "st_wail_only",
+    "label": "애가",
+    "defaultPool": {
+      "skillIds": [
+        "wail"
+      ],
+      "weights": [
+        1
+      ]
+    }
+  },
+  "st_small_fire_only": {
+    "id": "st_small_fire_only",
+    "label": "불꽃",
+    "defaultPool": {
+      "skillIds": [
+        "small_fire"
+      ],
+      "weights": [
+        1
+      ]
+    }
+  },
+  "st_fear_only": {
+    "id": "st_fear_only",
+    "label": "압박",
+    "defaultPool": {
+      "skillIds": [
+        "fear"
+      ],
+      "weights": [
+        1
+      ]
+    }
+  },
+  "st_wail_root": {
+    "id": "st_wail_root",
+    "label": "기사",
+    "defaultPool": {
+      "skillIds": [
+        "wail",
+        "root_bind"
+      ],
+      "weights": [
+        2,
+        1
+      ]
+    }
+  },
+  "st_wraith_boss": {
+    "id": "st_wraith_boss",
+    "label": "원혼",
+    "defaultPool": {
+      "skillIds": [
+        "fear",
+        "boss_wraith_haunt"
+      ],
+      "weights": [
+        1,
+        2
+      ]
+    },
+    "lowHp": {
+      "threshold": 0.5,
+      "skillIds": [
+        "boss_wraith_soul_split",
+        "fear",
+        "boss_wraith_haunt"
+      ],
+      "weights": [
+        2,
+        1,
+        1
+      ]
+    }
+  },
+  "st_mud_giant_boss": {
+    "id": "st_mud_giant_boss",
+    "label": "진흙 거인",
+    "defaultPool": {
+      "skillIds": [
+        "telekinesis",
+        "boss_mud_grasp"
+      ],
+      "weights": [
+        1,
+        1
+      ]
+    },
+    "lowHp": {
+      "threshold": 0.45,
+      "skillIds": [
+        "boss_mud_quake",
+        "telekinesis",
+        "boss_mud_grasp"
+      ],
+      "weights": [
+        2,
+        1,
+        1
+      ]
+    }
+  },
+  "st_stone_seraph_boss": {
+    "id": "st_stone_seraph_boss",
+    "label": "석화 세라프",
+    "defaultPool": {
+      "skillIds": [
+        "fear",
+        "boss_seraph_gaze",
+        "telekinesis"
+      ],
+      "weights": [
+        1,
+        2,
+        1
+      ]
+    },
+    "lowHp": {
+      "threshold": 0.5,
+      "skillIds": [
+        "boss_seraph_petrify",
+        "root_bind",
+        "boss_seraph_gaze",
+        "fear"
+      ],
+      "weights": [
+        2,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  "st_abyss_hydra_boss": {
+    "id": "st_abyss_hydra_boss",
+    "label": "심연 히드라",
+    "defaultPool": {
+      "skillIds": [
+        "bite",
+        "boss_hydra_maelstrom",
+        "fear"
+      ],
+      "weights": [
+        1,
+        2,
+        1
+      ]
+    },
+    "lowHp": {
+      "threshold": 0.5,
+      "skillIds": [
+        "boss_hydra_maelstrom",
+        "boss_mud_quake",
+        "fear"
+      ],
+      "weights": [
+        2,
+        1,
+        1
+      ]
+    }
+  },
+  "st_throne_guardian_boss": {
+    "id": "st_throne_guardian_boss",
+    "label": "왕좌 수호자",
+    "defaultPool": {
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_seraph_gaze",
+        "telekinesis"
+      ],
+      "weights": [
+        2,
+        1,
+        1
+      ]
+    },
+    "lowHp": {
+      "threshold": 0.45,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_seraph_petrify",
+        "boss_hydra_maelstrom"
+      ],
+      "weights": [
+        2,
+        1,
+        1
+      ]
+    }
+  },
+  "st_border_warden_boss": {
+    "id": "st_border_warden_boss",
+    "label": "변방 감시자",
+    "defaultPool": {
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_seraph_gaze",
+        "telekinesis"
+      ],
+      "weights": [
+        2,
+        1,
+        1
+      ]
+    },
+    "lowHp": {
+      "threshold": 0.45,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_seraph_petrify",
+        "boss_hydra_maelstrom"
+      ],
+      "weights": [
+        2,
+        1,
+        1
+      ]
+    }
+  },
+  "st_void_sovereign_boss": {
+    "id": "st_void_sovereign_boss",
+    "label": "공허의 군주",
+    "defaultPool": {
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_hydra_maelstrom",
+        "boss_seraph_gaze"
+      ],
+      "weights": [
+        2,
+        2,
+        1
+      ]
+    },
+    "lowHp": {
+      "threshold": 0.42,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_hydra_maelstrom",
+        "boss_seraph_petrify"
+      ],
+      "weights": [
+        2,
+        2,
+        1
+      ]
+    }
+  }
+}

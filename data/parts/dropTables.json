@@ -1,0 +1,560 @@
+{
+  "drop_f_slime": [
+    {
+      "itemId": "gray_dust",
+      "chance": 0.4
+    },
+    {
+      "itemId": "wooden_sword",
+      "chance": 0.05
+    },
+    {
+      "itemId": "straw_shoes",
+      "chance": 0.05
+    },
+    {
+      "itemId": "pilgrim_hood",
+      "chance": 0.02
+    },
+    {
+      "itemId": "pilgrim_beads",
+      "chance": 0.02
+    },
+    {
+      "itemId": "wooden_shield",
+      "chance": 0.02
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.06
+    }
+  ],
+  "drop_e_rat": [
+    {
+      "itemId": "rat_tail",
+      "chance": 0.4
+    },
+    {
+      "itemId": "chipped_dagger",
+      "chance": 0.08
+    },
+    {
+      "itemId": "ragged_cloak",
+      "chance": 0.08
+    },
+    {
+      "itemId": "old_boots",
+      "chance": 0.08
+    },
+    {
+      "itemId": "pilgrim_hood",
+      "chance": 0.04
+    },
+    {
+      "itemId": "pilgrim_beads",
+      "chance": 0.04
+    },
+    {
+      "itemId": "wooden_shield",
+      "chance": 0.04
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.1
+    }
+  ],
+  "drop_d_wraith": [
+    {
+      "itemId": "ghost_dust",
+      "chance": 0.5
+    },
+    {
+      "itemId": "iron_sword",
+      "chance": 0.08
+    },
+    {
+      "itemId": "rusty_armor",
+      "chance": 0.08
+    },
+    {
+      "itemId": "sturdy_boots",
+      "chance": 0.06
+    },
+    {
+      "itemId": "pilgrim_hood",
+      "chance": 0.05
+    },
+    {
+      "itemId": "prayer_ring",
+      "chance": 0.05
+    },
+    {
+      "itemId": "wooden_shield",
+      "chance": 0.05
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.14
+    }
+  ],
+  "drop_d_imp": [
+    {
+      "itemId": "tiny_horn",
+      "chance": 0.5
+    },
+    {
+      "itemId": "hunter_bow",
+      "chance": 0.08
+    },
+    {
+      "itemId": "leather_vest",
+      "chance": 0.08
+    },
+    {
+      "itemId": "soldier_boots",
+      "chance": 0.06
+    },
+    {
+      "itemId": "pilgrim_hood",
+      "chance": 0.05
+    },
+    {
+      "itemId": "prayer_ring",
+      "chance": 0.05
+    },
+    {
+      "itemId": "wooden_shield",
+      "chance": 0.05
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.14
+    }
+  ],
+  "drop_c_wraith": [
+    {
+      "itemId": "ghost_dust",
+      "chance": 1
+    },
+    {
+      "itemId": "wraith_blade",
+      "chance": 0.15
+    },
+    {
+      "itemId": "bronze_breastplate",
+      "chance": 0.15
+    },
+    {
+      "itemId": "sturdy_boots",
+      "chance": 0.1
+    },
+    {
+      "itemId": "prayer_ring",
+      "chance": 0.07
+    },
+    {
+      "itemId": "wooden_shield",
+      "chance": 0.07
+    }
+  ],
+  "drop_d_frog": [
+    {
+      "itemId": "frog_poison",
+      "chance": 0.4
+    },
+    {
+      "itemId": "bronze_sword",
+      "chance": 0.08
+    },
+    {
+      "itemId": "leather_vest",
+      "chance": 0.08
+    }
+  ],
+  "drop_d_snake": [
+    {
+      "itemId": "snake_scale",
+      "chance": 0.4
+    },
+    {
+      "itemId": "hunter_bow",
+      "chance": 0.08
+    },
+    {
+      "itemId": "bronze_breastplate",
+      "chance": 0.05
+    }
+  ],
+  "drop_c_skeleton": [
+    {
+      "itemId": "tainted_moss",
+      "chance": 0.5
+    },
+    {
+      "itemId": "steel_longsword",
+      "chance": 0.1
+    },
+    {
+      "itemId": "steel_armor",
+      "chance": 0.1
+    },
+    {
+      "itemId": "soldier_boots",
+      "chance": 0.08
+    }
+  ],
+  "drop_c_stalker": [
+    {
+      "itemId": "tainted_moss",
+      "chance": 0.4
+    },
+    {
+      "itemId": "silver_dagger",
+      "chance": 0.1
+    },
+    {
+      "itemId": "swamp_leather",
+      "chance": 0.1
+    },
+    {
+      "itemId": "wind_shoes",
+      "chance": 0.08
+    }
+  ],
+  "drop_b_giant": [
+    {
+      "itemId": "giant_core",
+      "chance": 1
+    },
+    {
+      "itemId": "earth_hammer",
+      "chance": 0.2
+    },
+    {
+      "itemId": "thorn_armor",
+      "chance": 0.15
+    },
+    {
+      "itemId": "mud_boots",
+      "chance": 0.15
+    }
+  ],
+  "drop_c_hidekel": [
+    {
+      "itemId": "tainted_moss",
+      "chance": 0.45
+    },
+    {
+      "itemId": "ember_necklace",
+      "chance": 0.08
+    },
+    {
+      "itemId": "wooden_shield",
+      "chance": 0.1
+    },
+    {
+      "itemId": "blessed_iron",
+      "chance": 0.14
+    }
+  ],
+  "drop_b_hidekel": [
+    {
+      "itemId": "giant_core",
+      "chance": 0.5
+    },
+    {
+      "itemId": "covenant_shield",
+      "chance": 0.12
+    },
+    {
+      "itemId": "steel_longsword",
+      "chance": 0.1
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.35
+    }
+  ],
+  "drop_a_seraph": [
+    {
+      "itemId": "seraph_crown",
+      "chance": 0.25
+    },
+    {
+      "itemId": "covenant_shield",
+      "chance": 0.2
+    },
+    {
+      "itemId": "earth_hammer",
+      "chance": 0.15
+    },
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.22
+    }
+  ],
+  "drop_b_euphrates": [
+    {
+      "itemId": "blessed_iron",
+      "chance": 0.32
+    },
+    {
+      "itemId": "river_trident",
+      "chance": 0.1
+    },
+    {
+      "itemId": "mirror_buckler",
+      "chance": 0.09
+    },
+    {
+      "itemId": "abyss_scale",
+      "chance": 0.2
+    }
+  ],
+  "drop_a_euphrates": [
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.24
+    },
+    {
+      "itemId": "dusk_plate",
+      "chance": 0.11
+    },
+    {
+      "itemId": "oath_diadem",
+      "chance": 0.1
+    },
+    {
+      "itemId": "abyss_scale",
+      "chance": 0.28
+    }
+  ],
+  "drop_a_hydra": [
+    {
+      "itemId": "abyss_scale",
+      "chance": 1
+    },
+    {
+      "itemId": "halo_boots",
+      "chance": 0.22
+    },
+    {
+      "itemId": "relic_talisman",
+      "chance": 0.18
+    },
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.35
+    }
+  ],
+  "drop_a_eden": [
+    {
+      "itemId": "abyss_scale",
+      "chance": 0.35
+    },
+    {
+      "itemId": "throne_fragment",
+      "chance": 0.22
+    },
+    {
+      "itemId": "aegis_core",
+      "chance": 0.08
+    }
+  ],
+  "drop_s_eden": [
+    {
+      "itemId": "throne_fragment",
+      "chance": 0.45
+    },
+    {
+      "itemId": "relic_talisman",
+      "chance": 0.1
+    },
+    {
+      "itemId": "oath_diadem",
+      "chance": 0.1
+    }
+  ],
+  "drop_s_guardian": [
+    {
+      "itemId": "throne_fragment",
+      "chance": 1
+    },
+    {
+      "itemId": "aegis_core",
+      "chance": 0.26
+    },
+    {
+      "itemId": "halo_boots",
+      "chance": 0.24
+    },
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.4
+    }
+  ],
+  "drop_periphery_field": [
+    {
+      "itemId": "throne_fragment",
+      "chance": 0.42
+    },
+    {
+      "itemId": "abyss_scale",
+      "chance": 0.3
+    },
+    {
+      "itemId": "blessed_iron",
+      "chance": 0.22
+    },
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.28
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.4
+    },
+    {
+      "itemId": "border_reliquary",
+      "chance": 0.06
+    },
+    {
+      "itemId": "dusk_plate",
+      "chance": 0.045
+    },
+    {
+      "itemId": "oath_diadem",
+      "chance": 0.04
+    },
+    {
+      "itemId": "relic_talisman",
+      "chance": 0.035
+    },
+    {
+      "itemId": "river_trident",
+      "chance": 0.03
+    },
+    {
+      "itemId": "mirror_buckler",
+      "chance": 0.028
+    },
+    {
+      "itemId": "covenant_shield",
+      "chance": 0.025
+    }
+  ],
+  "drop_void_field": [
+    {
+      "itemId": "throne_fragment",
+      "chance": 0.5
+    },
+    {
+      "itemId": "guardian_oath",
+      "chance": 0.12
+    },
+    {
+      "itemId": "void_sliver",
+      "chance": 0.1
+    },
+    {
+      "itemId": "abyss_scale",
+      "chance": 0.26
+    },
+    {
+      "itemId": "blessed_iron",
+      "chance": 0.26
+    },
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.36
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.42
+    },
+    {
+      "itemId": "halo_boots",
+      "chance": 0.05
+    },
+    {
+      "itemId": "aegis_core",
+      "chance": 0.04
+    },
+    {
+      "itemId": "relic_talisman",
+      "chance": 0.045
+    },
+    {
+      "itemId": "hydra_fang_blade",
+      "chance": 0.018
+    },
+    {
+      "itemId": "dusk_plate",
+      "chance": 0.038
+    }
+  ],
+  "drop_border_warden": [
+    {
+      "itemId": "throne_fragment",
+      "chance": 1
+    },
+    {
+      "itemId": "border_reliquary",
+      "chance": 0.55
+    },
+    {
+      "itemId": "aegis_core",
+      "chance": 0.34
+    },
+    {
+      "itemId": "oath_diadem",
+      "chance": 0.3
+    },
+    {
+      "itemId": "halo_boots",
+      "chance": 0.26
+    },
+    {
+      "itemId": "relic_talisman",
+      "chance": 0.28
+    },
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.48
+    },
+    {
+      "itemId": "guardian_oath",
+      "chance": 0.12
+    }
+  ],
+  "drop_void_sovereign": [
+    {
+      "itemId": "guardian_oath",
+      "chance": 1
+    },
+    {
+      "itemId": "void_sliver",
+      "chance": 0.62
+    },
+    {
+      "itemId": "aegis_core",
+      "chance": 0.42
+    },
+    {
+      "itemId": "guardian_halo",
+      "chance": 0.26
+    },
+    {
+      "itemId": "hydra_fang_blade",
+      "chance": 0.2
+    },
+    {
+      "itemId": "seraph_ember",
+      "chance": 0.52
+    },
+    {
+      "itemId": "throne_fragment",
+      "chance": 0.85
+    }
+  ]
+}

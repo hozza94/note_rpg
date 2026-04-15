@@ -50,7 +50,7 @@ class InventoryManager {
      */
     equip(itemId) {
         const itemData = window.GAME_DATA.items[itemId];
-        if (!itemData || !itemData.slot) return false;
+        if (!itemData || itemData.kind !== 'equipment' || !itemData.slot) return false;
 
         // Unequip current item in slot if exists
         this.unequip(itemData.slot);

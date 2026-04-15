@@ -1,0 +1,35 @@
+{
+  "monsterGradeOrder": [
+    "F",
+    "E",
+    "D",
+    "C",
+    "B",
+    "A",
+    "S",
+    "SS",
+    "SSS"
+  ],
+  "itemGrades": [
+    "Normal",
+    "Uncommon",
+    "Rare",
+    "Epic"
+  ],
+  "equipmentSlots": [
+    "weapon",
+    "armor",
+    "helmet",
+    "boots",
+    "accessory",
+    "offhand"
+  ],
+  "playerSkillTypes": [
+    "attack",
+    "buff"
+  ],
+  "itemKinds": [
+    "material",
+    "equipment"
+  ]
+}

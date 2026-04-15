@@ -53,7 +53,7 @@
 ## 3. 지역/진행/보상
 
 ### 3.1 지역 진행
-- 기본 진행: `pishon -> gihon -> hidekel`
+- 기본 진행: `pishon → gihon → hidekel → euphrates → eden_core → periphery(변방의 회랑) → void_remnant(공허 잔해, 종착)`
 - 각 지역은 `bossId`, `minLevel`, `nextRegionId`를 가집니다.
 - **탐사 진행도**: 일반 몬스터 전투 승리 시 `+4` (최대 100%). 진행도가 100%가 되면 탐험 시 보스 전투로 연결될 수 있으므로, 성장 후 도전하는 편이 안전합니다.
 - 보스 격파 시 다음 지역 이동이 해금됩니다.
