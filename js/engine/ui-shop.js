@@ -2,7 +2,7 @@
 (function () {
     if (typeof window === 'undefined' || typeof window.GameEngine === 'undefined') return;
     Object.assign(window.GameEngine.prototype, {
-        openShop(tab = 'buy') {
+        openShop(tab = 'buy', options = {}) {
             if (this.state.battle) return this.log("전투 중에는 상점을 이용할 수 없습니다.", "system");
 
             const regionId = this.state.world.currentRegionId;
@@ -13,6 +13,7 @@
             const content = document.getElementById('modal-content');
             const playerGold = this.state.player.gold;
             const currentTab = tab === 'sell' ? 'sell' : 'buy';
+            const fromFacility = !!options.fromFacility;
             const buyRows = goods.map(entry => {
                 const item = window.GAME_DATA.items[entry.itemId];
                 if (!item) return '';
@@ -67,7 +68,7 @@
                 }).join('') || '<div class="empty-msg">판매 가능한 비장비 아이템이 없습니다.</div>';
 
             content.innerHTML = `
-                <h3 style="margin-bottom:14px;">${window.GAME_DATA.regions[regionId].name} 상점</h3>
+                ${this.renderModalTopBar(`${window.GAME_DATA.regions[regionId].name} 상점`, { showBack: fromFacility })}
                 <p style="margin-bottom:12px; color:#ffd54f;">보유 골드: ${playerGold}G</p>
                 <div class="smith-tabs" style="margin-bottom:10px;">
                     <button class="action-btn small ${currentTab === 'buy' ? 'primary' : ''}" data-shop-tab="buy">구매</button>
@@ -76,14 +77,16 @@
                 <div style="display:flex; flex-direction:column; gap:10px; max-height:330px; overflow-y:auto;">
                     ${currentTab === 'buy' ? buyRows : sellRows}
                 </div>
-                <button id="btn-close-shop" class="action-btn" style="margin-top:12px; width:100%;">닫기</button>
             `;
             modal.classList.remove('hidden');
+            this.bindModalTopBarActions(content, {
+                onBack: () => this.renderFacilityHub()
+            });
 
             content.querySelectorAll('[data-shop-tab]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const nextTab = btn.getAttribute('data-shop-tab') || 'buy';
-                    this.openShop(nextTab);
+                    this.openShop(nextTab, options);
                 });
             });
             content.querySelectorAll('button[data-buy-id]').forEach(btn => {
@@ -99,7 +102,7 @@
                     }
                     const amount = req === 'max' ? maxBuy : Math.max(1, Math.min(maxBuy, Math.floor(Number(req) || 1)));
                     this.buyShopItem(itemId, price, amount);
-                    this.openShop('buy');
+                    this.openShop('buy', options);
                 });
             });
             content.querySelectorAll('button[data-sell-id]').forEach(btn => {
@@ -111,10 +114,9 @@
                     const req = btn.getAttribute('data-sell-qty') || '1';
                     const amount = req === 'max' ? owned : Math.max(1, Math.min(owned, Math.floor(Number(req) || 1)));
                     this.sellItem(itemId, amount);
-                    this.openShop('sell');
+                    this.openShop('sell', options);
                 });
             });
-            document.getElementById('btn-close-shop').addEventListener('click', () => modal.classList.add('hidden'));
         }
 ,
         buyShopItem(itemId, price, amount = 1) {

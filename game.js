@@ -105,7 +105,7 @@ class GameEngine {
         document.getElementById('btn-auto-explore').addEventListener('click', () => this.toggleAutoExplore());
         document.getElementById('btn-worship').addEventListener('click', () => this.worship());
         document.getElementById('btn-rest').addEventListener('click', () => this.rest());
-        document.getElementById('btn-facility')?.addEventListener('click', () => this.openFacilityHub());
+        document.getElementById('btn-facility-fab')?.addEventListener('click', () => this.openFacilityHub());
         const bossBtn = document.getElementById('btn-boss-challenge');
         if (bossBtn) bossBtn.addEventListener('click', () => this.bossChallenge());
         document.getElementById('btn-boss-dungeon')?.addEventListener('click', () => this.openBossDungeonModal());

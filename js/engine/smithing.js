@@ -21,6 +21,8 @@
             ];
             this.blacksmithTab = tab;
             const currentTab = tabs.find(t => t.id === tab) ? tab : 'enhance';
+            const fromFacility = !!options.fromFacility;
+            this.blacksmithFromFacility = fromFacility;
             const body = currentTab === 'enhance'
                 ? this.renderBlacksmithEnhanceBody()
                 : currentTab === 'salvage'
@@ -29,7 +31,7 @@
             content.style.width = '700px';
             content.style.maxWidth = '95vw';
             content.innerHTML = `
-                <h3 style="margin-bottom: 10px;">🔨 대장간</h3>
+                ${this.renderModalTopBar('🔨 대장간', { showBack: fromFacility })}
                 <p style="font-size:0.82rem; color:#b0bec5; margin-bottom:10px;">
                     대장장이 레벨 ${this.state.player.smithLevel || 1} · 등급별 강화 상한 일반 +10 · 고급 +14 · 희귀 +17 · 에픽 +20 · 보스 전용 +30 · 보유 골드 ${this.state.player.gold}G
                 </p>
@@ -37,9 +39,11 @@
                     ${tabs.map(t => `<button class="action-btn small ${t.id === currentTab ? 'primary' : ''}" data-smith-tab="${t.id}">${t.label}</button>`).join('')}
                 </div>
                 <div class="smith-body">${body}</div>
-                <button id="btn-close-smith" class="action-btn" style="margin-top: 12px; width: 100%;">닫기</button>
             `;
             modal.classList.remove('hidden');
+            this.bindModalTopBarActions(content, {
+                onBack: () => this.renderFacilityHub()
+            });
             const restoreScrollTop = Number(options?.restoreScrollTop || 0);
             if (restoreScrollTop > 0) {
                 const bodyEl = content.querySelector('.smith-body');
@@ -51,7 +55,7 @@
             }
 
             content.querySelectorAll('[data-smith-tab]').forEach(btn => {
-                btn.addEventListener('click', () => this.openBlacksmithModal(btn.getAttribute('data-smith-tab')));
+                btn.addEventListener('click', () => this.openBlacksmithModal(btn.getAttribute('data-smith-tab'), options));
             });
             content.querySelectorAll('[data-smith-enhance]').forEach(btn => {
                 btn.addEventListener('click', () => this.tryEnhanceItem(btn.getAttribute('data-smith-enhance')));
@@ -59,13 +63,9 @@
             content.querySelectorAll('[data-smith-salvage]').forEach(btn => {
                 btn.addEventListener('click', () => this.salvageItem(btn.getAttribute('data-smith-salvage')));
             });
+            content.querySelector('[data-smith-salvage-all]')?.addEventListener('click', () => this.salvageAllInventoryItems());
             content.querySelectorAll('[data-smith-craft]').forEach(btn => {
                 btn.addEventListener('click', () => this.craftRecipe(btn.getAttribute('data-smith-craft')));
-            });
-            document.getElementById('btn-close-smith')?.addEventListener('click', () => {
-                content.style.width = '';
-                content.style.maxWidth = '';
-                modal.classList.add('hidden');
             });
         },
 
@@ -114,7 +114,13 @@
             if (smithable.length === 0) {
                 return '<div class="empty-msg">분해할 장비가 가방에 없습니다.</div>';
             }
-            return smithable.map(itemId => {
+            const totalCount = smithable.reduce((acc, itemId) => acc + this.getInventoryCount(itemId), 0);
+            return `
+                <div class="smith-salvage-all-row" style="display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:10px;">
+                    <div style="font-size:0.82rem; color:#b0bec5;">가방 내 분해 가능 장비 ${totalCount}개</div>
+                    <button class="action-btn small danger" data-smith-salvage-all>인벤토리 전체 분해</button>
+                </div>
+                ${smithable.map(itemId => {
                 const item = window.GAME_DATA.items[itemId];
                 const reward = this.getSalvageReward(itemId);
                 const rewardText = reward.materials.map(m => `${window.GAME_DATA.items[m.itemId]?.name || m.itemId} x${m.count}`).join(' · ');
@@ -128,7 +134,8 @@
                         <button class="action-btn small secondary" data-smith-salvage="${itemId}">분해</button>
                     </div>
                 `;
-            }).join('');
+                }).join('')}
+            `;
         },
 
         renderBlacksmithCraftBody() {
@@ -241,7 +248,10 @@
             this.updateUI();
             this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
             this.saveGame();
-            this.openBlacksmithModal('enhance', { restoreScrollTop: preserveScrollTop });
+            this.openBlacksmithModal('enhance', {
+                restoreScrollTop: preserveScrollTop,
+                fromFacility: !!this.blacksmithFromFacility
+            });
         },
 
         salvageItem(itemId) {
@@ -258,7 +268,56 @@
             this.updateUI();
             this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
             this.saveGame();
-            this.openBlacksmithModal('salvage', { restoreScrollTop: preserveScrollTop });
+            this.openBlacksmithModal('salvage', {
+                restoreScrollTop: preserveScrollTop,
+                fromFacility: !!this.blacksmithFromFacility
+            });
+        },
+
+        salvageAllInventoryItems() {
+            const smithable = this.getSmithableEquipmentItemIds().filter(id => this.getInventoryCount(id) > 0);
+            if (smithable.length === 0) {
+                this.showToast("분해할 장비가 없습니다.", "warn");
+                return;
+            }
+            const totalCount = smithable.reduce((acc, itemId) => acc + this.getInventoryCount(itemId), 0);
+            const ok = confirm(`가방의 분해 가능 장비 ${totalCount}개를 모두 분해하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`);
+            if (!ok) return;
+
+            let totalGold = 0;
+            const matSummary = {};
+            const itemSummary = [];
+            smithable.forEach((itemId) => {
+                const count = this.getInventoryCount(itemId);
+                if (count <= 0) return;
+                const item = window.GAME_DATA.items[itemId];
+                const reward = this.getSalvageReward(itemId);
+                this.inventory.removeItem(itemId, count);
+                totalGold += reward.gold * count;
+                (reward.materials || []).forEach((mat) => {
+                    if (!matSummary[mat.itemId]) matSummary[mat.itemId] = 0;
+                    matSummary[mat.itemId] += mat.count * count;
+                });
+                itemSummary.push(`${item?.name || itemId} x${count}`);
+            });
+
+            this.state.player.gold += totalGold;
+            Object.entries(matSummary).forEach(([itemId, count]) => {
+                this.inventory.addItem(itemId, count);
+            });
+
+            const matText = Object.entries(matSummary).map(([itemId, count]) => {
+                const name = window.GAME_DATA.items[itemId]?.name || itemId;
+                return `${name} x${count}`;
+            }).join(' · ');
+            this.showToast(`전체 분해 완료 (+${totalGold}G)`, "success");
+            this.log(`[대장간] 전체 분해: ${itemSummary.join(', ')} · +${totalGold}G${matText ? ` · ${matText}` : ''}`, "effect");
+            this.updateUI();
+            this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
+            this.saveGame();
+            this.openBlacksmithModal('salvage', {
+                fromFacility: !!this.blacksmithFromFacility
+            });
         },
 
         craftRecipe(recipeId) {
@@ -285,7 +344,10 @@
             this.updateUI();
             this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'inventory');
             this.saveGame();
-            this.openBlacksmithModal('craft', { restoreScrollTop: preserveScrollTop });
+            this.openBlacksmithModal('craft', {
+                restoreScrollTop: preserveScrollTop,
+                fromFacility: !!this.blacksmithFromFacility
+            });
         }
     });
 })();
