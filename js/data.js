@@ -148,7 +148,7 @@ const GAME_DATA = {
         { id: "mini_imp", tags: ["field","pishon"], regionId: "pishon", grade: "D", name: "미니 임프", level: 10, minPlayerLv: 5, maxPlayerLv: 99, stats: { hp: 320, atk: 35, def: 20, spd: 135 }, reward: { exp: 290, gold: 80 }, dropTableId: "drop_d_imp", skillTreeId: "st_small_fire_only" },
 
         // 보스: 원혼 (비손)
-        { id: "wraith", tags: ["boss","pishon"], regionId: "pishon", grade: "C", name: "원혼", level: 14, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1200, atk: 85, def: 55, spd: 160 }, reward: { exp: 1225, gold: 250 }, dropTableId: "drop_c_wraith", skillTreeId: "st_wraith_boss", isBoss: true },
+        { id: "wraith", tags: ["boss","pishon"], regionId: "pishon", grade: "C", name: "원혼", level: 14, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1200, atk: 85, def: 55, spd: 160 }, reward: { exp: 1225, gold: 250 }, dropTableId: "drop_c_wraith", skillTreeId: "st_wraith_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_malice", "boss_p_grudge_shell"], bossActiveSkillIds: ["boss_wraith_haunt", "boss_a_iron_hide"], bossActiveWeights: [2, 1] },
 
         // ========================
         // 기혼 유역 (gihon) 몬스터
@@ -159,7 +159,7 @@ const GAME_DATA = {
         { id: "swamp_stalker", tags: ["field","gihon"], regionId: "gihon", grade: "C", name: "습지의 추격자", level: 19, minPlayerLv: 11, maxPlayerLv: 99, stats: { hp: 1200, atk: 120, def: 50, spd: 190 }, reward: { exp: 780, gold: 320 }, dropTableId: "drop_c_stalker", skillTreeId: "st_fear_only" },
 
         // 보스: 진흙 거인 (기혼)
-        { id: "mud_giant", tags: ["boss","gihon"], regionId: "gihon", grade: "B", name: "진흙 거인", level: 22, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 4375, gold: 1250 }, dropTableId: "drop_b_giant", skillTreeId: "st_mud_giant_boss", isBoss: true },
+        { id: "mud_giant", tags: ["boss","gihon"], regionId: "gihon", grade: "B", name: "진흙 거인", level: 22, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 4375, gold: 1250 }, dropTableId: "drop_b_giant", skillTreeId: "st_mud_giant_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_deep_root", "boss_p_stone_blood"], bossActiveSkillIds: ["boss_mud_grasp", "boss_a_war_drum"], bossActiveWeights: [1, 1] },
 
         // ========================
         // 히데겔 협곡 (hidekel) 몬스터
@@ -169,7 +169,7 @@ const GAME_DATA = {
         { id: "ash_knight", tags: ["field","hidekel"], regionId: "hidekel", grade: "B", name: "잿빛 기사", level: 27, minPlayerLv: 18, maxPlayerLv: 99, stats: { hp: 2600, atk: 185, def: 120, spd: 120 }, reward: { exp: 1550, gold: 620 }, dropTableId: "drop_b_hidekel", skillTreeId: "st_wail_root" },
 
         // 보스: 석화 세라프 (히데겔)
-        { id: "stone_seraph", tags: ["boss","hidekel"], regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 20, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 7350, gold: 2500 }, dropTableId: "drop_a_seraph", skillTreeId: "st_stone_seraph_boss", isBoss: true },
+        { id: "stone_seraph", tags: ["boss","hidekel"], regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 20, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 7350, gold: 2500 }, dropTableId: "drop_a_seraph", skillTreeId: "st_stone_seraph_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_grudge_shell", "boss_p_malice", "boss_p_throne_sigil"], bossActiveSkillIds: ["boss_seraph_gaze", "boss_a_iron_hide", "boss_a_fortress"], bossActiveWeights: [2, 1, 1] },
 
         // ========================
         // 유브라데 전장 (euphrates) 몬스터
@@ -180,7 +180,7 @@ const GAME_DATA = {
         { id: "void_marauder", tags: ["field","euphrates"], regionId: "euphrates", grade: "S", name: "공허의 약탈자", level: 36, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 6500, atk: 295, def: 185, spd: 178 }, reward: { exp: 3400, gold: 1050 }, dropTableId: "drop_a_euphrates", skillTreeId: "st_wail_root" },
 
         // 보스: 심연 히드라 (유브라데)
-        { id: "abyss_hydra", tags: ["boss","euphrates"], regionId: "euphrates", grade: "A", name: "심연 히드라", level: 38, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 9800, atk: 360, def: 250, spd: 210 }, reward: { exp: 10850, gold: 3500 }, dropTableId: "drop_a_hydra", skillTreeId: "st_abyss_hydra_boss", isBoss: true },
+        { id: "abyss_hydra", tags: ["boss","euphrates"], regionId: "euphrates", grade: "A", name: "심연 히드라", level: 38, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 9800, atk: 360, def: 250, spd: 210 }, reward: { exp: 10850, gold: 3500 }, dropTableId: "drop_a_hydra", skillTreeId: "st_abyss_hydra_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_abyss_tide", "boss_p_swarm_mind", "boss_p_deep_root"], bossActiveSkillIds: ["boss_hydra_maelstrom", "boss_a_overdrive", "bite"], bossActiveWeights: [2, 1, 1] },
 
         // ========================
         // 에덴 심연 (eden_core) 몬스터
@@ -191,7 +191,7 @@ const GAME_DATA = {
         { id: "core_devourer", tags: ["field","eden_core"], regionId: "eden_core", grade: "S", name: "심연 심장의 포식자", level: 44, minPlayerLv: 34, maxPlayerLv: 99, stats: { hp: 9200, atk: 380, def: 245, spd: 200 }, reward: { exp: 6200, gold: 2100 }, dropTableId: "drop_s_eden", skillTreeId: "st_fear_only" },
 
         // 보스: 왕좌 수호자 (에덴 심연)
-        { id: "throne_guardian", tags: ["boss","eden_core"], regionId: "eden_core", grade: "S", name: "왕좌 수호자", level: 45, minPlayerLv: 36, maxPlayerLv: 99, stats: { hp: 13000, atk: 420, def: 300, spd: 220 }, reward: { exp: 15750, gold: 5250 }, dropTableId: "drop_s_guardian", skillTreeId: "st_throne_guardian_boss", isBoss: true },
+        { id: "throne_guardian", tags: ["boss","eden_core"], regionId: "eden_core", grade: "S", name: "왕좌 수호자", level: 45, minPlayerLv: 36, maxPlayerLv: 99, stats: { hp: 13000, atk: 420, def: 300, spd: 220 }, reward: { exp: 15750, gold: 5250 }, dropTableId: "drop_s_guardian", skillTreeId: "st_throne_guardian_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_throne_sigil", "boss_p_crown_pressure", "boss_p_stone_blood", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_seraph_gaze", "boss_a_rampart", "telekinesis"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_overdrive"], weights: [2, 1, 1, 1] } },
 
         // ========================
         // 변방의 회랑 (periphery)
@@ -199,7 +199,7 @@ const GAME_DATA = {
         { id: "periphery_sentinel", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "회랑의 파수꾼", level: 40, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 5200, atk: 300, def: 195, spd: 175 }, reward: { exp: 4800, gold: 1500 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
         { id: "periphery_stalker", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "변두리 추적자", level: 42, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 5800, atk: 318, def: 205, spd: 188 }, reward: { exp: 5400, gold: 1680 }, dropTableId: "drop_periphery_field", skillTreeId: "st_fear_only" },
         { id: "periphery_harbinger", tags: ["field","periphery"], regionId: "periphery", grade: "SS", name: "잔향의 선구자", level: 44, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 6800, atk: 335, def: 218, spd: 182 }, reward: { exp: 6200, gold: 1900 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
-        { id: "border_warden", tags: ["boss","periphery"], regionId: "periphery", grade: "SS", name: "변방 감시자", level: 47, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 15800, atk: 445, def: 315, spd: 228 }, reward: { exp: 18200, gold: 5800 }, dropTableId: "drop_border_warden", skillTreeId: "st_border_warden_boss", isBoss: true },
+        { id: "border_warden", tags: ["boss","periphery"], regionId: "periphery", grade: "SS", name: "변방 감시자", level: 47, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 15800, atk: 445, def: 315, spd: 228 }, reward: { exp: 18200, gold: 5800 }, dropTableId: "drop_border_warden", skillTreeId: "st_border_warden_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_border_lock", "boss_p_null_skin", "boss_p_throne_sigil", "boss_p_abyss_tide"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_a_void_surge", "boss_a_fortress", "boss_seraph_gaze"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_bloodlust"], weights: [2, 1, 1, 1] } },
 
         // ========================
         // 공허 잔해 (void_remnant)
@@ -207,8 +207,29 @@ const GAME_DATA = {
         { id: "void_lurker", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SS", name: "공허의 잠복자", level: 46, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 7800, atk: 355, def: 232, spd: 195 }, reward: { exp: 7200, gold: 2200 }, dropTableId: "drop_void_field", skillTreeId: "st_fear_only" },
         { id: "void_executioner", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SS", name: "잔해의 집행자", level: 48, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 8500, atk: 375, def: 245, spd: 188 }, reward: { exp: 8100, gold: 2450 }, dropTableId: "drop_void_field", skillTreeId: "st_wail_root" },
         { id: "void_colossus", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허 거신", level: 50, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 9800, atk: 395, def: 268, spd: 165 }, reward: { exp: 9200, gold: 2800 }, dropTableId: "drop_void_field", skillTreeId: "st_bite_only" },
-        { id: "void_sovereign", tags: ["boss","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허의 군주", level: 52, minPlayerLv: 46, maxPlayerLv: 99, stats: { hp: 19800, atk: 495, def: 355, spd: 238 }, reward: { exp: 22000, gold: 7200 }, dropTableId: "drop_void_sovereign", skillTreeId: "st_void_sovereign_boss", isBoss: true }
+        { id: "void_sovereign", tags: ["boss","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허의 군주", level: 52, minPlayerLv: 46, maxPlayerLv: 99, stats: { hp: 19800, atk: 495, def: 355, spd: 238 }, reward: { exp: 22000, gold: 7200 }, dropTableId: "drop_void_sovereign", skillTreeId: "st_void_sovereign_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_abyss_tide", "boss_p_crown_pressure", "boss_p_border_lock"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_bloodlust"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.42, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } }
     ],
+
+    // 로어북 기반 몬스터/보스 카탈로그(미출현 보관용). 실제 출현은 regions·monsters 체인에 추가 시 활성화.
+    monsterCompendium: {
+        source: 'Lore Book/Lore Book _ Monster.md',
+        archived: [
+            { id: 'lucifer', grade: 'SSS', name: '루시퍼', type: 'archdemon', level: 100, dropTableId: 'drop_sss_lucifer', skills: ['falling_light', 'soul_domination'] },
+            { id: 'baal', grade: 'SS', name: '바알', type: 'archdemon', level: 90, dropTableId: 'drop_ss_baal', skills: ['flame_tyrant', 'fear_aura'] },
+            { id: 'astaroth', grade: 'SS', name: '아스타로트', type: 'archdemon', level: 88, dropTableId: 'drop_ss_astaroth', skills: ['knowledge_drain', 'chaos_magic'] },
+            { id: 'beelzebub', grade: 'S', name: '벨제부브', type: 'high_demon', level: 75, dropTableId: 'drop_s_beelzebub', skills: ['decay_breath'] },
+            { id: 'asmodeus', grade: 'S', name: '아스모데우스', type: 'high_demon', level: 72, dropTableId: 'drop_s_asmodeus', skills: ['temptation', 'mind_control'] },
+            { id: 'baphomet', grade: 'A', name: '바포메트', type: 'mid_demon', level: 60, dropTableId: 'drop_a_baphomet', skills: ['dark_ritual'] },
+            { id: 'incubus', grade: 'A', name: '인큐버스', type: 'mid_demon', level: 55, dropTableId: 'drop_a_incubus', skills: ['life_drain'] },
+            { id: 'imp', grade: 'B', name: '임프', type: 'low_demon', level: 35, dropTableId: 'drop_b_imp', skills: ['trick_fire'] },
+            { id: 'hellhound', grade: 'B', name: '헬하운드', type: 'beast', level: 40, dropTableId: 'drop_b_hellhound', skills: ['flame_dash'] },
+            { id: 'poltergeist', grade: 'C', name: '폴터가이스트', type: 'ghost', level: 18, dropTableId: 'drop_c_poltergeist', skills: ['telekinesis'] },
+            { id: 'shadow_wraith', grade: 'C', name: '그림자 망령', type: 'ghost', level: 22, dropTableId: 'drop_c_shadow', skills: ['stealth', 'ambush'] },
+            { id: 'cursed_doll', grade: 'C', name: '저주받은 인형', type: 'cursed', level: 19, dropTableId: 'drop_c_doll', skills: ['fear_gaze'] },
+            { id: 'lost_soul', grade: 'C', name: '떠도는 영혼', type: 'ghost', level: 17, dropTableId: 'drop_c_soul', skills: ['possession'] },
+            { id: 'nightmare_remnant', grade: 'C', name: '악몽의 잔재', type: 'mental', level: 23, dropTableId: 'drop_c_nightmare', skills: ['hallucination'] }
+        ]
+    },
 
     // 스킬 데이터
     skills: {
@@ -273,7 +294,30 @@ const GAME_DATA = {
             name: '왕좌의 판결', tags: ['boss', 'attack', 'fear', 'debuff'], type: 'attack', bossOnly: true,
             effect: { atkMul: 1.62, fear: true, spdDebuff: 0.78 },
             desc: '수호자의 판결이 무거운 충격으로 내려앉습니다.'
-        }
+        },
+
+        // 보스 패시브(전투 시작 시 스탯 배율 적용, 턴 소모 없음)
+        'boss_p_malice': { name: '악의의 잔향', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { atkMul: 1.06 } }, desc: '공격 스탯이 소폭 상승합니다.' },
+        'boss_p_grudge_shell': { name: '원한의 껍질', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { defMul: 1.06 } }, desc: '방어 스탯이 소폭 상승합니다.' },
+        'boss_p_restless': { name: '불안한 기류', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { spdMul: 1.06 } }, desc: '속도가 소폭 상승합니다.' },
+        'boss_p_stone_blood': { name: '석화 혈맥', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { atkMul: 1.05, defMul: 1.08 } }, desc: '공격과 방어가 함께 굳어집니다.' },
+        'boss_p_deep_root': { name: '깊은 뿌리', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { defMul: 1.07 } }, desc: '방어에 집중합니다.' },
+        'boss_p_abyss_tide': { name: '심연의 밀물', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { atkMul: 1.08 } }, desc: '공격이 거세집니다.' },
+        'boss_p_swarm_mind': { name: '군체의 의지', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { atkMul: 1.07 } }, desc: '집단의 압박이 느껴집니다.' },
+        'boss_p_throne_sigil': { name: '왕좌의 인장', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { defMul: 1.1 } }, desc: '왕권의 방어가 깔립니다.' },
+        'boss_p_crown_pressure': { name: '면류관의 중압', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { atkMul: 1.09 } }, desc: '압도적인 위세가 공격을 보탭니다.' },
+        'boss_p_border_lock': { name: '변방의 봉쇄', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { defMul: 1.09, spdMul: 1.05 } }, desc: '경계가 몸을 단단히 감쌉니다.' },
+        'boss_p_void_heart': { name: '공허 심장', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { atkMul: 1.1, defMul: 1.1 } }, desc: '핵이 공허와 하나가 됩니다.' },
+        'boss_p_null_skin': { name: '무(無)의 피부', tags: ['boss', 'passive'], type: 'passive', bossOnly: true, effect: { monsterPassive: { defMul: 1.12 } }, desc: '색이 벗겨진 외피가 충격을 흡수합니다.' },
+
+        // 보스 액티브 자기강화(피해 없음, 몬스터 임시 배율)
+        'boss_a_iron_hide': { name: '응축 껍질', tags: ['boss', 'buff', 'self'], type: 'buff', bossOnly: true, effect: { monsterBuff: { defMul: 1.15, turns: 3 } }, desc: '몸을 단단히 웅크립니다.' },
+        'boss_a_war_drum': { name: '전장의 북소리', tags: ['boss', 'buff', 'self'], type: 'buff', bossOnly: true, effect: { monsterBuff: { atkMul: 1.12, turns: 3 } }, desc: '격동이 공격에 실립니다.' },
+        'boss_a_void_surge': { name: '공허 가속', tags: ['boss', 'buff', 'self'], type: 'buff', bossOnly: true, effect: { monsterBuff: { spdMul: 1.15, turns: 3 } }, desc: '잔해의 흐름이 속도를 끌어올립니다.' },
+        'boss_a_rampart': { name: '성채 각성', tags: ['boss', 'buff', 'self'], type: 'buff', bossOnly: true, effect: { monsterBuff: { defMul: 1.22, turns: 2 } }, desc: '잠시 방벽이 두꺼워집니다.' },
+        'boss_a_overdrive': { name: '과부하 각성', tags: ['boss', 'buff', 'self'], type: 'buff', bossOnly: true, effect: { monsterBuff: { atkMul: 1.18, turns: 3 } }, desc: '공격이 폭발적으로 증가합니다.' },
+        'boss_a_fortress': { name: '요새 입장', tags: ['boss', 'buff', 'self'], type: 'buff', bossOnly: true, effect: { monsterBuff: { defMul: 1.12, turns: 4 } }, desc: '오래도록 방어 태세를 유지합니다.' },
+        'boss_a_bloodlust': { name: '광전의 혈', tags: ['boss', 'buff', 'self'], type: 'buff', bossOnly: true, effect: { monsterBuff: { atkMul: 1.15, turns: 2 } }, desc: '짧은 시간 극단의 공격력을 얻습니다.' }
     },
 
     // 몬스터 스킬 풀 (dropTableId와 동일하게 ID로 참조, HP 구간별 가중치 선택 가능)

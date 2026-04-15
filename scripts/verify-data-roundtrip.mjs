@@ -14,7 +14,7 @@ const root = join(__dirname, '..');
 const partsDir = join(root, 'data', 'parts');
 
 const PART_ORDER = [
-    'regions', 'bossDungeon', 'avatars', 'monsters', 'skills', 'monsterSkillTrees',
+    'regions', 'bossDungeon', 'avatars', 'monsters', 'monsterCompendium', 'skills', 'monsterSkillTrees',
     'skillTrees', 'items', 'dropTables', 'bossExclusiveDropTables', 'worshipVerses',
     'smithing', 'relics', 'relicShops', 'shops', 'meta'
 ];

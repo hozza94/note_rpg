@@ -216,29 +216,25 @@
                             return;
                         }
                     }
-                    const playerLv = this.state.player.level || 1;
                     const roll = Math.random();
                     const regionId = this.state.world.currentRegionId || 'pishon';
                     const regionData = window.GAME_DATA.regions[regionId];
                     if (roll < 0.75) {
                         const normalGrades = window.GAME_DATA.meta?.monsterGradeOrder || ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'];
+                        // 지역 필드 풀만 사용(플레이어 레벨로 약한 몹을 고르지 않음). 강행 진입 시에도 해당 지역 몬스터만 조우.
                         const monsterList = window.GAME_DATA.monsters.filter(m =>
                             m.regionId === regionId &&
+                            !m.isBoss &&
                             normalGrades.includes(m.grade) &&
-                            m.minPlayerLv <= playerLv &&
-                            m.maxPlayerLv >= playerLv &&
                             (!regionData || m.id !== regionData.bossId)
                         );
-                        if (monsterList.length === 0) {
-                            const fallback = window.GAME_DATA.monsters.filter(m => m.grade === 'F');
-                            const raw = JSON.parse(JSON.stringify(fallback[Math.floor(Math.random() * fallback.length)]));
-                            this.applyFieldMonsterRegionScaling(raw, regionId);
-                            this.startBattle(raw);
-                        } else {
+                        if (monsterList.length > 0) {
                             const picked = this.pickWeightedFieldMonster(monsterList);
                             const raw = JSON.parse(JSON.stringify(picked));
                             this.applyFieldMonsterRegionScaling(raw, regionId);
                             this.startBattle(raw);
+                        } else {
+                            this.log("이 지역에 조우 가능한 일반 몬스터가 없습니다. 데이터를 확인해 주세요.", "system");
                         }
                     } else {
                         this.log("고요한 길을 따라 걷습니다. 아무 일도 일어나지 않았습니다.", "info");

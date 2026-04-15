@@ -18,6 +18,7 @@ const PART_ORDER = [
     'bossDungeon',
     'avatars',
     'monsters',
+    'monsterCompendium',
     'skills',
     'monsterSkillTrees',
     'skillTrees',

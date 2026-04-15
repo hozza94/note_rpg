@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260415-6">
+    <link rel="stylesheet" href="style.css?v=20260415-8">
 </head>
 <body class="theme-gray">
     <div id="app" class="glass-container">
@@ -41,7 +41,7 @@
                     <button id="btn-settings" class="action-btn small secondary" style="padding: 5px 10px; font-size: 0.9rem;">⚙️ 설정</button>
                 </div>
 
-                <div id="char-battle-effects" class="char-battle-effects hidden" aria-live="polite" aria-label="전투 중 자기강화 및 상태"></div>
+                <div id="char-battle-effects" class="char-battle-effects hidden" aria-live="polite" aria-label="플레이어 전투 효과 (자기강화·상태이상)"></div>
                 
                 <!-- Quest/Progress Section -->
                 <div class="quest-section">
@@ -162,7 +162,7 @@
                             </div>
                             <span id="monster-hp-text">150 / 150</span>
                         </div>
-                        <div id="battle-status" class="battle-status hidden"></div>
+                        <div id="battle-status" class="battle-status hidden" aria-live="polite" aria-label="적 몬스터 상태"></div>
                     </div>
                 </div>
 
@@ -296,8 +296,8 @@
     <script src="js/inventory.js?v=20260414-7"></script>
     <script src="game.js?v=20260415-2"></script>
     <script src="js/engine/skilltree.js?v=20260415-1"></script>
-    <script src="js/engine/explore.js?v=20260415-2"></script>
-    <script src="js/engine/battle.js?v=20260415-1"></script>
+    <script src="js/engine/explore.js?v=20260415-3"></script>
+    <script src="js/engine/battle.js?v=20260415-4"></script>
     <script src="js/engine/smithing.js?v=20260414-7"></script>
 </body>
 </html>

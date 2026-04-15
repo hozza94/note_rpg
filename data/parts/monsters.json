@@ -198,7 +198,19 @@
     },
     "dropTableId": "drop_c_wraith",
     "skillTreeId": "st_wraith_boss",
-    "isBoss": true
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_malice",
+      "boss_p_grudge_shell"
+    ],
+    "bossActiveSkillIds": [
+      "boss_wraith_haunt",
+      "boss_a_iron_hide"
+    ],
+    "bossActiveWeights": [
+      2,
+      1
+    ]
   },
   {
     "id": "swamp_frog",
@@ -324,7 +336,19 @@
     },
     "dropTableId": "drop_b_giant",
     "skillTreeId": "st_mud_giant_boss",
-    "isBoss": true
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_deep_root",
+      "boss_p_stone_blood"
+    ],
+    "bossActiveSkillIds": [
+      "boss_mud_grasp",
+      "boss_a_war_drum"
+    ],
+    "bossActiveWeights": [
+      1,
+      1
+    ]
   },
   {
     "id": "canyon_hyena",
@@ -425,7 +449,22 @@
     },
     "dropTableId": "drop_a_seraph",
     "skillTreeId": "st_stone_seraph_boss",
-    "isBoss": true
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_grudge_shell",
+      "boss_p_malice",
+      "boss_p_throne_sigil"
+    ],
+    "bossActiveSkillIds": [
+      "boss_seraph_gaze",
+      "boss_a_iron_hide",
+      "boss_a_fortress"
+    ],
+    "bossActiveWeights": [
+      2,
+      1,
+      1
+    ]
   },
   {
     "id": "rift_reaver",
@@ -551,7 +590,22 @@
     },
     "dropTableId": "drop_a_hydra",
     "skillTreeId": "st_abyss_hydra_boss",
-    "isBoss": true
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_abyss_tide",
+      "boss_p_swarm_mind",
+      "boss_p_deep_root"
+    ],
+    "bossActiveSkillIds": [
+      "boss_hydra_maelstrom",
+      "boss_a_overdrive",
+      "bite"
+    ],
+    "bossActiveWeights": [
+      2,
+      1,
+      1
+    ]
   },
   {
     "id": "throne_sentinel",
@@ -677,7 +731,40 @@
     },
     "dropTableId": "drop_s_guardian",
     "skillTreeId": "st_throne_guardian_boss",
-    "isBoss": true
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_throne_sigil",
+      "boss_p_crown_pressure",
+      "boss_p_stone_blood",
+      "boss_p_restless"
+    ],
+    "bossActiveSkillIds": [
+      "boss_guardian_verdict",
+      "boss_seraph_gaze",
+      "boss_a_rampart",
+      "telekinesis"
+    ],
+    "bossActiveWeights": [
+      2,
+      1,
+      1,
+      1
+    ],
+    "bossActiveLowHp": {
+      "threshold": 0.45,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_seraph_petrify",
+        "boss_hydra_maelstrom",
+        "boss_a_overdrive"
+      ],
+      "weights": [
+        2,
+        1,
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "periphery_sentinel",
@@ -778,7 +865,40 @@
     },
     "dropTableId": "drop_border_warden",
     "skillTreeId": "st_border_warden_boss",
-    "isBoss": true
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_border_lock",
+      "boss_p_null_skin",
+      "boss_p_throne_sigil",
+      "boss_p_abyss_tide"
+    ],
+    "bossActiveSkillIds": [
+      "boss_guardian_verdict",
+      "boss_a_void_surge",
+      "boss_a_fortress",
+      "boss_seraph_gaze"
+    ],
+    "bossActiveWeights": [
+      2,
+      1,
+      1,
+      1
+    ],
+    "bossActiveLowHp": {
+      "threshold": 0.45,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_seraph_petrify",
+        "boss_hydra_maelstrom",
+        "boss_a_bloodlust"
+      ],
+      "weights": [
+        2,
+        1,
+        1,
+        1
+      ]
+    }
   },
   {
     "id": "void_lurker",
@@ -879,6 +999,44 @@
     },
     "dropTableId": "drop_void_sovereign",
     "skillTreeId": "st_void_sovereign_boss",
-    "isBoss": true
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_void_heart",
+      "boss_p_null_skin",
+      "boss_p_abyss_tide",
+      "boss_p_crown_pressure",
+      "boss_p_border_lock"
+    ],
+    "bossActiveSkillIds": [
+      "boss_guardian_verdict",
+      "boss_hydra_maelstrom",
+      "boss_seraph_petrify",
+      "boss_a_overdrive",
+      "boss_a_bloodlust"
+    ],
+    "bossActiveWeights": [
+      2,
+      2,
+      1,
+      1,
+      1
+    ],
+    "bossActiveLowHp": {
+      "threshold": 0.42,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_hydra_maelstrom",
+        "boss_seraph_petrify",
+        "boss_a_overdrive",
+        "boss_mud_quake"
+      ],
+      "weights": [
+        2,
+        2,
+        1,
+        1,
+        1
+      ]
+    }
   }
 ]

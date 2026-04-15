@@ -1,0 +1,164 @@
+{
+  "source": "Lore Book/Lore Book _ Monster.md",
+  "archived": [
+    {
+      "id": "lucifer",
+      "grade": "SSS",
+      "name": "루시퍼",
+      "type": "archdemon",
+      "level": 100,
+      "dropTableId": "drop_sss_lucifer",
+      "skills": [
+        "falling_light",
+        "soul_domination"
+      ]
+    },
+    {
+      "id": "baal",
+      "grade": "SS",
+      "name": "바알",
+      "type": "archdemon",
+      "level": 90,
+      "dropTableId": "drop_ss_baal",
+      "skills": [
+        "flame_tyrant",
+        "fear_aura"
+      ]
+    },
+    {
+      "id": "astaroth",
+      "grade": "SS",
+      "name": "아스타로트",
+      "type": "archdemon",
+      "level": 88,
+      "dropTableId": "drop_ss_astaroth",
+      "skills": [
+        "knowledge_drain",
+        "chaos_magic"
+      ]
+    },
+    {
+      "id": "beelzebub",
+      "grade": "S",
+      "name": "벨제부브",
+      "type": "high_demon",
+      "level": 75,
+      "dropTableId": "drop_s_beelzebub",
+      "skills": [
+        "decay_breath"
+      ]
+    },
+    {
+      "id": "asmodeus",
+      "grade": "S",
+      "name": "아스모데우스",
+      "type": "high_demon",
+      "level": 72,
+      "dropTableId": "drop_s_asmodeus",
+      "skills": [
+        "temptation",
+        "mind_control"
+      ]
+    },
+    {
+      "id": "baphomet",
+      "grade": "A",
+      "name": "바포메트",
+      "type": "mid_demon",
+      "level": 60,
+      "dropTableId": "drop_a_baphomet",
+      "skills": [
+        "dark_ritual"
+      ]
+    },
+    {
+      "id": "incubus",
+      "grade": "A",
+      "name": "인큐버스",
+      "type": "mid_demon",
+      "level": 55,
+      "dropTableId": "drop_a_incubus",
+      "skills": [
+        "life_drain"
+      ]
+    },
+    {
+      "id": "imp",
+      "grade": "B",
+      "name": "임프",
+      "type": "low_demon",
+      "level": 35,
+      "dropTableId": "drop_b_imp",
+      "skills": [
+        "trick_fire"
+      ]
+    },
+    {
+      "id": "hellhound",
+      "grade": "B",
+      "name": "헬하운드",
+      "type": "beast",
+      "level": 40,
+      "dropTableId": "drop_b_hellhound",
+      "skills": [
+        "flame_dash"
+      ]
+    },
+    {
+      "id": "poltergeist",
+      "grade": "C",
+      "name": "폴터가이스트",
+      "type": "ghost",
+      "level": 18,
+      "dropTableId": "drop_c_poltergeist",
+      "skills": [
+        "telekinesis"
+      ]
+    },
+    {
+      "id": "shadow_wraith",
+      "grade": "C",
+      "name": "그림자 망령",
+      "type": "ghost",
+      "level": 22,
+      "dropTableId": "drop_c_shadow",
+      "skills": [
+        "stealth",
+        "ambush"
+      ]
+    },
+    {
+      "id": "cursed_doll",
+      "grade": "C",
+      "name": "저주받은 인형",
+      "type": "cursed",
+      "level": 19,
+      "dropTableId": "drop_c_doll",
+      "skills": [
+        "fear_gaze"
+      ]
+    },
+    {
+      "id": "lost_soul",
+      "grade": "C",
+      "name": "떠도는 영혼",
+      "type": "ghost",
+      "level": 17,
+      "dropTableId": "drop_c_soul",
+      "skills": [
+        "possession"
+      ]
+    },
+    {
+      "id": "nightmare_remnant",
+      "grade": "C",
+      "name": "악몽의 잔재",
+      "type": "mental",
+      "level": 23,
+      "dropTableId": "drop_c_nightmare",
+      "skills": [
+        "hallucination"
+      ]
+    }
+  ]
+}

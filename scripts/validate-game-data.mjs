@@ -161,6 +161,42 @@ function main() {
                 warn.push(`monster ${m.id}: 등급 ${m.grade}가 지역 ${m.regionId} 의도 범위 [${reg.fieldGradeMin}~${reg.fieldGradeMax}] 밖`);
             }
         }
+
+        // 보스: 패시브·액티브 슬롯 수 = 2 + floor((tier-1)*3/6), tier 1~7 → 2~5
+        if (m.isBoss) {
+            const reg = regions[m.regionId];
+            const t = Math.max(1, Math.min(7, Number(reg?.enemyPowerTier) || 1));
+            const expSlots = 2 + Math.min(3, Math.floor((t - 1) * 3 / 6));
+            if (!Array.isArray(m.bossPassiveSkillIds) || m.bossPassiveSkillIds.length !== expSlots) {
+                errors.push(`monster ${m.id}: bossPassiveSkillIds ${expSlots}개 필요 (enemyPowerTier ${t})`);
+            }
+            if (!Array.isArray(m.bossActiveSkillIds) || m.bossActiveSkillIds.length !== expSlots) {
+                errors.push(`monster ${m.id}: bossActiveSkillIds ${expSlots}개 필요 (enemyPowerTier ${t})`);
+            }
+            (m.bossPassiveSkillIds || []).forEach((pid) => {
+                const sk = skills[pid];
+                if (!sk) errors.push(`monster ${m.id}: bossPassiveSkillIds "${pid}" skills에 없음`);
+                else if (sk.type !== 'passive') errors.push(`monster ${m.id}: 패시브 "${pid}" type은 passive여야 함`);
+                else if (!sk.effect?.monsterPassive) errors.push(`monster ${m.id}: 패시브 "${pid}"에 effect.monsterPassive 없음`);
+            });
+            (m.bossActiveSkillIds || []).forEach((aid) => {
+                const sk = skills[aid];
+                if (!sk) errors.push(`monster ${m.id}: bossActiveSkillIds "${aid}" skills에 없음`);
+                else if (sk.type === 'buff' && !sk.effect?.monsterBuff) errors.push(`monster ${m.id}: 버프 액티브 "${aid}"에 effect.monsterBuff 없음`);
+            });
+            const low = m.bossActiveLowHp;
+            if (low) {
+                if (!Array.isArray(low.skillIds) || low.skillIds.length === 0) {
+                    errors.push(`monster ${m.id}: bossActiveLowHp.skillIds 필요`);
+                }
+                if (low.weights && low.skillIds && low.weights.length !== low.skillIds.length) {
+                    errors.push(`monster ${m.id}: bossActiveLowHp skillIds·weights 길이 불일치`);
+                }
+                (low.skillIds || []).forEach((sid) => {
+                    if (!skills[sid]) errors.push(`monster ${m.id}: bossActiveLowHp skillId "${sid}" 없음`);
+                });
+            }
+        }
     }
 
     // --- dropTables ---

@@ -5,37 +5,37 @@
     if (typeof window === 'undefined' || typeof window.GameEngine === 'undefined') return;
 
     Object.assign(window.GameEngine.prototype, {
+        /** 몬스터 카드 하단: 적에게 걸린 디버프·(향후) 적 자기강화만 표시. 플레이어 효과는 렌더하지 않음 */
         renderBattleStatus() {
             const statusEl = document.getElementById('battle-status');
             if (!statusEl || !this.state.battle) return;
-            const effects = this.state.battle.effects;
-            const p = effects.player;
+            const mx = this.state.battle.effects.monster;
             const chips = [];
-            if (p.defMulTurns > 0 && p.defMulValue !== 1) {
-                chips.push(`<span class="status-chip player">방어×${p.defMulValue.toFixed(2)} ${p.defMulTurns}턴</span>`);
+            if (mx.spdDebuffTurns > 0 && mx.spdDebuffMul < 1) {
+                chips.push(`<span class="status-chip monster-debuff" title="플레이어가 부여한 디버프">이동 둔화 ×${mx.spdDebuffMul.toFixed(2)} ${mx.spdDebuffTurns}턴</span>`);
             }
-            if (p.evadeTurns > 0) chips.push(`<span class="status-chip player">회피 ${p.evadeTurns}턴</span>`);
-            if (p.spdMulTurns > 0 && p.spdMulValue !== 1) {
-                chips.push(`<span class="status-chip player">속도×${p.spdMulValue.toFixed(2)} ${p.spdMulTurns}턴</span>`);
+            if (mx.tempAtkTurns > 0 && mx.tempAtkMul > 1) {
+                chips.push(`<span class="status-chip monster-buff" title="보스 자기강화">공격 강화 ×${mx.tempAtkMul.toFixed(2)} ${mx.tempAtkTurns}턴</span>`);
             }
-            if (p.nextCritChance > 0) {
-                chips.push(`<span class="status-chip player crit">다음 치명 +${Math.round(p.nextCritChance * 100)}%</span>`);
+            if (mx.tempDefTurns > 0 && mx.tempDefMul > 1) {
+                chips.push(`<span class="status-chip monster-buff" title="보스 자기강화">방어 강화 ×${mx.tempDefMul.toFixed(2)} ${mx.tempDefTurns}턴</span>`);
             }
-            if (p.fearTurns > 0) chips.push(`<span class="status-chip player debuff">공포 ${p.fearTurns}턴</span>`);
-            if (p.spdDebuffTurns > 0 && p.spdDebuffMul < 1) {
-                chips.push(`<span class="status-chip player debuff">둔화 ${p.spdDebuffTurns}턴</span>`);
+            if (mx.tempSpdTurns > 0 && mx.tempSpdMul > 1) {
+                chips.push(`<span class="status-chip monster-buff" title="보스 자기강화">속도 강화 ×${mx.tempSpdMul.toFixed(2)} ${mx.tempSpdTurns}턴</span>`);
             }
-            if (effects.monster.spdDebuffTurns > 0) chips.push(`<span class="status-chip monster">적 둔화 ${effects.monster.spdDebuffTurns}턴</span>`);
             if (chips.length === 0) {
                 statusEl.classList.add('hidden');
                 statusEl.innerHTML = '';
                 return;
             }
             statusEl.classList.remove('hidden');
-            statusEl.innerHTML = chips.join('');
+            statusEl.innerHTML = `
+                <div class="battle-status__label">적 상태</div>
+                <div class="battle-status__chips">${chips.join('')}</div>
+            `;
         },
 
-        /** 좌측 캐릭터 패널: 자기강화 스킬 적용 수치·잔여 턴 표시 */
+        /** 좌측 캐릭터 패널: 플레이어 자기강화·플레이어에게 걸린 상태이상만 (적 상태는 renderBattleStatus) */
         renderCharacterBattleEffectsStrip() {
             const el = document.getElementById('char-battle-effects');
             if (!el) return;
@@ -46,7 +46,6 @@
             }
             const combined = this.getPlayerCombinedStats();
             const fx = this.state.battle.effects.player;
-            const mx = this.state.battle.effects.monster;
             const bonus = this.inventory.getBonuses((itemId, itemData) => this.getItemComputedBonuses(itemId, itemData));
             const rows = [];
 
@@ -73,9 +72,6 @@
             if (fx.spdDebuffTurns > 0 && fx.spdDebuffMul < 1) {
                 rows.push(`<div class="char-battle-effects__row is-debuff"><span>이동 둔화</span><span>×${fx.spdDebuffMul.toFixed(2)} <em>${fx.spdDebuffTurns}턴</em></span></div>`);
             }
-            if (mx.spdDebuffTurns > 0 && mx.spdDebuffMul < 1) {
-                rows.push(`<div class="char-battle-effects__row is-enemy"><span>적 둔화</span><span>적 속도 ×${mx.spdDebuffMul.toFixed(2)} <em>${mx.spdDebuffTurns}턴</em></span></div>`);
-            }
 
             if (rows.length === 0) {
                 el.classList.add('hidden');
@@ -83,7 +79,7 @@
                 return;
             }
             el.classList.remove('hidden');
-            el.innerHTML = `<div class="char-battle-effects__head">전투 중 효과 <span class="char-battle-effects__hint">(자기강화·상태)</span></div>${rows.join('')}`;
+            el.innerHTML = `<div class="char-battle-effects__head">플레이어 · 전투 효과 <span class="char-battle-effects__hint">(자기강화·상태이상)</span></div>${rows.join('')}`;
         },
         toggleBattleUI(isBattle) {
             document.getElementById('explore-actions').classList.toggle('hidden', isBattle);
@@ -128,10 +124,16 @@
                 turn: 1,
                 effects: {
                     player: { defMulTurns: 0, defMulValue: 1, evadeTurns: 0, evadeChance: 0, spdMulTurns: 0, spdMulValue: 1, nextCritChance: 0, fearTurns: 0, spdDebuffTurns: 0, spdDebuffMul: 1 },
-                    monster: { spdDebuffTurns: 0, spdDebuffMul: 1 }
+                    monster: {
+                        spdDebuffTurns: 0, spdDebuffMul: 1,
+                        passiveAtkMul: 1, passiveDefMul: 1, passiveSpdMul: 1,
+                        tempAtkMul: 1, tempDefMul: 1, tempSpdMul: 1,
+                        tempAtkTurns: 0, tempDefTurns: 0, tempSpdTurns: 0
+                    }
                 },
                 flags: { lowHpCutscenePlayed: false }
             };
+            this.applyBossPassiveEffects(monster);
             document.getElementById('monster-name').innerText = monster.name;
             document.getElementById('monster-grade').innerText = monster.grade;
             document.getElementById('monster-level').innerText = `Lv.${monster.level}`;
@@ -147,6 +149,59 @@
             }
         },
         getBattleEffects() { return this.state.battle?.effects || null; },
+        /** 보스 패시브 스킬을 전투 효과 배율에 반영 (전투 시작 1회) */
+        applyBossPassiveEffects(monster) {
+            if (!this.state.battle || !monster?.isBoss) return;
+            const ids = monster.bossPassiveSkillIds;
+            if (!Array.isArray(ids) || ids.length === 0) return;
+            const mx = this.state.battle.effects.monster;
+            let a = 1; let d = 1; let s = 1;
+            const names = [];
+            ids.forEach((id) => {
+                const sk = window.GAME_DATA.skills[id];
+                const mp = sk?.effect?.monsterPassive;
+                if (!mp) return;
+                names.push(sk.name);
+                if (mp.atkMul) a *= mp.atkMul;
+                if (mp.defMul) d *= mp.defMul;
+                if (mp.spdMul) s *= mp.spdMul;
+            });
+            mx.passiveAtkMul = a;
+            mx.passiveDefMul = d;
+            mx.passiveSpdMul = s;
+            if (names.length) this.log(`[보스 패시브] ${names.join(' · ')}`, 'system');
+        },
+        /** 플레이어 피해 계산용: 몬스터 유효 방어 */
+        getMonsterEffectiveDef() {
+            if (!this.state.battle) return 0;
+            const m = this.state.battle.monster;
+            const mx = this.state.battle.effects.monster;
+            return m.stats.def * (mx.passiveDefMul || 1) * (mx.tempDefMul || 1);
+        },
+        /** 몬스터 공격 피해용: 유효 공격력 */
+        getMonsterEffectiveAtk() {
+            if (!this.state.battle) return 0;
+            const m = this.state.battle.monster;
+            const mx = this.state.battle.effects.monster;
+            return m.stats.atk * (mx.passiveAtkMul || 1) * (mx.tempAtkMul || 1);
+        },
+        applyBossMonsterBuff(effect) {
+            const b = effect?.monsterBuff;
+            if (!b || !this.state.battle) return;
+            const mx = this.state.battle.effects.monster;
+            if (b.atkMul && b.turns) {
+                mx.tempAtkMul = Math.max(mx.tempAtkMul, b.atkMul);
+                mx.tempAtkTurns = Math.max(mx.tempAtkTurns, b.turns);
+            }
+            if (b.defMul && b.turns) {
+                mx.tempDefMul = Math.max(mx.tempDefMul, b.defMul);
+                mx.tempDefTurns = Math.max(mx.tempDefTurns, b.turns);
+            }
+            if (b.spdMul && b.turns) {
+                mx.tempSpdMul = Math.max(mx.tempSpdMul, b.spdMul);
+                mx.tempSpdTurns = Math.max(mx.tempSpdTurns, b.turns);
+            }
+        },
         /** 후반 지역일수록 보스 상태이상 압박이 강해지도록 티어 (0~4) */
         getRegionAilmentTier(regionId) {
             const t = { pishon: 0, gihon: 1, hidekel: 2, euphrates: 3, eden_core: 4, periphery: 5, void_remnant: 6 };
@@ -186,7 +241,12 @@
             return had;
         },
         getPlayerSpeed(bonus = this.inventory.getBonuses((itemId, itemData) => this.getItemComputedBonuses(itemId, itemData))) { const passive = this.getPassiveBonuses(); const base = this.state.player.spd + bonus.spd + passive.spd; const effects = this.getBattleEffects(); if (!effects) return base; const playerFx = effects.player; return Math.max(1, base * playerFx.spdMulValue * playerFx.spdDebuffMul); },
-        getMonsterSpeed() { if (!this.state.battle) return 0; const base = this.state.battle.monster.stats.spd; const monsterFx = this.state.battle.effects.monster; return Math.max(1, base * monsterFx.spdDebuffMul); },
+        getMonsterSpeed() {
+            if (!this.state.battle) return 0;
+            const base = this.state.battle.monster.stats.spd;
+            const monsterFx = this.state.battle.effects.monster;
+            return Math.max(1, base * (monsterFx.passiveSpdMul || 1) * (monsterFx.tempSpdMul || 1) * monsterFx.spdDebuffMul);
+        },
         resolveFearCheck() { const effects = this.getBattleEffects(); if (!effects || effects.player.fearTurns <= 0) return false; const blocked = Math.random() < 0.5; if (blocked) { this.log("공포에 사로잡혀 잠시 움직이지 못했습니다!", "battle"); effects.player.fearTurns = Math.max(0, effects.player.fearTurns - 1); } return blocked; },
         applySkillEffectToTarget(effect, isMonsterCaster = false, casterMonster = null) {
             const effects = this.getBattleEffects();
@@ -231,7 +291,21 @@
                 this.log('적의 속도가 감소했습니다.', 'effect');
             }
         },
-        tickBattleEffects(endOfTurnForMonster = false) { const effects = this.getBattleEffects(); if (!effects) return; const { player, monster } = effects; if (!endOfTurnForMonster) return; if (player.defMulTurns > 0 && --player.defMulTurns === 0) player.defMulValue = 1; if (player.evadeTurns > 0 && --player.evadeTurns === 0) player.evadeChance = 0; if (player.spdMulTurns > 0 && --player.spdMulTurns === 0) player.spdMulValue = 1; if (player.fearTurns > 0) player.fearTurns--; if (player.spdDebuffTurns > 0 && --player.spdDebuffTurns === 0) player.spdDebuffMul = 1; if (monster.spdDebuffTurns > 0 && --monster.spdDebuffTurns === 0) monster.spdDebuffMul = 1; },
+        tickBattleEffects(endOfTurnForMonster = false) {
+            const effects = this.getBattleEffects();
+            if (!effects) return;
+            const { player, monster } = effects;
+            if (!endOfTurnForMonster) return;
+            if (player.defMulTurns > 0 && --player.defMulTurns === 0) player.defMulValue = 1;
+            if (player.evadeTurns > 0 && --player.evadeTurns === 0) player.evadeChance = 0;
+            if (player.spdMulTurns > 0 && --player.spdMulTurns === 0) player.spdMulValue = 1;
+            if (player.fearTurns > 0) player.fearTurns--;
+            if (player.spdDebuffTurns > 0 && --player.spdDebuffTurns === 0) player.spdDebuffMul = 1;
+            if (monster.spdDebuffTurns > 0 && --monster.spdDebuffTurns === 0) monster.spdDebuffMul = 1;
+            if (monster.tempAtkTurns > 0 && --monster.tempAtkTurns === 0) monster.tempAtkMul = 1;
+            if (monster.tempDefTurns > 0 && --monster.tempDefTurns === 0) monster.tempDefMul = 1;
+            if (monster.tempSpdTurns > 0 && --monster.tempSpdTurns === 0) monster.tempSpdMul = 1;
+        },
         applyFaithBonusDamage(dmg, monster) { const totalFaith = this.getPlayerCombinedStats().faith; const faithGap = totalFaith - (monster.requiredFaith || 0); if (faithGap <= 0) return dmg; return dmg * (1 + Math.min(0.2, faithGap * 0.05)); },
         applyLifeStealFromDamage(damage) { const dealt = Math.max(0, Math.floor(Number(damage) || 0)); if (dealt <= 0) return; const combined = this.getPlayerCombinedStats(); const lifeStealRatio = Math.max(0, Number(combined.lifeSteal || 0)); if (lifeStealRatio <= 0) return; const maxHp = combined.hp; const beforeHp = this.state.player.hp; const healAmount = Math.max(0, Math.floor(dealt * lifeStealRatio)); if (healAmount <= 0) return; this.state.player.hp = Math.min(maxHp, this.state.player.hp + healAmount); const actual = this.state.player.hp - beforeHp; if (actual > 0) this.log(`[생명력 흡수] 피해 ${dealt}의 ${(lifeStealRatio * 100).toFixed(0)}% → HP +${actual}`, "effect"); },
         applyPostBattleHpRegen() { const combined = this.getPlayerCombinedStats(); const regen = Math.max(0, Math.floor(Number(combined.hpRegen || 0))); if (regen <= 0) return; const maxHp = combined.hp; const beforeHp = this.state.player.hp; this.state.player.hp = Math.min(maxHp, this.state.player.hp + regen); const actual = this.state.player.hp - beforeHp; if (actual > 0) this.log(`[체력재생] 전투 종료 후 HP +${actual}`, "effect"); },
@@ -279,7 +353,7 @@
             const extraCrit = effects ? effects.player.nextCritChance : 0;
             const isCrit = Math.random() < Math.min(0.7, 0.1 + combined.critChance + extraCrit);
             if (effects) effects.player.nextCritChance = 0;
-            let dmg = this.calculateDamage(combined.atk, m.stats.def);
+            let dmg = this.calculateDamage(combined.atk, this.getMonsterEffectiveDef());
             dmg = this.applyFaithBonusDamage(dmg, m);
             dmg *= combined.damageMul;
             if (p.hp <= combined.hp * 0.5) dmg *= combined.lowHpDamageMul;
@@ -337,10 +411,24 @@
             }
             const monsterSkillId = this.chooseMonsterSkill(m);
             const skillData = monsterSkillId ? window.GAME_DATA.skills[monsterSkillId] : null;
+            if (skillData && skillData.type === 'buff' && skillData.effect?.monsterBuff) {
+                this.applyBossMonsterBuff(skillData.effect);
+                this.log(`${m.name}의 [${skillData.name}]! 자세가 바뀝니다.`, 'enemy');
+                this.updateUI();
+                if (p.hp <= 0) return this.loseBattle();
+                this.tickBattleEffects(true);
+                this.state.battle.turn++;
+                this.state.battle.isPlayerTurn = true;
+                this.tryTurnStartPlayerPassives();
+                this.log('▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.', 'system');
+                this.scheduleAutoBattleTurn();
+                return;
+            }
             const skillEffect = skillData?.effect || { atkMul: 1 };
             const atkMul = skillEffect.atkMul || 1;
             const totalDef = combined.def * (playerFx?.defMulValue || 1);
-            const dmg = Math.round(this.calculateDamage(m.stats.atk * atkMul, totalDef));
+            const baseAtk = this.getMonsterEffectiveAtk();
+            const dmg = Math.round(this.calculateDamage(baseAtk * atkMul, totalDef));
             const appliedDmg = Math.round(dmg * combined.damageTakenMul);
             p.hp -= appliedDmg;
             this.applySkillEffectToTarget(skillEffect, true, m);
@@ -359,7 +447,25 @@
             this.scheduleAutoBattleTurn();
         },
         pickWeightedSkillId(skillIds, weights) { if (!skillIds || skillIds.length === 0) return null; const w = weights && weights.length === skillIds.length ? weights : skillIds.map(() => 1); const sum = w.reduce((a, b) => a + b, 0); let r = Math.random() * sum; for (let i = 0; i < skillIds.length; i++) { r -= w[i]; if (r <= 0) return skillIds[i]; } return skillIds[skillIds.length - 1]; },
-        getMonsterSkillTreePool(monster) { const trees = window.GAME_DATA.monsterSkillTrees; const tree = monster.skillTreeId && trees ? trees[monster.skillTreeId] : null; if (tree) { const ratio = monster.maxHp > 0 ? monster.hp / monster.maxHp : 1; if (tree.lowHp && ratio < tree.lowHp.threshold) return { skillIds: tree.lowHp.skillIds, weights: tree.lowHp.weights }; return { skillIds: tree.defaultPool.skillIds, weights: tree.defaultPool.weights }; } if (monster.skills && monster.skills.length) return { skillIds: monster.skills, weights: null }; return null; },
+        getMonsterSkillTreePool(monster) {
+            if (monster.isBoss && Array.isArray(monster.bossActiveSkillIds) && monster.bossActiveSkillIds.length > 0) {
+                const ratio = monster.maxHp > 0 ? monster.hp / monster.maxHp : 1;
+                const low = monster.bossActiveLowHp;
+                if (low && Array.isArray(low.skillIds) && low.skillIds.length && ratio < (low.threshold ?? 0.4)) {
+                    return { skillIds: low.skillIds, weights: low.weights };
+                }
+                return { skillIds: monster.bossActiveSkillIds, weights: monster.bossActiveWeights };
+            }
+            const trees = window.GAME_DATA.monsterSkillTrees;
+            const tree = monster.skillTreeId && trees ? trees[monster.skillTreeId] : null;
+            if (tree) {
+                const ratio = monster.maxHp > 0 ? monster.hp / monster.maxHp : 1;
+                if (tree.lowHp && ratio < tree.lowHp.threshold) return { skillIds: tree.lowHp.skillIds, weights: tree.lowHp.weights };
+                return { skillIds: tree.defaultPool.skillIds, weights: tree.defaultPool.weights };
+            }
+            if (monster.skills && monster.skills.length) return { skillIds: monster.skills, weights: null };
+            return null;
+        },
         chooseMonsterSkill(monster) {
             const pool = this.getMonsterSkillTreePool(monster);
             if (!pool || !pool.skillIds.length) return null;
@@ -577,7 +683,7 @@
                 // 공격 스킬: 최소 고정값 + 스탯 비례(데이터 기반) — 평타와 동일한 치명 확률·배율
                 const scale = skillData.scaling?.damage || { base: 10, atk: 0.24, def: 0.06, faith: 1.8 };
 
-                let dmg = this.calculateDamage(totalAtk * atkMul, m.stats.def);
+                let dmg = this.calculateDamage(totalAtk * atkMul, this.getMonsterEffectiveDef());
                 const scalingBonus = Math.floor(
                     Number(scale.base || 10) +
                     (combined.atk || 0) * Number(scale.atk || 0) +

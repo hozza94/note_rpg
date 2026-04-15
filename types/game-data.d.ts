@@ -58,6 +58,22 @@ export interface MonsterDef {
     dropTableId?: string;
     skillTreeId?: string;
     isBoss?: boolean;
+    /** 보스 전용: 패시브 스킬 ID (지역 enemyPowerTier에 따라 2~5개) */
+    bossPassiveSkillIds?: string[];
+    /** 보스 전용: 액티브 풀 (공격·자기강화 등, 티어에 따라 2~5개) */
+    bossActiveSkillIds?: string[];
+    bossActiveWeights?: number[];
+    bossActiveLowHp?: { threshold: number; skillIds: string[]; weights?: number[] };
+}
+
+export interface MonsterCompendiumEntry {
+    id: string;
+    grade: MonsterGrade;
+    name: string;
+    type?: string;
+    level?: number;
+    dropTableId?: string;
+    skills?: string[];
 }
 
 export interface SkillDef {
@@ -131,6 +147,10 @@ export interface GameData {
         defaultUnlockedIds?: string[];
     };
     monsters: MonsterDef[];
+    monsterCompendium?: {
+        source?: string;
+        archived: MonsterCompendiumEntry[];
+    };
     skills: Record<string, SkillDef>;
     monsterSkillTrees: Record<string, MonsterSkillTreeDef>;
     skillTrees: Record<string, SkillTreeDef>;

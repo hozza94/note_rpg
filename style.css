@@ -1276,10 +1276,28 @@ body {
 
 .battle-status {
     display: flex;
-    justify-content: center;
-    gap: 8px;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
     margin-top: 10px;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.battle-status__label {
+    font-size: 0.65rem;
+    font-weight: 600;
+    color: #ffccbc;
+    letter-spacing: 0.04em;
+    text-transform: none;
+}
+
+.battle-status__chips {
+    display: flex;
+    justify-content: center;
     flex-wrap: wrap;
+    gap: 8px;
 }
 
 .status-chip {
@@ -1296,6 +1314,19 @@ body {
 
 .status-chip.monster {
     color: #ffcdd2;
+}
+
+/* 적에게 부여된 디버프(몬스터 카드 전용) */
+.status-chip.monster-buff {
+    border-color: rgba(129, 199, 132, 0.55);
+    background: rgba(46, 125, 50, 0.18);
+    color: #c8e6c9;
+}
+
+.status-chip.monster-debuff {
+    color: #ffab91;
+    border-color: rgba(255, 138, 101, 0.45);
+    background: rgba(255, 112, 67, 0.12);
 }
 
 .status-chip.player.crit {
