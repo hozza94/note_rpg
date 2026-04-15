@@ -197,7 +197,6 @@
       "gold": 250
     },
     "dropTableId": "drop_c_wraith",
-    "skillTreeId": "st_wraith_boss",
     "isBoss": true,
     "bossPassiveSkillIds": [
       "boss_p_malice",
@@ -335,7 +334,6 @@
       "gold": 1250
     },
     "dropTableId": "drop_b_giant",
-    "skillTreeId": "st_mud_giant_boss",
     "isBoss": true,
     "bossPassiveSkillIds": [
       "boss_p_deep_root",
@@ -448,7 +446,6 @@
       "gold": 2500
     },
     "dropTableId": "drop_a_seraph",
-    "skillTreeId": "st_stone_seraph_boss",
     "isBoss": true,
     "bossPassiveSkillIds": [
       "boss_p_grudge_shell",
@@ -589,7 +586,6 @@
       "gold": 3500
     },
     "dropTableId": "drop_a_hydra",
-    "skillTreeId": "st_abyss_hydra_boss",
     "isBoss": true,
     "bossPassiveSkillIds": [
       "boss_p_abyss_tide",
@@ -730,7 +726,6 @@
       "gold": 5250
     },
     "dropTableId": "drop_s_guardian",
-    "skillTreeId": "st_throne_guardian_boss",
     "isBoss": true,
     "bossPassiveSkillIds": [
       "boss_p_throne_sigil",
@@ -864,7 +859,6 @@
       "gold": 5800
     },
     "dropTableId": "drop_border_warden",
-    "skillTreeId": "st_border_warden_boss",
     "isBoss": true,
     "bossPassiveSkillIds": [
       "boss_p_border_lock",
@@ -998,7 +992,6 @@
       "gold": 7200
     },
     "dropTableId": "drop_void_sovereign",
-    "skillTreeId": "st_void_sovereign_boss",
     "isBoss": true,
     "bossPassiveSkillIds": [
       "boss_p_void_heart",

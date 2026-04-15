@@ -1,0 +1,118 @@
+{
+  "maxRelicLevel": 10,
+  "talentDrop": {
+    "field": {
+      "chanceByTier": {
+        "1": 0.003,
+        "2": 0.0045,
+        "3": 0.006,
+        "4": 0.0075,
+        "5": 0.009,
+        "6": 0.0105,
+        "7": 0.012
+      },
+      "min": 0.01,
+      "max": 0.1
+    },
+    "boss": {
+      "amountByTier": {
+        "1": 0.1,
+        "2": 0.25,
+        "3": 0.4,
+        "4": 0.55,
+        "5": 0.7,
+        "6": 0.85,
+        "7": 1
+      }
+    }
+  },
+  "levelScaling": {
+    "perLevel": {
+      "ppOnHitChance": 0.08,
+      "ppOnHitAmount": 0.35,
+      "doubleStrikeChance": 0.1,
+      "critChance": 0.08,
+      "critDamageMul": 0.12,
+      "lifeSteal": 0.12,
+      "hpRegen": 0.16,
+      "turnStartCleanseChance": 0.1,
+      "ailmentResist": 0.1,
+      "evadeChance": 0.1,
+      "damageMul": 0.2,
+      "damageTakenMul": 0.12,
+      "lowHpDamageMul": 0.18
+    },
+    "caps": {
+      "ppOnHitChance": 0.35,
+      "ppOnHitAmount": 6,
+      "doubleStrikeChance": 0.3,
+      "critChance": 0.4,
+      "critDamageMul": 0.9,
+      "lifeSteal": 0.3,
+      "hpRegen": 80,
+      "turnStartCleanseChance": 0.4,
+      "ailmentResist": 0.45,
+      "evadeChance": 0.35,
+      "damageMul": 1.8,
+      "damageTakenMul": 0.72,
+      "lowHpDamageMul": 2.1
+    }
+  },
+  "normal": {
+    "goldCost": 1000,
+    "gradeRates": {
+      "Common": 0.83,
+      "Rare": 0.15,
+      "Epic": 0.02
+    },
+    "poolByGrade": {
+      "Common": [
+        "relic_morning_dew",
+        "relic_ashen_rosary"
+      ],
+      "Rare": [
+        "relic_twin_sigil",
+        "relic_lantern_of_vow"
+      ],
+      "Epic": [
+        "relic_well_spring",
+        "relic_judicator_feather",
+        "relic_fortress_psalm",
+        "relic_throne_spark",
+        "relic_eclipse_tear",
+        "relic_first_oath"
+      ]
+    }
+  },
+  "premium": {
+    "tokenCost": 10,
+    "tenPullTokenCost": 100,
+    "gradeRates": {
+      "Common": 0.45,
+      "Rare": 0.4,
+      "Epic": 0.15
+    },
+    "pity": {
+      "every": 20,
+      "guaranteedGrade": "Epic"
+    },
+    "poolByGrade": {
+      "Common": [
+        "relic_morning_dew",
+        "relic_ashen_rosary"
+      ],
+      "Rare": [
+        "relic_twin_sigil",
+        "relic_lantern_of_vow"
+      ],
+      "Epic": [
+        "relic_well_spring",
+        "relic_judicator_feather",
+        "relic_fortress_psalm",
+        "relic_throne_spark",
+        "relic_eclipse_tear",
+        "relic_first_oath"
+      ]
+    }
+  }
+}

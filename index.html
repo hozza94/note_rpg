@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260415-8">
+    <link rel="stylesheet" href="style.css?v=20260415-12">
 </head>
 <body class="theme-gray">
     <div id="app" class="glass-container">
@@ -58,6 +58,10 @@
                         <span class="resource-label">보유 골드</span>
                         <span id="gold-value" class="resource-gold">0 G</span>
                     </div>
+                <div class="resource-row">
+                    <span class="resource-label">보유 달란트</span>
+                    <span id="talent-value" class="resource-talent">0</span>
+                </div>
                     <div class="stat-item">
                         <label>체력 (HP)</label>
                         <div class="bar-container"><div id="hp-bar" class="bar hp" style="width: 100%;"></div></div>
@@ -199,8 +203,7 @@
                     <button id="btn-explore" class="action-btn primary">👣 탐험하기</button>
                     <button id="btn-worship" class="action-btn secondary">🙏 예배하기</button>
                     <button id="btn-rest" class="action-btn">💤 휴식하기</button>
-                    <button id="btn-shop" class="action-btn">🏪 상점</button>
-                    <button id="btn-smith" class="action-btn">🔨 대장간</button>
+                    <button id="btn-facility" class="action-btn">🏛️ 시설</button>
                     <button id="btn-boss-dungeon" class="action-btn secondary">🗡️ 보스던전</button>
                 </div>
                 <div id="battle-actions" class="action-buttons hidden">
@@ -291,13 +294,23 @@
 
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="js/storage.js?v=20260414-7"></script>
-    <script src="js/data/constants.js?v=20260415-2"></script>
-    <script src="js/data.js?v=20260415-5"></script>
+    <script src="js/data/constants.js?v=20260415-3"></script>
+    <script src="js/data.js?v=20260415-11"></script>
     <script src="js/inventory.js?v=20260414-7"></script>
-    <script src="game.js?v=20260415-2"></script>
-    <script src="js/engine/skilltree.js?v=20260415-1"></script>
+    <script src="game.js?v=20260415-8"></script>
+    <script src="js/engine/item-stats.js?v=20260415-1"></script>
+    <script src="js/engine/skilltree.js?v=20260415-6"></script>
+    <script src="js/engine/ui-character-tooltip.js?v=20260415-1"></script>
+    <script src="js/engine/ui-tabs-inventory.js?v=20260415-6"></script>
+    <script src="js/engine/ui-avatar-equipment.js?v=20260415-1"></script>
+    <script src="js/engine/ui-boss-dungeon.js?v=20260415-1"></script>
+    <script src="js/engine/state-schema.js?v=20260415-3"></script>
+    <script src="js/engine/ui-facility-hub.js?v=20260415-1"></script>
+    <script src="js/engine/ui-shop.js?v=20260415-1"></script>
+    <script src="js/engine/ui-backup.js?v=20260415-1"></script>
     <script src="js/engine/explore.js?v=20260415-3"></script>
-    <script src="js/engine/battle.js?v=20260415-4"></script>
+    <script src="js/engine/battle-logic.js?v=20260415-1"></script>
+    <script src="js/engine/battle.js?v=20260415-8"></script>
     <script src="js/engine/smithing.js?v=20260414-7"></script>
 </body>
 </html>

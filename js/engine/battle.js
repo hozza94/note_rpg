@@ -202,10 +202,12 @@
                 mx.tempSpdTurns = Math.max(mx.tempSpdTurns, b.turns);
             }
         },
-        /** 후반 지역일수록 보스 상태이상 압박이 강해지도록 티어 (0~4) */
+        /** regions.enemyPowerTier(1~7)에서 파생. 상태이상 보정용 인덱스 0~6 */
         getRegionAilmentTier(regionId) {
-            const t = { pishon: 0, gihon: 1, hidekel: 2, euphrates: 3, eden_core: 4, periphery: 5, void_remnant: 6 };
-            return t[regionId] ?? 0;
+            const r = window.GAME_DATA?.regions?.[regionId];
+            const tier = Number(r?.enemyPowerTier);
+            if (!Number.isFinite(tier) || tier < 1) return 0;
+            return Math.min(6, Math.max(0, tier - 1));
         },
         /** 보스: 스킬을 더 자주 쓰고, 걸릴 확률·지속·둔화 강도가 등급·지역에 따라 상승 */
         getBossMonsterAilmentModifiers(monster) {
@@ -306,6 +308,21 @@
             if (monster.tempDefTurns > 0 && --monster.tempDefTurns === 0) monster.tempDefMul = 1;
             if (monster.tempSpdTurns > 0 && --monster.tempSpdTurns === 0) monster.tempSpdMul = 1;
         },
+        /**
+         * 몬스터 턴 종료 후 플레이어에게 넘김.
+         * tickBattleEffects(true): 몬스터 행동 직후 플레이어·몬스터 지속효과를 한 번 감소(동일 타이밍 유지).
+         */
+        finishMonsterTurnHandoff(options = {}) {
+            const { preTickUpdate = false } = options;
+            if (preTickUpdate) this.updateUI();
+            this.tickBattleEffects(true);
+            this.state.battle.turn++;
+            this.state.battle.isPlayerTurn = true;
+            this.tryTurnStartPlayerPassives();
+            this.updateUI();
+            this.log('▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.', 'system');
+            this.scheduleAutoBattleTurn();
+        },
         applyFaithBonusDamage(dmg, monster) { const totalFaith = this.getPlayerCombinedStats().faith; const faithGap = totalFaith - (monster.requiredFaith || 0); if (faithGap <= 0) return dmg; return dmg * (1 + Math.min(0.2, faithGap * 0.05)); },
         applyLifeStealFromDamage(damage) { const dealt = Math.max(0, Math.floor(Number(damage) || 0)); if (dealt <= 0) return; const combined = this.getPlayerCombinedStats(); const lifeStealRatio = Math.max(0, Number(combined.lifeSteal || 0)); if (lifeStealRatio <= 0) return; const maxHp = combined.hp; const beforeHp = this.state.player.hp; const healAmount = Math.max(0, Math.floor(dealt * lifeStealRatio)); if (healAmount <= 0) return; this.state.player.hp = Math.min(maxHp, this.state.player.hp + healAmount); const actual = this.state.player.hp - beforeHp; if (actual > 0) this.log(`[생명력 흡수] 피해 ${dealt}의 ${(lifeStealRatio * 100).toFixed(0)}% → HP +${actual}`, "effect"); },
         applyPostBattleHpRegen() { const combined = this.getPlayerCombinedStats(); const regen = Math.max(0, Math.floor(Number(combined.hpRegen || 0))); if (regen <= 0) return; const maxHp = combined.hp; const beforeHp = this.state.player.hp; this.state.player.hp = Math.min(maxHp, this.state.player.hp + regen); const actual = this.state.player.hp - beforeHp; if (actual > 0) this.log(`[체력재생] 전투 종료 후 HP +${actual}`, "effect"); },
@@ -353,12 +370,11 @@
             const extraCrit = effects ? effects.player.nextCritChance : 0;
             const isCrit = Math.random() < Math.min(0.7, 0.1 + combined.critChance + extraCrit);
             if (effects) effects.player.nextCritChance = 0;
-            let dmg = this.calculateDamage(combined.atk, this.getMonsterEffectiveDef());
-            dmg = this.applyFaithBonusDamage(dmg, m);
-            dmg *= combined.damageMul;
-            if (p.hp <= combined.hp * 0.5) dmg *= combined.lowHpDamageMul;
-            if (isCrit) dmg *= (combined.critDamageMul || 1.5);
-            dmg = Math.round(dmg);
+            const BL = window.BattleLogic;
+            let raw = BL.calculateDamage(combined.atk, this.getMonsterEffectiveDef());
+            raw = this.applyFaithBonusDamage(raw, m);
+            const hpFrac = combined.hp > 0 ? p.hp / combined.hp : 1;
+            let dmg = BL.applyPlayerPhysicalLayersAfterFaith(raw, combined, hpFrac, isCrit);
             m.hp -= dmg;
             if (m.isBoss && !this.state.battle.flags.lowHpCutscenePlayed && m.hp <= m.maxHp * 0.3) {
                 this.state.battle.flags.lowHpCutscenePlayed = true;
@@ -400,13 +416,7 @@
             const totalEvadeChance = Math.min(0.5, (playerFx?.evadeChance || 0) + combined.evadeChance);
             if (totalEvadeChance > 0 && Math.random() < totalEvadeChance) {
                 this.log('찬양의 은혜로 공격을 회피했습니다!', 'effect');
-                this.tickBattleEffects(true);
-                this.state.battle.turn++;
-                this.state.battle.isPlayerTurn = true;
-                this.tryTurnStartPlayerPassives();
-                this.updateUI();
-                this.log('▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.', 'system');
-                this.scheduleAutoBattleTurn();
+                this.finishMonsterTurnHandoff();
                 return;
             }
             const monsterSkillId = this.chooseMonsterSkill(m);
@@ -414,14 +424,8 @@
             if (skillData && skillData.type === 'buff' && skillData.effect?.monsterBuff) {
                 this.applyBossMonsterBuff(skillData.effect);
                 this.log(`${m.name}의 [${skillData.name}]! 자세가 바뀝니다.`, 'enemy');
-                this.updateUI();
                 if (p.hp <= 0) return this.loseBattle();
-                this.tickBattleEffects(true);
-                this.state.battle.turn++;
-                this.state.battle.isPlayerTurn = true;
-                this.tryTurnStartPlayerPassives();
-                this.log('▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.', 'system');
-                this.scheduleAutoBattleTurn();
+                this.finishMonsterTurnHandoff({ preTickUpdate: true });
                 return;
             }
             const skillEffect = skillData?.effect || { atkMul: 1 };
@@ -439,29 +443,19 @@
             this.log(skillData ? `${m.name}의 [${skillData.name}]! ${appliedDmg}의 피해를 입었습니다.` : `${m.name}의 공격! ${appliedDmg}의 피해를 입었습니다.`, 'enemy');
             this.updateUI();
             if (p.hp <= 0) return this.loseBattle();
-            this.tickBattleEffects(true);
-            this.state.battle.turn++;
-            this.state.battle.isPlayerTurn = true;
-            this.tryTurnStartPlayerPassives();
-            this.log('▶ 당신의 차례입니다. [공격]이나 [기술]을 선택하세요.', 'system');
-            this.scheduleAutoBattleTurn();
+            this.finishMonsterTurnHandoff();
         },
         pickWeightedSkillId(skillIds, weights) { if (!skillIds || skillIds.length === 0) return null; const w = weights && weights.length === skillIds.length ? weights : skillIds.map(() => 1); const sum = w.reduce((a, b) => a + b, 0); let r = Math.random() * sum; for (let i = 0; i < skillIds.length; i++) { r -= w[i]; if (r <= 0) return skillIds[i]; } return skillIds[skillIds.length - 1]; },
         getMonsterSkillTreePool(monster) {
+            const BL = window.BattleLogic;
+            const ratio = monster.maxHp > 0 ? monster.hp / monster.maxHp : 1;
             if (monster.isBoss && Array.isArray(monster.bossActiveSkillIds) && monster.bossActiveSkillIds.length > 0) {
-                const ratio = monster.maxHp > 0 ? monster.hp / monster.maxHp : 1;
-                const low = monster.bossActiveLowHp;
-                if (low && Array.isArray(low.skillIds) && low.skillIds.length && ratio < (low.threshold ?? 0.4)) {
-                    return { skillIds: low.skillIds, weights: low.weights };
-                }
-                return { skillIds: monster.bossActiveSkillIds, weights: monster.bossActiveWeights };
+                return BL.pickSkillPoolByHpRatio(ratio, { skillIds: monster.bossActiveSkillIds, weights: monster.bossActiveWeights }, monster.bossActiveLowHp);
             }
             const trees = window.GAME_DATA.monsterSkillTrees;
             const tree = monster.skillTreeId && trees ? trees[monster.skillTreeId] : null;
             if (tree) {
-                const ratio = monster.maxHp > 0 ? monster.hp / monster.maxHp : 1;
-                if (tree.lowHp && ratio < tree.lowHp.threshold) return { skillIds: tree.lowHp.skillIds, weights: tree.lowHp.weights };
-                return { skillIds: tree.defaultPool.skillIds, weights: tree.defaultPool.weights };
+                return BL.pickSkillPoolByHpRatio(ratio, tree.defaultPool, tree.lowHp);
             }
             if (monster.skills && monster.skills.length) return { skillIds: monster.skills, weights: null };
             return null;
@@ -475,7 +469,7 @@
             if (Math.random() > useChance) return null;
             return this.pickWeightedSkillId(pool.skillIds, pool.weights);
         },
-        calculateDamage(atk, def) { const base = atk * (100 / (100 + def)); const random = 0.9 + Math.random() * 0.2; return base * random; },
+        calculateDamage(atk, def) { return window.BattleLogic.calculateDamage(atk, def); },
         applyBossExclusiveDrops(bossId) {
             const table = window.GAME_DATA?.bossExclusiveDropTables?.[bossId];
             if (!Array.isArray(table) || table.length === 0) return;
@@ -531,6 +525,30 @@
             }
             this.state.world.bossClearHistory = historyMap;
         },
+        grantRelicTokenByBattle(monster) {
+            if (!monster) return;
+            const region = window.GAME_DATA?.regions?.[monster.regionId || this.state.world.currentRegionId] || {};
+            const tier = Math.max(1, Math.min(7, Number(region.enemyPowerTier || 1)));
+            const talentCfg = window.GAME_DATA?.relicGacha?.talentDrop || {};
+            let gain = 0;
+            if (monster.isBoss) {
+                const amountByTier = talentCfg?.boss?.amountByTier || {};
+                gain = Number(amountByTier[tier]);
+                if (!Number.isFinite(gain) || gain <= 0) gain = 0.1 + ((tier - 1) * 0.9 / 6);
+            } else {
+                const field = talentCfg?.field || {};
+                const chance = Number(field?.chanceByTier?.[tier]);
+                const chanceSafe = Number.isFinite(chance) ? Math.max(0, Math.min(1, chance)) : Math.min(0.012, 0.002 + tier * 0.0015);
+                if (Math.random() < chanceSafe) {
+                    const min = Math.max(0, Number(field.min || 0.01));
+                    const max = Math.max(min, Number(field.max || 0.1));
+                    gain = min + (Math.random() * (max - min));
+                }
+            }
+            if (gain <= 0) return;
+            this.state.player.relicToken = Math.max(0, Number(this.state.player.relicToken || 0)) + gain;
+            this.log(`[달란트] +${gain.toFixed(3).replace(/\.?0+$/, '')} 획득`, 'effect');
+        },
         winBattle() {
             const battleInfo = this.state.battle;
             const m = battleInfo.monster;
@@ -539,6 +557,7 @@
             this.state.player.exp += m.reward.exp;
             this.state.player.gold += m.reward.gold;
             this.calculateDrops(m.dropTableId);
+            this.grantRelicTokenByBattle(m);
             if (m.isBoss) {
                 const regionName = window.GAME_DATA.regions[this.state.world.currentRegionId].name;
                 this.log(`[시나리오 달성] ${regionName}의 주인을 물리쳤습니다! 다음 지역으로 나아갈 수 있습니다.`, "system");
@@ -682,20 +701,19 @@
 
                 // 공격 스킬: 최소 고정값 + 스탯 비례(데이터 기반) — 평타와 동일한 치명 확률·배율
                 const scale = skillData.scaling?.damage || { base: 10, atk: 0.24, def: 0.06, faith: 1.8 };
+                const BL = window.BattleLogic;
 
-                let dmg = this.calculateDamage(totalAtk * atkMul, this.getMonsterEffectiveDef());
+                let raw = BL.calculateDamage(totalAtk * atkMul, this.getMonsterEffectiveDef());
                 const scalingBonus = Math.floor(
                     Number(scale.base || 10) +
                     (combined.atk || 0) * Number(scale.atk || 0) +
                     (combined.def || 0) * Number(scale.def || 0) +
                     (combined.faith || 0) * Number(scale.faith || 0)
                 );
-                dmg += Math.max(Number(scale.base || 10), scalingBonus);
-                dmg = this.applyFaithBonusDamage(dmg, m);
-                dmg *= combined.damageMul;
-                if (p.hp <= combined.hp * 0.5) dmg *= combined.lowHpDamageMul;
-                if (isCrit) dmg *= (combined.critDamageMul || 1.5);
-                dmg = Math.round(dmg);
+                raw += Math.max(Number(scale.base || 10), scalingBonus);
+                raw = this.applyFaithBonusDamage(raw, m);
+                const hpFrac = combined.hp > 0 ? p.hp / combined.hp : 1;
+                let dmg = BL.applyPlayerPhysicalLayersAfterFaith(raw, combined, hpFrac, isCrit);
 
                 m.hp -= dmg;
                 this.applySkillEffectToTarget(effect, false);

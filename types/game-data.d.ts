@@ -14,6 +14,8 @@ export interface GameDataMeta {
     equipmentSlots: string[];
     playerSkillTypes: string[];
     itemKinds: ItemKind[];
+    /** 런타임: js/data/constants.js 에만 존재. GAME_DATA.meta JSON에는 미포함 */
+    bossSkillSlotCountFromEnemyPowerTier?: (enemyPowerTier: number) => number;
 }
 
 export interface RegionDef {
@@ -138,6 +140,56 @@ export interface DropRow {
     maxQty?: number;
 }
 
+export type RelicGrade = 'Common' | 'Rare' | 'Epic';
+export type RelicGachaGrade = 'Common' | 'Rare' | 'Epic';
+
+export interface RelicDef {
+    id: string;
+    name: string;
+    grade?: RelicGrade;
+    desc?: string;
+    specials?: Record<string, number>;
+}
+
+export interface RelicShopEntry {
+    relicId: string;
+    price?: number;
+    cost?: number;
+    goldCost?: number;
+}
+
+export interface RelicGachaModeDef {
+    goldCost?: number;
+    tokenCost?: number;
+    tenPullTokenCost?: number;
+    gradeRates: Record<RelicGachaGrade, number>;
+    poolByGrade: Record<RelicGachaGrade, string[]>;
+    pity?: {
+        every: number;
+        guaranteedGrade: RelicGachaGrade;
+    };
+}
+
+export interface RelicGachaDef {
+    maxRelicLevel: number;
+    talentDrop?: {
+        field?: {
+            chanceByTier?: Record<string, number>;
+            min?: number;
+            max?: number;
+        };
+        boss?: {
+            amountByTier?: Record<string, number>;
+        };
+    };
+    levelScaling?: {
+        perLevel?: Record<string, number>;
+        caps?: Record<string, number>;
+    };
+    normal: RelicGachaModeDef;
+    premium: RelicGachaModeDef;
+}
+
 export interface GameData {
     regions: Record<string, RegionDef>;
     bossDungeon?: { entries: BossDungeonEntry[] };
@@ -159,8 +211,9 @@ export interface GameData {
     bossExclusiveDropTables: Record<string, DropRow[]>;
     worshipVerses: unknown[];
     smithing: Record<string, unknown>;
-    relics: Record<string, { id: string; name: string; grade?: string; desc?: string; specials?: Record<string, unknown> }>;
-    relicShops: Record<string, { relicId: string; cost?: number; goldCost?: number }[]>;
+    relics: Record<string, RelicDef>;
+    relicShops: Record<string, RelicShopEntry[]>;
+    relicGacha?: RelicGachaDef;
     shops: Record<string, { itemId?: string; goldCost?: number; stock?: number }[]>;
     meta: GameDataMeta;
 }

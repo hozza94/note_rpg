@@ -29,6 +29,7 @@ const PART_ORDER = [
     'smithing',
     'relics',
     'relicShops',
+    'relicGacha',
     'shops',
     'meta'
 ];

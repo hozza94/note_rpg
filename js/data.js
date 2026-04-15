@@ -148,7 +148,7 @@ const GAME_DATA = {
         { id: "mini_imp", tags: ["field","pishon"], regionId: "pishon", grade: "D", name: "미니 임프", level: 10, minPlayerLv: 5, maxPlayerLv: 99, stats: { hp: 320, atk: 35, def: 20, spd: 135 }, reward: { exp: 290, gold: 80 }, dropTableId: "drop_d_imp", skillTreeId: "st_small_fire_only" },
 
         // 보스: 원혼 (비손)
-        { id: "wraith", tags: ["boss","pishon"], regionId: "pishon", grade: "C", name: "원혼", level: 14, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1200, atk: 85, def: 55, spd: 160 }, reward: { exp: 1225, gold: 250 }, dropTableId: "drop_c_wraith", skillTreeId: "st_wraith_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_malice", "boss_p_grudge_shell"], bossActiveSkillIds: ["boss_wraith_haunt", "boss_a_iron_hide"], bossActiveWeights: [2, 1] },
+        { id: "wraith", tags: ["boss","pishon"], regionId: "pishon", grade: "C", name: "원혼", level: 14, minPlayerLv: 7, maxPlayerLv: 99, stats: { hp: 1200, atk: 85, def: 55, spd: 160 }, reward: { exp: 1225, gold: 250 }, dropTableId: "drop_c_wraith", isBoss: true, bossPassiveSkillIds: ["boss_p_malice", "boss_p_grudge_shell"], bossActiveSkillIds: ["boss_wraith_haunt", "boss_a_iron_hide"], bossActiveWeights: [2, 1] },
 
         // ========================
         // 기혼 유역 (gihon) 몬스터
@@ -159,7 +159,7 @@ const GAME_DATA = {
         { id: "swamp_stalker", tags: ["field","gihon"], regionId: "gihon", grade: "C", name: "습지의 추격자", level: 19, minPlayerLv: 11, maxPlayerLv: 99, stats: { hp: 1200, atk: 120, def: 50, spd: 190 }, reward: { exp: 780, gold: 320 }, dropTableId: "drop_c_stalker", skillTreeId: "st_fear_only" },
 
         // 보스: 진흙 거인 (기혼)
-        { id: "mud_giant", tags: ["boss","gihon"], regionId: "gihon", grade: "B", name: "진흙 거인", level: 22, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 4375, gold: 1250 }, dropTableId: "drop_b_giant", skillTreeId: "st_mud_giant_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_deep_root", "boss_p_stone_blood"], bossActiveSkillIds: ["boss_mud_grasp", "boss_a_war_drum"], bossActiveWeights: [1, 1] },
+        { id: "mud_giant", tags: ["boss","gihon"], regionId: "gihon", grade: "B", name: "진흙 거인", level: 22, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 4375, gold: 1250 }, dropTableId: "drop_b_giant", isBoss: true, bossPassiveSkillIds: ["boss_p_deep_root", "boss_p_stone_blood"], bossActiveSkillIds: ["boss_mud_grasp", "boss_a_war_drum"], bossActiveWeights: [1, 1] },
 
         // ========================
         // 히데겔 협곡 (hidekel) 몬스터
@@ -169,7 +169,7 @@ const GAME_DATA = {
         { id: "ash_knight", tags: ["field","hidekel"], regionId: "hidekel", grade: "B", name: "잿빛 기사", level: 27, minPlayerLv: 18, maxPlayerLv: 99, stats: { hp: 2600, atk: 185, def: 120, spd: 120 }, reward: { exp: 1550, gold: 620 }, dropTableId: "drop_b_hidekel", skillTreeId: "st_wail_root" },
 
         // 보스: 석화 세라프 (히데겔)
-        { id: "stone_seraph", tags: ["boss","hidekel"], regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 20, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 7350, gold: 2500 }, dropTableId: "drop_a_seraph", skillTreeId: "st_stone_seraph_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_grudge_shell", "boss_p_malice", "boss_p_throne_sigil"], bossActiveSkillIds: ["boss_seraph_gaze", "boss_a_iron_hide", "boss_a_fortress"], bossActiveWeights: [2, 1, 1] },
+        { id: "stone_seraph", tags: ["boss","hidekel"], regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 20, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 7350, gold: 2500 }, dropTableId: "drop_a_seraph", isBoss: true, bossPassiveSkillIds: ["boss_p_grudge_shell", "boss_p_malice", "boss_p_throne_sigil"], bossActiveSkillIds: ["boss_seraph_gaze", "boss_a_iron_hide", "boss_a_fortress"], bossActiveWeights: [2, 1, 1] },
 
         // ========================
         // 유브라데 전장 (euphrates) 몬스터
@@ -180,7 +180,7 @@ const GAME_DATA = {
         { id: "void_marauder", tags: ["field","euphrates"], regionId: "euphrates", grade: "S", name: "공허의 약탈자", level: 36, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 6500, atk: 295, def: 185, spd: 178 }, reward: { exp: 3400, gold: 1050 }, dropTableId: "drop_a_euphrates", skillTreeId: "st_wail_root" },
 
         // 보스: 심연 히드라 (유브라데)
-        { id: "abyss_hydra", tags: ["boss","euphrates"], regionId: "euphrates", grade: "A", name: "심연 히드라", level: 38, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 9800, atk: 360, def: 250, spd: 210 }, reward: { exp: 10850, gold: 3500 }, dropTableId: "drop_a_hydra", skillTreeId: "st_abyss_hydra_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_abyss_tide", "boss_p_swarm_mind", "boss_p_deep_root"], bossActiveSkillIds: ["boss_hydra_maelstrom", "boss_a_overdrive", "bite"], bossActiveWeights: [2, 1, 1] },
+        { id: "abyss_hydra", tags: ["boss","euphrates"], regionId: "euphrates", grade: "A", name: "심연 히드라", level: 38, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 9800, atk: 360, def: 250, spd: 210 }, reward: { exp: 10850, gold: 3500 }, dropTableId: "drop_a_hydra", isBoss: true, bossPassiveSkillIds: ["boss_p_abyss_tide", "boss_p_swarm_mind", "boss_p_deep_root"], bossActiveSkillIds: ["boss_hydra_maelstrom", "boss_a_overdrive", "bite"], bossActiveWeights: [2, 1, 1] },
 
         // ========================
         // 에덴 심연 (eden_core) 몬스터
@@ -191,7 +191,7 @@ const GAME_DATA = {
         { id: "core_devourer", tags: ["field","eden_core"], regionId: "eden_core", grade: "S", name: "심연 심장의 포식자", level: 44, minPlayerLv: 34, maxPlayerLv: 99, stats: { hp: 9200, atk: 380, def: 245, spd: 200 }, reward: { exp: 6200, gold: 2100 }, dropTableId: "drop_s_eden", skillTreeId: "st_fear_only" },
 
         // 보스: 왕좌 수호자 (에덴 심연)
-        { id: "throne_guardian", tags: ["boss","eden_core"], regionId: "eden_core", grade: "S", name: "왕좌 수호자", level: 45, minPlayerLv: 36, maxPlayerLv: 99, stats: { hp: 13000, atk: 420, def: 300, spd: 220 }, reward: { exp: 15750, gold: 5250 }, dropTableId: "drop_s_guardian", skillTreeId: "st_throne_guardian_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_throne_sigil", "boss_p_crown_pressure", "boss_p_stone_blood", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_seraph_gaze", "boss_a_rampart", "telekinesis"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_overdrive"], weights: [2, 1, 1, 1] } },
+        { id: "throne_guardian", tags: ["boss","eden_core"], regionId: "eden_core", grade: "S", name: "왕좌 수호자", level: 45, minPlayerLv: 36, maxPlayerLv: 99, stats: { hp: 13000, atk: 420, def: 300, spd: 220 }, reward: { exp: 15750, gold: 5250 }, dropTableId: "drop_s_guardian", isBoss: true, bossPassiveSkillIds: ["boss_p_throne_sigil", "boss_p_crown_pressure", "boss_p_stone_blood", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_seraph_gaze", "boss_a_rampart", "telekinesis"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_overdrive"], weights: [2, 1, 1, 1] } },
 
         // ========================
         // 변방의 회랑 (periphery)
@@ -199,7 +199,7 @@ const GAME_DATA = {
         { id: "periphery_sentinel", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "회랑의 파수꾼", level: 40, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 5200, atk: 300, def: 195, spd: 175 }, reward: { exp: 4800, gold: 1500 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
         { id: "periphery_stalker", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "변두리 추적자", level: 42, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 5800, atk: 318, def: 205, spd: 188 }, reward: { exp: 5400, gold: 1680 }, dropTableId: "drop_periphery_field", skillTreeId: "st_fear_only" },
         { id: "periphery_harbinger", tags: ["field","periphery"], regionId: "periphery", grade: "SS", name: "잔향의 선구자", level: 44, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 6800, atk: 335, def: 218, spd: 182 }, reward: { exp: 6200, gold: 1900 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
-        { id: "border_warden", tags: ["boss","periphery"], regionId: "periphery", grade: "SS", name: "변방 감시자", level: 47, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 15800, atk: 445, def: 315, spd: 228 }, reward: { exp: 18200, gold: 5800 }, dropTableId: "drop_border_warden", skillTreeId: "st_border_warden_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_border_lock", "boss_p_null_skin", "boss_p_throne_sigil", "boss_p_abyss_tide"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_a_void_surge", "boss_a_fortress", "boss_seraph_gaze"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_bloodlust"], weights: [2, 1, 1, 1] } },
+        { id: "border_warden", tags: ["boss","periphery"], regionId: "periphery", grade: "SS", name: "변방 감시자", level: 47, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 15800, atk: 445, def: 315, spd: 228 }, reward: { exp: 18200, gold: 5800 }, dropTableId: "drop_border_warden", isBoss: true, bossPassiveSkillIds: ["boss_p_border_lock", "boss_p_null_skin", "boss_p_throne_sigil", "boss_p_abyss_tide"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_a_void_surge", "boss_a_fortress", "boss_seraph_gaze"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_bloodlust"], weights: [2, 1, 1, 1] } },
 
         // ========================
         // 공허 잔해 (void_remnant)
@@ -207,7 +207,7 @@ const GAME_DATA = {
         { id: "void_lurker", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SS", name: "공허의 잠복자", level: 46, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 7800, atk: 355, def: 232, spd: 195 }, reward: { exp: 7200, gold: 2200 }, dropTableId: "drop_void_field", skillTreeId: "st_fear_only" },
         { id: "void_executioner", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SS", name: "잔해의 집행자", level: 48, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 8500, atk: 375, def: 245, spd: 188 }, reward: { exp: 8100, gold: 2450 }, dropTableId: "drop_void_field", skillTreeId: "st_wail_root" },
         { id: "void_colossus", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허 거신", level: 50, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 9800, atk: 395, def: 268, spd: 165 }, reward: { exp: 9200, gold: 2800 }, dropTableId: "drop_void_field", skillTreeId: "st_bite_only" },
-        { id: "void_sovereign", tags: ["boss","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허의 군주", level: 52, minPlayerLv: 46, maxPlayerLv: 99, stats: { hp: 19800, atk: 495, def: 355, spd: 238 }, reward: { exp: 22000, gold: 7200 }, dropTableId: "drop_void_sovereign", skillTreeId: "st_void_sovereign_boss", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_abyss_tide", "boss_p_crown_pressure", "boss_p_border_lock"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_bloodlust"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.42, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } }
+        { id: "void_sovereign", tags: ["boss","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허의 군주", level: 52, minPlayerLv: 46, maxPlayerLv: 99, stats: { hp: 19800, atk: 495, def: 355, spd: 238 }, reward: { exp: 22000, gold: 7200 }, dropTableId: "drop_void_sovereign", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_abyss_tide", "boss_p_crown_pressure", "boss_p_border_lock"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_bloodlust"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.42, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } }
     ],
 
     // 로어북 기반 몬스터/보스 카탈로그(미출현 보관용). 실제 출현은 regions·monsters 체인에 추가 시 활성화.
@@ -246,6 +246,9 @@ const GAME_DATA = {
         'solemn_bastion': { name: '엄숙한 요새', tags: ['buff', 'defense'], cost: 21, type: 'buff', effect: { defMul: 2.05, nextCrit: 0.05 }, scaling: { buff: { defMulBase: 0.02, defMulDef: 0.001, defMulFaith: 0.003 } }, desc: '순간적으로 방벽을 증축하고 다음 일격의 치명 가능성을 살짝 높입니다.' },
         'mercy_breath': { name: '자비의 숨', tags: ['buff', 'heal', 'defense'], cost: 14, type: 'buff', effect: { defMul: 1.22 }, scaling: { heal: { base: 20, atk: 0.06, def: 1.4, faith: 7 } }, desc: '온화한 기운으로 상처를 어루만지고 잠시 방어력을 높입니다.' },
         'ember_sigil': { name: '잔화 인장', tags: ['attack', 'fire', 'debuff'], cost: 20, type: 'attack', effect: { atkMul: 1.78, spdDebuff: 0.9 }, scaling: { damage: { base: 11, atk: 0.29, def: 0.05, faith: 2.4 } }, desc: '타오르는 인장을 새겨 적의 발을 느리게 합니다.' },
+        'eden_lance': { name: '에덴의 창', tags: ['attack', 'holy'], cost: 23, type: 'attack', effect: { atkMul: 1.88 }, scaling: { damage: { base: 18, atk: 0.32, def: 0.07, faith: 2.9 } }, desc: '낙원을 향해 찌르는 성스러운 일격입니다.' },
+        'dawn_shelter': { name: '새벽 피난처', tags: ['buff', 'heal', 'defense'], cost: 16, type: 'buff', effect: { defMul: 1.35, nextCrit: 0.08 }, scaling: { heal: { base: 18, atk: 0.08, def: 1.5, faith: 8 } }, desc: '새벽빛으로 방어를 두르고 상처를 어루만집니다.' },
+        'reckoning_bolt': { name: '심판의 전류', tags: ['attack', 'holy', 'debuff'], cost: 26, type: 'attack', effect: { atkMul: 2.05, spdDebuff: 0.92 }, scaling: { damage: { base: 22, atk: 0.36, def: 0.06, faith: 3.2 } }, desc: '하늘에서 떨어진 심판이 적의 균형을 무너뜨립니다.' },
         'stick':      { name: '끈적이기', tags: ['monster', 'attack', 'debuff'], type: 'attack', effect: { atkMul: 1.0, spdDebuff: 0.8 } },
         'bite':       { name: '물어뜯기', tags: ['monster', 'attack'], type: 'attack', effect: { atkMul: 1.2 } },
         'wail':       { name: '통곡', tags: ['monster', 'attack', 'fear'], type: 'attack', effect: { atkMul: 0.8, fear: true } },
@@ -352,26 +355,7 @@ const GAME_DATA = {
             label: '기사',
             defaultPool: { skillIds: ['wail', 'root_bind'], weights: [2, 1] }
         },
-        st_wraith_boss: {
-            id: 'st_wraith_boss',
-            label: '원혼',
-            defaultPool: { skillIds: ['fear', 'boss_wraith_haunt'], weights: [1, 2] },
-            lowHp: {
-                threshold: 0.5,
-                skillIds: ['boss_wraith_soul_split', 'fear', 'boss_wraith_haunt'],
-                weights: [2, 1, 1]
-            }
-        },
-        st_mud_giant_boss: {
-            id: 'st_mud_giant_boss',
-            label: '진흙 거인',
-            defaultPool: { skillIds: ['telekinesis', 'boss_mud_grasp'], weights: [1, 1] },
-            lowHp: {
-                threshold: 0.45,
-                skillIds: ['boss_mud_quake', 'telekinesis', 'boss_mud_grasp'],
-                weights: [2, 1, 1]
-            }
-        },
+        /** 필드 몬스터(eden_judicator 등)용. 지역 보스는 bossActiveSkillIds 단일 소스 */
         st_stone_seraph_boss: {
             id: 'st_stone_seraph_boss',
             label: '석화 세라프',
@@ -380,46 +364,6 @@ const GAME_DATA = {
                 threshold: 0.5,
                 skillIds: ['boss_seraph_petrify', 'root_bind', 'boss_seraph_gaze', 'fear'],
                 weights: [2, 1, 1, 1]
-            }
-        },
-        st_abyss_hydra_boss: {
-            id: 'st_abyss_hydra_boss',
-            label: '심연 히드라',
-            defaultPool: { skillIds: ['bite', 'boss_hydra_maelstrom', 'fear'], weights: [1, 2, 1] },
-            lowHp: {
-                threshold: 0.5,
-                skillIds: ['boss_hydra_maelstrom', 'boss_mud_quake', 'fear'],
-                weights: [2, 1, 1]
-            }
-        },
-        st_throne_guardian_boss: {
-            id: 'st_throne_guardian_boss',
-            label: '왕좌 수호자',
-            defaultPool: { skillIds: ['boss_guardian_verdict', 'boss_seraph_gaze', 'telekinesis'], weights: [2, 1, 1] },
-            lowHp: {
-                threshold: 0.45,
-                skillIds: ['boss_guardian_verdict', 'boss_seraph_petrify', 'boss_hydra_maelstrom'],
-                weights: [2, 1, 1]
-            }
-        },
-        st_border_warden_boss: {
-            id: 'st_border_warden_boss',
-            label: '변방 감시자',
-            defaultPool: { skillIds: ['boss_guardian_verdict', 'boss_seraph_gaze', 'telekinesis'], weights: [2, 1, 1] },
-            lowHp: {
-                threshold: 0.45,
-                skillIds: ['boss_guardian_verdict', 'boss_seraph_petrify', 'boss_hydra_maelstrom'],
-                weights: [2, 1, 1]
-            }
-        },
-        st_void_sovereign_boss: {
-            id: 'st_void_sovereign_boss',
-            label: '공허의 군주',
-            defaultPool: { skillIds: ['boss_guardian_verdict', 'boss_hydra_maelstrom', 'boss_seraph_gaze'], weights: [2, 2, 1] },
-            lowHp: {
-                threshold: 0.42,
-                skillIds: ['boss_guardian_verdict', 'boss_hydra_maelstrom', 'boss_seraph_petrify'],
-                weights: [2, 2, 1]
             }
         }
     },
@@ -457,7 +401,17 @@ const GAME_DATA = {
                 { id: 'ember_sigil_branch', name: '잔화 인장', nodeIds: ['pilgrim_ember_1', 'pilgrim_active_ember_sigil'] },
                 { id: 'devotion_twig', name: '헌신의 가지', nodeIds: ['pilgrim_devotion_1', 'pilgrim_devotion_2'] },
                 { id: 'steadfast_twig', name: '불굴의 가지', nodeIds: ['pilgrim_steadfast_1'] },
-                { id: 'quickness_twig', name: '기민의 가지', nodeIds: ['pilgrim_quickness_1'] }
+                { id: 'quickness_twig', name: '기민의 가지', nodeIds: ['pilgrim_quickness_1'] },
+                { id: 'chorus_extension', name: '합창의 여운', nodeIds: ['pilgrim_chorus_1', 'pilgrim_chorus_2', 'pilgrim_chorus_keystone'] },
+                { id: 'vitality_path', name: '생명의 길', nodeIds: ['pilgrim_vita_1', 'pilgrim_vita_2', 'pilgrim_vita_keystone'] },
+                { id: 'penitent_path', name: '참회의 길', nodeIds: ['pilgrim_pen_1', 'pilgrim_pen_2', 'pilgrim_pen_keystone'] },
+                { id: 'iron_will_twig', name: '철의 의지', nodeIds: ['pilgrim_iron_mind'] },
+                { id: 'dawn_cleanse_twig', name: '새벽 정화', nodeIds: ['pilgrim_clear_dawn'] },
+                { id: 'eden_lance_branch', name: '에덴 창', nodeIds: ['pilgrim_eden_minor', 'pilgrim_active_eden_lance'] },
+                { id: 'dawn_shelter_branch', name: '새벽 피난처', nodeIds: ['pilgrim_dawn_minor', 'pilgrim_active_dawn_shelter'] },
+                { id: 'reckoning_branch', name: '심판 전류', nodeIds: ['pilgrim_reck_minor', 'pilgrim_active_reckoning'] },
+                { id: 'mirror_path', name: '거울의 길', nodeIds: ['pilgrim_mirror_1', 'pilgrim_mirror_2', 'pilgrim_mirror_keystone'] },
+                { id: 'tithe_branch', name: '십일조의 가지', nodeIds: ['pilgrim_tithe_1', 'pilgrim_tithe_2'] }
             ],
             nodes: [
                 { id: 'pilgrim_origin', name: '순례의 서약', kind: 'start', desc: '빛을 향한 여정의 시작점입니다.', grants: { stats: { faith: 1 } }, position: { x: 0, y: 0 } },
@@ -595,7 +549,38 @@ const GAME_DATA = {
 
                 { id: 'pilgrim_steadfast_1', name: '불굴의 버팀', kind: 'notable', desc: '방어 +3, HP +16', grants: { stats: { def: 3, hp: 16 } }, position: { x: 0.95, y: 2.15 } },
 
-                { id: 'pilgrim_quickness_1', name: '가벼운 발놀림', kind: 'notable', desc: '속도 +5, 회피 +2%', grants: { stats: { spd: 5 }, specials: { evadeChance: 0.02 } }, position: { x: -1.95, y: 0.55 } }
+                { id: 'pilgrim_quickness_1', name: '가벼운 발놀림', kind: 'notable', desc: '속도 +5, 회피 +2%', grants: { stats: { spd: 5 }, specials: { evadeChance: 0.02 } }, position: { x: -1.95, y: 0.55 } },
+
+                { id: 'pilgrim_chorus_1', name: '합창의 첫음', kind: 'small', desc: '신앙 +1, PP +8', grants: { stats: { faith: 1, pp: 8 } }, position: { x: -4.1, y: 0.35 } },
+                { id: 'pilgrim_chorus_2', name: '합창의 화음', kind: 'notable', desc: 'PP +14, 치명타 +3%', grants: { stats: { pp: 14 }, specials: { critChance: 0.03 } }, position: { x: -4.85, y: 0.95 } },
+                { id: 'pilgrim_chorus_keystone', name: '천상 합창', kind: 'keystone', desc: '피해량 8% 증가, 신앙 +1', grants: { stats: { faith: 1 }, specials: { damageMul: 1.08 } }, position: { x: -5.65, y: 1.55 } },
+
+                { id: 'pilgrim_vita_1', name: '생명의 샘', kind: 'small', desc: 'HP +20, 턴당 HP 재생 +5', grants: { stats: { hp: 20 }, specials: { hpRegen: 5 } }, position: { x: 1.2, y: 2.95 } },
+                { id: 'pilgrim_vita_2', name: '불사의 맥', kind: 'notable', desc: 'HP +28, 생명 흡수 +2.5%', grants: { stats: { hp: 28 }, specials: { lifeSteal: 0.025 } }, position: { x: 1.45, y: 3.75 } },
+                { id: 'pilgrim_vita_keystone', name: '생명의 언약', kind: 'keystone', desc: '턴당 HP 재생 +18, 받는 피해 5% 감소', grants: { specials: { hpRegen: 18, damageTakenMul: 0.95 } }, position: { x: 1.7, y: 4.55 } },
+
+                { id: 'pilgrim_pen_1', name: '채찍의 각오', kind: 'small', desc: '공격 +2, 받는 피해 3% 증가', grants: { stats: { atk: 2 }, specials: { damageTakenMul: 1.03 } }, position: { x: -7.4, y: 2.1 } },
+                { id: 'pilgrim_pen_2', name: '고행의 불꽃', kind: 'notable', desc: '피해량 8% 증가, 받는 피해 5% 증가', grants: { specials: { damageMul: 1.08, damageTakenMul: 1.05 } }, position: { x: -8.15, y: 2.75 } },
+                { id: 'pilgrim_pen_keystone', name: '참회의 대가', kind: 'keystone', desc: '피해량 12% 증가, 생명 흡수 +4%, 받는 피해 8% 증가', grants: { specials: { damageMul: 1.12, lifeSteal: 0.04, damageTakenMul: 1.08 } }, position: { x: -8.85, y: 3.45 } },
+
+                { id: 'pilgrim_iron_mind', name: '철의 의지', kind: 'notable', desc: '상태이상 저항 +8%', grants: { specials: { ailmentResist: 0.08 } }, position: { x: -2.65, y: 1.15 } },
+                { id: 'pilgrim_clear_dawn', name: '새벽의 정화', kind: 'notable', desc: '턴 시작 시 8% 확률로 상태이상 해제', grants: { specials: { turnStartCleanseChance: 0.08 } }, position: { x: 0.35, y: 6.55 } },
+
+                { id: 'pilgrim_eden_minor', name: '낙원의 기미', kind: 'small', desc: '공격 +2, 신앙 +1', grants: { stats: { atk: 2, faith: 1 } }, position: { x: 13.5, y: -7.5 } },
+                { id: 'pilgrim_active_eden_lance', name: '에덴의 창 해금', kind: 'active_unlock', desc: '액티브 [에덴의 창]을 배웁니다.', grants: { activeSkillId: 'eden_lance' }, position: { x: 14.2, y: -6.85 } },
+
+                { id: 'pilgrim_dawn_minor', name: '새벽의 방패', kind: 'small', desc: '방어 +2, HP +12', grants: { stats: { def: 2, hp: 12 } }, position: { x: 11.4, y: 12.85 } },
+                { id: 'pilgrim_active_dawn_shelter', name: '새벽 피난처 해금', kind: 'active_unlock', desc: '액티브 [새벽 피난처]를 배웁니다.', grants: { activeSkillId: 'dawn_shelter' }, position: { x: 10.6, y: 13.55 } },
+
+                { id: 'pilgrim_reck_minor', name: '심판의 예고', kind: 'notable', desc: '공격 +3, 치명타 +3%', grants: { stats: { atk: 3 }, specials: { critChance: 0.03 } }, position: { x: 13.8, y: -4.0 } },
+                { id: 'pilgrim_active_reckoning', name: '심판의 전류 해금', kind: 'active_unlock', desc: '액티브 [심판의 전류]를 배웁니다.', grants: { activeSkillId: 'reckoning_bolt' }, position: { x: 14.6, y: -3.2 } },
+
+                { id: 'pilgrim_mirror_1', name: '거울의 첫면', kind: 'small', desc: '받는 피해 2% 감소, 피해량 2% 증가', grants: { specials: { damageTakenMul: 0.98, damageMul: 1.02 } }, position: { x: -3.8, y: -3.2 } },
+                { id: 'pilgrim_mirror_2', name: '거울의 둘째면', kind: 'notable', desc: '받는 피해 3% 감소, 피해량 3% 증가', grants: { specials: { damageTakenMul: 0.97, damageMul: 1.03 } }, position: { x: -3.15, y: -3.85 } },
+                { id: 'pilgrim_mirror_keystone', name: '양면의 성소', kind: 'keystone', desc: '받는 피해 6% 감소, 피해량 6% 증가', grants: { specials: { damageTakenMul: 0.94, damageMul: 1.06 } }, position: { x: -2.45, y: -4.55 } },
+
+                { id: 'pilgrim_tithe_1', name: '십일조의 약속', kind: 'small', desc: '신앙 +1, PP +10', grants: { stats: { faith: 1, pp: 10 } }, position: { x: -6.45, y: 2.15 } },
+                { id: 'pilgrim_tithe_2', name: '십일조의 결실', kind: 'notable', desc: 'PP +15, 치명 피해 +5%p', grants: { stats: { pp: 15 }, specials: { critDamageMul: 0.05 } }, position: { x: -7.25, y: 2.85 } }
             ],
             edges: [
                 ['pilgrim_origin', 'pilgrim_faith_1'],
@@ -741,8 +726,37 @@ const GAME_DATA = {
                 ['pilgrim_devotion_1', 'pilgrim_devotion_2'],
 
                 ['pilgrim_def_1', 'pilgrim_steadfast_1'],
+                ['pilgrim_steadfast_1', 'pilgrim_vita_1'],
+                ['pilgrim_vita_1', 'pilgrim_vita_2'],
+                ['pilgrim_vita_2', 'pilgrim_vita_keystone'],
 
-                ['pilgrim_spd_1', 'pilgrim_quickness_1']
+                ['pilgrim_spd_1', 'pilgrim_quickness_1'],
+                ['pilgrim_quickness_1', 'pilgrim_iron_mind'],
+
+                ['pilgrim_devotion_2', 'pilgrim_chorus_1'],
+                ['pilgrim_chorus_1', 'pilgrim_chorus_2'],
+                ['pilgrim_chorus_2', 'pilgrim_chorus_keystone'],
+                ['pilgrim_chorus_keystone', 'pilgrim_tithe_1'],
+                ['pilgrim_tithe_1', 'pilgrim_tithe_2'],
+
+                ['pilgrim_oracle_notable', 'pilgrim_pen_1'],
+                ['pilgrim_pen_1', 'pilgrim_pen_2'],
+                ['pilgrim_pen_2', 'pilgrim_pen_keystone'],
+
+                ['pilgrim_cleanse_2', 'pilgrim_clear_dawn'],
+
+                ['pilgrim_faith_3', 'pilgrim_mirror_1'],
+                ['pilgrim_mirror_1', 'pilgrim_mirror_2'],
+                ['pilgrim_mirror_2', 'pilgrim_mirror_keystone'],
+
+                ['pilgrim_valor_final', 'pilgrim_eden_minor'],
+                ['pilgrim_eden_minor', 'pilgrim_active_eden_lance'],
+
+                ['pilgrim_guard_final', 'pilgrim_dawn_minor'],
+                ['pilgrim_dawn_minor', 'pilgrim_active_dawn_shelter'],
+
+                ['pilgrim_hunt_core', 'pilgrim_reck_minor'],
+                ['pilgrim_reck_minor', 'pilgrim_active_reckoning']
             ]
         }
     },
@@ -1173,6 +1187,13 @@ const GAME_DATA = {
             desc: '기도가 맺힌 작은 성물. 적중 시 가끔 영력(PP)이 돌아옵니다.',
             specials: { ppOnHitChance: 0.07, ppOnHitAmount: 1 }
         },
+        relic_ashen_rosary: {
+            id: 'relic_ashen_rosary',
+            name: '잿빛 묵주',
+            grade: 'Common',
+            desc: '마모된 기도구슬. 심장이 흔들릴 때 치명의 방향을 바로잡아 줍니다.',
+            specials: { critChance: 0.03, ppOnHitChance: 0.06 }
+        },
         relic_twin_sigil: {
             id: 'relic_twin_sigil',
             name: '쌍날 인장',
@@ -1180,20 +1201,127 @@ const GAME_DATA = {
             desc: '잔광이 한 번 더 베어 가릅니다.',
             specials: { doubleStrikeChance: 0.06 }
         },
+        relic_lantern_of_vow: {
+            id: 'relic_lantern_of_vow',
+            name: '서약의 등불',
+            grade: 'Rare',
+            desc: '흔들릴수록 더 밝아지는 등불. 전투 중 생명력과 평정을 유지합니다.',
+            specials: { hpRegen: 7, turnStartCleanseChance: 0.05 }
+        },
         relic_well_spring: {
             id: 'relic_well_spring',
             name: '우물의 심장',
             grade: 'Epic',
             desc: '깊은 샘에서 흘러나온 회복의 기운.',
             specials: { ppOnHitChance: 0.12, ppOnHitAmount: 2 }
+        },
+        relic_judicator_feather: {
+            id: 'relic_judicator_feather',
+            name: '심판자 깃편',
+            grade: 'Epic',
+            desc: '가벼운 깃 하나가 무게 없는 심판을 불러옵니다.',
+            specials: { critChance: 0.05, critDamageMul: 0.12 }
+        },
+        relic_fortress_psalm: {
+            id: 'relic_fortress_psalm',
+            name: '성채의 시편',
+            grade: 'Epic',
+            desc: '굴복하지 않는 찬송. 타격을 흘리고 생존을 굳힙니다.',
+            specials: { damageTakenMul: 0.93, ailmentResist: 0.12, hpRegen: 10 }
+        },
+        relic_throne_spark: {
+            id: 'relic_throne_spark',
+            name: '왕좌의 불씨',
+            grade: 'Epic',
+            desc: '꺼지지 않는 왕좌의 잔광. 공격의 결을 더 날카롭게 세웁니다.',
+            specials: { damageMul: 1.11, doubleStrikeChance: 0.08 }
+        },
+        relic_eclipse_tear: {
+            id: 'relic_eclipse_tear',
+            name: '일식의 눈물',
+            grade: 'Epic',
+            desc: '빛과 그림자가 만나는 순간 맺힌 눈물. 고통을 힘으로 바꿉니다.',
+            specials: { lowHpDamageMul: 1.2, lifeSteal: 0.05, critChance: 0.04 }
+        },
+        relic_first_oath: {
+            id: 'relic_first_oath',
+            name: '첫 맹세의 조각',
+            grade: 'Epic',
+            desc: '처음 발화된 맹세의 파편. 파동 하나하나가 신성한 잔향을 남깁니다.',
+            specials: { damageMul: 1.08, ppOnHitChance: 0.16, ppOnHitAmount: 2, critDamageMul: 0.1 }
         }
     },
 
-    /** 지역 상인이 파는 성물 (골드) */
-    relicShops: {
-        pishon: [{ relicId: 'relic_twin_sigil', price: 920 }],
-        gihon: [{ relicId: 'relic_well_spring', price: 5600 }],
-        void_remnant: [{ relicId: 'relic_well_spring', price: 5200 }]
+    /** 성물 상인 기능 제거: 성물 획득은 시설 > 성물 소환으로 통합 */
+    relicShops: {},
+
+    /** 성물 가챠 설정 (혼합 재화: 골드 + 달란트) */
+    relicGacha: {
+        maxRelicLevel: 10,
+        talentDrop: {
+            field: {
+                // 일반 몬스터: 극악 확률로 0.01~0.1 달란트 획득
+                chanceByTier: { 1: 0.003, 2: 0.0045, 3: 0.006, 4: 0.0075, 5: 0.009, 6: 0.0105, 7: 0.012 },
+                min: 0.01,
+                max: 0.1
+            },
+            boss: {
+                // 보스: enemyPowerTier 1~7 기준 0.1~1.0 구간
+                amountByTier: { 1: 0.1, 2: 0.25, 3: 0.4, 4: 0.55, 5: 0.7, 6: 0.85, 7: 1.0 }
+            }
+        },
+        levelScaling: {
+            perLevel: {
+                ppOnHitChance: 0.08,
+                ppOnHitAmount: 0.35,
+                doubleStrikeChance: 0.1,
+                critChance: 0.08,
+                critDamageMul: 0.12,
+                lifeSteal: 0.12,
+                hpRegen: 0.16,
+                turnStartCleanseChance: 0.1,
+                ailmentResist: 0.1,
+                evadeChance: 0.1,
+                damageMul: 0.2,
+                damageTakenMul: 0.12,
+                lowHpDamageMul: 0.18
+            },
+            caps: {
+                ppOnHitChance: 0.35,
+                ppOnHitAmount: 6,
+                doubleStrikeChance: 0.3,
+                critChance: 0.4,
+                critDamageMul: 0.9,
+                lifeSteal: 0.3,
+                hpRegen: 80,
+                turnStartCleanseChance: 0.4,
+                ailmentResist: 0.45,
+                evadeChance: 0.35,
+                damageMul: 1.8,
+                damageTakenMul: 0.72,
+                lowHpDamageMul: 2.1
+            }
+        },
+        normal: {
+            goldCost: 1000,
+            gradeRates: { Common: 0.83, Rare: 0.15, Epic: 0.02 },
+            poolByGrade: {
+                Common: ['relic_morning_dew', 'relic_ashen_rosary'],
+                Rare: ['relic_twin_sigil', 'relic_lantern_of_vow'],
+                Epic: ['relic_well_spring', 'relic_judicator_feather', 'relic_fortress_psalm', 'relic_throne_spark', 'relic_eclipse_tear', 'relic_first_oath']
+            }
+        },
+        premium: {
+            tokenCost: 10,
+            tenPullTokenCost: 100,
+            gradeRates: { Common: 0.45, Rare: 0.4, Epic: 0.15 },
+            pity: { every: 20, guaranteedGrade: 'Epic' },
+            poolByGrade: {
+                Common: ['relic_morning_dew', 'relic_ashen_rosary'],
+                Rare: ['relic_twin_sigil', 'relic_lantern_of_vow'],
+                Epic: ['relic_well_spring', 'relic_judicator_feather', 'relic_fortress_psalm', 'relic_throne_spark', 'relic_eclipse_tear', 'relic_first_oath']
+            }
+        }
     },
 
     shops: {
@@ -1273,14 +1401,25 @@ const GAME_DATA = {
     }
 };
 
-/** implementation_plan_14: 공통 메타(js/data/constants.js)와 동기화 */
-GAME_DATA.meta = (typeof window !== 'undefined' && window.GAME_DATA_META) || {
-    monsterGradeOrder: ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'],
-    itemGrades: ['Normal', 'Uncommon', 'Rare', 'Epic'],
-    equipmentSlots: ['weapon', 'armor', 'helmet', 'boots', 'accessory', 'offhand'],
-    playerSkillTypes: ['attack', 'buff'],
-    itemKinds: ['material', 'equipment']
-};
+/** implementation_plan_14: 공통 메타(js/data/constants.js)와 동기화 (함수는 GAME_DATA_META에만 두고 meta는 JSON 직렬화 가능 필드만) */
+(function assignMeta() {
+    const M = (typeof window !== 'undefined' && window.GAME_DATA_META) || null;
+    const fallback = {
+        monsterGradeOrder: ['F', 'E', 'D', 'C', 'B', 'A', 'S', 'SS', 'SSS'],
+        itemGrades: ['Normal', 'Uncommon', 'Rare', 'Epic'],
+        equipmentSlots: ['weapon', 'armor', 'helmet', 'boots', 'accessory', 'offhand'],
+        playerSkillTypes: ['attack', 'buff'],
+        itemKinds: ['material', 'equipment']
+    };
+    const src = M || fallback;
+    GAME_DATA.meta = {
+        monsterGradeOrder: src.monsterGradeOrder,
+        itemGrades: src.itemGrades,
+        equipmentSlots: src.equipmentSlots,
+        playerSkillTypes: src.playerSkillTypes,
+        itemKinds: src.itemKinds
+    };
+})();
 
 if (typeof window !== 'undefined') {
     window.GAME_DATA = GAME_DATA;

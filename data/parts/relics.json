@@ -9,6 +9,16 @@
       "ppOnHitAmount": 1
     }
   },
+  "relic_ashen_rosary": {
+    "id": "relic_ashen_rosary",
+    "name": "잿빛 묵주",
+    "grade": "Common",
+    "desc": "마모된 기도구슬. 심장이 흔들릴 때 치명의 방향을 바로잡아 줍니다.",
+    "specials": {
+      "critChance": 0.03,
+      "ppOnHitChance": 0.06
+    }
+  },
   "relic_twin_sigil": {
     "id": "relic_twin_sigil",
     "name": "쌍날 인장",
@@ -16,6 +26,16 @@
     "desc": "잔광이 한 번 더 베어 가릅니다.",
     "specials": {
       "doubleStrikeChance": 0.06
+    }
+  },
+  "relic_lantern_of_vow": {
+    "id": "relic_lantern_of_vow",
+    "name": "서약의 등불",
+    "grade": "Rare",
+    "desc": "흔들릴수록 더 밝아지는 등불. 전투 중 생명력과 평정을 유지합니다.",
+    "specials": {
+      "hpRegen": 7,
+      "turnStartCleanseChance": 0.05
     }
   },
   "relic_well_spring": {
@@ -26,6 +46,60 @@
     "specials": {
       "ppOnHitChance": 0.12,
       "ppOnHitAmount": 2
+    }
+  },
+  "relic_judicator_feather": {
+    "id": "relic_judicator_feather",
+    "name": "심판자 깃편",
+    "grade": "Epic",
+    "desc": "가벼운 깃 하나가 무게 없는 심판을 불러옵니다.",
+    "specials": {
+      "critChance": 0.05,
+      "critDamageMul": 0.12
+    }
+  },
+  "relic_fortress_psalm": {
+    "id": "relic_fortress_psalm",
+    "name": "성채의 시편",
+    "grade": "Epic",
+    "desc": "굴복하지 않는 찬송. 타격을 흘리고 생존을 굳힙니다.",
+    "specials": {
+      "damageTakenMul": 0.93,
+      "ailmentResist": 0.12,
+      "hpRegen": 10
+    }
+  },
+  "relic_throne_spark": {
+    "id": "relic_throne_spark",
+    "name": "왕좌의 불씨",
+    "grade": "Epic",
+    "desc": "꺼지지 않는 왕좌의 잔광. 공격의 결을 더 날카롭게 세웁니다.",
+    "specials": {
+      "damageMul": 1.11,
+      "doubleStrikeChance": 0.08
+    }
+  },
+  "relic_eclipse_tear": {
+    "id": "relic_eclipse_tear",
+    "name": "일식의 눈물",
+    "grade": "Epic",
+    "desc": "빛과 그림자가 만나는 순간 맺힌 눈물. 고통을 힘으로 바꿉니다.",
+    "specials": {
+      "lowHpDamageMul": 1.2,
+      "lifeSteal": 0.05,
+      "critChance": 0.04
+    }
+  },
+  "relic_first_oath": {
+    "id": "relic_first_oath",
+    "name": "첫 맹세의 조각",
+    "grade": "Epic",
+    "desc": "처음 발화된 맹세의 파편. 파동 하나하나가 신성한 잔향을 남깁니다.",
+    "specials": {
+      "damageMul": 1.08,
+      "ppOnHitChance": 0.16,
+      "ppOnHitAmount": 2,
+      "critDamageMul": 0.1
     }
   }
 }

@@ -36,6 +36,56 @@
                 return s && !s.bossOnly;
             });
         },
+        getRelicLevel(relicId) {
+            if (!relicId) return 1;
+            const maxLv = Math.max(1, Number(window.GAME_DATA?.relicGacha?.maxRelicLevel || 10));
+            const lv = Number(this.state.player?.relicLevels?.[relicId] || 1);
+            return Math.max(1, Math.min(maxLv, Math.floor(lv || 1)));
+        },
+        getRelicSpecialsScaled(relicId) {
+            const base = window.GAME_DATA?.relics?.[relicId]?.specials;
+            if (!base || typeof base !== 'object') return null;
+            const level = this.getRelicLevel(relicId);
+            const step = Math.max(0, level - 1);
+            if (step <= 0) return { ...base };
+            const cfg = window.GAME_DATA?.relicGacha?.levelScaling || {};
+            const perLevel = cfg.perLevel || {};
+            const caps = cfg.caps || {};
+            const out = {};
+            Object.entries(base).forEach(([key, value]) => {
+                const n = Number(value || 0);
+                if (!Number.isFinite(n)) return;
+                const scale = Math.max(0, Number(perLevel[key] || 0));
+                let next;
+                if (key === 'damageTakenMul') {
+                    next = n - (1 - n) * scale * step;
+                    if (caps[key] !== undefined) next = Math.max(Number(caps[key]), next);
+                } else if (key === 'damageMul' || key === 'lowHpDamageMul') {
+                    next = n + (n - 1) * scale * step;
+                    if (caps[key] !== undefined) next = Math.min(Number(caps[key]), next);
+                } else if (Number.isInteger(n) && Math.abs(n) >= 1) {
+                    next = n + Math.max(0, Math.round(n * scale * step));
+                    if (caps[key] !== undefined) next = Math.min(Number(caps[key]), next);
+                } else {
+                    next = n + Math.max(0, n * scale * step);
+                    if (caps[key] !== undefined) next = Math.min(Number(caps[key]), next);
+                }
+                out[key] = Number(next.toFixed(4));
+            });
+            return out;
+        },
+        applyRelicPassivesToBonuses(bonuses) {
+            const rid = this.state.player?.equippedRelicId;
+            const spec = rid && this.getRelicSpecialsScaled(rid);
+            if (!spec || !bonuses) return;
+            Object.entries(spec).forEach(([key, value]) => {
+                if (key === 'damageMul' || key === 'damageTakenMul' || key === 'lowHpDamageMul') bonuses[key] *= value;
+                else if (key === 'critChance' || key === 'evadeChance' || key === 'ailmentResist' || key === 'turnStartCleanseChance'
+                    || key === 'ppOnHitChance' || key === 'doubleStrikeChance') bonuses[key] += value;
+                else if (key === 'ppOnHitAmount') bonuses[key] += value;
+                else if (key === 'hpRegen' || key === 'lifeSteal' || key === 'critDamageMul') bonuses[key] += value;
+            });
+        },
         getPassiveBonuses() {
             const bonuses = {
                 atk: 0, def: 0, hp: 0, pp: 0, spd: 0, faith: 0, hpRegen: 0, lifeSteal: 0,

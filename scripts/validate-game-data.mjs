@@ -18,8 +18,10 @@ function loadGameData() {
     vm.runInContext(readFileSync(join(root, 'js/data/constants.js'), 'utf8'), ctx);
     vm.runInContext(readFileSync(join(root, 'js/data.js'), 'utf8'), ctx);
     const GD = ctx.window.GAME_DATA;
+    const meta = ctx.window.GAME_DATA_META;
     if (!GD) throw new Error('GAME_DATA not exposed on window');
-    return GD;
+    if (!meta?.bossSkillSlotCountFromEnemyPowerTier) throw new Error('GAME_DATA_META.bossSkillSlotCountFromEnemyPowerTier 없음');
+    return { GD, meta };
 }
 
 function gradeIndex(order, g) {
@@ -30,7 +32,7 @@ function gradeIndex(order, g) {
 function main() {
     const errors = [];
     const warn = [];
-    const GD = loadGameData();
+    const { GD, meta: rulesMeta } = loadGameData();
     const regions = GD.regions || {};
     const monsters = GD.monsters || [];
     const items = GD.items || {};
@@ -162,16 +164,15 @@ function main() {
             }
         }
 
-        // 보스: 패시브·액티브 슬롯 수 = 2 + floor((tier-1)*3/6), tier 1~7 → 2~5
+        // 보스: 패시브·액티브 슬롯 수 — js/data/constants.js bossSkillSlotCountFromEnemyPowerTier 와 동일
         if (m.isBoss) {
             const reg = regions[m.regionId];
-            const t = Math.max(1, Math.min(7, Number(reg?.enemyPowerTier) || 1));
-            const expSlots = 2 + Math.min(3, Math.floor((t - 1) * 3 / 6));
+            const expSlots = rulesMeta.bossSkillSlotCountFromEnemyPowerTier(reg?.enemyPowerTier);
             if (!Array.isArray(m.bossPassiveSkillIds) || m.bossPassiveSkillIds.length !== expSlots) {
-                errors.push(`monster ${m.id}: bossPassiveSkillIds ${expSlots}개 필요 (enemyPowerTier ${t})`);
+                errors.push(`monster ${m.id}: bossPassiveSkillIds ${expSlots}개 필요 (enemyPowerTier ${reg?.enemyPowerTier ?? '?'})`);
             }
             if (!Array.isArray(m.bossActiveSkillIds) || m.bossActiveSkillIds.length !== expSlots) {
-                errors.push(`monster ${m.id}: bossActiveSkillIds ${expSlots}개 필요 (enemyPowerTier ${t})`);
+                errors.push(`monster ${m.id}: bossActiveSkillIds ${expSlots}개 필요 (enemyPowerTier ${reg?.enemyPowerTier ?? '?'})`);
             }
             (m.bossPassiveSkillIds || []).forEach((pid) => {
                 const sk = skills[pid];
@@ -295,6 +296,48 @@ function main() {
         list.forEach((e, i) => {
             if (e.relicId && !relics[e.relicId]) errors.push(`relicShops.${rid}[${i}]: relicId "${e.relicId}" 없음`);
         });
+    }
+
+    // --- relicGacha ---
+    const relicGacha = GD.relicGacha || {};
+    const gachaModes = [['normal', relicGacha.normal], ['premium', relicGacha.premium]];
+    for (const [modeName, mode] of gachaModes) {
+        if (!mode) continue;
+        const rates = mode.gradeRates || {};
+        const sum = Number(rates.Common || 0) + Number(rates.Rare || 0) + Number(rates.Epic || 0);
+        if (Math.abs(sum - 1) > 0.001) {
+            errors.push(`relicGacha.${modeName}.gradeRates 합이 1이 아님 (${sum.toFixed(4)})`);
+        }
+        const pool = mode.poolByGrade || {};
+        ['Common', 'Rare', 'Epic'].forEach((grade) => {
+            const ids = pool[grade];
+            if (!Array.isArray(ids) || ids.length === 0) {
+                errors.push(`relicGacha.${modeName}.poolByGrade.${grade} 비어 있음`);
+                return;
+            }
+            ids.forEach((rid) => {
+                if (!relics[rid]) errors.push(`relicGacha.${modeName}.poolByGrade.${grade}: relicId "${rid}" 없음`);
+                else if ((relics[rid].grade || 'Common') !== grade) warn.push(`relicGacha.${modeName}.${rid}: 풀 등급(${grade})과 relic.grade(${relics[rid].grade}) 불일치`);
+            });
+        });
+    }
+    const talentDrop = relicGacha.talentDrop || {};
+    const fieldDrop = talentDrop.field || {};
+    const bossDrop = talentDrop.boss || {};
+    const fieldMin = Number(fieldDrop.min ?? 0.01);
+    const fieldMax = Number(fieldDrop.max ?? 0.1);
+    if (!(fieldMin > 0 && fieldMax >= fieldMin)) {
+        errors.push(`relicGacha.talentDrop.field: min/max 값 오류 (${fieldMin}~${fieldMax})`);
+    }
+    for (let t = 1; t <= 7; t++) {
+        const ch = Number(fieldDrop?.chanceByTier?.[t]);
+        if (!Number.isFinite(ch) || ch < 0 || ch > 1) {
+            errors.push(`relicGacha.talentDrop.field.chanceByTier.${t}: 0~1 범위 필요`);
+        }
+        const b = Number(bossDrop?.amountByTier?.[t]);
+        if (!Number.isFinite(b) || b < 0.1 || b > 1.0) {
+            errors.push(`relicGacha.talentDrop.boss.amountByTier.${t}: 0.1~1.0 범위 필요`);
+        }
     }
 
     // --- smithing ---

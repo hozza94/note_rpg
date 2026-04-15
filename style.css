@@ -330,6 +330,11 @@ body {
     font-weight: 700;
 }
 
+.resource-talent {
+    color: #80cbc4;
+    font-weight: 700;
+}
+
 .stat-item label {
     display: block;
     font-size: 0.8rem;
@@ -1709,6 +1714,60 @@ body {
     line-height: 1.45;
 }
 
+.relic-gacha-panel {
+    border-color: rgba(129, 199, 132, 0.35);
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.12), rgba(33, 150, 243, 0.08));
+}
+
+.relic-gacha-currency {
+    font-size: 0.84rem;
+    color: #eceff1;
+    margin-bottom: 6px;
+}
+
+.relic-gacha-pity {
+    font-size: 0.78rem;
+    color: #c5e1a5;
+    margin-bottom: 8px;
+}
+
+.relic-gacha-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.facility-hub-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+}
+
+.facility-hub-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+}
+
+.facility-hub-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 3px;
+    width: 100%;
+    text-align: left;
+}
+
+.facility-hub-btn strong {
+    font-size: 0.95rem;
+}
+
+.facility-hub-btn span {
+    font-size: 0.78rem;
+    color: #b0bec5;
+}
+
 .relic-card {
     border: 1px solid rgba(255, 255, 255, 0.12);
     border-radius: 8px;
@@ -1726,11 +1785,72 @@ body {
     margin-bottom: 4px;
 }
 
+.relic-card .relic-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.relic-card .relic-info-btn {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    background: rgba(255, 255, 255, 0.06);
+    color: #cfd8dc;
+    font-size: 0.68rem;
+    line-height: 1;
+    cursor: help;
+    padding: 0;
+}
+
+.relic-card .relic-tooltip {
+    display: none;
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    z-index: 25;
+    background: rgba(15, 15, 18, 0.96);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 9px 10px;
+    font-size: 0.76rem;
+    line-height: 1.45;
+    color: #eceff1;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.45);
+}
+
+.relic-card .relic-head:hover .relic-tooltip,
+.relic-card .relic-head:focus-within .relic-tooltip {
+    display: block;
+}
+
 .relic-card .relic-meta {
     font-size: 0.78rem;
     color: #90a4ae;
     margin-bottom: 6px;
 }
+
+.relic-effects {
+    margin: 6px 0 8px 16px;
+    padding: 0;
+    color: #c5e1a5;
+    font-size: 0.8rem;
+    line-height: 1.4;
+}
+
+.relic-effects li {
+    margin-bottom: 3px;
+}
+
+.relic-card.common { border-left: 3px solid #bdbdbd; }
+.relic-card.uncommon { border-left: 3px solid #4caf50; }
+.relic-card.rare { border-left: 3px solid #2196f3; }
+.relic-card.epic { border-left: 3px solid #ab47bc; }
+.relic-card.legendary { border-left: 3px solid #ff9800; }
+.relic-card.mythic { border-left: 3px solid #ffd700; }
 
 .skill-tree-point {
     font-size: 0.88rem;

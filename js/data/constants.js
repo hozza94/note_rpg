@@ -16,6 +16,17 @@
         itemKinds: ['material', 'equipment']
     };
 
+    /**
+     * regions.enemyPowerTier(1~7) 기준 보스 패시브·액티브 슬롯 수 (2~5).
+     * validate-game-data.mjs 와 동일 공식 — 변경 시 한곳만 수정한다.
+     */
+    function bossSkillSlotCountFromEnemyPowerTier(tier) {
+        const t = Math.max(1, Math.min(7, Number(tier) || 1));
+        return 2 + Math.min(3, Math.floor((t - 1) * 3 / 6));
+    }
+
+    GAME_DATA_META.bossSkillSlotCountFromEnemyPowerTier = bossSkillSlotCountFromEnemyPowerTier;
+
     const w = global.window || (global.window = {});
     w.GAME_DATA_META = GAME_DATA_META;
 

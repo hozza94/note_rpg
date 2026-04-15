@@ -263,6 +263,73 @@
     },
     "desc": "타오르는 인장을 새겨 적의 발을 느리게 합니다."
   },
+  "eden_lance": {
+    "name": "에덴의 창",
+    "tags": [
+      "attack",
+      "holy"
+    ],
+    "cost": 23,
+    "type": "attack",
+    "effect": {
+      "atkMul": 1.88
+    },
+    "scaling": {
+      "damage": {
+        "base": 18,
+        "atk": 0.32,
+        "def": 0.07,
+        "faith": 2.9
+      }
+    },
+    "desc": "낙원을 향해 찌르는 성스러운 일격입니다."
+  },
+  "dawn_shelter": {
+    "name": "새벽 피난처",
+    "tags": [
+      "buff",
+      "heal",
+      "defense"
+    ],
+    "cost": 16,
+    "type": "buff",
+    "effect": {
+      "defMul": 1.35,
+      "nextCrit": 0.08
+    },
+    "scaling": {
+      "heal": {
+        "base": 18,
+        "atk": 0.08,
+        "def": 1.5,
+        "faith": 8
+      }
+    },
+    "desc": "새벽빛으로 방어를 두르고 상처를 어루만집니다."
+  },
+  "reckoning_bolt": {
+    "name": "심판의 전류",
+    "tags": [
+      "attack",
+      "holy",
+      "debuff"
+    ],
+    "cost": 26,
+    "type": "attack",
+    "effect": {
+      "atkMul": 2.05,
+      "spdDebuff": 0.92
+    },
+    "scaling": {
+      "damage": {
+        "base": 22,
+        "atk": 0.36,
+        "def": 0.06,
+        "faith": 3.2
+      }
+    },
+    "desc": "하늘에서 떨어진 심판이 적의 균형을 무너뜨립니다."
+  },
   "stick": {
     "name": "끈적이기",
     "tags": [
