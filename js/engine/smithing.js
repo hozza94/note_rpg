@@ -282,8 +282,14 @@
                 return;
             }
             const totalCount = smithable.reduce((acc, itemId) => acc + this.getInventoryCount(itemId), 0);
-            const ok = confirm(`가방의 분해 가능 장비 ${totalCount}개를 모두 분해하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`);
-            if (!ok) return;
+            this.showConfirmModal({
+                title: '전체 분해',
+                message: `가방의 분해 가능 장비 ${totalCount}개를 모두 분해하시겠습니까?\n이 작업은 되돌릴 수 없습니다.`,
+                confirmText: '전체 분해',
+                cancelText: '취소',
+                danger: true
+            }).then((ok) => {
+                if (!ok) return;
 
             let totalGold = 0;
             const matSummary = {};
@@ -318,6 +324,7 @@
             this.saveGame();
             this.openBlacksmithModal('salvage', {
                 fromFacility: !!this.blacksmithFromFacility
+            });
             });
         },
 

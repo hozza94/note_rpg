@@ -91,15 +91,22 @@
             content.querySelectorAll('[data-backup-delete]').forEach(btn => {
                 btn.addEventListener('click', () => {
                     const slot = Number(btn.getAttribute('data-backup-delete'));
-                    const ok = confirm(`슬롯 ${slot} 백업을 삭제할까요? 이 작업은 되돌릴 수 없습니다.`);
-                    if (!ok) return;
-                    const res = window.StorageManager.deleteCloudSlot(slot);
-                    if (settingsMsg) {
-                        settingsMsg.style.color = res.success ? '#4caf50' : '#ff4b2b';
-                        settingsMsg.innerText = res.msg;
-                    }
-                    this.showToast(res.msg, res.success ? 'success' : 'warn');
-                    if (res.success) this.openBackupManagerModal();
+                    this.showConfirmModal({
+                        title: '백업 삭제',
+                        message: `슬롯 ${slot} 백업을 삭제할까요? 이 작업은 되돌릴 수 없습니다.`,
+                        confirmText: '삭제',
+                        cancelText: '취소',
+                        danger: true
+                    }).then((ok) => {
+                        if (!ok) return;
+                        const res = window.StorageManager.deleteCloudSlot(slot);
+                        if (settingsMsg) {
+                            settingsMsg.style.color = res.success ? '#4caf50' : '#ff4b2b';
+                            settingsMsg.innerText = res.msg;
+                        }
+                        this.showToast(res.msg, res.success ? 'success' : 'warn');
+                        if (res.success) this.openBackupManagerModal();
+                    });
                 });
             });
 

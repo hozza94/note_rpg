@@ -201,15 +201,18 @@ class GameEngine {
             settingsOverlay.classList.add('hidden');
             this.openBackupManagerModal();
         });
-        document.getElementById('btn-open-skilltree-settings').addEventListener('click', () => {
-            settingsOverlay.classList.add('hidden');
-            this.openSkillTreeModal();
-        });
         document.getElementById('btn-reset').addEventListener('click', () => {
-            if (confirm("경고: 모든 플레이 데이터가 삭제됩니다.\n정말 처음부터 다시 시작하시겠습니까?")) {
+            this.showConfirmModal({
+                title: '데이터 초기화',
+                message: '경고: 모든 플레이 데이터가 삭제됩니다.\n정말 처음부터 다시 시작하시겠습니까?',
+                confirmText: '초기화',
+                cancelText: '취소',
+                danger: true
+            }).then((ok) => {
+                if (!ok) return;
                 window.StorageManager.clear();
                 window.location.reload();
-            }
+            });
         });
 
         this.bindCharacterStatTooltipEvents();

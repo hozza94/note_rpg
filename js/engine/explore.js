@@ -286,8 +286,17 @@
             const nextRegion = window.GAME_DATA.regions[nextRegionId];
             const playerLevel = this.state.player.level;
             if (playerLevel < nextRegion.minLevel) {
-                const proceed = confirm(`⚠️ 경고: [${nextRegion.name}]의 권장 진입 레벨은 ${nextRegion.minLevel}입니다.\n현재 레벨(${playerLevel})로는 매우 위험할 수 있습니다. 그래도 이동하시겠습니까?`);
-                if (!proceed) return;
+                this.showConfirmModal({
+                    title: '지역 이동',
+                    message: `⚠️ 경고: [${nextRegion.name}]의 권장 진입 레벨은 ${nextRegion.minLevel}입니다.\n현재 레벨(${playerLevel})로는 매우 위험할 수 있습니다. 그래도 이동하시겠습니까?`,
+                    confirmText: '이동',
+                    cancelText: '취소',
+                    danger: true
+                }).then((proceed) => {
+                    if (!proceed) return;
+                    this.moveToRegion(nextRegionId);
+                });
+                return;
             }
             this.moveToRegion(nextRegionId);
         },

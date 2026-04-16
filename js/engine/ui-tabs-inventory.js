@@ -82,6 +82,8 @@
                     .map(nodeId => nodeMap[nodeId])
                     .filter(node => !!node && node.kind !== 'start' && node.kind !== 'active_unlock');
 
+                const activeSectionOpen = this.getUiPrefOpen('basileia_ui_skill_active_open', true);
+                const passiveSectionOpen = this.getUiPrefOpen('basileia_ui_skill_passive_open', true);
                 const section = document.createElement('div');
                 section.className = 'skill-tab-sections';
                 section.innerHTML = `
@@ -89,13 +91,13 @@
                         <span class="skill-tree-point">스킬트리 포인트: <strong id="skill-tree-points">${this.state.player.skillTreePoints}</strong></span>
                         <button id="btn-open-skilltree" class="action-btn small primary">스킬트리 열기</button>
                     </div>
-                    <details class="skill-collapse" open>
+                    <details class="skill-collapse" id="skill-section-active"${activeSectionOpen ? ' open' : ''}>
                         <summary class="skill-collapse-summary">액티브 스킬</summary>
                         <div class="skill-collapse-body">
                             <div id="active-skill-list"></div>
                         </div>
                     </details>
-                    <details class="skill-collapse" open>
+                    <details class="skill-collapse" id="skill-section-passive"${passiveSectionOpen ? ' open' : ''}>
                         <summary class="skill-collapse-summary">패시브 스킬</summary>
                         <div class="skill-collapse-body">
                             <div id="passive-skill-list"></div>
@@ -103,6 +105,15 @@
                     </details>
                 `;
                 container.appendChild(section);
+
+                section.querySelector('#skill-section-active')?.addEventListener('toggle', (e) => {
+                    const el = e.target;
+                    if (el && el.id === 'skill-section-active') this.setUiPrefOpen('basileia_ui_skill_active_open', el.open);
+                });
+                section.querySelector('#skill-section-passive')?.addEventListener('toggle', (e) => {
+                    const el = e.target;
+                    if (el && el.id === 'skill-section-passive') this.setUiPrefOpen('basileia_ui_skill_passive_open', el.open);
+                });
 
                 const activeList = section.querySelector('#active-skill-list');
                 const passiveList = section.querySelector('#passive-skill-list');
@@ -333,6 +344,7 @@
             const eq = this.state.player.equippedRelicId;
             const relics = window.GAME_DATA.relics || {};
 
+            const relicOwnedOpen = this.getUiPrefOpen('basileia_ui_relic_owned_open', true);
             const wrap = document.createElement('div');
             wrap.className = 'relic-tab-panel';
             wrap.innerHTML = `
@@ -340,7 +352,7 @@
                     <h4>장착 중</h4>
                     <div id="relic-equipped-slot"></div>
                 </div>
-                <details class="skill-collapse relic-owned-collapse" open>
+                <details class="skill-collapse relic-owned-collapse" id="relic-section-owned"${relicOwnedOpen ? ' open' : ''}>
                     <summary class="skill-collapse-summary">보유 성물 <span class="relic-owned-count">(${owned.length})</span></summary>
                     <div class="skill-collapse-body">
                         <p class="tab-sort-hint tab-sort-hint--inline">등급 높은 순으로 정렬됩니다.</p>
@@ -349,6 +361,11 @@
                 </details>
             `;
             container.appendChild(wrap);
+
+            wrap.querySelector('#relic-section-owned')?.addEventListener('toggle', (e) => {
+                const el = e.target;
+                if (el && el.id === 'relic-section-owned') this.setUiPrefOpen('basileia_ui_relic_owned_open', el.open);
+            });
 
             const eqSlot = wrap.querySelector('#relic-equipped-slot');
             if (eq && relics[eq]) {
