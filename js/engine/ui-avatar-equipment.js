@@ -131,11 +131,15 @@
                 </section>
                 <section class="equip-choice-section">
                     <h4>가방에서 선택</h4>
-                    <div class="equip-choice-list">${candidateRows}</div>
+                    <div class="modal-scroll-wrap equip-choice-scroll-wrap">
+                        <div class="equip-choice-list modal-scroll-body">${candidateRows}</div>
+                        <div class="modal-scroll-hint" aria-hidden="true"></div>
+                    </div>
                 </section>
                 <button id="btn-close-equip-modal" class="action-btn" style="margin-top: 12px; width: 100%;">닫기</button>
             `;
             modal.classList.remove('hidden');
+            this.bindModalScrollHint(content.querySelector('.equip-choice-scroll-wrap .modal-scroll-body'));
 
             const closeModal = () => {
                 content.style.width = '';

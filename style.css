@@ -928,6 +928,13 @@ body {
     gap: 10px;
 }
 
+.backup-modal-scroll-body {
+    max-height: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
 .smith-modal-scroll .smith-body.modal-scroll-body {
     max-height: 380px;
     display: flex;
@@ -1490,7 +1497,7 @@ body {
 .battle-skill-fx {
     position: absolute;
     inset: 0;
-    opacity: 0;
+    z-index: 3;
 }
 
 .battle-skill-fx--slash::before {

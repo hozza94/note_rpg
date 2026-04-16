@@ -34,13 +34,17 @@
                     <button class="action-btn small secondary" id="btn-backup-import-file">파일에서 복원</button>
                     <input type="file" id="backup-import-input" accept=".json,application/json" style="display:none;" />
                 </div>
-                <div style="display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;">
-                    ${rows}
+                <div class="modal-scroll-wrap backup-modal-scroll">
+                    <div class="modal-scroll-body backup-modal-scroll-body">
+                        ${rows}
+                    </div>
+                    <div class="modal-scroll-hint" aria-hidden="true"></div>
                 </div>
                 <button id="btn-back-to-settings" class="action-btn secondary" style="margin-top: 10px; width: 100%;">← 설정으로 돌아가기</button>
                 <button id="btn-close-backup-manager" class="action-btn" style="margin-top: 12px; width: 100%;">닫기</button>
             `;
             modal.classList.remove('hidden');
+            this.bindModalScrollHint(content.querySelector('.backup-modal-scroll .modal-scroll-body'));
 
             const settingsMsg = document.getElementById('settings-msg');
             const close = () => {
