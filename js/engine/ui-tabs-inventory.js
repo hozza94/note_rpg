@@ -8,6 +8,18 @@
             this.renderTabContent(tabId);
         }
 ,
+        getItemGradeRank(grade) {
+            const order = window.GAME_DATA_META?.itemGrades || ['Normal', 'Uncommon', 'Rare', 'Epic'];
+            const g = String(grade || 'Normal');
+            const idx = order.indexOf(g);
+            return idx >= 0 ? idx : 0;
+        },
+        getRelicGradeRank(grade) {
+            const order = ['Common', 'Uncommon', 'Rare', 'Epic', 'Legendary', 'Mythic'];
+            const g = String(grade || 'Common');
+            const idx = order.indexOf(g);
+            return idx >= 0 ? idx : 0;
+        },
         renderTabContent(tabId) {
             const container = document.getElementById('inventory-list');
             container.innerHTML = '';
@@ -22,13 +34,31 @@
                 if (this.inventory.items.length === 0) {
                     container.innerHTML = '<div class="empty-msg">가방이 비어있습니다.</div>';
                 } else {
-                    this.inventory.items.forEach(itemInfo => {
+                    const hint = document.createElement('p');
+                    hint.className = 'tab-sort-hint';
+                    hint.textContent = '등급 높은 순으로 정렬됩니다.';
+                    container.appendChild(hint);
+                    const sortedItems = [...this.inventory.items].sort((a, b) => {
+                        const da = window.GAME_DATA.items[a.id];
+                        const db = window.GAME_DATA.items[b.id];
+                        if (!da && !db) return String(a.id).localeCompare(String(b.id), 'ko');
+                        if (!da) return 1;
+                        if (!db) return -1;
+                        const ra = this.getItemGradeRank(da.grade);
+                        const rb = this.getItemGradeRank(db.grade);
+                        if (rb !== ra) return rb - ra;
+                        const na = this.getItemDisplayName(a.id, da);
+                        const nb = this.getItemDisplayName(b.id, db);
+                        return na.localeCompare(nb, 'ko');
+                    });
+                    sortedItems.forEach(itemInfo => {
                         const itemData = window.GAME_DATA.items[itemInfo.id];
+                        if (!itemData) return;
                         const enhanceLv = this.getItemEnhanceLevel(itemInfo.id);
                         const enhanceClass = this.getEnhanceVisualClass(enhanceLv, itemInfo.id);
                         const div = document.createElement('div');
                         const bossExclusiveClass = this.isBossExclusiveItem(itemInfo.id) ? 'boss-exclusive' : '';
-                        div.className = `list-item inventory-item ${itemData.grade.toLowerCase()} ${enhanceClass} ${bossExclusiveClass}`;
+                        div.className = `list-item inventory-item ${(itemData.grade || 'normal').toLowerCase()} ${enhanceClass} ${bossExclusiveClass}`;
                         const detailLine = this.formatShopItemDetails(itemData, itemInfo.id);
                         const displayName = this.getItemDisplayName(itemInfo.id, itemData);
                         div.innerHTML = `
@@ -59,14 +89,18 @@
                         <span class="skill-tree-point">스킬트리 포인트: <strong id="skill-tree-points">${this.state.player.skillTreePoints}</strong></span>
                         <button id="btn-open-skilltree" class="action-btn small primary">스킬트리 열기</button>
                     </div>
-                    <div class="skill-group">
-                        <h4>액티브 스킬</h4>
-                        <div id="active-skill-list"></div>
-                    </div>
-                    <div class="skill-group">
-                        <h4>패시브 스킬</h4>
-                        <div id="passive-skill-list"></div>
-                    </div>
+                    <details class="skill-collapse" open>
+                        <summary class="skill-collapse-summary">액티브 스킬</summary>
+                        <div class="skill-collapse-body">
+                            <div id="active-skill-list"></div>
+                        </div>
+                    </details>
+                    <details class="skill-collapse" open>
+                        <summary class="skill-collapse-summary">패시브 스킬</summary>
+                        <div class="skill-collapse-body">
+                            <div id="passive-skill-list"></div>
+                        </div>
+                    </details>
                 `;
                 container.appendChild(section);
 
@@ -302,17 +336,17 @@
             const wrap = document.createElement('div');
             wrap.className = 'relic-tab-panel';
             wrap.innerHTML = `
-                <p class="relic-hint">성물은 <strong>1개만 장착</strong>하며 효과가 스킬트리 패시브와 <strong>합산</strong>됩니다.
-                우측 <strong>스킬</strong> 탭에서 <strong>스킬트리 열기</strong>로 노드 그래프를 열 수 있습니다.<br>
-                성물 소환은 하단 <strong>시설</strong> 메뉴에서 이용할 수 있습니다.</p>
                 <div class="skill-group">
                     <h4>장착 중</h4>
                     <div id="relic-equipped-slot"></div>
                 </div>
-                <div class="skill-group">
-                    <h4>보유 성물</h4>
-                    <div id="relic-owned-wrap"></div>
-                </div>
+                <details class="skill-collapse relic-owned-collapse" open>
+                    <summary class="skill-collapse-summary">보유 성물 <span class="relic-owned-count">(${owned.length})</span></summary>
+                    <div class="skill-collapse-body">
+                        <p class="tab-sort-hint tab-sort-hint--inline">등급 높은 순으로 정렬됩니다.</p>
+                        <div id="relic-owned-wrap"></div>
+                    </div>
+                </details>
             `;
             container.appendChild(wrap);
 
@@ -347,7 +381,18 @@
             if (owned.length === 0) {
                 ownedWrap.innerHTML = '<div class="empty-msg">보유한 성물이 없습니다.</div>';
             } else {
-                owned.forEach(rid => {
+                const sortedOwned = [...owned].sort((a, b) => {
+                    const ra = relics[a];
+                    const rb = relics[b];
+                    if (!ra && !rb) return String(a).localeCompare(String(b), 'ko');
+                    if (!ra) return 1;
+                    if (!rb) return -1;
+                    const ga = this.getRelicGradeRank(ra.grade);
+                    const gb = this.getRelicGradeRank(rb.grade);
+                    if (gb !== ga) return gb - ga;
+                    return (ra.name || a).localeCompare(rb.name || b, 'ko');
+                });
+                sortedOwned.forEach(rid => {
                     const r = relics[rid];
                     if (!r) return;
                     const row = document.createElement('div');

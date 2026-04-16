@@ -1878,16 +1878,70 @@ body {
     box-shadow: 0 0 12px rgba(76, 175, 80, 0.25);
 }
 
+.tab-sort-hint {
+    font-size: 0.76rem;
+    color: #90a4ae;
+    margin: 0 0 10px;
+    line-height: 1.35;
+}
+
+.skill-collapse {
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.03);
+    overflow: hidden;
+}
+
+.skill-collapse-summary {
+    list-style: none;
+    cursor: pointer;
+    padding: 10px 12px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #eceff1;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.skill-collapse-summary::after {
+    content: '▼';
+    font-size: 0.65rem;
+    opacity: 0.65;
+    transition: transform 0.2s ease;
+}
+
+.skill-collapse:not([open]) .skill-collapse-summary::after {
+    transform: rotate(-90deg);
+}
+
+.skill-collapse-summary::-webkit-details-marker {
+    display: none;
+}
+
+.skill-collapse-body {
+    padding: 0 10px 10px;
+}
+
+.skill-collapse-body .empty-msg {
+    margin-top: 4px;
+}
+
 .relic-tab-panel {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.relic-tab-panel .relic-hint {
+.relic-owned-count {
+    font-weight: 500;
+    color: #90a4ae;
     font-size: 0.82rem;
-    color: var(--text-secondary);
-    line-height: 1.45;
+}
+
+.tab-sort-hint--inline {
+    margin: 0 0 8px;
 }
 
 .relic-gacha-panel {
