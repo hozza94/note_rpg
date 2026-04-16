@@ -904,12 +904,81 @@ body {
     flex: 1;
 }
 
-.smith-body {
-    max-height: 380px;
+/* 모달 내 스크롤: 스크롤바 숨김 + 하단 "더 보기" 힌트(상점·대장간 등) */
+.modal-scroll-wrap {
+    position: relative;
+}
+
+.modal-scroll-body {
     overflow-y: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.modal-scroll-body::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
+}
+
+.shop-modal-scroll-body {
+    max-height: 330px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.smith-modal-scroll .smith-body.modal-scroll-body {
+    max-height: 380px;
     display: flex;
     flex-direction: column;
     gap: 8px;
+}
+
+.modal-scroll-hint {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 44px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 6px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.22s ease;
+    background: linear-gradient(to bottom, rgba(18, 22, 30, 0), rgba(10, 12, 18, 0.78));
+    z-index: 2;
+}
+
+.modal-scroll-wrap.is-scroll-hint-visible .modal-scroll-hint {
+    opacity: 1;
+}
+
+.modal-scroll-hint::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 10px solid rgba(255, 213, 79, 0.88);
+    filter: drop-shadow(0 0 5px rgba(255, 213, 79, 0.4));
+    animation: modalScrollHintBob 1.05s ease-in-out infinite;
+}
+
+@keyframes modalScrollHintBob {
+    0%,
+    100% {
+        opacity: 0.4;
+        transform: translateY(0);
+    }
+
+    50% {
+        opacity: 1;
+        transform: translateY(5px);
+    }
 }
 
 .equip-choice-current {

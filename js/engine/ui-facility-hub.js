@@ -37,6 +37,28 @@
                 if (typeof handlers.onBack === 'function') handlers.onBack();
             });
         },
+
+        /**
+         * 모달 스크롤 영역 하단에 "아래로 더 스크롤 가능" 힌트 표시.
+         * 부모는 `.modal-scroll-wrap`, 스크롤 요소는 그 직계 자식(예: `.modal-scroll-body`)이어야 한다.
+         * @param {HTMLElement | null} scrollEl
+         */
+        bindModalScrollHint(scrollEl) {
+            if (!scrollEl || typeof scrollEl.addEventListener !== 'function') return;
+            const wrap = scrollEl.parentElement;
+            if (!wrap || !wrap.classList.contains('modal-scroll-wrap')) return;
+            const update = () => {
+                const overflow = scrollEl.scrollHeight > scrollEl.clientHeight + 1;
+                const atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 2;
+                wrap.classList.toggle('is-scroll-hint-visible', overflow && !atBottom);
+            };
+            scrollEl.addEventListener('scroll', update, { passive: true });
+            if (typeof ResizeObserver !== 'undefined') {
+                const ro = new ResizeObserver(() => requestAnimationFrame(update));
+                ro.observe(scrollEl);
+            }
+            requestAnimationFrame(update);
+        },
         getFacilityHubMenus() {
             return [
                 { id: 'gacha', label: '✨ 성물 소환', desc: '달란트 / 골드 뽑기', action: () => this.openRelicGachaModal({ fromFacility: true }) },

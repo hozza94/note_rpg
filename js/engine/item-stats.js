@@ -187,12 +187,21 @@
                 spd: '속도',
                 faith: '신앙',
                 hpRegen: '체력재생',
-                lifeSteal: '생명력흡수'
+                lifeSteal: '생명력흡수',
+                critChance: '치명타확률',
+                critDamageMul: '치명타피해'
             };
+            /** 내부는 0~1 비율(또는 치명피해 가산 분수) — UI는 %로 표기 */
+            const ratioAsPercentKeys = new Set(['lifeSteal', 'critChance', 'critDamageMul']);
             const parts = Object.entries(statKo)
                 .map(([key, label]) => {
                     const n = Number(bonuses?.[key] || 0);
                     if (!n) return null;
+                    if (ratioAsPercentKeys.has(key)) {
+                        const pct = Math.round(n * 100);
+                        if (pct === 0) return null;
+                        return `${label} ${pct > 0 ? '+' : ''}${pct}%`;
+                    }
                     const sign = n > 0 ? '+' : '';
                     return `${label} ${sign}${n}`;
                 })

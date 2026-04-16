@@ -74,14 +74,18 @@
                     <button class="action-btn small ${currentTab === 'buy' ? 'primary' : ''}" data-shop-tab="buy">구매</button>
                     <button class="action-btn small ${currentTab === 'sell' ? 'primary' : ''}" data-shop-tab="sell">판매</button>
                 </div>
-                <div style="display:flex; flex-direction:column; gap:10px; max-height:330px; overflow-y:auto;">
-                    ${currentTab === 'buy' ? buyRows : sellRows}
+                <div class="modal-scroll-wrap shop-modal-scroll">
+                    <div class="modal-scroll-body shop-modal-scroll-body">
+                        ${currentTab === 'buy' ? buyRows : sellRows}
+                    </div>
+                    <div class="modal-scroll-hint" aria-hidden="true"></div>
                 </div>
             `;
             modal.classList.remove('hidden');
             this.bindModalTopBarActions(content, {
                 onBack: () => this.renderFacilityHub()
             });
+            this.bindModalScrollHint(content.querySelector('.shop-modal-scroll .modal-scroll-body'));
 
             content.querySelectorAll('[data-shop-tab]').forEach(btn => {
                 btn.addEventListener('click', () => {

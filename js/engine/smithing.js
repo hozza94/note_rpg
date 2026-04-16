@@ -38,20 +38,23 @@
                 <div class="smith-tabs">
                     ${tabs.map(t => `<button class="action-btn small ${t.id === currentTab ? 'primary' : ''}" data-smith-tab="${t.id}">${t.label}</button>`).join('')}
                 </div>
-                <div class="smith-body">${body}</div>
+                <div class="modal-scroll-wrap smith-modal-scroll">
+                    <div class="smith-body modal-scroll-body">${body}</div>
+                    <div class="modal-scroll-hint" aria-hidden="true"></div>
+                </div>
             `;
             modal.classList.remove('hidden');
             this.bindModalTopBarActions(content, {
                 onBack: () => this.renderFacilityHub()
             });
+            const bodyEl = content.querySelector('.smith-body');
+            this.bindModalScrollHint(bodyEl);
             const restoreScrollTop = Number(options?.restoreScrollTop || 0);
-            if (restoreScrollTop > 0) {
-                const bodyEl = content.querySelector('.smith-body');
-                if (bodyEl) {
-                    requestAnimationFrame(() => {
-                        bodyEl.scrollTop = restoreScrollTop;
-                    });
-                }
+            if (restoreScrollTop > 0 && bodyEl) {
+                requestAnimationFrame(() => {
+                    bodyEl.scrollTop = restoreScrollTop;
+                    bodyEl.dispatchEvent(new Event('scroll'));
+                });
             }
 
             content.querySelectorAll('[data-smith-tab]').forEach(btn => {
