@@ -431,6 +431,14 @@ body {
 .character-pane {
     overflow-y: auto;
     min-height: 0;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.character-pane::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 /* Stats Enhancement */
@@ -976,8 +984,16 @@ body {
     flex-direction: column;
     gap: 10px;
     flex: 1; /* Take remaining space */
-    overflow-y: auto; /* Enable scrollbar */
-    padding-right: 5px; /* Offset for scrollbar */
+    overflow-y: auto;
+    padding-right: 2px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.log-content::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .log-entry {
@@ -1853,7 +1869,15 @@ body {
     flex-direction: column;
     flex: 1;
     overflow-y: auto;
-    padding-right: 5px;
+    padding-right: 2px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tab-content::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+    display: none;
 }
 
 .skill-tab-sections {
