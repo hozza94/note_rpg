@@ -1456,6 +1456,7 @@ body {
 }
 
 .monster-image-wrap {
+    position: relative;
     display: flex;
     justify-content: center;
     margin-bottom: 12px;
@@ -1476,6 +1477,110 @@ body {
     font-size: 0.72rem;
     color: rgba(255, 255, 255, 0.65);
     letter-spacing: 0.03em;
+}
+
+.battle-skill-fx-layer {
+    position: absolute;
+    inset: -8px;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 14px;
+}
+
+.battle-skill-fx {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+}
+
+.battle-skill-fx--slash::before {
+    content: "";
+    position: absolute;
+    left: 20%;
+    top: 50%;
+    width: 70%;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 248, 225, 0.96), rgba(255, 255, 255, 0));
+    transform: rotate(-22deg) translateX(-58px);
+    box-shadow: 0 0 10px rgba(255, 250, 220, 0.55);
+    animation: skillFxSlash 0.46s ease-out forwards;
+}
+
+.battle-skill-fx--lightning::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: -18%;
+    width: 3px;
+    height: 122%;
+    background: linear-gradient(180deg, rgba(214, 234, 255, 0), rgba(204, 231, 255, 1), rgba(96, 189, 255, 0));
+    box-shadow: 0 0 12px rgba(120, 198, 255, 0.85);
+    transform: translateX(-50%);
+    animation: skillFxLightning 0.42s ease-out forwards;
+}
+
+.battle-skill-fx--fire::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    width: 78px;
+    height: 78px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 235, 150, 0.9) 0%, rgba(255, 140, 56, 0.75) 45%, rgba(255, 72, 40, 0) 72%);
+    transform: translate(-50%, -50%) scale(0.6);
+    animation: skillFxFire 0.5s ease-out forwards;
+}
+
+.battle-skill-fx--dash::before {
+    content: "";
+    position: absolute;
+    left: 8%;
+    top: 62%;
+    width: 88%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(120, 220, 255, 0), rgba(200, 250, 255, 0.95), rgba(120, 220, 255, 0));
+    box-shadow: 0 0 10px rgba(120, 220, 255, 0.6);
+    transform: translateX(-24px);
+    animation: skillFxDash 0.4s ease-out forwards;
+}
+
+.battle-skill-fx.is-emphasize::after {
+    content: "";
+    position: absolute;
+    inset: 6%;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 235, 170, 0.65);
+    animation: skillFxEmphasize 0.5s ease-out forwards;
+}
+
+@keyframes skillFxSlash {
+    0% { opacity: 0; transform: rotate(-22deg) translateX(-58px) scaleX(0.6); }
+    40% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(-22deg) translateX(58px) scaleX(1.08); }
+}
+
+@keyframes skillFxLightning {
+    0% { opacity: 0; }
+    20% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes skillFxFire {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.25); }
+}
+
+@keyframes skillFxDash {
+    0% { opacity: 0; transform: translateX(-30px); }
+    20% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(24px); }
+}
+
+@keyframes skillFxEmphasize {
+    0% { opacity: 0.95; transform: scale(0.92); }
+    100% { opacity: 0; transform: scale(1.06); }
 }
 
 .monster-header {
@@ -1833,6 +1938,14 @@ body {
     gap: 10px;
     justify-content: flex-end;
     flex-wrap: wrap;
+}
+
+/* 확인 모달 전용: 기본 action-btn보다 작게 맞춰 버튼 과대 노출 방지 */
+.app-confirm-actions .action-btn {
+    min-width: 96px;
+    padding: 7px 12px;
+    font-size: 0.82rem;
+    line-height: 1.2;
 }
 
 .active {

@@ -89,16 +89,75 @@
             this.updateAutoExploreButton();
             if (isBattle) this.scheduleAutoBattleTurn(500);
         },
-        spawnDamagePopup(targetEl, value, isCrit, isMonsterDamage) {
+        spawnDamagePopup(targetEl, value, isCrit, isMonsterDamage, options = {}) {
             const rect = targetEl.getBoundingClientRect();
             const popup = document.createElement('div');
             popup.className = `damage-popup ${isCrit ? 'critical' : ''} ${isMonsterDamage ? 'monster-dmg' : ''}`;
             popup.innerText = (isCrit ? 'CRITICAL! ' : '') + Math.round(value);
-            const randomX = (Math.random() - 0.5) * 40;
-            popup.style.left = `${rect.left + rect.width / 2 + randomX}px`;
-            popup.style.top = `${rect.top}px`;
+            const baseRandomX = (Math.random() - 0.5) * 40;
+            const xOffset = Number(options.xOffset || 0);
+            const yOffset = Number(options.yOffset || 0);
+            popup.style.left = `${rect.left + rect.width / 2 + baseRandomX + xOffset}px`;
+            popup.style.top = `${rect.top + yOffset}px`;
             document.body.appendChild(popup);
-            setTimeout(() => popup.remove(), 1000);
+            const lifetime = Math.max(300, Number(options.lifetime || 1000));
+            setTimeout(() => popup.remove(), lifetime);
+        },
+        ensureMonsterSkillFxLayer() {
+            const wrap = document.querySelector('.monster-image-wrap');
+            if (!wrap) return null;
+            let layer = wrap.querySelector('.battle-skill-fx-layer');
+            if (layer) return layer;
+            layer = document.createElement('div');
+            layer.className = 'battle-skill-fx-layer';
+            layer.setAttribute('aria-hidden', 'true');
+            wrap.appendChild(layer);
+            return layer;
+        },
+        resolveSkillFxType(skillData) {
+            const id = String(skillData?.id || '');
+            const tags = Array.isArray(skillData?.tags) ? skillData.tags.map(t => String(t)) : [];
+            if (id.includes('bolt') || tags.includes('lightning') || tags.includes('thunder')) return 'lightning';
+            if (id.includes('dash') || tags.includes('spd')) return 'dash';
+            if (id.includes('ember') || tags.includes('fire')) return 'fire';
+            if (id.includes('smite') || id.includes('slash') || tags.includes('holy')) return 'slash';
+            return 'slash';
+        },
+        resolveSkillFxPreset(skillData, options = {}) {
+            const id = String(skillData?.id || '');
+            const fxType = options.fxType || this.resolveSkillFxType(skillData);
+            const base = { fxType, count: 1, interval: 70, emphasize: !!options.emphasize };
+            const byId = {
+                basic_attack: { fxType: 'slash', count: 1, interval: 0 },
+                double_strike: { fxType: 'slash', count: 2, interval: 95 },
+                smite: { fxType: 'slash', count: 2, interval: 70, emphasize: true },
+                light_dash: { fxType: 'dash', count: 2, interval: 60 },
+                radiant_volley: { fxType: 'slash', count: 3, interval: 70 },
+                ember_sigil: { fxType: 'fire', count: 2, interval: 85 },
+                reckoning_bolt: { fxType: 'lightning', count: 2, interval: 90, emphasize: true },
+                eden_lance: { fxType: 'slash', count: 2, interval: 70 },
+                proclaim: { fxType: 'slash', count: 1, interval: 0 },
+                martyr_brand: { fxType: 'slash', count: 2, interval: 80, emphasize: true }
+            };
+            return { ...base, ...(byId[id] || {}) };
+        },
+        spawnMonsterSkillFx(skillData, options = {}) {
+            const layer = this.ensureMonsterSkillFxLayer();
+            if (!layer) return;
+            const preset = this.resolveSkillFxPreset(skillData, options);
+            const count = Math.max(1, Math.min(4, Number(preset.count || 1)));
+            const interval = Math.max(0, Number(preset.interval || 0));
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const burst = document.createElement('div');
+                    burst.className = `battle-skill-fx battle-skill-fx--${preset.fxType}`;
+                    if (preset.emphasize && i === 0) burst.classList.add('is-emphasize');
+                    burst.style.left = `${Math.round((Math.random() - 0.5) * 20)}px`;
+                    burst.style.top = `${Math.round((Math.random() - 0.5) * 14)}px`;
+                    layer.appendChild(burst);
+                    setTimeout(() => burst.remove(), 560);
+                }, i * interval);
+            }
         },
         startBattle(monster, options = {}) {
             monster.maxHp = monster.stats.hp;
@@ -382,6 +441,7 @@
             }
             const targetEl = document.querySelector('.monster-card');
             this.triggerPlayerPhysicalHitFx(isCrit);
+            this.spawnMonsterSkillFx({ id: 'basic_attack', tags: ['attack', 'slash'] }, { fxType: 'slash', emphasize: !!isCrit });
             this.spawnDamagePopup(targetEl, dmg, isCrit, false);
             this.log(`${m.name}에게 ${dmg}${isCrit ? '!!! (강력한 일격)' : ''}의 피해를 입혔습니다!`, 'player');
             this.applyLifeStealFromDamage(dmg);
@@ -392,11 +452,14 @@
             if (ds > 0 && Math.random() < ds) {
                 const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                 m.hp -= dmg2;
-                this.spawnDamagePopup(targetEl, dmg2, false, false);
-                this.log(`추가 일격! ${dmg2}의 피해`, 'player');
-                this.applyLifeStealFromDamage(dmg2);
-                this.applyPpOnHitPassive(dmg2);
-                this.updateUI();
+                this.spawnMonsterSkillFx({ id: 'double_strike', tags: ['attack', 'slash'] }, { fxType: 'slash' });
+                setTimeout(() => {
+                    this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 24, yOffset: -8 });
+                    this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                    this.applyLifeStealFromDamage(dmg2);
+                    this.applyPpOnHitPassive(dmg2);
+                    this.updateUI();
+                }, 110);
                 if (m.isBoss && !this.state.battle.flags.lowHpCutscenePlayed && m.hp <= m.maxHp * 0.3) {
                     this.state.battle.flags.lowHpCutscenePlayed = true;
                     this.log(`${m.name}의 형상이 흔들립니다... 마지막 저항이 시작됩니다!`, 'effect');
@@ -718,6 +781,7 @@
                 m.hp -= dmg;
                 this.applySkillEffectToTarget(effect, false);
                 this.triggerPlayerPhysicalHitFx(isCrit);
+                this.spawnMonsterSkillFx(skillData, { emphasize: !!isCrit });
                 this.spawnDamagePopup(targetEl, dmg, isCrit, false);
                 this.log(`${m.name}에게 ${dmg}${isCrit ? '!!! (강력한 일격)' : ''}의 피해를 입혔습니다!`, "player");
                 this.applyLifeStealFromDamage(dmg);
@@ -726,10 +790,14 @@
                 if (m.hp > 0 && ds > 0 && Math.random() < ds) {
                     const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                     m.hp -= dmg2;
-                    this.spawnDamagePopup(targetEl, dmg2, false, false);
-                    this.log(`추가 일격! ${dmg2}의 피해`, 'player');
-                    this.applyLifeStealFromDamage(dmg2);
-                    this.applyPpOnHitPassive(dmg2);
+                    // 연타가 "한 덩어리"로 보이지 않도록 시간차 + 위치차를 준다.
+                    setTimeout(() => {
+                        this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
+                        this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                        this.applyLifeStealFromDamage(dmg2);
+                        this.applyPpOnHitPassive(dmg2);
+                        this.updateUI();
+                    }, 120);
                 }
             }
 
