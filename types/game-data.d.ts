@@ -140,8 +140,8 @@ export interface DropRow {
     maxQty?: number;
 }
 
-export type RelicGrade = 'Common' | 'Rare' | 'Epic';
-export type RelicGachaGrade = 'Common' | 'Rare' | 'Epic';
+export type RelicGrade = 'Common' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic';
+export type RelicGachaGrade = 'Common' | 'Rare' | 'Epic' | 'Legendary' | 'Mythic';
 
 export interface RelicDef {
     id: string;
@@ -160,10 +160,11 @@ export interface RelicShopEntry {
 
 export interface RelicGachaModeDef {
     goldCost?: number;
+    tenPullGoldCost?: number;
     tokenCost?: number;
     tenPullTokenCost?: number;
-    gradeRates: Record<RelicGachaGrade, number>;
-    poolByGrade: Record<RelicGachaGrade, string[]>;
+    gradeRates: Partial<Record<RelicGachaGrade, number>>;
+    poolByGrade: Partial<Record<RelicGachaGrade, string[]>>;
     pity?: {
         every: number;
         guaranteedGrade: RelicGachaGrade;

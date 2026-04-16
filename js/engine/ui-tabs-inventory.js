@@ -193,9 +193,10 @@
         pickRelicGachaGrade(modeCfg, forcedGrade = null) {
             if (forcedGrade) return forcedGrade;
             const rates = modeCfg?.gradeRates || {};
+            const order = ['Common', 'Rare', 'Epic', 'Legendary', 'Mythic'];
             const roll = Math.random();
             let acc = 0;
-            for (const grade of ['Common', 'Rare', 'Epic']) {
+            for (const grade of order) {
                 acc += Number(rates[grade] || 0);
                 if (roll <= acc) return grade;
             }
@@ -234,15 +235,17 @@
             if (!modeCfg) return this.log('성물 소환 설정이 없습니다.', 'system');
             const pullCount = Math.max(1, Math.min(10, Math.floor(Number(count) || 1)));
             if (mode === 'normal') {
-                const needGold = Math.max(0, Number(modeCfg.goldCost || 0)) * pullCount;
-                if (this.state.player.gold < needGold) return this.log('골드가 부족합니다.', 'system');
+                const oneGold = Math.max(0, Number(modeCfg.goldCost || 0));
+                const tenBundle = Math.max(0, Number(modeCfg.tenPullGoldCost || 0));
+                const needGold = pullCount >= 10 && tenBundle > 0 ? tenBundle : oneGold * pullCount;
+                if (this.state.player.gold < needGold) return this.showToast('골드가 부족합니다.', 'warn');
                 this.state.player.gold -= needGold;
             } else {
                 const oneCost = Math.max(0, Number(modeCfg.tokenCost || 0));
                 const tenCost = Math.max(0, Number(modeCfg.tenPullTokenCost || oneCost * 10));
                 const needToken = pullCount >= 10 ? tenCost : oneCost * pullCount;
                 this.state.player.relicToken = Math.max(0, Number(this.state.player.relicToken || 0));
-                if (this.state.player.relicToken < needToken) return this.log('달란트가 부족합니다.', 'system');
+                if (this.state.player.relicToken < needToken) return this.showToast('달란트가 부족합니다.', 'warn');
                 this.state.player.relicToken -= needToken;
             }
 
@@ -262,18 +265,31 @@
                 if (!awarded) continue;
                 results.push({ ...awarded, grade });
                 if (mode === 'premium') {
-                    if (grade === 'Epic') this.state.player.relicGachaPity.premiumWithoutEpic = 0;
-                    else this.state.player.relicGachaPity.premiumWithoutEpic += 1;
+                    if (grade === 'Epic' || grade === 'Legendary' || grade === 'Mythic') {
+                        this.state.player.relicGachaPity.premiumWithoutEpic = 0;
+                    } else {
+                        this.state.player.relicGachaPity.premiumWithoutEpic += 1;
+                    }
                 }
             }
             if (!results.length) return this.log('소환 결과를 계산하지 못했습니다.', 'system');
-            const summary = results.map((r) => {
+            const esc = (s) => this.escapeLogHtml(s);
+            const header = esc(`[성물 소환:${mode === 'normal' ? '일반' : '고급'} x${pullCount}] `);
+            const body = results.map((r) => {
                 const name = window.GAME_DATA?.relics?.[r.relicId]?.name || r.relicId;
-                if (r.type === 'new') return `${name} 신규 획득`;
-                if (r.type === 'dupe') return `${name} 레벨 ${r.from}→${r.to}`;
-                return `${name} 최대 레벨 (달란트 +${this.formatTalentAmount(r.tokenRefund || 0)})`;
-            });
-            this.log(`[성물 소환:${mode === 'normal' ? '일반' : '고급'} x${pullCount}] ${summary.join(' / ')}`, 'effect');
+                let line;
+                if (r.type === 'new') line = `${name} 신규 획득`;
+                else if (r.type === 'dupe') line = `${name} 레벨 ${r.from}→${r.to}`;
+                else line = `${name} 최대 레벨 (달란트 +${this.formatTalentAmount(r.tokenRefund || 0)})`;
+                const g = String(r.grade || 'Common').toLowerCase();
+                return `<span class="relic-log-grade relic-log-${g}">${esc(line)}</span>`;
+            }).join('<span class="log-gacha-sep"> / </span>');
+            this.logHtml(`<span class="log-gacha-header">${header}</span>${body}`, 'effect', 'log-gacha');
+
+            const hasMythic = results.some((r) => r.grade === 'Mythic');
+            const hasLegendary = results.some((r) => r.grade === 'Legendary');
+            if (hasMythic) this.showRelicGachaSpotlight('mythic');
+            else if (hasLegendary) this.showRelicGachaSpotlight('legendary');
             this.saveGame();
             this.updateUI();
             this.renderTabContent('relics');

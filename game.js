@@ -256,13 +256,54 @@ class GameEngine {
         this.saveGame();
     }
 
-    log(message, type = 'info') {
+    log(message, type = 'info', extraClass = '') {
         const logContainer = document.getElementById('game-log');
         const entry = document.createElement('div');
-        entry.className = `log-entry ${type}`;
+        entry.className = `log-entry ${type}${extraClass ? ` ${extraClass}` : ''}`.trim();
         entry.innerText = message;
         logContainer.appendChild(entry);
         logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    /** 로그 HTML(신뢰 가능한 문자열만 전달 — 사용자 입력은 escapeLogHtml 처리) */
+    logHtml(html, type = 'info', extraClass = '') {
+        const logContainer = document.getElementById('game-log');
+        const entry = document.createElement('div');
+        entry.className = `log-entry ${type}${extraClass ? ` ${extraClass}` : ''}`.trim();
+        entry.innerHTML = html;
+        logContainer.appendChild(entry);
+        logContainer.scrollTop = logContainer.scrollHeight;
+    }
+
+    escapeLogHtml(text) {
+        const s = String(text ?? '');
+        const div = document.createElement('div');
+        div.textContent = s;
+        return div.innerHTML;
+    }
+
+    /** 성물 소환: 전설·신화 등급 획득 시 화면 연출 */
+    showRelicGachaSpotlight(tier) {
+        const t = tier === 'mythic' ? 'mythic' : 'legendary';
+        let el = document.getElementById('relic-gacha-spotlight');
+        if (!el) {
+            el = document.createElement('div');
+            el.id = 'relic-gacha-spotlight';
+            el.setAttribute('aria-hidden', 'true');
+            document.body.appendChild(el);
+        }
+        el.className = '';
+        el.innerHTML = `
+            <div class="relic-spotlight-burst"></div>
+            <div class="relic-spotlight-ring"></div>
+            <div class="relic-spotlight-title ${t}">${t === 'mythic' ? '신화 등급!' : '전설 등급!'}</div>
+        `;
+        void el.offsetWidth;
+        el.classList.add('show', t);
+        clearTimeout(this._relicSpotlightTimer);
+        this._relicSpotlightTimer = setTimeout(() => {
+            el.classList.remove('show');
+        }, 2800);
     }
 
     updateUI() {
