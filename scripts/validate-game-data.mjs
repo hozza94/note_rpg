@@ -117,7 +117,18 @@ function main() {
             if (!a.id) errors.push(`avatars.list[${i}]: id 없음`);
             if (a.id && ids.has(a.id)) errors.push(`avatars.list: 중복 id "${a.id}"`);
             if (a.id) ids.add(a.id);
+            const hasFile = typeof a.file === 'string' && a.file.trim().length > 0;
+            const hasLegacyImage = typeof a.image === 'string' && a.image.trim().length > 0;
+            if (!hasFile && !hasLegacyImage) {
+                errors.push(`avatars.list[${i}]: file(파일명) 또는 image(구버전) 필요`);
+            }
+            if (hasFile && (a.file.includes('/') || a.file.includes('\\'))) {
+                errors.push(`avatars.list[${i}]: file는 폴더 없이 파일명만 (basePath 아래)`);
+            }
         });
+        if (av.basePath && typeof av.basePath === 'string' && !av.basePath.endsWith('/')) {
+            errors.push('avatars.basePath는 슬래시로 끝나야 합니다 (예: assets/avatars/)');
+        }
         if (av.defaultSelectedId && !ids.has(av.defaultSelectedId)) {
             errors.push(`avatars.defaultSelectedId "${av.defaultSelectedId}"가 list에 없음`);
         }

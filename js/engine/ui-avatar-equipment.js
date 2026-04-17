@@ -5,15 +5,20 @@
         getAvatarCatalog() {
             const dataList = window.GAME_DATA?.avatars?.list;
             if (Array.isArray(dataList) && dataList.length) return dataList;
-            return [{ id: 'male_base', label: '남성 기본', gender: 'male', image: 'assets/avatars/Avatar_M.png', unlockType: 'default', unlockHint: '기본 해금' }];
+            return [{ id: 'male_base', label: '남성 기본', gender: 'male', file: 'Avatar_M.png', unlockType: 'default', unlockHint: '기본 해금' }];
         }
 ,
         getAvatarImagePath() {
+            const AA = window.AvatarAssets;
+            if (!AA) {
+                const g = this.state.player.avatarGender === 'female' ? 'female' : 'male';
+                return g === 'female' ? 'assets/avatars/Avatar_F_AA.png' : 'assets/avatars/Avatar_M.png';
+            }
             const catalog = this.getAvatarCatalog();
             const selected = catalog.find(a => a.id === this.state.player.selectedAvatarId);
-            if (selected?.image) return selected.image;
+            if (selected) return AA.resolveAvatarImageUrl(selected);
             const g = this.state.player.avatarGender === 'female' ? 'female' : 'male';
-            return g === 'female' ? 'assets/avatars/Avatar_F_AA.png' : 'assets/avatars/Avatar_M.png';
+            return AA.resolveAvatarImageUrl({ file: AA.resolveDefaultAvatarFileByGender(g) });
         }
 ,
         toggleEquipmentViewMode() {

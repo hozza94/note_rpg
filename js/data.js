@@ -111,8 +111,10 @@ const GAME_DATA = {
         ]
     },
 
-    // 아바타 카탈로그 — 이미지 파일은 assets/avatars/ 에 둠 (추가 시 list + defaultUnlockedIds)
+    // 아바타 카탈로그 — 파일은 assets/avatars/ 기준(file=파일명만). basePath·defaultFiles는 AvatarAssets가 조합.
     avatars: {
+        basePath: 'assets/avatars/',
+        defaultFiles: { male: 'Avatar_M.png', female: 'Avatar_F_AA.png' },
         defaultSelectedId: 'male_base',
         defaultUnlockedIds: [
             'male_base', 'female_aa', 'female_swim', 'female_full', 'female_l', 'female_aa_alt',
@@ -120,18 +122,18 @@ const GAME_DATA = {
             'pilgrim_silhouette', 'equipment_preview_gemini'
         ],
         list: [
-            { id: 'male_base', label: '남성 기본', gender: 'male', image: 'assets/avatars/Avatar_M.png', rarity: 'base', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'female_aa', label: '여성 기본 (AA)', gender: 'female', image: 'assets/avatars/Avatar_F_AA.png', rarity: 'base', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'female_swim', label: '여성 수영복', gender: 'female', image: 'assets/avatars/Avatar_F_S.png', rarity: 'special', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'female_full', label: '여성 일러스트 (F)', gender: 'female', image: 'assets/avatars/Avatar_F.png', rarity: 'common', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'female_l', label: '여성 L', gender: 'female', image: 'assets/avatars/Avatar_F_L.png', rarity: 'common', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'female_aa_alt', label: '여성 변형 (aa)', gender: 'female', image: 'assets/avatars/aa.png', rarity: 'common', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'sketch_portrait_a', label: '초상 스케치 A', gender: 'male', image: 'assets/avatars/a.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'portrait_lll', label: '추가 초상 (lll)', gender: 'female', image: 'assets/avatars/lll.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'portrait_llll', label: '추가 초상 (llll)', gender: 'female', image: 'assets/avatars/llll.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'portrait_duct', label: '추가 초상 (duct)', gender: 'male', image: 'assets/avatars/duct.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'pilgrim_silhouette', label: '순례자 실루엣 (SVG)', gender: 'male', image: 'assets/avatars/pilgrim_avatar.svg', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'equipment_preview_gemini', label: '장비 합성 프리뷰', gender: 'female', image: 'assets/avatars/gemini_equipment_avatar.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' }
+            { id: 'male_base', label: '남성 기본', gender: 'male', file: 'Avatar_M.png', rarity: 'base', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'female_aa', label: '여성 기본 (AA)', gender: 'female', file: 'Avatar_F_AA.png', rarity: 'base', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'female_swim', label: '여성 수영복', gender: 'female', file: 'Avatar_F_S.png', rarity: 'special', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'female_full', label: '여성 일러스트 (F)', gender: 'female', file: 'Avatar_F.png', rarity: 'common', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'female_l', label: '여성 L', gender: 'female', file: 'Avatar_F_L.png', rarity: 'common', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'female_aa_alt', label: '여성 변형 (aa)', gender: 'female', file: 'aa.png', rarity: 'common', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'sketch_portrait_a', label: '초상 스케치 A', gender: 'male', file: 'a.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'portrait_lll', label: '추가 초상 (lll)', gender: 'female', file: 'lll.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'portrait_llll', label: '추가 초상 (llll)', gender: 'female', file: 'llll.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'portrait_duct', label: '추가 초상 (duct)', gender: 'male', file: 'duct.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'pilgrim_silhouette', label: '순례자 실루엣 (SVG)', gender: 'male', file: 'pilgrim_avatar.svg', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'equipment_preview_gemini', label: '장비 합성 프리뷰', gender: 'female', file: 'gemini_equipment_avatar.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' }
         ]
     },
 

@@ -1,0 +1,10 @@
+{
+  "name": "note_rpg",
+  "private": true,
+  "description": "Basileia — 정적 게임 데이터는 js/data.js 를 기준으로 data/parts 로 내보냅니다.",
+  "scripts": {
+    "data:export-parts": "node scripts/export-game-data-parts.mjs",
+    "data:verify-roundtrip": "node scripts/verify-data-roundtrip.mjs",
+    "data:sync": "npm run data:export-parts && npm run data:verify-roundtrip"
+  }
+}
