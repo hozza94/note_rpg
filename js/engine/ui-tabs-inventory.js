@@ -33,12 +33,63 @@
                 const dur = clamp(Math.round(120 + height * 0.35), 140, 540);
                 detailsEl.style.setProperty('--collapse-max', `${height}px`);
                 detailsEl.style.setProperty('--collapse-dur', `${dur}ms`);
+                if (detailsEl.open) body.style.maxHeight = `${height}px`;
+            };
+            const animateOpen = (detailsEl, body) => {
+                if (detailsEl.dataset.collapsing === '1') return;
+                detailsEl.dataset.collapsing = '1';
+                detailsEl.open = true;
+                measureAndApply(detailsEl);
+                const h = Math.max(0, Math.ceil(body.scrollHeight || 0));
+                body.style.maxHeight = '0px';
+                body.style.opacity = '0';
+                body.style.paddingBottom = '0px';
+                requestAnimationFrame(() => {
+                    body.style.maxHeight = `${h}px`;
+                    body.style.opacity = '1';
+                    body.style.paddingBottom = '10px';
+                });
+                const dur = parseInt(getComputedStyle(detailsEl).getPropertyValue('--collapse-dur'), 10) || 220;
+                setTimeout(() => {
+                    detailsEl.dataset.collapsing = '0';
+                    this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
+                }, dur + 24);
+            };
+            const animateClose = (detailsEl, body) => {
+                if (detailsEl.dataset.collapsing === '1') return;
+                detailsEl.dataset.collapsing = '1';
+                const h = Math.max(0, Math.ceil(body.scrollHeight || 0));
+                const dur = clamp(Math.round(120 + h * 0.35), 140, 540);
+                detailsEl.style.setProperty('--collapse-dur', `${dur}ms`);
+                body.style.maxHeight = `${h}px`;
+                body.style.opacity = '1';
+                body.style.paddingBottom = '10px';
+                requestAnimationFrame(() => {
+                    body.style.maxHeight = '0px';
+                    body.style.opacity = '0';
+                    body.style.paddingBottom = '0px';
+                });
+                setTimeout(() => {
+                    detailsEl.open = false;
+                    body.style.maxHeight = '';
+                    body.style.opacity = '';
+                    body.style.paddingBottom = '';
+                    detailsEl.dataset.collapsing = '0';
+                    this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
+                }, dur + 24);
             };
             detailsList.forEach((el) => {
+                if (el.dataset.dynamicCollapseBound === '1') return;
+                el.dataset.dynamicCollapseBound = '1';
                 measureAndApply(el);
-                el.addEventListener('toggle', () => {
+                const body = el.querySelector('.skill-collapse-body');
+                const summary = el.querySelector('.skill-collapse-summary');
+                if (!body || !summary) return;
+                summary.addEventListener('click', (evt) => {
+                    evt.preventDefault();
                     measureAndApply(el);
-                    this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
+                    if (el.open) animateClose(el, body);
+                    else animateOpen(el, body);
                 });
             });
             // 폰트/이미지 로딩 후 실제 높이로 재보정
@@ -365,7 +416,8 @@
             else if (hasLegendary) this.showRelicGachaSpotlight('legendary');
             this.saveGame();
             this.updateUI();
-            this.renderTabContent('relics');
+            const activeTab = document.querySelector('.tab-btn.active')?.dataset.tab || 'relics';
+            this.renderTabContent(activeTab);
         },
         renderRelicsTab(container) {
             const owned = this.state.player.ownedRelicIds || [];

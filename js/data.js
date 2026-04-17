@@ -120,7 +120,7 @@ const GAME_DATA = {
             'male_base', 'female_aa', 'female_swim', 'female_full', 'female_l', 'female_aa_alt',
             'sketch_portrait_a', 'portrait_lll', 'portrait_llll', 'portrait_duct',
             'pilgrim_silhouette', 'equipment_preview_gemini',
-            'beauty', 'beauty_1', 'beauty_2'
+            'beauty', 'beauty_1', 'beauty_2', 'beauty_midriff', 'women_19', 'women_19_2', 'women_neon'
         ],
         list: [
             { id: 'male_base', label: '남성 기본', gender: 'male', file: 'Avatar_M.png', rarity: 'base', unlockType: 'default', unlockHint: '기본 해금' },
@@ -137,7 +137,11 @@ const GAME_DATA = {
             { id: 'equipment_preview_gemini', label: '장비 합성 프리뷰', gender: 'female', file: 'gemini_equipment_avatar.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
             { id: 'beauty', label: '뷰티 (석양)', gender: 'female', file: 'beauty.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
             { id: 'beauty_1', label: '뷰티 변형 1', gender: 'female', file: 'beauty_1.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'beauty_2', label: '뷰티 변형 2', gender: 'female', file: 'beauty_2.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' }
+            { id: 'beauty_2', label: '뷰티 변형 2', gender: 'female', file: 'beauty_2.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'beauty_midriff', label: '뷰티 미드리프', gender: 'female', file: 'beauty_midriff.jpeg', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'women_19', label: '우먼 19', gender: 'female', file: 'women_19.jpeg', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'women_19_2', label: '우먼 19 변형', gender: 'female', file: 'women_19_2.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'women_neon', label: '우먼 네온', gender: 'female', file: 'women_neon.jpeg', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' }
         ]
     },
 
