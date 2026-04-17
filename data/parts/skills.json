@@ -374,6 +374,39 @@
     ],
     "desc": "에덴의 창과 심판의 전류를 겹쳐 쏩니다. 단독 사용 대비 약화된 배율이 적용됩니다."
   },
+  "merged_holy_judgment": {
+    "name": "성벽의 심판",
+    "tags": [
+      "attack",
+      "buff",
+      "holy",
+      "defense",
+      "merged"
+    ],
+    "type": "attack",
+    "mergedFrom": [
+      "holy_wall",
+      "smite"
+    ],
+    "desc": "거룩한 방벽과 심판의 강타를 한 호흡에 묶었습니다. 단독 사용 대비 약화된 배율이 적용됩니다."
+  },
+  "merged_aegis_dash": {
+    "name": "신속 수호",
+    "tags": [
+      "attack",
+      "buff",
+      "defense",
+      "evade",
+      "spd",
+      "merged"
+    ],
+    "type": "attack",
+    "mergedFrom": [
+      "aegis_prayer",
+      "light_dash"
+    ],
+    "desc": "수호의 기도와 광휘 질주를 연계합니다. 단독 사용 대비 약화된 배율이 적용됩니다."
+  },
   "stick": {
     "name": "끈적이기",
     "tags": [

@@ -20,7 +20,11 @@
     "equipment_preview_gemini",
     "beauty",
     "beauty_1",
-    "beauty_2"
+    "beauty_2",
+    "beauty_midriff",
+    "women_19",
+    "women_19_2",
+    "women_neon"
   ],
   "list": [
     {
@@ -154,6 +158,42 @@
       "label": "뷰티 변형 2",
       "gender": "female",
       "file": "beauty_2.png",
+      "rarity": "extra",
+      "unlockType": "default",
+      "unlockHint": "기본 해금"
+    },
+    {
+      "id": "beauty_midriff",
+      "label": "뷰티 미드리프",
+      "gender": "female",
+      "file": "beauty_midriff.jpeg",
+      "rarity": "extra",
+      "unlockType": "default",
+      "unlockHint": "기본 해금"
+    },
+    {
+      "id": "women_19",
+      "label": "우먼 19",
+      "gender": "female",
+      "file": "women_19.jpeg",
+      "rarity": "extra",
+      "unlockType": "default",
+      "unlockHint": "기본 해금"
+    },
+    {
+      "id": "women_19_2",
+      "label": "우먼 19 변형",
+      "gender": "female",
+      "file": "women_19_2.png",
+      "rarity": "extra",
+      "unlockType": "default",
+      "unlockHint": "기본 해금"
+    },
+    {
+      "id": "women_neon",
+      "label": "우먼 네온",
+      "gender": "female",
+      "file": "women_neon.jpeg",
       "rarity": "extra",
       "unlockType": "default",
       "unlockHint": "기본 해금"

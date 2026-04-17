@@ -556,5 +556,221 @@
       "itemId": "throne_fragment",
       "chance": 0.85
     }
+  ],
+  "drop_pandemonium_field": [
+    {
+      "itemId": "demonic_ember",
+      "chance": 0.46
+    },
+    {
+      "itemId": "infernal_horn",
+      "chance": 0.26
+    },
+    {
+      "itemId": "void_sliver",
+      "chance": 0.18
+    },
+    {
+      "itemId": "pandemonium_blade",
+      "chance": 0.055
+    },
+    {
+      "itemId": "aegis_core",
+      "chance": 0.04
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.45
+    }
+  ],
+  "drop_pandemonium_elite": [
+    {
+      "itemId": "demonic_ember",
+      "chance": 0.55
+    },
+    {
+      "itemId": "infernal_horn",
+      "chance": 0.4
+    },
+    {
+      "itemId": "void_sliver",
+      "chance": 0.22
+    },
+    {
+      "itemId": "astral_shard",
+      "chance": 0.15
+    },
+    {
+      "itemId": "pandemonium_blade",
+      "chance": 0.08
+    },
+    {
+      "itemId": "fallen_wings",
+      "chance": 0.04
+    }
+  ],
+  "drop_beelzebub": [
+    {
+      "itemId": "infernal_horn",
+      "chance": 1
+    },
+    {
+      "itemId": "demonic_ember",
+      "chance": 0.8
+    },
+    {
+      "itemId": "astral_shard",
+      "chance": 0.32
+    },
+    {
+      "itemId": "pandemonium_blade",
+      "chance": 0.14
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "chance": 0.1
+    },
+    {
+      "itemId": "soul_core",
+      "chance": 0.08
+    }
+  ],
+  "drop_astral_field": [
+    {
+      "itemId": "astral_shard",
+      "chance": 0.5
+    },
+    {
+      "itemId": "chaos_scripture",
+      "chance": 0.24
+    },
+    {
+      "itemId": "fallen_feather",
+      "chance": 0.18
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "chance": 0.05
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.038
+    },
+    {
+      "itemId": "smithing_shard",
+      "chance": 0.42
+    }
+  ],
+  "drop_astral_elite": [
+    {
+      "itemId": "astral_shard",
+      "chance": 0.58
+    },
+    {
+      "itemId": "chaos_scripture",
+      "chance": 0.45
+    },
+    {
+      "itemId": "fallen_feather",
+      "chance": 0.26
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.085
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "chance": 0.065
+    },
+    {
+      "itemId": "fallen_wings",
+      "chance": 0.05
+    }
+  ],
+  "drop_astaroth": [
+    {
+      "itemId": "chaos_scripture",
+      "chance": 1
+    },
+    {
+      "itemId": "astral_shard",
+      "chance": 0.82
+    },
+    {
+      "itemId": "fallen_feather",
+      "chance": 0.36
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.16
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "chance": 0.14
+    },
+    {
+      "itemId": "soul_core",
+      "chance": 0.1
+    }
+  ],
+  "drop_fallen_field": [
+    {
+      "itemId": "fallen_feather",
+      "chance": 0.58
+    },
+    {
+      "itemId": "soul_core",
+      "chance": 0.18
+    },
+    {
+      "itemId": "chaos_scripture",
+      "chance": 0.28
+    },
+    {
+      "itemId": "luciferian_mail",
+      "chance": 0.03
+    },
+    {
+      "itemId": "fallen_wings",
+      "chance": 0.06
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.05
+    },
+    {
+      "itemId": "guardian_oath",
+      "chance": 0.25
+    }
+  ],
+  "drop_lucifer": [
+    {
+      "itemId": "soul_core",
+      "chance": 1
+    },
+    {
+      "itemId": "fallen_feather",
+      "chance": 0.88
+    },
+    {
+      "itemId": "luciferian_mail",
+      "chance": 0.2
+    },
+    {
+      "itemId": "fallen_wings",
+      "chance": 0.18
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.12
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "chance": 0.11
+    },
+    {
+      "itemId": "guardian_halo",
+      "chance": 0.09
+    }
   ]
 }

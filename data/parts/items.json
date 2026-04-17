@@ -669,5 +669,101 @@
       "pp": 20
     },
     "desc": "왕좌 수호자의 맹세가 남은 최상급 투구입니다."
+  },
+  "demonic_ember": {
+    "kind": "material",
+    "name": "악마 잔화",
+    "grade": "Epic",
+    "desc": "상위 마족의 체내에서만 남는 고열 결정입니다."
+  },
+  "infernal_horn": {
+    "kind": "material",
+    "name": "지옥 뿔편",
+    "grade": "Epic",
+    "desc": "판데모니움 심층 개체에서 떨어진 단단한 뿔 조각입니다."
+  },
+  "astral_shard": {
+    "kind": "material",
+    "name": "성좌 파편",
+    "grade": "Epic",
+    "desc": "비틀린 성좌의 잔광이 응축된 조각입니다."
+  },
+  "chaos_scripture": {
+    "kind": "material",
+    "name": "혼돈 경전 조각",
+    "grade": "Epic",
+    "desc": "아스타로트 계열 개체가 남긴 금단의 필사본입니다."
+  },
+  "fallen_feather": {
+    "kind": "material",
+    "name": "타락한 깃편",
+    "grade": "Epic",
+    "desc": "빛을 잃은 천상의 깃이 무겁게 굳은 파편입니다."
+  },
+  "soul_core": {
+    "kind": "material",
+    "name": "군주의 영핵",
+    "grade": "Epic",
+    "desc": "최상위 군주급 적에게서만 분리되는 핵심 물질입니다."
+  },
+  "pandemonium_blade": {
+    "kind": "equipment",
+    "name": "판데모니움 도검",
+    "grade": "Epic",
+    "slot": "weapon",
+    "stats": {
+      "atk": 38,
+      "spd": 8,
+      "faith": 1
+    },
+    "desc": "마계 화원에서 벼린 검으로 공격과 민첩을 함께 끌어올립니다."
+  },
+  "abyss_grimoire": {
+    "kind": "equipment",
+    "name": "심연 그리모어",
+    "grade": "Epic",
+    "slot": "offhand",
+    "stats": {
+      "pp": 28,
+      "faith": 4,
+      "def": 8
+    },
+    "desc": "봉인된 주문식이 새겨진 금서로 고위 기도술을 보조합니다."
+  },
+  "astral_circlet": {
+    "kind": "equipment",
+    "name": "성좌 서클릿",
+    "grade": "Epic",
+    "slot": "helmet",
+    "stats": {
+      "def": 18,
+      "faith": 4,
+      "pp": 16
+    },
+    "desc": "성좌 심연의 잔광을 새긴 관으로 정신력과 신앙을 강화합니다."
+  },
+  "fallen_wings": {
+    "kind": "equipment",
+    "name": "타락의 날개편",
+    "grade": "Epic",
+    "slot": "accessory",
+    "stats": {
+      "atk": 12,
+      "spd": 12,
+      "lifeSteal": 0.04
+    },
+    "desc": "타락한 낙원의 잔향을 깃들인 장신구입니다."
+  },
+  "luciferian_mail": {
+    "kind": "equipment",
+    "name": "루시페리안 성갑",
+    "grade": "Epic",
+    "slot": "armor",
+    "stats": {
+      "def": 28,
+      "hp": 120,
+      "faith": 3
+    },
+    "desc": "최후 군주의 검은 광휘를 두른 중갑으로 극한 생존력을 제공합니다."
   }
 }

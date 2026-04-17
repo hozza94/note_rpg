@@ -120,5 +120,83 @@
       "minQty": 1,
       "maxQty": 1
     }
+  ],
+  "beelzebub": [
+    {
+      "itemId": "infernal_horn",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 2
+    },
+    {
+      "itemId": "demonic_ember",
+      "chance": 1,
+      "minQty": 2,
+      "maxQty": 4
+    },
+    {
+      "itemId": "pandemonium_blade",
+      "chance": 0.055,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "chance": 0.045,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "astaroth": [
+    {
+      "itemId": "chaos_scripture",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 2
+    },
+    {
+      "itemId": "astral_shard",
+      "chance": 1,
+      "minQty": 2,
+      "maxQty": 4
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.05,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "fallen_wings",
+      "chance": 0.04,
+      "minQty": 1,
+      "maxQty": 1
+    }
+  ],
+  "lucifer": [
+    {
+      "itemId": "soul_core",
+      "chance": 1,
+      "minQty": 1,
+      "maxQty": 2
+    },
+    {
+      "itemId": "fallen_feather",
+      "chance": 1,
+      "minQty": 2,
+      "maxQty": 4
+    },
+    {
+      "itemId": "luciferian_mail",
+      "chance": 0.045,
+      "minQty": 1,
+      "maxQty": 1
+    },
+    {
+      "itemId": "guardian_halo",
+      "chance": 0.06,
+      "minQty": 1,
+      "maxQty": 1
+    }
   ]
 }

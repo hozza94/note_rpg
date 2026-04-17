@@ -582,11 +582,11 @@
       },
       {
         "id": "pilgrim_active_holy_wall",
-        "name": "거룩한 방벽 해금",
+        "name": "성벽의 심판 해금",
         "kind": "active_unlock",
-        "desc": "액티브 스킬 [거룩한 방벽]을 배웁니다.",
+        "desc": "합성 액티브 [성벽의 심판](거룩한 방벽+심판의 강타)을 배웁니다.",
         "grants": {
-          "activeSkillId": "holy_wall"
+          "activeSkillId": "merged_holy_judgment"
         },
         "position": {
           "x": -11.2,
@@ -736,11 +736,11 @@
       },
       {
         "id": "pilgrim_active_smite",
-        "name": "심판의 강타 해금",
+        "name": "성벽의 심판(동위)",
         "kind": "active_unlock",
-        "desc": "액티브 스킬 [심판의 강타]를 배웁니다.",
+        "desc": "합성 액티브 [성벽의 심판]을 배웁니다.",
         "grants": {
-          "activeSkillId": "smite"
+          "activeSkillId": "merged_holy_judgment"
         },
         "position": {
           "x": 11.2,
@@ -889,11 +889,11 @@
       },
       {
         "id": "pilgrim_active_aegis_prayer",
-        "name": "수호의 기도 해금",
+        "name": "신속 수호 해금",
         "kind": "active_unlock",
-        "desc": "액티브 스킬 [수호의 기도]를 배웁니다.",
+        "desc": "합성 액티브 [신속 수호](수호의 기도+광휘 질주)를 배웁니다.",
         "grants": {
-          "activeSkillId": "aegis_prayer"
+          "activeSkillId": "merged_aegis_dash"
         },
         "position": {
           "x": 10.6,
@@ -1042,11 +1042,11 @@
       },
       {
         "id": "pilgrim_active_light_dash",
-        "name": "광휘 질주 해금",
+        "name": "신속 수호(동위)",
         "kind": "active_unlock",
-        "desc": "액티브 스킬 [광휘 질주]를 배웁니다.",
+        "desc": "합성 액티브 [신속 수호]를 배웁니다.",
         "grants": {
-          "activeSkillId": "light_dash"
+          "activeSkillId": "merged_aegis_dash"
         },
         "position": {
           "x": -10.6,
@@ -1075,10 +1075,10 @@
         "id": "pilgrim_zeal",
         "name": "열망의 심장",
         "kind": "notable",
-        "desc": "공격 피해 8% 증가",
+        "desc": "공격 피해 6% 증가",
         "grants": {
           "specials": {
-            "damageMul": 1.08
+            "damageMul": 1.06
           }
         },
         "position": {
@@ -1108,10 +1108,10 @@
         "id": "pilgrim_resolve",
         "name": "불굴의 심장",
         "kind": "notable",
-        "desc": "치명타 확률 +5%",
+        "desc": "치명타 확률 +4%",
         "grants": {
           "specials": {
-            "critChance": 0.05
+            "critChance": 0.04
           }
         },
         "position": {

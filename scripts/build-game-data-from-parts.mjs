@@ -21,6 +21,7 @@ const PART_ORDER = [
     'skills',
     'monsterSkillTrees',
     'skillTrees',
+    'skillMergeDefaults',
     'items',
     'dropTables',
     'bossExclusiveDropTables',

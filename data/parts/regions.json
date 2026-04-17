@@ -90,8 +90,8 @@
     "fieldGradeMin": "A",
     "fieldGradeMax": "SS",
     "recommendedPlayerLv": {
-      "min": 38,
-      "max": 48
+      "min": 40,
+      "max": 50
     },
     "enemyPowerTier": 6
   },
@@ -100,7 +100,7 @@
     "name": "공허 잔해",
     "minLevel": 46,
     "bossId": "void_sovereign",
-    "nextRegionId": null,
+    "nextRegionId": "infernal_pandemonium",
     "themeColor": "#455a64",
     "description": "세계 끝자락, 색이 완전히 사라진 잔해. 군주만이 그 중심에 선다.",
     "fieldGradeMin": "S",
@@ -110,5 +110,53 @@
       "max": 55
     },
     "enemyPowerTier": 7
+  },
+  "infernal_pandemonium": {
+    "id": "infernal_pandemonium",
+    "name": "판데모니움 화원",
+    "minLevel": 54,
+    "bossId": "beelzebub",
+    "nextRegionId": "astral_abyss",
+    "themeColor": "#8d1b1b",
+    "description": "끝없는 잿불과 독안개가 뒤섞인 마계의 전초지. 상위 악마 군단이 배회합니다.",
+    "fieldGradeMin": "SS",
+    "fieldGradeMax": "SSS",
+    "recommendedPlayerLv": {
+      "min": 54,
+      "max": 64
+    },
+    "enemyPowerTier": 8
+  },
+  "astral_abyss": {
+    "id": "astral_abyss",
+    "name": "성좌 심연",
+    "minLevel": 62,
+    "bossId": "astaroth",
+    "nextRegionId": "fallen_paradise",
+    "themeColor": "#283593",
+    "description": "별빛이 비틀린 허공 아래 금단의 지식이 맴도는 심연. 정신을 깎아내는 환영이 흐릅니다.",
+    "fieldGradeMin": "SS",
+    "fieldGradeMax": "SSS",
+    "recommendedPlayerLv": {
+      "min": 62,
+      "max": 74
+    },
+    "enemyPowerTier": 9
+  },
+  "fallen_paradise": {
+    "id": "fallen_paradise",
+    "name": "타락한 낙원",
+    "minLevel": 72,
+    "bossId": "lucifer",
+    "nextRegionId": null,
+    "themeColor": "#fbc02d",
+    "description": "빛과 어둠이 뒤틀려 뒤엉킨 최후의 성역. 왕관을 차지하려는 군주가 중심에서 기다립니다.",
+    "fieldGradeMin": "SSS",
+    "fieldGradeMax": "SSS",
+    "recommendedPlayerLv": {
+      "min": 72,
+      "max": 90
+    },
+    "enemyPowerTier": 10
   }
 }

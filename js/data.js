@@ -80,7 +80,7 @@ const GAME_DATA = {
             description: '에덴 둘레를 도는 잔향의 복도. 떠난 자들의 기억이 아직 걸려 있다.',
             fieldGradeMin: 'A',
             fieldGradeMax: 'SS',
-            recommendedPlayerLv: { min: 38, max: 48 },
+            recommendedPlayerLv: { min: 40, max: 50 },
             enemyPowerTier: 6
         },
         'void_remnant': {
@@ -88,13 +88,52 @@ const GAME_DATA = {
             name: '공허 잔해',
             minLevel: 46,
             bossId: 'void_sovereign',
-            nextRegionId: null,
+            nextRegionId: 'infernal_pandemonium',
             themeColor: '#455a64',
             description: '세계 끝자락, 색이 완전히 사라진 잔해. 군주만이 그 중심에 선다.',
             fieldGradeMin: 'S',
             fieldGradeMax: 'SSS',
             recommendedPlayerLv: { min: 44, max: 55 },
             enemyPowerTier: 7
+        },
+        'infernal_pandemonium': {
+            id: 'infernal_pandemonium',
+            name: '판데모니움 화원',
+            minLevel: 54,
+            bossId: 'beelzebub',
+            nextRegionId: 'astral_abyss',
+            themeColor: '#8d1b1b',
+            description: '끝없는 잿불과 독안개가 뒤섞인 마계의 전초지. 상위 악마 군단이 배회합니다.',
+            fieldGradeMin: 'SS',
+            fieldGradeMax: 'SSS',
+            recommendedPlayerLv: { min: 54, max: 64 },
+            enemyPowerTier: 8
+        },
+        'astral_abyss': {
+            id: 'astral_abyss',
+            name: '성좌 심연',
+            minLevel: 62,
+            bossId: 'astaroth',
+            nextRegionId: 'fallen_paradise',
+            themeColor: '#283593',
+            description: '별빛이 비틀린 허공 아래 금단의 지식이 맴도는 심연. 정신을 깎아내는 환영이 흐릅니다.',
+            fieldGradeMin: 'SS',
+            fieldGradeMax: 'SSS',
+            recommendedPlayerLv: { min: 62, max: 74 },
+            enemyPowerTier: 9
+        },
+        'fallen_paradise': {
+            id: 'fallen_paradise',
+            name: '타락한 낙원',
+            minLevel: 72,
+            bossId: 'lucifer',
+            nextRegionId: null,
+            themeColor: '#fbc02d',
+            description: '빛과 어둠이 뒤틀려 뒤엉킨 최후의 성역. 왕관을 차지하려는 군주가 중심에서 기다립니다.',
+            fieldGradeMin: 'SSS',
+            fieldGradeMax: 'SSS',
+            recommendedPlayerLv: { min: 72, max: 90 },
+            enemyPowerTier: 10
         }
     },
 
@@ -107,7 +146,10 @@ const GAME_DATA = {
             { bossId: 'abyss_hydra', regionId: 'euphrates', recommendedLv: 38, unlockType: 'region_reached' },
             { bossId: 'throne_guardian', regionId: 'eden_core', recommendedLv: 45, unlockType: 'region_reached' },
             { bossId: 'border_warden', regionId: 'periphery', recommendedLv: 47, unlockType: 'region_reached' },
-            { bossId: 'void_sovereign', regionId: 'void_remnant', recommendedLv: 52, unlockType: 'region_reached' }
+            { bossId: 'void_sovereign', regionId: 'void_remnant', recommendedLv: 52, unlockType: 'region_reached' },
+            { bossId: 'beelzebub', regionId: 'infernal_pandemonium', recommendedLv: 60, unlockType: 'region_reached' },
+            { bossId: 'astaroth', regionId: 'astral_abyss', recommendedLv: 70, unlockType: 'region_reached' },
+            { bossId: 'lucifer', regionId: 'fallen_paradise', recommendedLv: 84, unlockType: 'region_reached' }
         ]
     },
 
@@ -206,10 +248,10 @@ const GAME_DATA = {
         // ========================
         // 변방의 회랑 (periphery)
         // ========================
-        { id: "periphery_sentinel", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "회랑의 파수꾼", level: 40, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 5200, atk: 300, def: 195, spd: 175 }, reward: { exp: 4800, gold: 1500 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
-        { id: "periphery_stalker", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "변두리 추적자", level: 42, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 5800, atk: 318, def: 205, spd: 188 }, reward: { exp: 5400, gold: 1680 }, dropTableId: "drop_periphery_field", skillTreeId: "st_fear_only" },
-        { id: "periphery_harbinger", tags: ["field","periphery"], regionId: "periphery", grade: "SS", name: "잔향의 선구자", level: 44, minPlayerLv: 38, maxPlayerLv: 99, stats: { hp: 6800, atk: 335, def: 218, spd: 182 }, reward: { exp: 6200, gold: 1900 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
-        { id: "border_warden", tags: ["boss","periphery"], regionId: "periphery", grade: "SS", name: "변방 감시자", level: 47, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 15800, atk: 445, def: 315, spd: 228 }, reward: { exp: 18200, gold: 5800 }, dropTableId: "drop_border_warden", isBoss: true, bossPassiveSkillIds: ["boss_p_border_lock", "boss_p_null_skin", "boss_p_throne_sigil", "boss_p_abyss_tide"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_a_void_surge", "boss_a_fortress", "boss_seraph_gaze"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_bloodlust"], weights: [2, 1, 1, 1] } },
+        { id: "periphery_sentinel", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "회랑의 파수꾼", level: 42, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 5600, atk: 318, def: 205, spd: 180 }, reward: { exp: 5600, gold: 1750 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
+        { id: "periphery_stalker", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "변두리 추적자", level: 44, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 6200, atk: 336, def: 218, spd: 192 }, reward: { exp: 6400, gold: 1980 }, dropTableId: "drop_periphery_field", skillTreeId: "st_fear_only" },
+        { id: "periphery_harbinger", tags: ["field","periphery"], regionId: "periphery", grade: "SS", name: "잔향의 선구자", level: 46, minPlayerLv: 41, maxPlayerLv: 99, stats: { hp: 7200, atk: 360, def: 232, spd: 186 }, reward: { exp: 7400, gold: 2250 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
+        { id: "border_warden", tags: ["boss","periphery"], regionId: "periphery", grade: "SS", name: "변방 감시자", level: 49, minPlayerLv: 42, maxPlayerLv: 99, stats: { hp: 17600, atk: 468, def: 334, spd: 232 }, reward: { exp: 21400, gold: 6600 }, dropTableId: "drop_border_warden", isBoss: true, bossPassiveSkillIds: ["boss_p_border_lock", "boss_p_null_skin", "boss_p_throne_sigil", "boss_p_abyss_tide"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_a_void_surge", "boss_a_fortress", "boss_seraph_gaze"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_bloodlust"], weights: [2, 1, 1, 1] } },
 
         // ========================
         // 공허 잔해 (void_remnant)
@@ -217,7 +259,31 @@ const GAME_DATA = {
         { id: "void_lurker", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SS", name: "공허의 잠복자", level: 46, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 7800, atk: 355, def: 232, spd: 195 }, reward: { exp: 7200, gold: 2200 }, dropTableId: "drop_void_field", skillTreeId: "st_fear_only" },
         { id: "void_executioner", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SS", name: "잔해의 집행자", level: 48, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 8500, atk: 375, def: 245, spd: 188 }, reward: { exp: 8100, gold: 2450 }, dropTableId: "drop_void_field", skillTreeId: "st_wail_root" },
         { id: "void_colossus", tags: ["field","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허 거신", level: 50, minPlayerLv: 44, maxPlayerLv: 99, stats: { hp: 9800, atk: 395, def: 268, spd: 165 }, reward: { exp: 9200, gold: 2800 }, dropTableId: "drop_void_field", skillTreeId: "st_bite_only" },
-        { id: "void_sovereign", tags: ["boss","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허의 군주", level: 52, minPlayerLv: 46, maxPlayerLv: 99, stats: { hp: 19800, atk: 495, def: 355, spd: 238 }, reward: { exp: 22000, gold: 7200 }, dropTableId: "drop_void_sovereign", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_abyss_tide", "boss_p_crown_pressure", "boss_p_border_lock"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_bloodlust"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.42, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } }
+        { id: "void_sovereign", tags: ["boss","void_remnant"], regionId: "void_remnant", grade: "SSS", name: "공허의 군주", level: 52, minPlayerLv: 46, maxPlayerLv: 99, stats: { hp: 19800, atk: 495, def: 355, spd: 238 }, reward: { exp: 22000, gold: 7200 }, dropTableId: "drop_void_sovereign", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_abyss_tide", "boss_p_crown_pressure", "boss_p_border_lock"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_bloodlust"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.42, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } },
+
+        // ========================
+        // 판데모니움 화원 (infernal_pandemonium)
+        // ========================
+        { id: "hellhound", tags: ["field","infernal_pandemonium"], regionId: "infernal_pandemonium", grade: "SS", name: "헬하운드", level: 55, minPlayerLv: 53, maxPlayerLv: 99, stats: { hp: 10800, atk: 452, def: 282, spd: 256 }, reward: { exp: 9800, gold: 3000 }, dropTableId: "drop_pandemonium_field", skillTreeId: "st_bite_only" },
+        { id: "imp", tags: ["field","infernal_pandemonium"], regionId: "infernal_pandemonium", grade: "SS", name: "임프", level: 56, minPlayerLv: 53, maxPlayerLv: 99, stats: { hp: 9400, atk: 462, def: 248, spd: 284 }, reward: { exp: 10300, gold: 3220 }, dropTableId: "drop_pandemonium_field", skillTreeId: "st_small_fire_only" },
+        { id: "asmodeus", tags: ["field","infernal_pandemonium"], regionId: "infernal_pandemonium", grade: "SSS", name: "아스모데우스", level: 59, minPlayerLv: 54, maxPlayerLv: 99, stats: { hp: 17400, atk: 528, def: 334, spd: 270 }, reward: { exp: 12700, gold: 3850 }, dropTableId: "drop_pandemonium_elite", skillTreeId: "st_wail_root" },
+        { id: "beelzebub", tags: ["boss","infernal_pandemonium"], regionId: "infernal_pandemonium", grade: "SSS", name: "벨제부브", level: 63, minPlayerLv: 56, maxPlayerLv: 99, stats: { hp: 31200, atk: 625, def: 430, spd: 268 }, reward: { exp: 33200, gold: 9800 }, dropTableId: "drop_beelzebub", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_swarm_mind", "boss_p_border_lock", "boss_p_crown_pressure"], bossActiveSkillIds: ["boss_hydra_maelstrom", "boss_a_overdrive", "boss_a_bloodlust", "boss_mud_quake", "boss_guardian_verdict"], bossActiveWeights: [2, 1, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_hydra_maelstrom", "boss_guardian_verdict", "boss_a_overdrive", "boss_seraph_petrify", "boss_a_bloodlust"], weights: [2, 1, 1, 1, 1] } },
+
+        // ========================
+        // 성좌 심연 (astral_abyss)
+        // ========================
+        { id: "incubus", tags: ["field","astral_abyss"], regionId: "astral_abyss", grade: "SS", name: "인큐버스", level: 65, minPlayerLv: 62, maxPlayerLv: 99, stats: { hp: 14500, atk: 560, def: 340, spd: 302 }, reward: { exp: 15200, gold: 4600 }, dropTableId: "drop_astral_field", skillTreeId: "st_fear_only" },
+        { id: "baphomet", tags: ["field","astral_abyss"], regionId: "astral_abyss", grade: "SSS", name: "바포메트", level: 68, minPlayerLv: 63, maxPlayerLv: 99, stats: { hp: 23600, atk: 628, def: 398, spd: 258 }, reward: { exp: 18600, gold: 5500 }, dropTableId: "drop_astral_elite", skillTreeId: "st_wail_root" },
+        { id: "baal", tags: ["field","astral_abyss"], regionId: "astral_abyss", grade: "SSS", name: "바알", level: 71, minPlayerLv: 64, maxPlayerLv: 99, stats: { hp: 28400, atk: 680, def: 452, spd: 250 }, reward: { exp: 22200, gold: 6500 }, dropTableId: "drop_astral_elite", skillTreeId: "st_stone_seraph_boss" },
+        { id: "astaroth", tags: ["boss","astral_abyss"], regionId: "astral_abyss", grade: "SSS", name: "아스타로트", level: 74, minPlayerLv: 66, maxPlayerLv: 99, stats: { hp: 38200, atk: 742, def: 520, spd: 312 }, reward: { exp: 39800, gold: 12000 }, dropTableId: "drop_astaroth", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_crown_pressure", "boss_p_restless", "boss_p_border_lock"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_void_surge", "boss_a_overdrive"], bossActiveWeights: [2, 1, 1, 1, 1], bossActiveLowHp: { threshold: 0.42, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_a_overdrive", "boss_a_bloodlust", "boss_seraph_petrify"], weights: [2, 1, 1, 1, 1] } },
+
+        // ========================
+        // 타락한 낙원 (fallen_paradise)
+        // ========================
+        { id: "fallen_harbinger", tags: ["field","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "타락의 선고자", level: 76, minPlayerLv: 72, maxPlayerLv: 99, stats: { hp: 26800, atk: 715, def: 468, spd: 286 }, reward: { exp: 24800, gold: 7300 }, dropTableId: "drop_fallen_field", skillTreeId: "st_stone_seraph_boss" },
+        { id: "eden_corruptor", tags: ["field","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "에덴의 타락체", level: 79, minPlayerLv: 73, maxPlayerLv: 99, stats: { hp: 31200, atk: 768, def: 512, spd: 278 }, reward: { exp: 28200, gold: 8200 }, dropTableId: "drop_fallen_field", skillTreeId: "st_wail_root" },
+        { id: "seraph_ruin", tags: ["field","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "멸락한 세라프", level: 82, minPlayerLv: 74, maxPlayerLv: 99, stats: { hp: 34600, atk: 812, def: 548, spd: 270 }, reward: { exp: 31500, gold: 9100 }, dropTableId: "drop_fallen_field", skillTreeId: "st_stone_seraph_boss" },
+        { id: "lucifer", tags: ["boss","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "루시퍼", level: 86, minPlayerLv: 76, maxPlayerLv: 99, stats: { hp: 52000, atk: 960, def: 690, spd: 345 }, reward: { exp: 62000, gold: 18000 }, dropTableId: "drop_lucifer", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_crown_pressure", "boss_p_border_lock", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_void_surge"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.4, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_bloodlust", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } }
     ],
 
     // 로어북 기반 몬스터/보스 카탈로그(미출현 보관용). 실제 출현은 regions·monsters 체인에 추가 시 활성화.
@@ -944,7 +1010,21 @@ const GAME_DATA = {
         'aegis_core': { kind: 'equipment', name: '아이기스 코어', grade: 'Epic', slot: 'offhand', stats: { def: 14, hp: 55, faith: 2 }, desc: '집중 방어 결계를 생성하는 핵심 장치입니다.' },
         'seraphite_mail': { kind: 'equipment', name: '세라파이트 성갑', grade: 'Epic', slot: 'armor', stats: { def: 20, hp: 85, faith: 2 }, desc: '석화 세라프의 깃편으로 엮은 보스 전용 갑주입니다.' },
         'hydra_fang_blade': { kind: 'equipment', name: '히드라 송곳니도', grade: 'Epic', slot: 'weapon', stats: { atk: 32, spd: 10, lifeSteal: 0.03 }, desc: '심연 히드라의 송곳니를 제련한 포식자의 검입니다.' },
-        'guardian_halo': { kind: 'equipment', name: '수호자의 광륜', grade: 'Epic', slot: 'helmet', stats: { def: 16, faith: 3, pp: 20 }, desc: '왕좌 수호자의 맹세가 남은 최상급 투구입니다.' }
+        'guardian_halo': { kind: 'equipment', name: '수호자의 광륜', grade: 'Epic', slot: 'helmet', stats: { def: 16, faith: 3, pp: 20 }, desc: '왕좌 수호자의 맹세가 남은 최상급 투구입니다.' },
+
+        // --- 상위 지역(로어북 연동) 전리품/장비 ---
+        'demonic_ember': { kind: 'material', name: '악마 잔화', grade: 'Epic', desc: '상위 마족의 체내에서만 남는 고열 결정입니다.' },
+        'infernal_horn': { kind: 'material', name: '지옥 뿔편', grade: 'Epic', desc: '판데모니움 심층 개체에서 떨어진 단단한 뿔 조각입니다.' },
+        'astral_shard': { kind: 'material', name: '성좌 파편', grade: 'Epic', desc: '비틀린 성좌의 잔광이 응축된 조각입니다.' },
+        'chaos_scripture': { kind: 'material', name: '혼돈 경전 조각', grade: 'Epic', desc: '아스타로트 계열 개체가 남긴 금단의 필사본입니다.' },
+        'fallen_feather': { kind: 'material', name: '타락한 깃편', grade: 'Epic', desc: '빛을 잃은 천상의 깃이 무겁게 굳은 파편입니다.' },
+        'soul_core': { kind: 'material', name: '군주의 영핵', grade: 'Epic', desc: '최상위 군주급 적에게서만 분리되는 핵심 물질입니다.' },
+
+        'pandemonium_blade': { kind: 'equipment', name: '판데모니움 도검', grade: 'Epic', slot: 'weapon', stats: { atk: 38, spd: 8, faith: 1 }, desc: '마계 화원에서 벼린 검으로 공격과 민첩을 함께 끌어올립니다.' },
+        'abyss_grimoire': { kind: 'equipment', name: '심연 그리모어', grade: 'Epic', slot: 'offhand', stats: { pp: 28, faith: 4, def: 8 }, desc: '봉인된 주문식이 새겨진 금서로 고위 기도술을 보조합니다.' },
+        'astral_circlet': { kind: 'equipment', name: '성좌 서클릿', grade: 'Epic', slot: 'helmet', stats: { def: 18, faith: 4, pp: 16 }, desc: '성좌 심연의 잔광을 새긴 관으로 정신력과 신앙을 강화합니다.' },
+        'fallen_wings': { kind: 'equipment', name: '타락의 날개편', grade: 'Epic', slot: 'accessory', stats: { atk: 12, spd: 12, lifeSteal: 0.04 }, desc: '타락한 낙원의 잔향을 깃들인 장신구입니다.' },
+        'luciferian_mail': { kind: 'equipment', name: '루시페리안 성갑', grade: 'Epic', slot: 'armor', stats: { def: 28, hp: 120, faith: 3 }, desc: '최후 군주의 검은 광휘를 두른 중갑으로 극한 생존력을 제공합니다.' }
     },
 
     dropTables: {
@@ -1023,6 +1103,75 @@ const GAME_DATA = {
             { itemId: 'hydra_fang_blade', chance: 0.2 },
             { itemId: 'seraph_ember', chance: 0.52 },
             { itemId: 'throne_fragment', chance: 0.85 }
+        ],
+
+        'drop_pandemonium_field': [
+            { itemId: 'demonic_ember', chance: 0.46 },
+            { itemId: 'infernal_horn', chance: 0.26 },
+            { itemId: 'void_sliver', chance: 0.18 },
+            { itemId: 'pandemonium_blade', chance: 0.055 },
+            { itemId: 'aegis_core', chance: 0.04 },
+            { itemId: 'smithing_shard', chance: 0.45 }
+        ],
+        'drop_pandemonium_elite': [
+            { itemId: 'demonic_ember', chance: 0.55 },
+            { itemId: 'infernal_horn', chance: 0.4 },
+            { itemId: 'void_sliver', chance: 0.22 },
+            { itemId: 'astral_shard', chance: 0.15 },
+            { itemId: 'pandemonium_blade', chance: 0.08 },
+            { itemId: 'fallen_wings', chance: 0.04 }
+        ],
+        'drop_beelzebub': [
+            { itemId: 'infernal_horn', chance: 1.0 },
+            { itemId: 'demonic_ember', chance: 0.8 },
+            { itemId: 'astral_shard', chance: 0.32 },
+            { itemId: 'pandemonium_blade', chance: 0.14 },
+            { itemId: 'abyss_grimoire', chance: 0.1 },
+            { itemId: 'soul_core', chance: 0.08 }
+        ],
+
+        'drop_astral_field': [
+            { itemId: 'astral_shard', chance: 0.5 },
+            { itemId: 'chaos_scripture', chance: 0.24 },
+            { itemId: 'fallen_feather', chance: 0.18 },
+            { itemId: 'abyss_grimoire', chance: 0.05 },
+            { itemId: 'astral_circlet', chance: 0.038 },
+            { itemId: 'smithing_shard', chance: 0.42 }
+        ],
+        'drop_astral_elite': [
+            { itemId: 'astral_shard', chance: 0.58 },
+            { itemId: 'chaos_scripture', chance: 0.45 },
+            { itemId: 'fallen_feather', chance: 0.26 },
+            { itemId: 'astral_circlet', chance: 0.085 },
+            { itemId: 'abyss_grimoire', chance: 0.065 },
+            { itemId: 'fallen_wings', chance: 0.05 }
+        ],
+        'drop_astaroth': [
+            { itemId: 'chaos_scripture', chance: 1.0 },
+            { itemId: 'astral_shard', chance: 0.82 },
+            { itemId: 'fallen_feather', chance: 0.36 },
+            { itemId: 'astral_circlet', chance: 0.16 },
+            { itemId: 'abyss_grimoire', chance: 0.14 },
+            { itemId: 'soul_core', chance: 0.1 }
+        ],
+
+        'drop_fallen_field': [
+            { itemId: 'fallen_feather', chance: 0.58 },
+            { itemId: 'soul_core', chance: 0.18 },
+            { itemId: 'chaos_scripture', chance: 0.28 },
+            { itemId: 'luciferian_mail', chance: 0.03 },
+            { itemId: 'fallen_wings', chance: 0.06 },
+            { itemId: 'astral_circlet', chance: 0.05 },
+            { itemId: 'guardian_oath', chance: 0.25 }
+        ],
+        'drop_lucifer': [
+            { itemId: 'soul_core', chance: 1.0 },
+            { itemId: 'fallen_feather', chance: 0.88 },
+            { itemId: 'luciferian_mail', chance: 0.2 },
+            { itemId: 'fallen_wings', chance: 0.18 },
+            { itemId: 'astral_circlet', chance: 0.12 },
+            { itemId: 'abyss_grimoire', chance: 0.11 },
+            { itemId: 'guardian_halo', chance: 0.09 }
         ]
     },
 
@@ -1059,6 +1208,24 @@ const GAME_DATA = {
             { itemId: 'guardian_oath', chance: 1.0, minQty: 1, maxQty: 2 },
             { itemId: 'guardian_halo', chance: 0.045, minQty: 1, maxQty: 1 },
             { itemId: 'aegis_core', chance: 0.08, minQty: 1, maxQty: 1 }
+        ],
+        beelzebub: [
+            { itemId: 'infernal_horn', chance: 1.0, minQty: 1, maxQty: 2 },
+            { itemId: 'demonic_ember', chance: 1.0, minQty: 2, maxQty: 4 },
+            { itemId: 'pandemonium_blade', chance: 0.055, minQty: 1, maxQty: 1 },
+            { itemId: 'abyss_grimoire', chance: 0.045, minQty: 1, maxQty: 1 }
+        ],
+        astaroth: [
+            { itemId: 'chaos_scripture', chance: 1.0, minQty: 1, maxQty: 2 },
+            { itemId: 'astral_shard', chance: 1.0, minQty: 2, maxQty: 4 },
+            { itemId: 'astral_circlet', chance: 0.05, minQty: 1, maxQty: 1 },
+            { itemId: 'fallen_wings', chance: 0.04, minQty: 1, maxQty: 1 }
+        ],
+        lucifer: [
+            { itemId: 'soul_core', chance: 1.0, minQty: 1, maxQty: 2 },
+            { itemId: 'fallen_feather', chance: 1.0, minQty: 2, maxQty: 4 },
+            { itemId: 'luciferian_mail', chance: 0.045, minQty: 1, maxQty: 1 },
+            { itemId: 'guardian_halo', chance: 0.06, minQty: 1, maxQty: 1 }
         ]
     },
 

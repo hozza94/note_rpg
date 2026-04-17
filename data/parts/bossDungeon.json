@@ -41,6 +41,24 @@
       "regionId": "void_remnant",
       "recommendedLv": 52,
       "unlockType": "region_reached"
+    },
+    {
+      "bossId": "beelzebub",
+      "regionId": "infernal_pandemonium",
+      "recommendedLv": 60,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "astaroth",
+      "regionId": "astral_abyss",
+      "recommendedLv": 70,
+      "unlockType": "region_reached"
+    },
+    {
+      "bossId": "lucifer",
+      "regionId": "fallen_paradise",
+      "recommendedLv": 84,
+      "unlockType": "region_reached"
     }
   ]
 }

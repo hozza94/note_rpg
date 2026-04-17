@@ -770,18 +770,18 @@
     "regionId": "periphery",
     "grade": "A",
     "name": "회랑의 파수꾼",
-    "level": 40,
-    "minPlayerLv": 38,
+    "level": 42,
+    "minPlayerLv": 40,
     "maxPlayerLv": 99,
     "stats": {
-      "hp": 5200,
-      "atk": 300,
-      "def": 195,
-      "spd": 175
+      "hp": 5600,
+      "atk": 318,
+      "def": 205,
+      "spd": 180
     },
     "reward": {
-      "exp": 4800,
-      "gold": 1500
+      "exp": 5600,
+      "gold": 1750
     },
     "dropTableId": "drop_periphery_field",
     "skillTreeId": "st_wail_root"
@@ -795,18 +795,18 @@
     "regionId": "periphery",
     "grade": "A",
     "name": "변두리 추적자",
-    "level": 42,
-    "minPlayerLv": 38,
+    "level": 44,
+    "minPlayerLv": 40,
     "maxPlayerLv": 99,
     "stats": {
-      "hp": 5800,
-      "atk": 318,
-      "def": 205,
-      "spd": 188
+      "hp": 6200,
+      "atk": 336,
+      "def": 218,
+      "spd": 192
     },
     "reward": {
-      "exp": 5400,
-      "gold": 1680
+      "exp": 6400,
+      "gold": 1980
     },
     "dropTableId": "drop_periphery_field",
     "skillTreeId": "st_fear_only"
@@ -820,18 +820,18 @@
     "regionId": "periphery",
     "grade": "SS",
     "name": "잔향의 선구자",
-    "level": 44,
-    "minPlayerLv": 38,
+    "level": 46,
+    "minPlayerLv": 41,
     "maxPlayerLv": 99,
     "stats": {
-      "hp": 6800,
-      "atk": 335,
-      "def": 218,
-      "spd": 182
+      "hp": 7200,
+      "atk": 360,
+      "def": 232,
+      "spd": 186
     },
     "reward": {
-      "exp": 6200,
-      "gold": 1900
+      "exp": 7400,
+      "gold": 2250
     },
     "dropTableId": "drop_periphery_field",
     "skillTreeId": "st_wail_root"
@@ -845,18 +845,18 @@
     "regionId": "periphery",
     "grade": "SS",
     "name": "변방 감시자",
-    "level": 47,
-    "minPlayerLv": 40,
+    "level": 49,
+    "minPlayerLv": 42,
     "maxPlayerLv": 99,
     "stats": {
-      "hp": 15800,
-      "atk": 445,
-      "def": 315,
-      "spd": 228
+      "hp": 17600,
+      "atk": 468,
+      "def": 334,
+      "spd": 232
     },
     "reward": {
-      "exp": 18200,
-      "gold": 5800
+      "exp": 21400,
+      "gold": 6600
     },
     "dropTableId": "drop_border_warden",
     "isBoss": true,
@@ -1021,6 +1021,420 @@
         "boss_hydra_maelstrom",
         "boss_seraph_petrify",
         "boss_a_overdrive",
+        "boss_mud_quake"
+      ],
+      "weights": [
+        2,
+        2,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "hellhound",
+    "tags": [
+      "field",
+      "infernal_pandemonium"
+    ],
+    "regionId": "infernal_pandemonium",
+    "grade": "SS",
+    "name": "헬하운드",
+    "level": 55,
+    "minPlayerLv": 53,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 10800,
+      "atk": 452,
+      "def": 282,
+      "spd": 256
+    },
+    "reward": {
+      "exp": 9800,
+      "gold": 3000
+    },
+    "dropTableId": "drop_pandemonium_field",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "imp",
+    "tags": [
+      "field",
+      "infernal_pandemonium"
+    ],
+    "regionId": "infernal_pandemonium",
+    "grade": "SS",
+    "name": "임프",
+    "level": 56,
+    "minPlayerLv": 53,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 9400,
+      "atk": 462,
+      "def": 248,
+      "spd": 284
+    },
+    "reward": {
+      "exp": 10300,
+      "gold": 3220
+    },
+    "dropTableId": "drop_pandemonium_field",
+    "skillTreeId": "st_small_fire_only"
+  },
+  {
+    "id": "asmodeus",
+    "tags": [
+      "field",
+      "infernal_pandemonium"
+    ],
+    "regionId": "infernal_pandemonium",
+    "grade": "SSS",
+    "name": "아스모데우스",
+    "level": 59,
+    "minPlayerLv": 54,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 17400,
+      "atk": 528,
+      "def": 334,
+      "spd": 270
+    },
+    "reward": {
+      "exp": 12700,
+      "gold": 3850
+    },
+    "dropTableId": "drop_pandemonium_elite",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "beelzebub",
+    "tags": [
+      "boss",
+      "infernal_pandemonium"
+    ],
+    "regionId": "infernal_pandemonium",
+    "grade": "SSS",
+    "name": "벨제부브",
+    "level": 63,
+    "minPlayerLv": 56,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 31200,
+      "atk": 625,
+      "def": 430,
+      "spd": 268
+    },
+    "reward": {
+      "exp": 33200,
+      "gold": 9800
+    },
+    "dropTableId": "drop_beelzebub",
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_void_heart",
+      "boss_p_null_skin",
+      "boss_p_swarm_mind",
+      "boss_p_border_lock",
+      "boss_p_crown_pressure"
+    ],
+    "bossActiveSkillIds": [
+      "boss_hydra_maelstrom",
+      "boss_a_overdrive",
+      "boss_a_bloodlust",
+      "boss_mud_quake",
+      "boss_guardian_verdict"
+    ],
+    "bossActiveWeights": [
+      2,
+      1,
+      1,
+      1,
+      1
+    ],
+    "bossActiveLowHp": {
+      "threshold": 0.45,
+      "skillIds": [
+        "boss_hydra_maelstrom",
+        "boss_guardian_verdict",
+        "boss_a_overdrive",
+        "boss_seraph_petrify",
+        "boss_a_bloodlust"
+      ],
+      "weights": [
+        2,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "incubus",
+    "tags": [
+      "field",
+      "astral_abyss"
+    ],
+    "regionId": "astral_abyss",
+    "grade": "SS",
+    "name": "인큐버스",
+    "level": 65,
+    "minPlayerLv": 62,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 14500,
+      "atk": 560,
+      "def": 340,
+      "spd": 302
+    },
+    "reward": {
+      "exp": 15200,
+      "gold": 4600
+    },
+    "dropTableId": "drop_astral_field",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "baphomet",
+    "tags": [
+      "field",
+      "astral_abyss"
+    ],
+    "regionId": "astral_abyss",
+    "grade": "SSS",
+    "name": "바포메트",
+    "level": 68,
+    "minPlayerLv": 63,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 23600,
+      "atk": 628,
+      "def": 398,
+      "spd": 258
+    },
+    "reward": {
+      "exp": 18600,
+      "gold": 5500
+    },
+    "dropTableId": "drop_astral_elite",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "baal",
+    "tags": [
+      "field",
+      "astral_abyss"
+    ],
+    "regionId": "astral_abyss",
+    "grade": "SSS",
+    "name": "바알",
+    "level": 71,
+    "minPlayerLv": 64,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 28400,
+      "atk": 680,
+      "def": 452,
+      "spd": 250
+    },
+    "reward": {
+      "exp": 22200,
+      "gold": 6500
+    },
+    "dropTableId": "drop_astral_elite",
+    "skillTreeId": "st_stone_seraph_boss"
+  },
+  {
+    "id": "astaroth",
+    "tags": [
+      "boss",
+      "astral_abyss"
+    ],
+    "regionId": "astral_abyss",
+    "grade": "SSS",
+    "name": "아스타로트",
+    "level": 74,
+    "minPlayerLv": 66,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 38200,
+      "atk": 742,
+      "def": 520,
+      "spd": 312
+    },
+    "reward": {
+      "exp": 39800,
+      "gold": 12000
+    },
+    "dropTableId": "drop_astaroth",
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_void_heart",
+      "boss_p_null_skin",
+      "boss_p_crown_pressure",
+      "boss_p_restless",
+      "boss_p_border_lock"
+    ],
+    "bossActiveSkillIds": [
+      "boss_guardian_verdict",
+      "boss_seraph_petrify",
+      "boss_hydra_maelstrom",
+      "boss_a_void_surge",
+      "boss_a_overdrive"
+    ],
+    "bossActiveWeights": [
+      2,
+      1,
+      1,
+      1,
+      1
+    ],
+    "bossActiveLowHp": {
+      "threshold": 0.42,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_hydra_maelstrom",
+        "boss_a_overdrive",
+        "boss_a_bloodlust",
+        "boss_seraph_petrify"
+      ],
+      "weights": [
+        2,
+        1,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "fallen_harbinger",
+    "tags": [
+      "field",
+      "fallen_paradise"
+    ],
+    "regionId": "fallen_paradise",
+    "grade": "SSS",
+    "name": "타락의 선고자",
+    "level": 76,
+    "minPlayerLv": 72,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 26800,
+      "atk": 715,
+      "def": 468,
+      "spd": 286
+    },
+    "reward": {
+      "exp": 24800,
+      "gold": 7300
+    },
+    "dropTableId": "drop_fallen_field",
+    "skillTreeId": "st_stone_seraph_boss"
+  },
+  {
+    "id": "eden_corruptor",
+    "tags": [
+      "field",
+      "fallen_paradise"
+    ],
+    "regionId": "fallen_paradise",
+    "grade": "SSS",
+    "name": "에덴의 타락체",
+    "level": 79,
+    "minPlayerLv": 73,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 31200,
+      "atk": 768,
+      "def": 512,
+      "spd": 278
+    },
+    "reward": {
+      "exp": 28200,
+      "gold": 8200
+    },
+    "dropTableId": "drop_fallen_field",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "seraph_ruin",
+    "tags": [
+      "field",
+      "fallen_paradise"
+    ],
+    "regionId": "fallen_paradise",
+    "grade": "SSS",
+    "name": "멸락한 세라프",
+    "level": 82,
+    "minPlayerLv": 74,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 34600,
+      "atk": 812,
+      "def": 548,
+      "spd": 270
+    },
+    "reward": {
+      "exp": 31500,
+      "gold": 9100
+    },
+    "dropTableId": "drop_fallen_field",
+    "skillTreeId": "st_stone_seraph_boss"
+  },
+  {
+    "id": "lucifer",
+    "tags": [
+      "boss",
+      "fallen_paradise"
+    ],
+    "regionId": "fallen_paradise",
+    "grade": "SSS",
+    "name": "루시퍼",
+    "level": 86,
+    "minPlayerLv": 76,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 52000,
+      "atk": 960,
+      "def": 690,
+      "spd": 345
+    },
+    "reward": {
+      "exp": 62000,
+      "gold": 18000
+    },
+    "dropTableId": "drop_lucifer",
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_void_heart",
+      "boss_p_null_skin",
+      "boss_p_crown_pressure",
+      "boss_p_border_lock",
+      "boss_p_restless"
+    ],
+    "bossActiveSkillIds": [
+      "boss_guardian_verdict",
+      "boss_hydra_maelstrom",
+      "boss_seraph_petrify",
+      "boss_a_overdrive",
+      "boss_a_void_surge"
+    ],
+    "bossActiveWeights": [
+      2,
+      2,
+      1,
+      1,
+      1
+    ],
+    "bossActiveLowHp": {
+      "threshold": 0.4,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_hydra_maelstrom",
+        "boss_seraph_petrify",
+        "boss_a_bloodlust",
         "boss_mud_quake"
       ],
       "weights": [
