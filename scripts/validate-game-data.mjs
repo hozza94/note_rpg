@@ -315,12 +315,12 @@ function main() {
     for (const [modeName, mode] of gachaModes) {
         if (!mode) continue;
         const rates = mode.gradeRates || {};
-        const sum = Number(rates.Common || 0) + Number(rates.Rare || 0) + Number(rates.Epic || 0);
+        const sum = Object.values(rates).reduce((acc, v) => acc + Number(v || 0), 0);
         if (Math.abs(sum - 1) > 0.001) {
             errors.push(`relicGacha.${modeName}.gradeRates 합이 1이 아님 (${sum.toFixed(4)})`);
         }
         const pool = mode.poolByGrade || {};
-        ['Common', 'Rare', 'Epic'].forEach((grade) => {
+        Object.keys(pool).forEach((grade) => {
             const ids = pool[grade];
             if (!Array.isArray(ids) || ids.length === 0) {
                 errors.push(`relicGacha.${modeName}.poolByGrade.${grade} 비어 있음`);

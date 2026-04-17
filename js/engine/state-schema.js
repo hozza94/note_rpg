@@ -5,6 +5,39 @@
 (function () {
     if (typeof window === 'undefined' || typeof GameEngine === 'undefined') return;
 
+    /** 구 액티브 ID → 합성 스킬 ID 세이브 호환 */
+    /** 제거된 트리 노드 ID가 남아 있으면 순례자 트리에 존재하는 노드만 남김 */
+    GameEngine.prototype.sanitizePilgrimSkillTreeUnlocks = function () {
+        const tree = window.GAME_DATA?.skillTrees?.pilgrim;
+        if (!tree || !Array.isArray(tree.nodes)) return;
+        const valid = new Set(tree.nodes.map((n) => n.id));
+        const start = tree.startNodeId || 'pilgrim_origin';
+        const raw = Array.isArray(this.state.player.unlockedSkillNodes) ? this.state.player.unlockedSkillNodes : [];
+        let nodes = raw.filter((id) => valid.has(id));
+        if (!nodes.includes(start)) nodes.unshift(start);
+        this.state.player.unlockedSkillNodes = [...new Set(nodes)];
+    };
+
+    GameEngine.prototype.migrateLegacyActiveSkillsToMerged = function () {
+        const defs = window.GAME_DATA?.skills || {};
+        let ids = Array.isArray(this.state.player.activeSkillIds) ? [...this.state.player.activeSkillIds] : [];
+        const melt = (sources, mergedId) => {
+            if (!defs[mergedId] || !Array.isArray(sources) || sources.length < 2) return;
+            if (ids.includes(mergedId)) {
+                ids = ids.filter((x) => !sources.includes(x));
+                return;
+            }
+            if (sources.some((s) => ids.includes(s))) {
+                ids = ids.filter((x) => !sources.includes(x));
+                if (!ids.includes(mergedId)) ids.push(mergedId);
+            }
+        };
+        melt(['radiant_volley', 'ember_sigil'], 'merged_volley_ember');
+        melt(['mercy_breath', 'dawn_shelter'], 'merged_mercy_dawn');
+        melt(['eden_lance', 'reckoning_bolt'], 'merged_lance_reckoning');
+        this.state.player.activeSkillIds = ids;
+    };
+
     GameEngine.prototype.ensureStateSchema = function () {
         if (!this.state.player) this.state.player = {};
         if (!this.state.world) this.state.world = {};
@@ -52,6 +85,9 @@
             }
         });
 
+        // 단일 스킬트리(순례자): classId는 저장 호환용 필드로 유지
+        this.state.player.classId = 'pilgrim';
+
         // 구버전 세이브 호환: skills[] -> activeSkillIds
         if ((!Array.isArray(this.state.player.activeSkillIds) || this.state.player.activeSkillIds.length === 0) && Array.isArray(this.state.player.skills)) {
             this.state.player.activeSkillIds = this.state.player.skills.map(skill => skill.id);
@@ -78,6 +114,9 @@
         if (!this.state.player.unlockedSkillNodes.includes(startNodeId)) {
             this.state.player.unlockedSkillNodes.unshift(startNodeId);
         }
+        if (typeof this.sanitizePilgrimSkillTreeUnlocks === 'function') {
+            this.sanitizePilgrimSkillTreeUnlocks();
+        }
 
         // 레벨 대비 스킬포인트 보정: (레벨-1) * 3 총 획득량을 최소 기준으로 맞춤
         // 총 획득량 = (현재 보유 포인트) + (이미 해금한 노드 수-시작노드)
@@ -94,6 +133,7 @@
             this.state.player.skillTreePoints += compensation;
         }
 
+        this.migrateLegacyActiveSkillsToMerged();
         this.syncUnlockedActiveSkills();
         // 구버전 호환 필드 유지(저장 안정성)
         this.state.player.skills = this.getActiveSkills().map(skill => ({ id: skill.id, name: skill.name, cost: skill.cost }));

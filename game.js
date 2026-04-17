@@ -171,6 +171,7 @@ class GameEngine {
             settingsOverlay.classList.remove('hidden');
         });
 
+
         document.getElementById('settings-avatar-options')?.addEventListener('change', (e) => {
             const t = e.target;
             if (!t || t.id !== 'settings-avatar-select') return;

@@ -330,6 +330,50 @@
     },
     "desc": "하늘에서 떨어진 심판이 적의 균형을 무너뜨립니다."
   },
+  "merged_volley_ember": {
+    "name": "잔화 난광",
+    "tags": [
+      "attack",
+      "holy",
+      "fire",
+      "merged"
+    ],
+    "type": "attack",
+    "mergedFrom": [
+      "radiant_volley",
+      "ember_sigil"
+    ],
+    "desc": "광휘 난사와 잔화 인장을 하나로 엮었습니다. 단독 사용 대비 약화된 배율이 적용됩니다."
+  },
+  "merged_mercy_dawn": {
+    "name": "여명의 자비",
+    "tags": [
+      "buff",
+      "heal",
+      "defense",
+      "merged"
+    ],
+    "type": "buff",
+    "mergedFrom": [
+      "mercy_breath",
+      "dawn_shelter"
+    ],
+    "desc": "자비의 숨과 새벽 피난처를 한 호흡에 담았습니다. 단독 사용 대비 약화된 배율이 적용됩니다."
+  },
+  "merged_lance_reckoning": {
+    "name": "창류의 심판",
+    "tags": [
+      "attack",
+      "holy",
+      "merged"
+    ],
+    "type": "attack",
+    "mergedFrom": [
+      "eden_lance",
+      "reckoning_bolt"
+    ],
+    "desc": "에덴의 창과 심판의 전류를 겹쳐 쏩니다. 단독 사용 대비 약화된 배율이 적용됩니다."
+  },
   "stick": {
     "name": "끈적이기",
     "tags": [

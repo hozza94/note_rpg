@@ -16,9 +16,35 @@
             tree.nodes.forEach(node => { map[node.id] = node; });
             return map;
         },
+        getSkillMergeDefaults() {
+            return window.GAME_DATA.skillMergeDefaults || { damageMul: 0.88, buffEffectMul: 0.88, ppCostRatio: 0.85 };
+        },
+        getSkillMergeProfile(skillData) {
+            if (!skillData) return this.getSkillMergeDefaults();
+            return Object.assign({}, this.getSkillMergeDefaults(), skillData.mergeProfile || {});
+        },
+        /** 합성 스킬 PP = ceil(구성 스킬 PP 합 × ppCostRatio) */
+        getMergedSkillPpCost(skillData) {
+            if (!skillData || !Array.isArray(skillData.mergedFrom) || skillData.mergedFrom.length < 2) {
+                return Math.max(0, Math.floor(Number(skillData.cost || 0)));
+            }
+            let sum = 0;
+            for (const sid of skillData.mergedFrom) {
+                sum += Number(window.GAME_DATA.skills[sid]?.cost || 0);
+            }
+            const r = Number(this.getSkillMergeProfile(skillData).ppCostRatio || 0.85);
+            return Math.max(1, Math.ceil(sum * r));
+        },
         getActiveSkills() {
             const ids = (this.state.player.activeSkillIds || []).filter(id => !window.GAME_DATA.skills[id]?.bossOnly);
-            return ids.map(id => ({ id, ...(window.GAME_DATA.skills[id] || { name: id, cost: 0 }) }));
+            return ids.map((id) => {
+                const base = window.GAME_DATA.skills[id] || { name: id, cost: 0 };
+                const out = { id, ...base };
+                if (Array.isArray(base.mergedFrom) && base.mergedFrom.length >= 2) {
+                    out.cost = this.getMergedSkillPpCost(base);
+                }
+                return out;
+            });
         },
         syncUnlockedActiveSkills() {
             const tree = this.getSkillTreeConfig();
@@ -31,10 +57,22 @@
                 const activeSkillId = node?.grants?.activeSkillId;
                 if (activeSkillId) activeSet.add(activeSkillId);
             });
-            this.state.player.activeSkillIds = Array.from(activeSet).filter(id => {
+            let list = Array.from(activeSet).filter(id => {
                 const s = window.GAME_DATA.skills[id];
                 return s && !s.bossOnly;
             });
+            const mergedParents = list.filter((id) => {
+                const sk = window.GAME_DATA.skills[id];
+                return sk && Array.isArray(sk.mergedFrom) && sk.mergedFrom.length >= 2;
+            });
+            if (mergedParents.length) {
+                const strip = new Set();
+                mergedParents.forEach((pid) => {
+                    (window.GAME_DATA.skills[pid].mergedFrom || []).forEach((sub) => strip.add(sub));
+                });
+                list = list.filter((id) => !strip.has(id));
+            }
+            this.state.player.activeSkillIds = list;
         },
         getRelicLevel(relicId) {
             if (!relicId) return 1;
@@ -190,7 +228,15 @@
             if (node.grants.stats) parts.push(Object.entries(node.grants.stats).map(([k, v]) => `${statKo[k] || k} ${v > 0 ? '+' : ''}${v}`).join(' · '));
             if (node.grants.activeSkillId) {
                 const skill = window.GAME_DATA.skills[node.grants.activeSkillId];
-                parts.push(`액티브 해금: ${skill ? skill.name : node.grants.activeSkillId}`);
+                let label = skill ? skill.name : node.grants.activeSkillId;
+                if (skill && Array.isArray(skill.mergedFrom) && skill.mergedFrom.length >= 2) {
+                    const names = skill.mergedFrom.map((id) => window.GAME_DATA.skills[id]?.name || id).join(' + ');
+                    const pp = this.getMergedSkillPpCost(skill);
+                    label += ` (합성: ${names}, PP ${pp})`;
+                } else if (skill && Number(skill.cost) >= 0) {
+                    label += ` (PP ${skill.cost})`;
+                }
+                parts.push(`액티브 해금: ${label}`);
             }
             if (node.grants.specials) {
                 Object.entries(node.grants.specials).forEach(([k, v]) => {
@@ -214,6 +260,12 @@
         },
         formatActiveSkillSummary(skillData) {
             if (!skillData) return '효과 정보 없음';
+            if (Array.isArray(skillData.mergedFrom) && skillData.mergedFrom.length >= 2) {
+                const names = skillData.mergedFrom.map((id) => window.GAME_DATA.skills[id]?.name || id).join(' + ');
+                const pp = this.getMergedSkillPpCost(skillData);
+                const d = this.getSkillMergeDefaults();
+                return `합성: ${names} · PP ${pp} · 배율 ${d.damageMul}/${d.buffEffectMul}`;
+            }
             const effect = skillData.effect || {};
             const chunks = [];
             if (effect.atkMul) chunks.push(`피해 x${effect.atkMul.toFixed(2)}`);

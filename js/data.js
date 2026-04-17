@@ -255,6 +255,29 @@ const GAME_DATA = {
         'eden_lance': { name: '에덴의 창', tags: ['attack', 'holy'], cost: 23, type: 'attack', effect: { atkMul: 1.88 }, scaling: { damage: { base: 18, atk: 0.32, def: 0.07, faith: 2.9 } }, desc: '낙원을 향해 찌르는 성스러운 일격입니다.' },
         'dawn_shelter': { name: '새벽 피난처', tags: ['buff', 'heal', 'defense'], cost: 16, type: 'buff', effect: { defMul: 1.35, nextCrit: 0.08 }, scaling: { heal: { base: 18, atk: 0.08, def: 1.5, faith: 8 } }, desc: '새벽빛으로 방어를 두르고 상처를 어루만집니다.' },
         'reckoning_bolt': { name: '심판의 전류', tags: ['attack', 'holy', 'debuff'], cost: 26, type: 'attack', effect: { atkMul: 2.05, spdDebuff: 0.92 }, scaling: { damage: { base: 22, atk: 0.36, def: 0.06, faith: 3.2 } }, desc: '하늘에서 떨어진 심판이 적의 균형을 무너뜨립니다.' },
+
+        /** 합성 액티브: mergedFrom 구성요소를 한 턴에 순차 적용, PP는 합의 85% 올림. 효과 배율은 skillMergeDefaults·mergeProfile */
+        'merged_volley_ember': {
+            name: '잔화 난광',
+            tags: ['attack', 'holy', 'fire', 'merged'],
+            type: 'attack',
+            mergedFrom: ['radiant_volley', 'ember_sigil'],
+            desc: '광휘 난사와 잔화 인장을 하나로 엮었습니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+        },
+        'merged_mercy_dawn': {
+            name: '여명의 자비',
+            tags: ['buff', 'heal', 'defense', 'merged'],
+            type: 'buff',
+            mergedFrom: ['mercy_breath', 'dawn_shelter'],
+            desc: '자비의 숨과 새벽 피난처를 한 호흡에 담았습니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+        },
+        'merged_lance_reckoning': {
+            name: '창류의 심판',
+            tags: ['attack', 'holy', 'merged'],
+            type: 'attack',
+            mergedFrom: ['eden_lance', 'reckoning_bolt'],
+            desc: '에덴의 창과 심판의 전류를 겹쳐 쏩니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+        },
         'stick':      { name: '끈적이기', tags: ['monster', 'attack', 'debuff'], type: 'attack', effect: { atkMul: 1.0, spdDebuff: 0.8 } },
         'bite':       { name: '물어뜯기', tags: ['monster', 'attack'], type: 'attack', effect: { atkMul: 1.2 } },
         'wail':       { name: '통곡', tags: ['monster', 'attack', 'fear'], type: 'attack', effect: { atkMul: 0.8, fear: true } },
@@ -374,17 +397,25 @@ const GAME_DATA = {
         }
     },
 
-    // 직업 고정형 스킬트리 (PoE 스타일의 연결형 노드 구조, 1차 소규모)
+    /** 합성 액티브 기본 배율 (전투·PP 계산 공통) */
+    skillMergeDefaults: {
+        damageMul: 0.88,
+        buffEffectMul: 0.88,
+        ppCostRatio: 0.85
+    },
+
+    // 순례자 단일 스킬트리: 직업 분기 없이 핵심(keystone)·특성(notable)·가지(clusters)로 빌드 분기
     skillTrees: {
         pilgrim: {
             classId: 'pilgrim',
             className: '순례자',
             startNodeId: 'pilgrim_origin',
             clusters: [
-                { id: 'faith_path', name: '신앙의 길', nodeIds: ['pilgrim_faith_1', 'pilgrim_faith_2', 'pilgrim_faith_3', 'pilgrim_faith_core', 'pilgrim_faith_4', 'pilgrim_faith_5', 'pilgrim_faith_6', 'pilgrim_active_holy_wall', 'pilgrim_faith_final'] },
-                { id: 'valor_path', name: '전투의 길', nodeIds: ['pilgrim_atk_1', 'pilgrim_atk_2', 'pilgrim_atk_bridge', 'pilgrim_atk_3', 'pilgrim_valor_core', 'pilgrim_atk_4', 'pilgrim_atk_5', 'pilgrim_atk_6', 'pilgrim_active_smite', 'pilgrim_valor_final'] },
-                { id: 'guard_path', name: '수호의 길', nodeIds: ['pilgrim_def_1', 'pilgrim_def_2', 'pilgrim_def_bridge', 'pilgrim_def_3', 'pilgrim_guard_core', 'pilgrim_endurance', 'pilgrim_guard_hp_1', 'pilgrim_guard_hp_2', 'pilgrim_active_aegis_prayer', 'pilgrim_guard_final'] },
-                { id: 'agile_path', name: '기동의 길', nodeIds: ['pilgrim_spd_1', 'pilgrim_grace', 'pilgrim_spd_bridge', 'pilgrim_pp_1', 'pilgrim_agile_core', 'pilgrim_spd_2', 'pilgrim_pp_2', 'pilgrim_swift_2', 'pilgrim_active_light_dash', 'pilgrim_agile_final'] },
+                { id: 'ring_spokes', name: '첫 발자국', nodeIds: ['pilgrim_ring_n', 'pilgrim_ring_e', 'pilgrim_ring_s', 'pilgrim_ring_w'] },
+                { id: 'faith_path', name: '신앙의 길', nodeIds: ['pilgrim_ring_n', 'pilgrim_faith_1', 'pilgrim_faith_2', 'pilgrim_faith_3', 'pilgrim_faith_core', 'pilgrim_faith_4', 'pilgrim_faith_5', 'pilgrim_faith_6', 'pilgrim_active_holy_wall', 'pilgrim_faith_final'] },
+                { id: 'valor_path', name: '전투의 길', nodeIds: ['pilgrim_ring_e', 'pilgrim_atk_1', 'pilgrim_atk_2', 'pilgrim_atk_bridge', 'pilgrim_atk_3', 'pilgrim_valor_core', 'pilgrim_atk_4', 'pilgrim_atk_5', 'pilgrim_atk_6', 'pilgrim_active_smite', 'pilgrim_valor_final'] },
+                { id: 'guard_path', name: '수호의 길', nodeIds: ['pilgrim_ring_s', 'pilgrim_def_1', 'pilgrim_def_2', 'pilgrim_def_bridge', 'pilgrim_def_3', 'pilgrim_guard_core', 'pilgrim_endurance', 'pilgrim_guard_hp_1', 'pilgrim_guard_hp_2', 'pilgrim_active_aegis_prayer', 'pilgrim_guard_final'] },
+                { id: 'agile_path', name: '기동의 길', nodeIds: ['pilgrim_ring_w', 'pilgrim_spd_1', 'pilgrim_grace', 'pilgrim_spd_bridge', 'pilgrim_pp_1', 'pilgrim_agile_core', 'pilgrim_spd_2', 'pilgrim_pp_2', 'pilgrim_swift_2', 'pilgrim_active_light_dash', 'pilgrim_agile_final'] },
                 { id: 'keystone_path', name: '서약의 길', nodeIds: ['pilgrim_zeal', 'pilgrim_zeal_2', 'pilgrim_resolve', 'pilgrim_resolve_2', 'pilgrim_vow_mid', 'pilgrim_vow_final'] },
                 { id: 'contemplation_path', name: '수양의 길', nodeIds: ['pilgrim_cont_1', 'pilgrim_cont_2', 'pilgrim_cont_notable', 'pilgrim_cont_sanctum'] },
                 { id: 'oracle_branch', name: '예언의 가지', nodeIds: ['pilgrim_oracle_1', 'pilgrim_oracle_2', 'pilgrim_oracle_notable'] },
@@ -417,10 +448,16 @@ const GAME_DATA = {
                 { id: 'dawn_shelter_branch', name: '새벽 피난처', nodeIds: ['pilgrim_dawn_minor', 'pilgrim_active_dawn_shelter'] },
                 { id: 'reckoning_branch', name: '심판 전류', nodeIds: ['pilgrim_reck_minor', 'pilgrim_active_reckoning'] },
                 { id: 'mirror_path', name: '거울의 길', nodeIds: ['pilgrim_mirror_1', 'pilgrim_mirror_2', 'pilgrim_mirror_keystone'] },
-                { id: 'tithe_branch', name: '십일조의 가지', nodeIds: ['pilgrim_tithe_1', 'pilgrim_tithe_2'] }
+                { id: 'tithe_branch', name: '십일조의 가지', nodeIds: ['pilgrim_tithe_1', 'pilgrim_tithe_2', 'pilgrim_tithe_ep_1', 'pilgrim_tithe_ep_2', 'pilgrim_tithe_ep_3', 'pilgrim_tithe_ep_4'] },
+                { id: 'first_ring_outer', name: '첫 고리의 외연', nodeIds: ['pilgrim_out_n_1', 'pilgrim_out_n_2', 'pilgrim_out_e_1', 'pilgrim_out_e_2', 'pilgrim_out_s_1', 'pilgrim_out_s_2', 'pilgrim_out_w_1', 'pilgrim_out_w_2'] }
             ],
             nodes: [
                 { id: 'pilgrim_origin', name: '순례의 서약', kind: 'start', desc: '빛을 향한 여정의 시작점입니다.', grants: { stats: { faith: 1 } }, position: { x: 0, y: 0 } },
+
+                { id: 'pilgrim_ring_n', name: '북쪽 첫 발', kind: 'small', desc: '신앙 +1', grants: { stats: { faith: 1 } }, position: { x: -0.82, y: -0.4 } },
+                { id: 'pilgrim_ring_e', name: '동쪽 첫 발', kind: 'small', desc: '공격 +1', grants: { stats: { atk: 1 } }, position: { x: 0.82, y: -0.4 } },
+                { id: 'pilgrim_ring_s', name: '남쪽 첫 발', kind: 'small', desc: '방어 +1, HP +4', grants: { stats: { def: 1, hp: 4 } }, position: { x: 0.7, y: 0.62 } },
+                { id: 'pilgrim_ring_w', name: '서쪽 첫 발', kind: 'small', desc: '속도 +2', grants: { stats: { spd: 2 } }, position: { x: -0.7, y: 0.62 } },
 
                 { id: 'pilgrim_faith_1', name: '기도의 숨결', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -1.55, y: -0.72 } },
                 { id: 'pilgrim_faith_2', name: '축복의 공명', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -2.85, y: -1.58 } },
@@ -539,16 +576,16 @@ const GAME_DATA = {
 
                 { id: 'pilgrim_radiant_1', name: '광휘 침전', kind: 'small', desc: '신앙 +1, PP +4', grants: { stats: { faith: 1, pp: 4 } }, position: { x: -13.35, y: -9.05 } },
                 { id: 'pilgrim_radiant_2', name: '폭광 정렬', kind: 'notable', desc: '피해량 5% 증가', grants: { specials: { damageMul: 1.05 } }, position: { x: -14.05, y: -9.75 } },
-                { id: 'pilgrim_active_radiant_volley', name: '광휘 난사 해금', kind: 'active_unlock', desc: '액티브 [광휘 난사]를 배웁니다.', grants: { activeSkillId: 'radiant_volley' }, position: { x: -14.75, y: -10.45 } },
+                { id: 'pilgrim_active_radiant_volley', name: '잔화 난광 해금', kind: 'active_unlock', desc: '합성 액티브 [잔화 난광](광휘 난사+잔화 인장)을 배웁니다.', grants: { activeSkillId: 'merged_volley_ember' }, position: { x: -14.75, y: -10.45 } },
 
                 { id: 'pilgrim_bastion_1', name: '침묵의 방벽', kind: 'small', desc: '방어 +2, HP +14', grants: { stats: { def: 2, hp: 14 } }, position: { x: 12.95, y: 12.95 } },
                 { id: 'pilgrim_active_solemn_bastion', name: '엄숙한 요새 해금', kind: 'active_unlock', desc: '액티브 [엄숙한 요새]를 배웁니다.', grants: { activeSkillId: 'solemn_bastion' }, position: { x: 13.65, y: 13.75 } },
 
                 { id: 'pilgrim_mercy_1', name: '은총의 잔물결', kind: 'small', desc: 'PP +8, 방어 +1', grants: { stats: { pp: 8, def: 1 } }, position: { x: -6.15, y: 4.78 } },
-                { id: 'pilgrim_active_mercy_breath', name: '자비의 숨 해금', kind: 'active_unlock', desc: '액티브 [자비의 숨]을 배웁니다.', grants: { activeSkillId: 'mercy_breath' }, position: { x: -6.88, y: 5.48 } },
+                { id: 'pilgrim_active_mercy_breath', name: '여명의 자비 해금', kind: 'active_unlock', desc: '합성 액티브 [여명의 자비](자비의 숨+새벽 피난처)를 배웁니다.', grants: { activeSkillId: 'merged_mercy_dawn' }, position: { x: -6.88, y: 5.48 } },
 
                 { id: 'pilgrim_ember_1', name: '불꽃 각인', kind: 'small', desc: '공격 +2, 속도 +2', grants: { stats: { atk: 2, spd: 2 } }, position: { x: 13.45, y: -9.05 } },
-                { id: 'pilgrim_active_ember_sigil', name: '잔화 인장 해금', kind: 'active_unlock', desc: '액티브 [잔화 인장]을 배웁니다.', grants: { activeSkillId: 'ember_sigil' }, position: { x: 14.15, y: -9.75 } },
+                { id: 'pilgrim_active_ember_sigil', name: '잔화 난광(동위)', kind: 'active_unlock', desc: '합성 액티브 [잔화 난광]을 배웁니다.', grants: { activeSkillId: 'merged_volley_ember' }, position: { x: 14.15, y: -9.75 } },
 
                 { id: 'pilgrim_devotion_1', name: '헌신의 첫걸음', kind: 'small', desc: '신앙 +1', grants: { stats: { faith: 1 } }, position: { x: -2.28, y: -0.38 } },
                 { id: 'pilgrim_devotion_2', name: '헌신의 결속', kind: 'notable', desc: 'HP +14, PP +6', grants: { stats: { hp: 14, pp: 6 } }, position: { x: -3.05, y: 0.05 } },
@@ -573,23 +610,50 @@ const GAME_DATA = {
                 { id: 'pilgrim_clear_dawn', name: '새벽의 정화', kind: 'notable', desc: '턴 시작 시 8% 확률로 상태이상 해제', grants: { specials: { turnStartCleanseChance: 0.08 } }, position: { x: 0.35, y: 6.55 } },
 
                 { id: 'pilgrim_eden_minor', name: '낙원의 기미', kind: 'small', desc: '공격 +2, 신앙 +1', grants: { stats: { atk: 2, faith: 1 } }, position: { x: 13.5, y: -7.5 } },
-                { id: 'pilgrim_active_eden_lance', name: '에덴의 창 해금', kind: 'active_unlock', desc: '액티브 [에덴의 창]을 배웁니다.', grants: { activeSkillId: 'eden_lance' }, position: { x: 14.2, y: -6.85 } },
+                { id: 'pilgrim_active_eden_lance', name: '창류의 심판 해금', kind: 'active_unlock', desc: '합성 액티브 [창류의 심판](에덴의 창+심판의 전류)을 배웁니다.', grants: { activeSkillId: 'merged_lance_reckoning' }, position: { x: 14.2, y: -6.85 } },
 
                 { id: 'pilgrim_dawn_minor', name: '새벽의 방패', kind: 'small', desc: '방어 +2, HP +12', grants: { stats: { def: 2, hp: 12 } }, position: { x: 11.4, y: 12.85 } },
-                { id: 'pilgrim_active_dawn_shelter', name: '새벽 피난처 해금', kind: 'active_unlock', desc: '액티브 [새벽 피난처]를 배웁니다.', grants: { activeSkillId: 'dawn_shelter' }, position: { x: 10.6, y: 13.55 } },
+                { id: 'pilgrim_active_dawn_shelter', name: '여명의 자비(동위)', kind: 'active_unlock', desc: '합성 액티브 [여명의 자비]를 배웁니다.', grants: { activeSkillId: 'merged_mercy_dawn' }, position: { x: 10.6, y: 13.55 } },
 
                 { id: 'pilgrim_reck_minor', name: '심판의 예고', kind: 'notable', desc: '공격 +3, 치명타 +3%', grants: { stats: { atk: 3 }, specials: { critChance: 0.03 } }, position: { x: 13.8, y: -4.0 } },
-                { id: 'pilgrim_active_reckoning', name: '심판의 전류 해금', kind: 'active_unlock', desc: '액티브 [심판의 전류]를 배웁니다.', grants: { activeSkillId: 'reckoning_bolt' }, position: { x: 14.6, y: -3.2 } },
+                { id: 'pilgrim_active_reckoning', name: '창류의 심판(동위)', kind: 'active_unlock', desc: '합성 액티브 [창류의 심판]을 배웁니다.', grants: { activeSkillId: 'merged_lance_reckoning' }, position: { x: 14.6, y: -3.2 } },
 
                 { id: 'pilgrim_mirror_1', name: '거울의 첫면', kind: 'small', desc: '받는 피해 2% 감소, 피해량 2% 증가', grants: { specials: { damageTakenMul: 0.98, damageMul: 1.02 } }, position: { x: -3.8, y: -3.2 } },
                 { id: 'pilgrim_mirror_2', name: '거울의 둘째면', kind: 'notable', desc: '받는 피해 3% 감소, 피해량 3% 증가', grants: { specials: { damageTakenMul: 0.97, damageMul: 1.03 } }, position: { x: -3.15, y: -3.85 } },
                 { id: 'pilgrim_mirror_keystone', name: '양면의 성소', kind: 'keystone', desc: '받는 피해 6% 감소, 피해량 6% 증가', grants: { specials: { damageTakenMul: 0.94, damageMul: 1.06 } }, position: { x: -2.45, y: -4.55 } },
 
                 { id: 'pilgrim_tithe_1', name: '십일조의 약속', kind: 'small', desc: '신앙 +1, PP +10', grants: { stats: { faith: 1, pp: 10 } }, position: { x: -6.45, y: 2.15 } },
-                { id: 'pilgrim_tithe_2', name: '십일조의 결실', kind: 'notable', desc: 'PP +15, 치명 피해 +5%p', grants: { stats: { pp: 15 }, specials: { critDamageMul: 0.05 } }, position: { x: -7.25, y: 2.85 } }
+                { id: 'pilgrim_tithe_2', name: '십일조의 결실', kind: 'notable', desc: 'PP +15, 치명 피해 +5%p', grants: { stats: { pp: 15 }, specials: { critDamageMul: 0.05 } }, position: { x: -7.25, y: 2.85 } },
+
+                { id: 'pilgrim_out_n_1', name: '북고리의 이슬', kind: 'small', desc: '신앙 +1, PP +4', grants: { stats: { faith: 1, pp: 4 } }, position: { x: -1.02, y: -0.72 } },
+                { id: 'pilgrim_out_n_2', name: '별빛 낟알', kind: 'notable', desc: '신앙 +2, HP +8, 받는 피해 2% 감소', grants: { stats: { faith: 2, hp: 8 }, specials: { damageTakenMul: 0.98 } }, position: { x: -1.32, y: -1.28 } },
+                { id: 'pilgrim_out_e_1', name: '동고리의 쇠맛', kind: 'small', desc: '공격 +1', grants: { stats: { atk: 1 } }, position: { x: 1.02, y: -0.72 } },
+                { id: 'pilgrim_out_e_2', name: '돌파의 숨', kind: 'notable', desc: '공격 +3, 치명타 +3%', grants: { stats: { atk: 3 }, specials: { critChance: 0.03 } }, position: { x: 1.32, y: -1.12 } },
+
+                { id: 'pilgrim_out_s_1', name: '남고리의 무게', kind: 'small', desc: '방어 +1, HP +6', grants: { stats: { def: 1, hp: 6 } }, position: { x: 0.88, y: 0.92 } },
+                { id: 'pilgrim_out_s_2', name: '방진의 박자', kind: 'notable', desc: '방어 +2, HP +12, 받는 피해 3% 감소', grants: { stats: { def: 2, hp: 12 }, specials: { damageTakenMul: 0.97 } }, position: { x: 1.08, y: 1.32 } },
+
+                { id: 'pilgrim_out_w_1', name: '서고리의 바람', kind: 'small', desc: '속도 +3', grants: { stats: { spd: 3 } }, position: { x: -0.88, y: 0.92 } },
+                { id: 'pilgrim_out_w_2', name: '회피의 끈', kind: 'notable', desc: '속도 +4, PP +5, 회피 +2%', grants: { stats: { spd: 4, pp: 5 }, specials: { evadeChance: 0.02 } }, position: { x: -1.08, y: 1.32 } },
+
+                { id: 'pilgrim_tithe_ep_1', name: '헌납의 삼일', kind: 'small', desc: 'PP +6', grants: { stats: { pp: 6 } }, position: { x: -7.95, y: 3.35 } },
+                { id: 'pilgrim_tithe_ep_2', name: '헌납의 오일', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -8.65, y: 3.85 } },
+                { id: 'pilgrim_tithe_ep_3', name: '헌납의 칠일', kind: 'small', desc: 'PP +8', grants: { stats: { pp: 8 } }, position: { x: -9.35, y: 4.35 } },
+                { id: 'pilgrim_tithe_ep_4', name: '헌납의 십일', kind: 'keystone', desc: 'PP +12, 치명타 +2%, 피해량 4% 증가', grants: { stats: { pp: 12 }, specials: { critChance: 0.02, damageMul: 1.04 } }, position: { x: -10.05, y: 4.85 } }
             ],
             edges: [
+                ['pilgrim_origin', 'pilgrim_ring_n'],
+                ['pilgrim_origin', 'pilgrim_ring_e'],
+                ['pilgrim_origin', 'pilgrim_ring_s'],
+                ['pilgrim_origin', 'pilgrim_ring_w'],
+                ['pilgrim_ring_n', 'pilgrim_faith_1'],
+                ['pilgrim_ring_e', 'pilgrim_atk_1'],
+                ['pilgrim_ring_s', 'pilgrim_def_1'],
+                ['pilgrim_ring_w', 'pilgrim_spd_1'],
                 ['pilgrim_origin', 'pilgrim_faith_1'],
+                ['pilgrim_origin', 'pilgrim_atk_1'],
+                ['pilgrim_origin', 'pilgrim_def_1'],
+                ['pilgrim_origin', 'pilgrim_spd_1'],
                 ['pilgrim_faith_1', 'pilgrim_faith_2'],
                 ['pilgrim_faith_2', 'pilgrim_faith_3'],
                 ['pilgrim_faith_3', 'pilgrim_faith_core'],
@@ -599,7 +663,6 @@ const GAME_DATA = {
                 ['pilgrim_faith_6', 'pilgrim_active_holy_wall'],
                 ['pilgrim_active_holy_wall', 'pilgrim_faith_final'],
 
-                ['pilgrim_origin', 'pilgrim_atk_1'],
                 ['pilgrim_atk_1', 'pilgrim_atk_2'],
                 ['pilgrim_atk_2', 'pilgrim_atk_bridge'],
                 ['pilgrim_atk_bridge', 'pilgrim_atk_3'],
@@ -610,7 +673,6 @@ const GAME_DATA = {
                 ['pilgrim_atk_6', 'pilgrim_active_smite'],
                 ['pilgrim_active_smite', 'pilgrim_valor_final'],
 
-                ['pilgrim_origin', 'pilgrim_def_1'],
                 ['pilgrim_def_1', 'pilgrim_def_2'],
                 ['pilgrim_def_2', 'pilgrim_def_bridge'],
                 ['pilgrim_def_bridge', 'pilgrim_def_3'],
@@ -621,7 +683,6 @@ const GAME_DATA = {
                 ['pilgrim_guard_hp_2', 'pilgrim_active_aegis_prayer'],
                 ['pilgrim_active_aegis_prayer', 'pilgrim_guard_final'],
 
-                ['pilgrim_origin', 'pilgrim_spd_1'],
                 ['pilgrim_spd_1', 'pilgrim_grace'],
                 ['pilgrim_grace', 'pilgrim_spd_bridge'],
                 ['pilgrim_spd_bridge', 'pilgrim_pp_1'],
@@ -762,7 +823,21 @@ const GAME_DATA = {
                 ['pilgrim_dawn_minor', 'pilgrim_active_dawn_shelter'],
 
                 ['pilgrim_hunt_core', 'pilgrim_reck_minor'],
-                ['pilgrim_reck_minor', 'pilgrim_active_reckoning']
+                ['pilgrim_reck_minor', 'pilgrim_active_reckoning'],
+
+                ['pilgrim_ring_n', 'pilgrim_out_n_1'],
+                ['pilgrim_out_n_1', 'pilgrim_out_n_2'],
+                ['pilgrim_ring_e', 'pilgrim_out_e_1'],
+                ['pilgrim_out_e_1', 'pilgrim_out_e_2'],
+                ['pilgrim_ring_s', 'pilgrim_out_s_1'],
+                ['pilgrim_out_s_1', 'pilgrim_out_s_2'],
+                ['pilgrim_ring_w', 'pilgrim_out_w_1'],
+                ['pilgrim_out_w_1', 'pilgrim_out_w_2'],
+
+                ['pilgrim_tithe_2', 'pilgrim_tithe_ep_1'],
+                ['pilgrim_tithe_ep_1', 'pilgrim_tithe_ep_2'],
+                ['pilgrim_tithe_ep_2', 'pilgrim_tithe_ep_3'],
+                ['pilgrim_tithe_ep_3', 'pilgrim_tithe_ep_4']
             ]
         }
     },

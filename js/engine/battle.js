@@ -675,6 +675,121 @@
             }, 1500);
         },
         loseBattle() { this.log("무리한 순례로 인해 탈진했습니다...", "battle"); this.state.player.hp = 10; this.state.player.gold = Math.floor(this.state.player.gold * 0.8); this.state.player.autoBattleEnabled = false; this.state.player.autoExploreEnabled = false; this.state.world.bossDungeonAuto = { active: false, bossId: null, startedAt: 0, runCount: 0 }; if (this.autoExploreTimer) { clearTimeout(this.autoExploreTimer); this.autoExploreTimer = null; } this.log("[자동 진행] 탈진으로 자동순례/자동전투가 중지되었습니다.", "system"); this.state.battle = null; setTimeout(() => { this.toggleBattleUI(false); this.updateUI(); this.saveGame(); }, 2000); },
+
+        /**
+         * 합성 스킬의 구성 요소 하나를 적용 (damageMul·buffEffectMul 적용).
+         * @param {object} subSkillData GAME_DATA.skills 항목
+         * @param {{ damageMul: number, buffEffectMul: number }} profile
+         * @param {{ fromMerged?: boolean }} [options]
+         */
+        applyPartialPlayerSkillForBattle(subSkillData, profile, options = {}) {
+            const dmgMul = Number(profile.damageMul || 0.88);
+            const bufMul = Number(profile.buffEffectMul || 0.88);
+            const fromMerged = !!options.fromMerged;
+            const p = this.state.player;
+            const combined = this.getPlayerCombinedStats();
+            if (!this.state.battle || !subSkillData || subSkillData.bossOnly) return;
+
+            if (subSkillData.type === 'buff') {
+                const effects = this.getBattleEffects();
+                const effect = subSkillData.effect || {};
+                const buffScale = subSkillData.scaling?.buff || {};
+                if (effect.cleanse) {
+                    if (!this.clearPlayerBattleDebuffs('합성 구성: 상태이상을 걷어냈습니다.')) {
+                        this.log('정화 시도: 걸린 상태이상이 없었습니다.', 'info');
+                    }
+                }
+                const healScale = subSkillData.scaling?.heal || (subSkillData.id === 'meditation'
+                    ? { base: 24, atk: 0.12, def: 1.8, faith: 9 }
+                    : null);
+                if (healScale) {
+                    const base = Number(healScale.base || 20);
+                    const atkPart = (combined.atk || 0) * Number(healScale.atk || 0);
+                    const defPart = (combined.def || 0) * Number(healScale.def || 0);
+                    const faithPart = (combined.faith || 0) * Number(healScale.faith || 0);
+                    let healAmount = Math.max(base, Math.floor(base + defPart + faithPart + atkPart));
+                    healAmount = Math.max(1, Math.floor(healAmount * bufMul));
+                    const beforeHp = p.hp;
+                    p.hp = Math.min(combined.hp, p.hp + healAmount);
+                    const actual = p.hp - beforeHp;
+                    if (actual > 0) this.log(`회복(합성 ${bufMul}) HP +${actual}`, 'info');
+                    else this.log('회복을 시도했지만 HP가 이미 가득 찼습니다.', 'info');
+                }
+                if (effect.defMul) {
+                    const defMulBonus = Number(buffScale.defMulBase || 0) + (combined.def || 0) * Number(buffScale.defMulDef || 0) + (combined.faith || 0) * Number(buffScale.defMulFaith || 0);
+                    const scaled = 1 + (effect.defMul + defMulBonus - 1) * bufMul;
+                    effects.player.defMulValue = Math.max(effects.player.defMulValue, scaled);
+                    effects.player.defMulTurns = Math.max(effects.player.defMulTurns, 2);
+                }
+                if (effect.evade) {
+                    const evadeBonus = Number(buffScale.evadeBase || 0) + (combined.faith || 0) * Number(buffScale.evadeFaith || 0) + (combined.spd || 0) * Number(buffScale.evadeSpd || 0);
+                    effects.player.evadeChance = Math.max(effects.player.evadeChance, (effect.evade + evadeBonus) * bufMul);
+                    effects.player.evadeTurns = Math.max(effects.player.evadeTurns, 2);
+                }
+                if (effect.spdMul) {
+                    const spdMulBonus = Number(buffScale.spdMulBase || 0) + (combined.faith || 0) * Number(buffScale.spdMulFaith || 0) + (combined.spd || 0) * Number(buffScale.spdMulSpd || 0);
+                    const scaledSpd = 1 + (effect.spdMul + spdMulBonus - 1) * bufMul;
+                    effects.player.spdMulValue = Math.max(effects.player.spdMulValue, scaledSpd);
+                    effects.player.spdMulTurns = Math.max(effects.player.spdMulTurns, 2);
+                }
+                if (effect.nextCrit) {
+                    effects.player.nextCritChance = Math.max(effects.player.nextCritChance, effect.nextCrit * bufMul);
+                }
+                const appliedAnyBuff = !!(effect.defMul || effect.evade || effect.spdMul || effect.nextCrit || healScale);
+                if (appliedAnyBuff) this.log('강화 효과가 적용되었습니다.', 'effect');
+                return;
+            }
+            if (subSkillData.type === 'attack') {
+                const effect = subSkillData.effect || {};
+                const m = this.state.battle.monster;
+                const targetEl = document.querySelector('.monster-card');
+                const totalAtk = combined.atk;
+                const atkMulRaw = effect.atkMul || 1.2;
+                const atkMul = 1 + (atkMulRaw - 1) * dmgMul;
+                const effects = this.getBattleEffects();
+                const extraCrit = effects ? effects.player.nextCritChance : 0;
+                const isCrit = Math.random() < Math.min(0.7, 0.1 + combined.critChance + extraCrit);
+                if (effects) effects.player.nextCritChance = 0;
+                const scale = subSkillData.scaling?.damage || { base: 10, atk: 0.24, def: 0.06, faith: 1.8 };
+                const BL = window.BattleLogic;
+                let raw = BL.calculateDamage(totalAtk * atkMul, this.getMonsterEffectiveDef());
+                const scalingCore = Number(scale.base || 10)
+                    + (combined.atk || 0) * Number(scale.atk || 0)
+                    + (combined.def || 0) * Number(scale.def || 0)
+                    + (combined.faith || 0) * Number(scale.faith || 0);
+                const scalingBonus = Math.floor(scalingCore * dmgMul);
+                raw += Math.max(Math.floor(Number(scale.base || 10) * dmgMul), scalingBonus);
+                raw = this.applyFaithBonusDamage(raw, m);
+                const hpFrac = combined.hp > 0 ? p.hp / combined.hp : 1;
+                const dmg = BL.applyPlayerPhysicalLayersAfterFaith(raw, combined, hpFrac, isCrit);
+                m.hp -= dmg;
+                const effDebuff = effect.spdDebuff
+                    ? { ...effect, spdDebuff: 1 - (1 - effect.spdDebuff) * dmgMul }
+                    : effect;
+                this.applySkillEffectToTarget(effDebuff, false);
+                this.triggerPlayerPhysicalHitFx(isCrit);
+                this.spawnMonsterSkillFx(subSkillData, { emphasize: !!isCrit });
+                this.spawnDamagePopup(targetEl, dmg, isCrit, false);
+                this.log(`${m.name}에게 ${dmg}${isCrit ? '!!!' : ''} (합성 구성)`, 'player');
+                this.applyLifeStealFromDamage(dmg);
+                this.applyPpOnHitPassive(dmg);
+                if (!fromMerged) {
+                    const ds = Math.min(0.35, Math.max(0, this.getPassiveBonuses().doubleStrikeChance || 0));
+                    if (m.hp > 0 && ds > 0 && Math.random() < ds) {
+                        const dmg2 = Math.max(1, Math.round(dmg * 0.56));
+                        m.hp -= dmg2;
+                        setTimeout(() => {
+                            this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
+                            this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                            this.applyLifeStealFromDamage(dmg2);
+                            this.applyPpOnHitPassive(dmg2);
+                            this.updateUI();
+                        }, 120);
+                    }
+                }
+            }
+        },
+
         showSkillMenu() { if (!this.state.battle || !this.state.battle.isPlayerTurn) return; const modal = document.getElementById('modal-overlay'); const content = document.getElementById('modal-content'); let html = `<h3 style="margin-bottom: 20px;">어떤 능력을 사용하시겠습니까?</h3>`; html += `<div style="display:flex; flex-direction:column; gap:10px;">`; this.getActiveSkills().forEach(skillData => { const canUse = this.state.player.pp >= skillData.cost; html += `<button class="action-btn ${canUse ? 'primary' : 'secondary'}" data-skill="${skillData.id}" ${canUse ? '' : 'disabled'} style="width: 100%;">${skillData.name} <span style="font-size: 0.8rem; opacity: 0.7;">(PP ${skillData.cost} 소모)</span></button>`; }); html += `<button class="action-btn" id="btn-cancel-skill" style="margin-top:10px; width: 100%;">취소</button></div>`; content.innerHTML = html; modal.classList.remove('hidden'); content.querySelectorAll('button[data-skill]').forEach(btn => { btn.addEventListener('click', (e) => { const skillId = e.currentTarget.getAttribute('data-skill'); const selectedSkill = this.getActiveSkills().find(s => s.id === skillId); modal.classList.add('hidden'); if (selectedSkill) this.useSkill(selectedSkill); }); }); document.getElementById('btn-cancel-skill').addEventListener('click', () => modal.classList.add('hidden')); },
         useSkill(skill) {
             if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
@@ -689,10 +804,27 @@
             const skillData = window.GAME_DATA.skills[skill.id];
             if (!skillData) return this.log("스킬 데이터가 존재하지 않습니다.", "system");
             if (skillData.bossOnly) return this.log("이 스킬은 플레이어가 사용할 수 없습니다.", "system");
-            if (p.pp < (skillData.cost || 0)) return this.log("PP가 부족합니다!", "system");
+            const isMerged = Array.isArray(skillData.mergedFrom) && skillData.mergedFrom.length >= 2;
+            const ppCost = isMerged ? this.getMergedSkillPpCost(skillData) : Math.max(0, Number(skillData.cost || 0));
+            if (p.pp < ppCost) return this.log("PP가 부족합니다!", "system");
 
-            p.pp -= skillData.cost;
+            p.pp -= ppCost;
             this.log(`${p.name}의 기술: [${skillData.name}]!`, "player");
+
+            if (isMerged) {
+                const profile = this.getSkillMergeProfile(skillData);
+                for (const sid of skillData.mergedFrom) {
+                    const raw = window.GAME_DATA.skills[sid];
+                    if (!raw || raw.bossOnly) continue;
+                    const sub = { ...raw, id: sid };
+                    this.applyPartialPlayerSkillForBattle(sub, profile, { fromMerged: true });
+                }
+                this.updateUI();
+                if (this.state.battle.monster.hp <= 0) return this.winBattle();
+                this.state.battle.isPlayerTurn = false;
+                setTimeout(() => this.monsterTurn(), 1000);
+                return;
+            }
 
             if (skillData.type === 'buff') {
                 const effects = this.getBattleEffects();
