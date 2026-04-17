@@ -5,6 +5,8 @@
   "scripts": {
     "data:export-parts": "node scripts/export-game-data-parts.mjs",
     "data:verify-roundtrip": "node scripts/verify-data-roundtrip.mjs",
-    "data:sync": "npm run data:export-parts && npm run data:verify-roundtrip"
+    "data:sync": "npm run data:export-parts && npm run data:verify-roundtrip",
+    "skilltree:audit": "node scripts/audit-pilgrim-skill-tree.mjs",
+    "skilltree:audit:all": "node scripts/audit-pilgrim-skill-tree.mjs --include-active"
   }
 }

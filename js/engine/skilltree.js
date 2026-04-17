@@ -16,6 +16,50 @@
             tree.nodes.forEach(node => { map[node.id] = node; });
             return map;
         },
+        /** 시작 노드 기준 무방향 BFS 최단 엣지 수 L (밸런스·UI 표시용) */
+        buildSkillTreeBfsDepthMap(tree) {
+            const startId = tree?.startNodeId;
+            const edges = tree?.edges;
+            if (!startId || !Array.isArray(edges)) return new Map();
+            const adj = new Map();
+            for (let i = 0; i < edges.length; i++) {
+                const pair = edges[i];
+                if (!Array.isArray(pair) || pair.length < 2) continue;
+                const a = pair[0];
+                const b = pair[1];
+                if (!adj.has(a)) adj.set(a, []);
+                if (!adj.has(b)) adj.set(b, []);
+                adj.get(a).push(b);
+                adj.get(b).push(a);
+            }
+            const dist = new Map();
+            const q = [startId];
+            dist.set(startId, 0);
+            for (let qi = 0; qi < q.length; qi++) {
+                const u = q[qi];
+                const du = dist.get(u);
+                for (const v of adj.get(u) || []) {
+                    if (dist.has(v)) continue;
+                    dist.set(v, du + 1);
+                    q.push(v);
+                }
+            }
+            return dist;
+        },
+        getSkillNodeGraphMeta(node, depthById = null) {
+            if (!node) return null;
+            const pos = node.position;
+            const r = pos && Number.isFinite(pos.x) && Number.isFinite(pos.y) ? Math.hypot(pos.x, pos.y) : null;
+            let L = null;
+            if (depthById && typeof depthById.get === 'function' && depthById.has(node.id)) {
+                L = depthById.get(node.id);
+            } else {
+                const tree = this.getSkillTreeConfig?.();
+                const map = tree ? this.buildSkillTreeBfsDepthMap(tree) : null;
+                if (map && map.has(node.id)) L = map.get(node.id);
+            }
+            return { L, r };
+        },
         getSkillMergeDefaults() {
             return window.GAME_DATA.skillMergeDefaults || { damageMul: 0.88, buffEffectMul: 0.88, ppCostRatio: 0.85 };
         },
@@ -263,8 +307,8 @@
             if (Array.isArray(skillData.mergedFrom) && skillData.mergedFrom.length >= 2) {
                 const names = skillData.mergedFrom.map((id) => window.GAME_DATA.skills[id]?.name || id).join(' + ');
                 const pp = this.getMergedSkillPpCost(skillData);
-                const d = this.getSkillMergeDefaults();
-                return `합성: ${names} · PP ${pp} · 배율 ${d.damageMul}/${d.buffEffectMul}`;
+                const d = this.getSkillMergeProfile(skillData);
+                return `합성: ${names} · PP ${pp} · 공격 ${d.damageMul}x · 강화 ${d.buffEffectMul}x`;
             }
             const effect = skillData.effect || {};
             const chunks = [];
@@ -316,7 +360,21 @@
         },
         formatActiveSkillTooltip(skillData) {
             if (!skillData) return '상세 정보 없음';
-            const lines = [`타입: ${skillData.type === 'buff' ? '강화' : '공격'}`, `소모 PP: ${skillData.cost || 0}`];
+            const isMerged = Array.isArray(skillData.mergedFrom) && skillData.mergedFrom.length >= 2;
+            const ppCost = isMerged ? this.getMergedSkillPpCost(skillData) : Number(skillData.cost || 0);
+            const lines = [`타입: ${skillData.type === 'buff' ? '강화' : '공격'}`, `소모 PP: ${ppCost}`];
+            if (isMerged) {
+                const profile = this.getSkillMergeProfile(skillData);
+                const subLines = skillData.mergedFrom.map((id) => {
+                    const sk = window.GAME_DATA.skills[id];
+                    if (!sk) return `- ${id}`;
+                    const cost = Number(sk.cost || 0);
+                    return `- ${sk.name} (PP ${cost})`;
+                });
+                lines.push(`합성 구성:\n${subLines.join('\n')}`);
+                lines.push(`합성 배율: 공격 ${Number(profile.damageMul || 0.88).toFixed(2)}x · 강화 ${Number(profile.buffEffectMul || 0.88).toFixed(2)}x`);
+                lines.push(`PP 규칙: (구성 PP 합 × ${Number(profile.ppCostRatio || 0.85).toFixed(2)}) 올림`);
+            }
             if (skillData.effect?.cleanse) lines.push('즉시: 공포·이동 둔화 해제');
             const healScale = skillData.scaling?.heal;
             if (healScale) {
@@ -349,6 +407,9 @@
         formatPassiveSkillTooltip(node) {
             if (!node) return '상세 정보 없음';
             const lines = [`노드 유형: ${node.kind}`, `효과: ${this.formatPassiveSkillSummary(node)}`];
+            const graph = this.getSkillNodeGraphMeta(node);
+            if (graph && graph.L != null && Number.isFinite(graph.L)) lines.push(`트리 거리: L=${graph.L}`);
+            if (graph && graph.r != null && Number.isFinite(graph.r)) lines.push(`방사 거리: r=${graph.r.toFixed(2)}`);
             if (node.desc) lines.push(`설명: ${node.desc}`);
             return lines.join('\n');
         },
@@ -494,6 +555,7 @@
             const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
             const nodeMap = this.getSkillTreeNodeMap();
             const { positions, width, height, originX, originY, viewCenterX, viewCenterY } = this.getSkillTreeLayout(tree);
+            const depthById = this.buildSkillTreeBfsDepthMap(tree);
             const edges = (tree.edges || []).map(([from, to], edgeIdx) => {
                 const a = positions[from], b = positions[to];
                 if (!a || !b) return '';
@@ -592,10 +654,18 @@
                 const node = nodeId ? nodeMap[nodeId] : null;
                 if (!node || !infoBox) return;
                 const info = this.formatSkillTreeInfo(node);
+                const graph = this.getSkillNodeGraphMeta(node, depthById);
+                const L = graph?.L;
+                const r = graph?.r;
+                const graphMeta = [];
+                if (L != null && Number.isFinite(L)) graphMeta.push(`트리 거리 L=${L}`);
+                if (r != null && Number.isFinite(r)) graphMeta.push(`방사 r=${r.toFixed(2)}`);
+                const graphLine = graphMeta.length ? `<div class="meta skill-tree-graph-meta">${graphMeta.join(' · ')}</div>` : '';
                 infoBox.innerHTML = `
                         <strong>${node.name}</strong>
                         ${info.descText ? `<div>${info.descText}</div>` : ''}
                         ${info.effectText ? `<div class="effect">${info.effectText}</div>` : ''}
+                        ${graphLine}
                         <div class="meta">${this.getSkillNodeStateLabelShort(node.id, unlocked)} · ${node.kind}</div>
                     `;
             };

@@ -278,6 +278,20 @@ const GAME_DATA = {
             mergedFrom: ['eden_lance', 'reckoning_bolt'],
             desc: '에덴의 창과 심판의 전류를 겹쳐 쏩니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
         },
+        'merged_holy_judgment': {
+            name: '성벽의 심판',
+            tags: ['attack', 'buff', 'holy', 'defense', 'merged'],
+            type: 'attack',
+            mergedFrom: ['holy_wall', 'smite'],
+            desc: '거룩한 방벽과 심판의 강타를 한 호흡에 묶었습니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+        },
+        'merged_aegis_dash': {
+            name: '신속 수호',
+            tags: ['attack', 'buff', 'defense', 'evade', 'spd', 'merged'],
+            type: 'attack',
+            mergedFrom: ['aegis_prayer', 'light_dash'],
+            desc: '수호의 기도와 광휘 질주를 연계합니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+        },
         'stick':      { name: '끈적이기', tags: ['monster', 'attack', 'debuff'], type: 'attack', effect: { atkMul: 1.0, spdDebuff: 0.8 } },
         'bite':       { name: '물어뜯기', tags: ['monster', 'attack'], type: 'attack', effect: { atkMul: 1.2 } },
         'wail':       { name: '통곡', tags: ['monster', 'attack', 'fear'], type: 'attack', effect: { atkMul: 0.8, fear: true } },
@@ -466,7 +480,7 @@ const GAME_DATA = {
                 { id: 'pilgrim_faith_4', name: '성가의 파문', kind: 'small', desc: '신앙 +1, 속도 +2', grants: { stats: { faith: 1, spd: 2 } }, position: { x: -7.2, y: -4.4 } },
                 { id: 'pilgrim_faith_5', name: '기도의 연쇄', kind: 'small', desc: '신앙 +1, PP +6', grants: { stats: { faith: 1, pp: 6 } }, position: { x: -8.6, y: -5.3 } },
                 { id: 'pilgrim_faith_6', name: '신성 결속', kind: 'notable', desc: '신앙 +2, 받는 피해 4% 감소', grants: { stats: { faith: 2 }, specials: { damageTakenMul: 0.96 } }, position: { x: -9.8, y: -6.2 } },
-                { id: 'pilgrim_active_holy_wall', name: '거룩한 방벽 해금', kind: 'active_unlock', desc: '액티브 스킬 [거룩한 방벽]을 배웁니다.', grants: { activeSkillId: 'holy_wall' }, position: { x: -11.2, y: -7.2 } },
+                { id: 'pilgrim_active_holy_wall', name: '성벽의 심판 해금', kind: 'active_unlock', desc: '합성 액티브 [성벽의 심판](거룩한 방벽+심판의 강타)을 배웁니다.', grants: { activeSkillId: 'merged_holy_judgment' }, position: { x: -11.2, y: -7.2 } },
                 { id: 'pilgrim_faith_final', name: '성역의 서약', kind: 'keystone', desc: '받는 피해 10% 감소', grants: { specials: { damageTakenMul: 0.9 } }, position: { x: -12.7, y: -8.3 } },
 
                 { id: 'pilgrim_atk_1', name: '신념의 일격', kind: 'small', desc: '공격 +2', grants: { stats: { atk: 2 } }, position: { x: 1.55, y: -0.72 } },
@@ -477,7 +491,7 @@ const GAME_DATA = {
                 { id: 'pilgrim_atk_4', name: '단죄의 발걸음', kind: 'small', desc: '공격 +3', grants: { stats: { atk: 3 } }, position: { x: 7.2, y: -4.4 } },
                 { id: 'pilgrim_atk_5', name: '성전의 박차', kind: 'small', desc: '공격 +2, 속도 +1', grants: { stats: { atk: 2, spd: 1 } }, position: { x: 8.6, y: -5.3 } },
                 { id: 'pilgrim_atk_6', name: '심판 예열', kind: 'notable', desc: '공격 +2, 치명타 +4%', grants: { stats: { atk: 2 }, specials: { critChance: 0.04 } }, position: { x: 9.8, y: -6.2 } },
-                { id: 'pilgrim_active_smite', name: '심판의 강타 해금', kind: 'active_unlock', desc: '액티브 스킬 [심판의 강타]를 배웁니다.', grants: { activeSkillId: 'smite' }, position: { x: 11.2, y: -7.2 } },
+                { id: 'pilgrim_active_smite', name: '성벽의 심판(동위)', kind: 'active_unlock', desc: '합성 액티브 [성벽의 심판]을 배웁니다.', grants: { activeSkillId: 'merged_holy_judgment' }, position: { x: 11.2, y: -7.2 } },
                 { id: 'pilgrim_valor_final', name: '순결한 심판', kind: 'keystone', desc: '치명타 확률 +8%', grants: { specials: { critChance: 0.08 } }, position: { x: 12.7, y: -8.3 } },
 
                 { id: 'pilgrim_def_1', name: '견고한 걸음', kind: 'small', desc: '방어 +1, HP +10', grants: { stats: { def: 1, hp: 10 } }, position: { x: 1.25, y: 1.35 } },
@@ -488,7 +502,7 @@ const GAME_DATA = {
                 { id: 'pilgrim_endurance', name: '수호자 본능', kind: 'notable', desc: 'HP +25, 방어 +2', grants: { stats: { hp: 25, def: 2 } }, position: { x: 6.5, y: 6.5 } },
                 { id: 'pilgrim_guard_hp_1', name: '침착한 호흡', kind: 'small', desc: 'HP +20', grants: { stats: { hp: 20 } }, position: { x: 7.8, y: 7.8 } },
                 { id: 'pilgrim_guard_hp_2', name: '철의 기도문', kind: 'small', desc: 'HP +20, 방어 +1', grants: { stats: { hp: 20, def: 1 } }, position: { x: 9.1, y: 9.2 } },
-                { id: 'pilgrim_active_aegis_prayer', name: '수호의 기도 해금', kind: 'active_unlock', desc: '액티브 스킬 [수호의 기도]를 배웁니다.', grants: { activeSkillId: 'aegis_prayer' }, position: { x: 10.6, y: 10.5 } },
+                { id: 'pilgrim_active_aegis_prayer', name: '신속 수호 해금', kind: 'active_unlock', desc: '합성 액티브 [신속 수호](수호의 기도+광휘 질주)를 배웁니다.', grants: { activeSkillId: 'merged_aegis_dash' }, position: { x: 10.6, y: 10.5 } },
                 { id: 'pilgrim_guard_final', name: '철벽의 맹세', kind: 'keystone', desc: '받는 피해 12% 감소', grants: { specials: { damageTakenMul: 0.88 } }, position: { x: 12.2, y: 12.1 } },
 
                 { id: 'pilgrim_spd_1', name: '빠른 발', kind: 'small', desc: '속도 +4', grants: { stats: { spd: 4 } }, position: { x: -1.25, y: 1.35 } },
@@ -499,12 +513,12 @@ const GAME_DATA = {
                 { id: 'pilgrim_spd_2', name: '빛의 보폭', kind: 'small', desc: '속도 +5', grants: { stats: { spd: 5 } }, position: { x: -6.5, y: 6.5 } },
                 { id: 'pilgrim_pp_2', name: '고요한 축적', kind: 'notable', desc: 'PP +12, 신앙 +1', grants: { stats: { pp: 12, faith: 1 } }, position: { x: -7.8, y: 7.8 } },
                 { id: 'pilgrim_swift_2', name: '순풍 포착', kind: 'small', desc: '속도 +4, PP +6', grants: { stats: { spd: 4, pp: 6 } }, position: { x: -9.1, y: 9.2 } },
-                { id: 'pilgrim_active_light_dash', name: '광휘 질주 해금', kind: 'active_unlock', desc: '액티브 스킬 [광휘 질주]를 배웁니다.', grants: { activeSkillId: 'light_dash' }, position: { x: -10.6, y: 10.5 } },
+                { id: 'pilgrim_active_light_dash', name: '신속 수호(동위)', kind: 'active_unlock', desc: '합성 액티브 [신속 수호]를 배웁니다.', grants: { activeSkillId: 'merged_aegis_dash' }, position: { x: -10.6, y: 10.5 } },
                 { id: 'pilgrim_agile_final', name: '바람의 서약', kind: 'keystone', desc: '속도 +6, 회피 +7%', grants: { stats: { spd: 6 }, specials: { evadeChance: 0.07 } }, position: { x: -12.2, y: 12.1 } },
 
-                { id: 'pilgrim_zeal', name: '열망의 심장', kind: 'notable', desc: '공격 피해 8% 증가', grants: { specials: { damageMul: 1.08 } }, position: { x: 0.08, y: -2.45 } },
+                { id: 'pilgrim_zeal', name: '열망의 심장', kind: 'notable', desc: '공격 피해 6% 증가', grants: { specials: { damageMul: 1.06 } }, position: { x: 0.08, y: -2.45 } },
                 { id: 'pilgrim_zeal_2', name: '타오르는 선서', kind: 'small', desc: '공격 +2, 피해 5% 증가', grants: { stats: { atk: 2 }, specials: { damageMul: 1.05 } }, position: { x: 0.08, y: -4.28 } },
-                { id: 'pilgrim_resolve', name: '불굴의 심장', kind: 'notable', desc: '치명타 확률 +5%', grants: { specials: { critChance: 0.05 } }, position: { x: -0.08, y: 2.52 } },
+                { id: 'pilgrim_resolve', name: '불굴의 심장', kind: 'notable', desc: '치명타 확률 +4%', grants: { specials: { critChance: 0.04 } }, position: { x: -0.08, y: 2.52 } },
                 { id: 'pilgrim_resolve_2', name: '굳건한 맹세', kind: 'small', desc: '방어 +2, 치명타 +3%', grants: { stats: { def: 2 }, specials: { critChance: 0.03 } }, position: { x: -0.08, y: 4.35 } },
                 { id: 'pilgrim_vow_mid', name: '중심 서약', kind: 'keystone', desc: 'HP 50% 이하일 때 피해 12% 증가', grants: { specials: { lowHpDamageMul: 1.12 } }, position: { x: 0, y: 6.4 } },
                 { id: 'pilgrim_vow_final', name: '순교자의 대서약', kind: 'keystone', desc: 'HP 50% 이하일 때 피해 20% 증가, 치명타 +5%', grants: { specials: { lowHpDamageMul: 1.2, critChance: 0.05 } }, position: { x: 0, y: 8.8 } },

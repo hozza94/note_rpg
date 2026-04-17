@@ -35,6 +35,8 @@
         melt(['radiant_volley', 'ember_sigil'], 'merged_volley_ember');
         melt(['mercy_breath', 'dawn_shelter'], 'merged_mercy_dawn');
         melt(['eden_lance', 'reckoning_bolt'], 'merged_lance_reckoning');
+        melt(['holy_wall', 'smite'], 'merged_holy_judgment');
+        melt(['aegis_prayer', 'light_dash'], 'merged_aegis_dash');
         this.state.player.activeSkillIds = ids;
     };
 
