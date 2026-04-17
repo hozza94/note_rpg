@@ -117,47 +117,175 @@
         resolveSkillFxType(skillData) {
             const id = String(skillData?.id || '');
             const tags = Array.isArray(skillData?.tags) ? skillData.tags.map(t => String(t)) : [];
+            if (id.includes('void') || id.includes('null') || id.includes('abyss')) return 'void';
+            if (id.includes('seraph') || id.includes('radiant') || id.includes('holy') || tags.includes('holy')) return 'holy';
+            if (id.includes('stone') || id.includes('mud') || id.includes('rampart') || id.includes('fortress')) return 'stone';
+            if (id.includes('blood') || id.includes('martyr') || tags.includes('fear')) return 'blood';
             if (id.includes('bolt') || tags.includes('lightning') || tags.includes('thunder')) return 'lightning';
+            if (id.includes('aegis') || id.includes('wall') || tags.includes('defense')) return 'shield';
+            if (id.includes('mercy') || id.includes('dawn') || tags.includes('heal')) return 'nova';
             if (id.includes('dash') || tags.includes('spd')) return 'dash';
             if (id.includes('ember') || tags.includes('fire')) return 'fire';
-            if (id.includes('smite') || id.includes('slash') || tags.includes('holy')) return 'slash';
+            if (id.includes('smite') || id.includes('slash')) return 'slash';
             return 'slash';
         },
         resolveSkillFxPreset(skillData, options = {}) {
             const id = String(skillData?.id || '');
             const fxType = options.fxType || this.resolveSkillFxType(skillData);
-            const base = { fxType, count: 1, interval: 70, emphasize: !!options.emphasize };
+            const base = {
+                fxType,
+                count: 1,
+                interval: 70,
+                lifetime: 560,
+                spreadX: 20,
+                spreadY: 14,
+                emphasize: !!options.emphasize
+            };
             const byId = {
                 basic_attack: { fxType: 'slash', count: 1, interval: 0 },
                 double_strike: { fxType: 'slash', count: 2, interval: 95 },
-                smite: { fxType: 'slash', count: 2, interval: 70, emphasize: true },
-                light_dash: { fxType: 'dash', count: 2, interval: 60 },
-                radiant_volley: { fxType: 'slash', count: 3, interval: 70 },
-                ember_sigil: { fxType: 'fire', count: 2, interval: 85 },
-                reckoning_bolt: { fxType: 'lightning', count: 2, interval: 90, emphasize: true },
-                eden_lance: { fxType: 'slash', count: 2, interval: 70 },
+                smite: { fxType: 'slash', count: 3, interval: 56, emphasize: true, spreadX: 32, spreadY: 18 },
+                holy_wall: { fxType: 'shield', count: 2, interval: 80, lifetime: 700, spreadX: 8, spreadY: 8 },
+                aegis_prayer: { fxType: 'shield', count: 3, interval: 72, lifetime: 720, spreadX: 10, spreadY: 10 },
+                light_dash: { fxType: 'dash', count: 3, interval: 48, spreadX: 36, spreadY: 16 },
+                radiant_volley: { fxType: 'slash', count: 4, interval: 56, spreadX: 34, spreadY: 18 },
+                ember_sigil: { fxType: 'fire', count: 3, interval: 75, spreadX: 30, spreadY: 18 },
+                reckoning_bolt: { fxType: 'lightning', count: 3, interval: 72, emphasize: true, spreadX: 18, spreadY: 14 },
+                eden_lance: { fxType: 'slash', count: 3, interval: 56, spreadX: 30, spreadY: 16 },
+                purify: { fxType: 'nova', count: 2, interval: 68, lifetime: 620, spreadX: 8, spreadY: 8 },
+                mercy_breath: { fxType: 'nova', count: 2, interval: 62, lifetime: 640, spreadX: 10, spreadY: 8 },
+                dawn_shelter: { fxType: 'shield', count: 2, interval: 72, lifetime: 700, spreadX: 10, spreadY: 8 },
                 proclaim: { fxType: 'slash', count: 1, interval: 0 },
-                martyr_brand: { fxType: 'slash', count: 2, interval: 80, emphasize: true }
+                solemn_bastion: { fxType: 'shield', count: 3, interval: 70, lifetime: 740, spreadX: 10, spreadY: 10 },
+                martyr_brand: { fxType: 'slash', count: 4, interval: 60, emphasize: true, spreadX: 34, spreadY: 20 },
+                merged_volley_ember: {
+                    sequence: [
+                        { fxType: 'fire', count: 2, interval: 52, spreadX: 24, spreadY: 16 },
+                        { fxType: 'slash', count: 3, interval: 48, spreadX: 32, spreadY: 18, emphasize: true }
+                    ]
+                },
+                merged_mercy_dawn: {
+                    sequence: [
+                        { fxType: 'nova', count: 2, interval: 58, lifetime: 680, spreadX: 8, spreadY: 8 },
+                        { fxType: 'shield', count: 2, interval: 70, lifetime: 760, spreadX: 8, spreadY: 8 }
+                    ]
+                },
+                merged_lance_reckoning: {
+                    sequence: [
+                        { fxType: 'lightning', count: 2, interval: 62, spreadX: 18, spreadY: 12 },
+                        { fxType: 'slash', count: 3, interval: 56, spreadX: 32, spreadY: 18, emphasize: true }
+                    ]
+                },
+                merged_holy_judgment: {
+                    sequence: [
+                        { fxType: 'shield', count: 2, interval: 72, lifetime: 720, spreadX: 8, spreadY: 8 },
+                        { fxType: 'slash', count: 3, interval: 54, spreadX: 30, spreadY: 16, emphasize: true }
+                    ]
+                },
+                merged_aegis_dash: {
+                    sequence: [
+                        { fxType: 'shield', count: 2, interval: 72, lifetime: 700, spreadX: 8, spreadY: 8 },
+                        { fxType: 'dash', count: 3, interval: 48, spreadX: 34, spreadY: 16, emphasize: true }
+                    ]
+                },
+                boss_wraith_haunt: {
+                    sequence: [
+                        { fxType: 'void', count: 2, interval: 58, lifetime: 640, spreadX: 16, spreadY: 14 },
+                        { fxType: 'blood', count: 2, interval: 70, lifetime: 620, spreadX: 16, spreadY: 14 }
+                    ]
+                },
+                boss_wraith_soul_split: {
+                    sequence: [
+                        { fxType: 'void', count: 3, interval: 52, lifetime: 660, spreadX: 18, spreadY: 14 },
+                        { fxType: 'slash', count: 2, interval: 60, spreadX: 30, spreadY: 16, emphasize: true }
+                    ]
+                },
+                boss_mud_grasp: { fxType: 'stone', count: 3, interval: 62, lifetime: 700, spreadX: 20, spreadY: 16 },
+                boss_mud_quake: {
+                    sequence: [
+                        { fxType: 'stone', count: 2, interval: 48, lifetime: 700, spreadX: 22, spreadY: 14 },
+                        { fxType: 'dash', count: 2, interval: 54, spreadX: 36, spreadY: 12, emphasize: true }
+                    ]
+                },
+                boss_seraph_gaze: {
+                    sequence: [
+                        { fxType: 'holy', count: 2, interval: 60, lifetime: 620, spreadX: 12, spreadY: 10 },
+                        { fxType: 'lightning', count: 2, interval: 64, spreadX: 14, spreadY: 10, emphasize: true }
+                    ]
+                },
+                boss_seraph_petrify: {
+                    sequence: [
+                        { fxType: 'holy', count: 2, interval: 64, lifetime: 640, spreadX: 12, spreadY: 10 },
+                        { fxType: 'stone', count: 3, interval: 52, lifetime: 760, spreadX: 18, spreadY: 12, emphasize: true }
+                    ]
+                },
+                boss_hydra_maelstrom: {
+                    sequence: [
+                        { fxType: 'void', count: 2, interval: 58, lifetime: 680, spreadX: 20, spreadY: 14 },
+                        { fxType: 'lightning', count: 2, interval: 56, spreadX: 16, spreadY: 12 },
+                        { fxType: 'blood', count: 2, interval: 58, spreadX: 18, spreadY: 14, emphasize: true }
+                    ]
+                },
+                boss_guardian_verdict: {
+                    sequence: [
+                        { fxType: 'holy', count: 2, interval: 64, lifetime: 640, spreadX: 12, spreadY: 10 },
+                        { fxType: 'shield', count: 2, interval: 66, lifetime: 760, spreadX: 12, spreadY: 10 },
+                        { fxType: 'slash', count: 3, interval: 52, spreadX: 30, spreadY: 16, emphasize: true }
+                    ]
+                },
+                boss_a_iron_hide: { fxType: 'shield', count: 2, interval: 70, lifetime: 760, spreadX: 10, spreadY: 8 },
+                boss_a_war_drum: { fxType: 'blood', count: 2, interval: 68, lifetime: 640, spreadX: 16, spreadY: 12 },
+                boss_a_void_surge: { fxType: 'void', count: 3, interval: 54, lifetime: 660, spreadX: 20, spreadY: 14 },
+                boss_a_rampart: { fxType: 'stone', count: 3, interval: 60, lifetime: 760, spreadX: 18, spreadY: 12 },
+                boss_a_overdrive: {
+                    sequence: [
+                        { fxType: 'lightning', count: 2, interval: 58, spreadX: 16, spreadY: 10 },
+                        { fxType: 'blood', count: 2, interval: 56, spreadX: 18, spreadY: 12, emphasize: true }
+                    ]
+                },
+                boss_a_fortress: { fxType: 'stone', count: 2, interval: 66, lifetime: 760, spreadX: 16, spreadY: 12 },
+                boss_a_bloodlust: { fxType: 'blood', count: 3, interval: 54, lifetime: 650, spreadX: 18, spreadY: 12, emphasize: true }
             };
+            if (id.startsWith('boss_') && !byId[id]) {
+                return { ...base, fxType: this.resolveSkillFxType(skillData), count: 2, interval: 62, spreadX: 18, spreadY: 12, lifetime: 660, emphasize: !!options.emphasize };
+            }
             return { ...base, ...(byId[id] || {}) };
+        },
+        emitSkillFxBursts(layer, preset, delay = 0) {
+            const count = Math.max(1, Math.min(5, Number(preset.count || 1)));
+            const interval = Math.max(0, Number(preset.interval || 0));
+            const lifetime = Math.max(320, Number(preset.lifetime || 560));
+            const spreadX = Math.max(0, Number(preset.spreadX || 20));
+            const spreadY = Math.max(0, Number(preset.spreadY || 14));
+            const fxType = String(preset.fxType || 'slash');
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const burst = document.createElement('div');
+                    burst.className = `battle-skill-fx battle-skill-fx--${fxType}`;
+                    if (preset.emphasize && i === 0) burst.classList.add('is-emphasize');
+                    burst.style.left = `${Math.round((Math.random() - 0.5) * spreadX)}px`;
+                    burst.style.top = `${Math.round((Math.random() - 0.5) * spreadY)}px`;
+                    layer.appendChild(burst);
+                    setTimeout(() => burst.remove(), lifetime);
+                }, delay + (i * interval));
+            }
         },
         spawnMonsterSkillFx(skillData, options = {}) {
             const layer = this.ensureMonsterSkillFxLayer();
             if (!layer) return;
             const preset = this.resolveSkillFxPreset(skillData, options);
-            const count = Math.max(1, Math.min(4, Number(preset.count || 1)));
-            const interval = Math.max(0, Number(preset.interval || 0));
-            for (let i = 0; i < count; i++) {
-                setTimeout(() => {
-                    const burst = document.createElement('div');
-                    burst.className = `battle-skill-fx battle-skill-fx--${preset.fxType}`;
-                    if (preset.emphasize && i === 0) burst.classList.add('is-emphasize');
-                    burst.style.left = `${Math.round((Math.random() - 0.5) * 20)}px`;
-                    burst.style.top = `${Math.round((Math.random() - 0.5) * 14)}px`;
-                    layer.appendChild(burst);
-                    setTimeout(() => burst.remove(), 560);
-                }, i * interval);
+            if (Array.isArray(preset.sequence) && preset.sequence.length > 0) {
+                let cursor = 0;
+                for (const seq of preset.sequence) {
+                    const merged = { ...preset, ...seq };
+                    this.emitSkillFxBursts(layer, merged, cursor);
+                    const count = Math.max(1, Math.min(5, Number(merged.count || 1)));
+                    const interval = Math.max(0, Number(merged.interval || 0));
+                    cursor += Math.max(120, count * interval + 80);
+                }
+                return;
             }
+            this.emitSkillFxBursts(layer, preset, 0);
         },
         startBattle(monster, options = {}) {
             monster.maxHp = monster.stats.hp;
@@ -398,22 +526,85 @@
             const g = this.state.player.pp - before;
             if (g > 0) this.log(`[영력 회수] PP +${g}`, 'effect');
         },
-        /** 평타·공격 스킬 공통: 화면 흔들림·치명 플래시 */
-        triggerPlayerPhysicalHitFx(isCrit) {
+        resolveImpactTheme(skillData) {
+            const id = String(skillData?.id || '');
+            const tags = Array.isArray(skillData?.tags) ? skillData.tags.map(t => String(t)) : [];
+            if (id.includes('void') || id.includes('abyss') || id.includes('null')) return 'void';
+            if (id.includes('seraph') || id.includes('holy') || tags.includes('holy')) return 'holy';
+            if (id.includes('stone') || id.includes('mud') || id.includes('fortress') || id.includes('rampart')) return 'stone';
+            if (id.includes('blood') || id.includes('martyr') || tags.includes('fear')) return 'blood';
+            if (id.includes('ember') || tags.includes('fire')) return 'fire';
+            if (id.includes('dash') || tags.includes('spd')) return 'dash';
+            if (id.includes('bolt') || tags.includes('lightning') || tags.includes('thunder')) return 'lightning';
+            return 'default';
+        },
+        clearImpactFxClasses(sceneEl, appEl) {
+            ['shake-light', 'shake', 'shake-heavy', 'shake-brutal'].forEach(c => sceneEl?.classList.remove(c));
+            [
+                'hit-flash', 'crit-flash',
+                'hit-flash-holy', 'hit-flash-void', 'hit-flash-stone', 'hit-flash-blood',
+                'hit-flash-fire', 'hit-flash-dash', 'hit-flash-lightning'
+            ].forEach(c => appEl?.classList.remove(c));
+        },
+        /** 스킬 타입별 화면 흔들림·플래시 */
+        triggerPlayerPhysicalHitFx(isCrit, skillData = null) {
             const sceneEl = document.getElementById('battle-scene');
             const appEl = document.getElementById('app');
             if (!sceneEl) return;
-            if (isCrit) {
-                sceneEl.classList.add('shake-heavy');
-                appEl?.classList.add('crit-flash');
-                setTimeout(() => {
-                    sceneEl.classList.remove('shake-heavy');
-                    appEl?.classList.remove('crit-flash');
-                }, 500);
-            } else {
-                sceneEl.classList.add('shake');
-                setTimeout(() => sceneEl.classList.remove('shake'), 400);
-            }
+            const theme = this.resolveImpactTheme(skillData);
+            const flashByTheme = {
+                holy: 'hit-flash-holy',
+                void: 'hit-flash-void',
+                stone: 'hit-flash-stone',
+                blood: 'hit-flash-blood',
+                fire: 'hit-flash-fire',
+                dash: 'hit-flash-dash',
+                lightning: 'hit-flash-lightning',
+                default: 'hit-flash'
+            };
+            const shakeByTheme = {
+                holy: 'shake',
+                void: 'shake-heavy',
+                stone: 'shake-brutal',
+                blood: 'shake-heavy',
+                fire: 'shake',
+                dash: 'shake-light',
+                lightning: 'shake-heavy',
+                default: 'shake'
+            };
+            const shakeClass = isCrit ? 'shake-brutal' : (shakeByTheme[theme] || 'shake');
+            const flashClass = isCrit ? 'crit-flash' : (flashByTheme[theme] || 'hit-flash');
+            this.clearImpactFxClasses(sceneEl, appEl);
+            sceneEl.classList.add(shakeClass);
+            appEl?.classList.add(flashClass);
+            setTimeout(() => {
+                sceneEl.classList.remove(shakeClass);
+                appEl?.classList.remove(flashClass);
+            }, isCrit ? 520 : 360);
+        },
+        triggerMonsterImpactFx(skillData = null) {
+            const sceneEl = document.getElementById('battle-scene');
+            const appEl = document.getElementById('app');
+            if (!sceneEl) return;
+            const theme = this.resolveImpactTheme(skillData);
+            const shake = (theme === 'stone' || theme === 'void') ? 'shake-heavy' : 'shake';
+            const flash = {
+                holy: 'hit-flash-holy',
+                void: 'hit-flash-void',
+                stone: 'hit-flash-stone',
+                blood: 'hit-flash-blood',
+                fire: 'hit-flash-fire',
+                dash: 'hit-flash-dash',
+                lightning: 'hit-flash-lightning',
+                default: 'hit-flash'
+            }[theme] || 'hit-flash';
+            this.clearImpactFxClasses(sceneEl, appEl);
+            sceneEl.classList.add(shake);
+            appEl?.classList.add(flash);
+            setTimeout(() => {
+                sceneEl.classList.remove(shake);
+                appEl?.classList.remove(flash);
+            }, 300);
         },
         playerAttack() {
             if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
@@ -440,7 +631,7 @@
                 this.log(`${m.name}의 형상이 흔들립니다... 마지막 저항이 시작됩니다!`, 'effect');
             }
             const targetEl = document.querySelector('.monster-card');
-            this.triggerPlayerPhysicalHitFx(isCrit);
+            this.triggerPlayerPhysicalHitFx(isCrit, { id: 'basic_attack', tags: ['attack', 'slash'] });
             this.spawnMonsterSkillFx({ id: 'basic_attack', tags: ['attack', 'slash'] }, { fxType: 'slash', emphasize: !!isCrit });
             this.spawnDamagePopup(targetEl, dmg, isCrit, false);
             this.log(`${m.name}에게 ${dmg}${isCrit ? '!!! (강력한 일격)' : ''}의 피해를 입혔습니다!`, 'player');
@@ -501,8 +692,7 @@
             this.applySkillEffectToTarget(skillEffect, true, m);
             const targetEl = document.querySelector('.character-pane');
             this.spawnDamagePopup(targetEl, appliedDmg, false, true);
-            document.getElementById('app').classList.add('hit-flash');
-            setTimeout(() => document.getElementById('app').classList.remove('hit-flash'), 200);
+            this.triggerMonsterImpactFx(skillData || { id: 'monster_attack', tags: ['attack'] });
             this.log(skillData ? `${m.name}의 [${skillData.name}]! ${appliedDmg}의 피해를 입었습니다.` : `${m.name}의 공격! ${appliedDmg}의 피해를 입었습니다.`, 'enemy');
             this.updateUI();
             if (p.hp <= 0) return this.loseBattle();
@@ -767,7 +957,7 @@
                     ? { ...effect, spdDebuff: 1 - (1 - effect.spdDebuff) * dmgMul }
                     : effect;
                 this.applySkillEffectToTarget(effDebuff, false);
-                this.triggerPlayerPhysicalHitFx(isCrit);
+                this.triggerPlayerPhysicalHitFx(isCrit, subSkillData);
                 this.spawnMonsterSkillFx(subSkillData, { emphasize: !!isCrit });
                 this.spawnDamagePopup(targetEl, dmg, isCrit, false);
                 this.log(`${m.name}에게 ${dmg}${isCrit ? '!!!' : ''} (합성 구성)`, 'player');
@@ -912,7 +1102,7 @@
 
                 m.hp -= dmg;
                 this.applySkillEffectToTarget(effect, false);
-                this.triggerPlayerPhysicalHitFx(isCrit);
+                this.triggerPlayerPhysicalHitFx(isCrit, skillData);
                 this.spawnMonsterSkillFx(skillData, { emphasize: !!isCrit });
                 this.spawnDamagePopup(targetEl, dmg, isCrit, false);
                 this.log(`${m.name}에게 ${dmg}${isCrit ? '!!! (강력한 일격)' : ''}의 피해를 입혔습니다!`, "player");

@@ -1566,6 +1566,102 @@ body {
     animation: skillFxDash 0.4s ease-out forwards;
 }
 
+.battle-skill-fx--shield::before {
+    content: "";
+    position: absolute;
+    inset: 12% 16%;
+    border-radius: 14px;
+    border: 2px solid rgba(180, 236, 255, 0.88);
+    box-shadow:
+        0 0 0 2px rgba(130, 210, 255, 0.22) inset,
+        0 0 12px rgba(130, 210, 255, 0.45);
+    background: radial-gradient(circle at 50% 55%, rgba(220, 244, 255, 0.22), rgba(120, 180, 255, 0.03) 70%);
+    animation: skillFxShield 0.62s ease-out forwards;
+}
+
+.battle-skill-fx--nova::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 230, 0.9);
+    background: radial-gradient(circle, rgba(255, 250, 200, 0.55) 0%, rgba(200, 235, 255, 0.2) 48%, rgba(200, 235, 255, 0) 70%);
+    transform: translate(-50%, -50%) scale(0.56);
+    box-shadow: 0 0 16px rgba(235, 248, 255, 0.55);
+    animation: skillFxNova 0.56s ease-out forwards;
+}
+
+.battle-skill-fx--holy::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 88px;
+    height: 88px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 244, 190, 0.92);
+    background:
+        radial-gradient(circle at 50% 50%, rgba(255, 248, 210, 0.62) 0%, rgba(255, 233, 150, 0.24) 44%, rgba(255, 233, 150, 0) 70%),
+        conic-gradient(from 0deg, rgba(255, 250, 220, 0) 0deg, rgba(255, 246, 186, 0.6) 120deg, rgba(255, 250, 220, 0) 240deg, rgba(255, 246, 186, 0.55) 360deg);
+    transform: translate(-50%, -50%) scale(0.58);
+    box-shadow: 0 0 16px rgba(255, 238, 170, 0.55);
+    animation: skillFxHoly 0.58s ease-out forwards;
+}
+
+.battle-skill-fx--void::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 98px;
+    height: 98px;
+    border-radius: 50%;
+    border: 2px solid rgba(166, 120, 255, 0.76);
+    background:
+        radial-gradient(circle, rgba(114, 88, 198, 0.52) 0%, rgba(48, 36, 95, 0.3) 45%, rgba(26, 18, 56, 0) 72%),
+        radial-gradient(circle at 32% 36%, rgba(206, 172, 255, 0.26), rgba(206, 172, 255, 0) 46%);
+    transform: translate(-50%, -50%) scale(0.52);
+    box-shadow: 0 0 18px rgba(126, 88, 228, 0.58);
+    animation: skillFxVoid 0.62s ease-out forwards;
+}
+
+.battle-skill-fx--stone::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 104px;
+    height: 62px;
+    border-radius: 12px;
+    border: 2px solid rgba(196, 176, 142, 0.84);
+    background:
+        linear-gradient(160deg, rgba(168, 142, 110, 0.44), rgba(104, 86, 66, 0.28)),
+        repeating-linear-gradient(45deg, rgba(228, 209, 175, 0.22) 0 6px, rgba(120, 100, 76, 0.12) 6px 12px);
+    transform: translate(-50%, -50%) scale(0.6) rotate(-6deg);
+    box-shadow: 0 0 14px rgba(164, 136, 96, 0.42);
+    animation: skillFxStone 0.6s ease-out forwards;
+}
+
+.battle-skill-fx--blood::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(255, 96, 96, 0.55) 0%, rgba(176, 40, 60, 0.42) 42%, rgba(88, 8, 20, 0) 74%),
+        conic-gradient(from 180deg, rgba(255, 130, 130, 0.18), rgba(255, 130, 130, 0) 40%, rgba(255, 130, 130, 0.2) 78%, rgba(255, 130, 130, 0));
+    border: 2px solid rgba(255, 132, 132, 0.7);
+    transform: translate(-50%, -50%) scale(0.56);
+    box-shadow: 0 0 16px rgba(196, 44, 66, 0.52);
+    animation: skillFxBlood 0.56s ease-out forwards;
+}
+
 .battle-skill-fx.is-emphasize::after {
     content: "";
     position: absolute;
@@ -1597,6 +1693,42 @@ body {
     0% { opacity: 0; transform: translateX(-30px); }
     20% { opacity: 1; }
     100% { opacity: 0; transform: translateX(24px); }
+}
+
+@keyframes skillFxShield {
+    0% { opacity: 0; transform: scale(0.86); }
+    35% { opacity: 1; }
+    100% { opacity: 0; transform: scale(1.08); }
+}
+
+@keyframes skillFxNova {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.52); }
+    25% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.25); }
+}
+
+@keyframes skillFxHoly {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(-10deg); }
+    28% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.24) rotate(14deg); }
+}
+
+@keyframes skillFxVoid {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.46); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.3); }
+}
+
+@keyframes skillFxStone {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.56) rotate(-12deg); }
+    34% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.12) rotate(8deg); }
+}
+
+@keyframes skillFxBlood {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.48); }
+    26% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.22); }
 }
 
 @keyframes skillFxEmphasize {
@@ -1708,6 +1840,10 @@ body {
     animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
 }
 
+.shake-light {
+    animation: shakeLight 0.28s cubic-bezier(.36,.07,.19,.97) both;
+}
+
 @keyframes shake {
     10%, 90% { transform: translate3d(-1px, 0, 0); }
     20%, 80% { transform: translate3d(2px, 0, 0); }
@@ -1715,13 +1851,63 @@ body {
     40%, 60% { transform: translate3d(4px, 0, 0); }
 }
 
+@keyframes shakeLight {
+    10%, 90% { transform: translate3d(-0.5px, 0, 0); }
+    20%, 80% { transform: translate3d(1.5px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-2.5px, 0, 0); }
+    40%, 60% { transform: translate3d(2.5px, 0, 0); }
+}
+
 .hit-flash {
     animation: hitFlash 0.2s ease-out;
 }
 
+.hit-flash-holy { animation: hitFlashHoly 0.24s ease-out; }
+.hit-flash-void { animation: hitFlashVoid 0.24s ease-out; }
+.hit-flash-stone { animation: hitFlashStone 0.24s ease-out; }
+.hit-flash-blood { animation: hitFlashBlood 0.24s ease-out; }
+.hit-flash-fire { animation: hitFlashFire 0.22s ease-out; }
+.hit-flash-dash { animation: hitFlashDash 0.2s ease-out; }
+.hit-flash-lightning { animation: hitFlashLightning 0.2s ease-out; }
+
 @keyframes hitFlash {
     0% { background-color: transparent; }
     50% { background-color: rgba(255, 255, 255, 0.2); }
+    100% { background-color: transparent; }
+}
+
+@keyframes hitFlashHoly {
+    0% { background-color: rgba(255, 247, 191, 0.46); }
+    100% { background-color: transparent; }
+}
+
+@keyframes hitFlashVoid {
+    0% { background-color: rgba(125, 86, 255, 0.42); }
+    100% { background-color: transparent; }
+}
+
+@keyframes hitFlashStone {
+    0% { background-color: rgba(173, 143, 97, 0.34); }
+    100% { background-color: transparent; }
+}
+
+@keyframes hitFlashBlood {
+    0% { background-color: rgba(194, 48, 66, 0.36); }
+    100% { background-color: transparent; }
+}
+
+@keyframes hitFlashFire {
+    0% { background-color: rgba(240, 120, 60, 0.34); }
+    100% { background-color: transparent; }
+}
+
+@keyframes hitFlashDash {
+    0% { background-color: rgba(120, 210, 255, 0.28); }
+    100% { background-color: transparent; }
+}
+
+@keyframes hitFlashLightning {
+    0% { background-color: rgba(126, 196, 255, 0.34); }
     100% { background-color: transparent; }
 }
 
@@ -1833,10 +2019,20 @@ body {
     animation: shakeHeavy 0.5s cubic-bezier(.36,.07,.19,.97) both;
 }
 
+.shake-brutal {
+    animation: shakeBrutal 0.56s cubic-bezier(.36,.07,.19,.97) both;
+}
+
 @keyframes shakeHeavy {
     0%, 100% { transform: translate3d(0, 0, 0); }
     10%, 30%, 50%, 70%, 90% { transform: translate3d(-6px, 0, 0); }
     20%, 40%, 60%, 80% { transform: translate3d(6px, 0, 0); }
+}
+
+@keyframes shakeBrutal {
+    0%, 100% { transform: translate3d(0, 0, 0); }
+    10%, 30%, 50%, 70%, 90% { transform: translate3d(-9px, 0, 0); }
+    20%, 40%, 60%, 80% { transform: translate3d(9px, 0, 0); }
 }
 
 .crit-flash {
@@ -2202,6 +2398,19 @@ body {
 }
 
 .skill-collapse-body {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    padding: 0 10px 0;
+    transition:
+        max-height var(--collapse-dur, 220ms) cubic-bezier(.3, .72, .3, 1),
+        opacity calc(var(--collapse-dur, 220ms) * 0.7) ease,
+        padding var(--collapse-dur, 220ms) ease;
+}
+
+.skill-collapse[open] .skill-collapse-body {
+    max-height: var(--collapse-max, 520px);
+    opacity: 1;
     padding: 0 10px 10px;
 }
 

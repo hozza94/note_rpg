@@ -20,6 +20,31 @@
             const idx = order.indexOf(g);
             return idx >= 0 ? idx : 0;
         },
+        /** 접힘 콘텐츠 높이에 맞춰 애니메이션 길이/최대높이를 동적으로 계산 */
+        setupDynamicSkillCollapse(rootEl) {
+            const root = rootEl || document;
+            const detailsList = Array.from(root.querySelectorAll('details.skill-collapse'));
+            if (!detailsList.length) return;
+            const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+            const measureAndApply = (detailsEl) => {
+                const body = detailsEl.querySelector('.skill-collapse-body');
+                if (!body) return;
+                const height = Math.max(0, Math.ceil(body.scrollHeight || 0));
+                const dur = clamp(Math.round(120 + height * 0.35), 140, 540);
+                detailsEl.style.setProperty('--collapse-max', `${height}px`);
+                detailsEl.style.setProperty('--collapse-dur', `${dur}ms`);
+            };
+            detailsList.forEach((el) => {
+                measureAndApply(el);
+                el.addEventListener('toggle', () => {
+                    measureAndApply(el);
+                    this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
+                });
+            });
+            // 폰트/이미지 로딩 후 실제 높이로 재보정
+            requestAnimationFrame(() => detailsList.forEach(measureAndApply));
+            setTimeout(() => detailsList.forEach(measureAndApply), 180);
+        },
         renderTabContent(tabId) {
             const container = document.getElementById('inventory-list');
             container.innerHTML = '';
@@ -165,6 +190,7 @@
 
                 const openTreeBtn = section.querySelector('#btn-open-skilltree');
                 if (openTreeBtn) openTreeBtn.addEventListener('click', () => this.openSkillTreeModal());
+                this.setupDynamicSkillCollapse(section);
             }
             this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
         }
@@ -441,6 +467,7 @@
                     ownedWrap.appendChild(row);
                 });
             }
+            this.setupDynamicSkillCollapse(wrap);
         }
     });
 })();
