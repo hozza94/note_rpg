@@ -2,6 +2,17 @@
 (function () {
     if (typeof window === 'undefined' || typeof window.GameEngine === 'undefined') return;
     Object.assign(window.GameEngine.prototype, {
+        ensureDefaultAvatarUnlocks() {
+            const defaults = window.GAME_DATA?.avatars?.defaultUnlockedIds;
+            if (!Array.isArray(defaults) || defaults.length === 0) return;
+            if (!Array.isArray(this.state.player.unlockedAvatarIds)) {
+                this.state.player.unlockedAvatarIds = [];
+            }
+            const merged = new Set(this.state.player.unlockedAvatarIds);
+            defaults.forEach((id) => merged.add(id));
+            this.state.player.unlockedAvatarIds = Array.from(merged);
+        }
+,
         getAvatarCatalog() {
             const dataList = window.GAME_DATA?.avatars?.list;
             if (Array.isArray(dataList) && dataList.length) return dataList;
@@ -46,6 +57,7 @@
         syncSettingsAvatarRadios() {
             const host = document.getElementById('settings-avatar-options');
             if (!host) return;
+            this.ensureDefaultAvatarUnlocks();
             const catalog = this.getAvatarCatalog();
             const unlockedIds = this.state.player.unlockedAvatarIds || [];
             let selectedId = this.state.player.selectedAvatarId || 'male_base';
