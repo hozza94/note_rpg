@@ -17,7 +17,10 @@
     "portrait_llll",
     "portrait_duct",
     "pilgrim_silhouette",
-    "equipment_preview_gemini"
+    "equipment_preview_gemini",
+    "beauty",
+    "beauty_1",
+    "beauty_2"
   ],
   "list": [
     {
@@ -124,6 +127,33 @@
       "label": "장비 합성 프리뷰",
       "gender": "female",
       "file": "gemini_equipment_avatar.png",
+      "rarity": "extra",
+      "unlockType": "default",
+      "unlockHint": "기본 해금"
+    },
+    {
+      "id": "beauty",
+      "label": "뷰티 (석양)",
+      "gender": "female",
+      "file": "beauty.png",
+      "rarity": "extra",
+      "unlockType": "default",
+      "unlockHint": "기본 해금"
+    },
+    {
+      "id": "beauty_1",
+      "label": "뷰티 변형 1",
+      "gender": "female",
+      "file": "beauty_1.png",
+      "rarity": "extra",
+      "unlockType": "default",
+      "unlockHint": "기본 해금"
+    },
+    {
+      "id": "beauty_2",
+      "label": "뷰티 변형 2",
+      "gender": "female",
+      "file": "beauty_2.png",
       "rarity": "extra",
       "unlockType": "default",
       "unlockHint": "기본 해금"

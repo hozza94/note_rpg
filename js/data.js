@@ -119,7 +119,8 @@ const GAME_DATA = {
         defaultUnlockedIds: [
             'male_base', 'female_aa', 'female_swim', 'female_full', 'female_l', 'female_aa_alt',
             'sketch_portrait_a', 'portrait_lll', 'portrait_llll', 'portrait_duct',
-            'pilgrim_silhouette', 'equipment_preview_gemini'
+            'pilgrim_silhouette', 'equipment_preview_gemini',
+            'beauty', 'beauty_1', 'beauty_2'
         ],
         list: [
             { id: 'male_base', label: '남성 기본', gender: 'male', file: 'Avatar_M.png', rarity: 'base', unlockType: 'default', unlockHint: '기본 해금' },
@@ -133,7 +134,10 @@ const GAME_DATA = {
             { id: 'portrait_llll', label: '추가 초상 (llll)', gender: 'female', file: 'llll.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
             { id: 'portrait_duct', label: '추가 초상 (duct)', gender: 'male', file: 'duct.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
             { id: 'pilgrim_silhouette', label: '순례자 실루엣 (SVG)', gender: 'male', file: 'pilgrim_avatar.svg', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
-            { id: 'equipment_preview_gemini', label: '장비 합성 프리뷰', gender: 'female', file: 'gemini_equipment_avatar.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' }
+            { id: 'equipment_preview_gemini', label: '장비 합성 프리뷰', gender: 'female', file: 'gemini_equipment_avatar.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'beauty', label: '뷰티 (석양)', gender: 'female', file: 'beauty.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'beauty_1', label: '뷰티 변형 1', gender: 'female', file: 'beauty_1.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' },
+            { id: 'beauty_2', label: '뷰티 변형 2', gender: 'female', file: 'beauty_2.png', rarity: 'extra', unlockType: 'default', unlockHint: '기본 해금' }
         ]
     },
 
