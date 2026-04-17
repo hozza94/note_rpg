@@ -64,6 +64,8 @@ class GameEngine {
             }
         }
 
+        this.bindMainLayoutScrollHints();
+
         const savedData = window.StorageManager.load();
         if (savedData) {
             this.state = savedData;
@@ -87,6 +89,8 @@ class GameEngine {
         this.updateUI();
         this.renderTabContent('inventory'); // 추가: 게임 시작 시 인벤토리 목록 렌더링
         this.renderEquipmentPanel();
+        this.refreshScrollHint(document.querySelector('.character-pane-scroll-body'));
+        this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
         this.log("세상이 회색빛으로 물들었습니다. 당신의 순례는 여기서부터 시작됩니다.", "system");
     }
 
@@ -266,6 +270,8 @@ class GameEngine {
         entry.innerText = message;
         logContainer.appendChild(entry);
         logContainer.scrollTop = logContainer.scrollHeight;
+        logContainer.dispatchEvent(new Event('scroll'));
+        this.refreshScrollHint(logContainer);
     }
 
     /** 로그 HTML(신뢰 가능한 문자열만 전달 — 사용자 입력은 escapeLogHtml 처리) */
@@ -276,6 +282,8 @@ class GameEngine {
         entry.innerHTML = html;
         logContainer.appendChild(entry);
         logContainer.scrollTop = logContainer.scrollHeight;
+        logContainer.dispatchEvent(new Event('scroll'));
+        this.refreshScrollHint(logContainer);
     }
 
     escapeLogHtml(text) {

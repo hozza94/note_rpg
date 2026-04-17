@@ -52,12 +52,32 @@
                 const atBottom = scrollEl.scrollTop + scrollEl.clientHeight >= scrollEl.scrollHeight - 2;
                 wrap.classList.toggle('is-scroll-hint-visible', overflow && !atBottom);
             };
+            if (scrollEl._scrollHintUpdate) {
+                requestAnimationFrame(update);
+                return;
+            }
+            scrollEl._scrollHintUpdate = update;
             scrollEl.addEventListener('scroll', update, { passive: true });
             if (typeof ResizeObserver !== 'undefined') {
                 const ro = new ResizeObserver(() => requestAnimationFrame(update));
                 ro.observe(scrollEl);
+                scrollEl._scrollHintResizeObserver = ro;
             }
             requestAnimationFrame(update);
+        },
+
+        /** 메인 레이아웃(캐릭터 패널·전투 로그·우측 탭) 스크롤 힌트 — DOM 준비 후 한 번 호출 */
+        bindMainLayoutScrollHints() {
+            this.bindModalScrollHint(document.querySelector('.character-pane-scroll-body'));
+            this.bindModalScrollHint(document.getElementById('game-log'));
+            this.bindModalScrollHint(document.querySelector('.tab-scroll-body'));
+        },
+
+        /** 이미 바인딩된 스크롤 영역의 힌트만 갱신(탭·장비 패널 재렌더 후) */
+        refreshScrollHint(scrollEl) {
+            if (scrollEl && scrollEl._scrollHintUpdate) {
+                requestAnimationFrame(() => scrollEl._scrollHintUpdate());
+            }
         },
         getFacilityHubMenus() {
             return [

@@ -27,6 +27,7 @@
 
             if (tabId === 'relics') {
                 this.renderRelicsTab(container);
+                this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
                 return;
             }
 
@@ -165,6 +166,7 @@
                 const openTreeBtn = section.querySelector('#btn-open-skilltree');
                 if (openTreeBtn) openTreeBtn.addEventListener('click', () => this.openSkillTreeModal());
             }
+            this.refreshScrollHint(document.querySelector('.tab-scroll-body'));
         }
 ,
         getRelicGradeClass(grade) {

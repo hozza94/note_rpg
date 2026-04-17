@@ -203,10 +203,17 @@
             const toggleBtn = container.querySelector('#btn-equip-view-toggle');
             if (toggleBtn) toggleBtn.addEventListener('click', () => this.toggleEquipmentViewMode());
 
-            if (!isEdit) return;
+            const charScrollBody = document.querySelector('.character-pane-scroll-body');
+            if (!isEdit) {
+                this.refreshScrollHint(charScrollBody);
+                return;
+            }
 
             const layer = container.querySelector('.equipment-slot-layer');
-            if (!layer) return;
+            if (!layer) {
+                this.refreshScrollHint(charScrollBody);
+                return;
+            }
 
             slots.forEach(meta => {
                 const itemId = this.inventory.equipment[meta.slot];
@@ -229,6 +236,7 @@
                 button.addEventListener('click', () => this.openEquipmentSlotModal(meta.slot));
                 layer.appendChild(button);
             });
+            this.refreshScrollHint(charScrollBody);
         }
 ,
         equipItem(itemId) {

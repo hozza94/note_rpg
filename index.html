@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260417-6">
+    <link rel="stylesheet" href="style.css?v=20260417-7">
 </head>
 <body class="theme-gray">
     <div id="app" class="glass-container">
@@ -26,6 +26,8 @@
         <main class="game-layout">
             <!-- Left: Character Info -->
              <aside class="character-pane card">
+                <div class="modal-scroll-wrap character-pane-scroll-wrap">
+                <div class="modal-scroll-body character-pane-scroll-body">
                 <div class="char-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
                     <div>
                         <div class="char-title-hover-zone">
@@ -143,6 +145,9 @@
                         </div>
                     </section>
                 </div>
+                </div>
+                <div class="modal-scroll-hint" aria-hidden="true"></div>
+                </div>
             </aside>
 
             <!-- Center: Game Log & Battle Scene -->
@@ -170,9 +175,12 @@
                     </div>
                 </div>
 
-                <div id="game-log" class="log-content">
+                <div class="modal-scroll-wrap log-scroll-wrap">
+                <div id="game-log" class="log-content modal-scroll-body">
                     <div class="log-entry system">세상이 회색빛으로 물들었습니다...</div>
                     <div class="log-entry info">당신은 순례의 길을 시작합니다.</div>
+                </div>
+                <div class="modal-scroll-hint" aria-hidden="true"></div>
                 </div>
             </section>
 
@@ -186,11 +194,14 @@
                     </button>
                     <button class="tab-btn" data-tab="relics">성물</button>
                 </nav>
-                <div class="tab-content">
+                <div class="modal-scroll-wrap tab-scroll-wrap">
+                <div class="tab-content tab-scroll-body modal-scroll-body">
                     <div id="inventory-list" class="item-list">
                         <!-- Items/Equipment will be injected here -->
                         <div class="empty-msg">데이터가 없습니다.</div>
                     </div>
+                </div>
+                <div class="modal-scroll-hint" aria-hidden="true"></div>
                 </div>
             </aside>
         </main>
@@ -299,13 +310,13 @@
     <script src="js/data.js?v=20260417-6"></script>
     <script src="js/engine/avatar-assets.js?v=20260417-1"></script>
     <script src="js/inventory.js?v=20260417-3"></script>
-    <script src="game.js?v=20260417-1"></script>
+    <script src="game.js?v=20260417-2"></script>
     <script src="js/engine/ui-confirm.js?v=20260417-1"></script>
     <script src="js/engine/item-stats.js?v=20260417-3"></script>
     <script src="js/engine/skilltree.js?v=20260415-6"></script>
     <script src="js/engine/ui-character-tooltip.js?v=20260415-1"></script>
-    <script src="js/engine/ui-tabs-inventory.js?v=20260417-1"></script>
-    <script src="js/engine/ui-avatar-equipment.js?v=20260417-5"></script>
+    <script src="js/engine/ui-tabs-inventory.js?v=20260417-2"></script>
+    <script src="js/engine/ui-avatar-equipment.js?v=20260417-6"></script>
     <script src="js/engine/ui-boss-dungeon.js?v=20260415-1"></script>
     <script src="js/engine/state-schema.js?v=20260415-3"></script>
     <script src="js/engine/ui-facility-hub.js?v=20260417-2"></script>
