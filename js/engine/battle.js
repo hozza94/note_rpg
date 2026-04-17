@@ -644,13 +644,11 @@
                 const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                 m.hp -= dmg2;
                 this.spawnMonsterSkillFx({ id: 'double_strike', tags: ['attack', 'slash'] }, { fxType: 'slash' });
-                setTimeout(() => {
-                    this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 24, yOffset: -8 });
-                    this.log(`추가 일격! ${dmg2}의 피해`, 'player');
-                    this.applyLifeStealFromDamage(dmg2);
-                    this.applyPpOnHitPassive(dmg2);
-                    this.updateUI();
-                }, 110);
+                this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 24, yOffset: -8 });
+                this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                this.applyLifeStealFromDamage(dmg2);
+                this.applyPpOnHitPassive(dmg2);
+                this.updateUI();
                 if (m.isBoss && !this.state.battle.flags.lowHpCutscenePlayed && m.hp <= m.maxHp * 0.3) {
                     this.state.battle.flags.lowHpCutscenePlayed = true;
                     this.log(`${m.name}의 형상이 흔들립니다... 마지막 저항이 시작됩니다!`, 'effect');
@@ -968,13 +966,11 @@
                     if (m.hp > 0 && ds > 0 && Math.random() < ds) {
                         const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                         m.hp -= dmg2;
-                        setTimeout(() => {
-                            this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
-                            this.log(`추가 일격! ${dmg2}의 피해`, 'player');
-                            this.applyLifeStealFromDamage(dmg2);
-                            this.applyPpOnHitPassive(dmg2);
-                            this.updateUI();
-                        }, 120);
+                        this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
+                        this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                        this.applyLifeStealFromDamage(dmg2);
+                        this.applyPpOnHitPassive(dmg2);
+                        this.updateUI();
                     }
                 }
             }
@@ -1112,14 +1108,11 @@
                 if (m.hp > 0 && ds > 0 && Math.random() < ds) {
                     const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                     m.hp -= dmg2;
-                    // 연타가 "한 덩어리"로 보이지 않도록 시간차 + 위치차를 준다.
-                    setTimeout(() => {
-                        this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
-                        this.log(`추가 일격! ${dmg2}의 피해`, 'player');
-                        this.applyLifeStealFromDamage(dmg2);
-                        this.applyPpOnHitPassive(dmg2);
-                        this.updateUI();
-                    }, 120);
+                    this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
+                    this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                    this.applyLifeStealFromDamage(dmg2);
+                    this.applyPpOnHitPassive(dmg2);
+                    this.updateUI();
                 }
             }
 

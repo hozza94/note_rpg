@@ -417,6 +417,11 @@ class GameEngine {
             const talent = Math.max(0, Number(p.relicToken || 0));
             talentEl.innerText = `${talent.toFixed(2).replace(/\.?0+$/, '')} T`;
         }
+        const regionEl = document.getElementById('current-region-value');
+        if (regionEl) {
+            const regionName = window.GAME_DATA?.regions?.[w.currentRegionId]?.name || '알 수 없는 지역';
+            regionEl.innerText = regionName;
+        }
 
         if (this.state.battle) {
             const m = this.state.battle.monster;

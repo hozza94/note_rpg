@@ -1791,6 +1791,42 @@ const GAME_DATA = {
             { itemId: 'smithing_shard', price: 45 },
             { itemId: 'blessed_iron', price: 320 },
             { itemId: 'seraph_ember', price: 500 }
+        ],
+        infernal_pandemonium: [
+            { itemId: 'demonic_ember', price: 980 },
+            { itemId: 'infernal_horn', price: 1180 },
+            { itemId: 'void_sliver', price: 920 },
+            { itemId: 'pandemonium_blade', price: 2360 },
+            { itemId: 'abyss_grimoire', price: 2240 },
+            { itemId: 'fallen_wings', price: 2480 },
+            { itemId: 'guardian_oath', price: 1100 },
+            { itemId: 'smithing_shard', price: 45 },
+            { itemId: 'blessed_iron', price: 360 },
+            { itemId: 'seraph_ember', price: 520 }
+        ],
+        astral_abyss: [
+            { itemId: 'astral_shard', price: 1280 },
+            { itemId: 'chaos_scripture', price: 1460 },
+            { itemId: 'fallen_feather', price: 1220 },
+            { itemId: 'abyss_grimoire', price: 2360 },
+            { itemId: 'astral_circlet', price: 2520 },
+            { itemId: 'fallen_wings', price: 2660 },
+            { itemId: 'soul_core', price: 1700 },
+            { itemId: 'smithing_shard', price: 45 },
+            { itemId: 'blessed_iron', price: 380 },
+            { itemId: 'seraph_ember', price: 540 }
+        ],
+        fallen_paradise: [
+            { itemId: 'fallen_feather', price: 1540 },
+            { itemId: 'soul_core', price: 1880 },
+            { itemId: 'chaos_scripture', price: 1680 },
+            { itemId: 'luciferian_mail', price: 3280 },
+            { itemId: 'astral_circlet', price: 2820 },
+            { itemId: 'fallen_wings', price: 2940 },
+            { itemId: 'guardian_halo', price: 2420 },
+            { itemId: 'abyss_grimoire', price: 2480 },
+            { itemId: 'smithing_shard', price: 45 },
+            { itemId: 'seraph_ember', price: 560 }
         ]
     }
 };

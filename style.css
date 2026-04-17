@@ -454,6 +454,37 @@ body {
     min-height: 0;
 }
 
+.char-resource-strip {
+    margin-top: 8px;
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.char-resource-chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 999px;
+    padding: 3px 9px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(255, 255, 255, 0.06);
+    color: #d7e0e6;
+}
+
+.char-resource-chip.region {
+    color: #90caf9;
+}
+
+.char-resource-chip.gold {
+    color: var(--gold-color);
+}
+
+.char-resource-chip.talent {
+    color: #80deea;
+}
+
 /* Stats Enhancement */
 .bonus-points-container {
     padding: 8px 12px;
