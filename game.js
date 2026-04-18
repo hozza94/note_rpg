@@ -114,24 +114,8 @@ class GameEngine {
         if (bossBtn) bossBtn.addEventListener('click', () => this.bossChallenge());
         document.getElementById('btn-boss-dungeon')?.addEventListener('click', () => this.openBossDungeonModal());
 
-        // Region Transition
-        const prevRegionBtn = document.createElement('button');
-        prevRegionBtn.id = 'btn-prev-region';
-        prevRegionBtn.className = 'action-btn small hidden';
-        prevRegionBtn.style.marginTop = '10px';
-        prevRegionBtn.style.width = '100%';
-        prevRegionBtn.innerText = '⬅️ 이전 지역으로 이동';
-        document.querySelector('.quest-section').appendChild(prevRegionBtn);
-        prevRegionBtn.addEventListener('click', () => this.handlePreviousRegionTransition());
-
-        const nextRegionBtn = document.createElement('button');
-        nextRegionBtn.id = 'btn-next-region';
-        nextRegionBtn.className = 'action-btn primary small hidden';
-        nextRegionBtn.style.marginTop = '10px';
-        nextRegionBtn.style.width = '100%';
-        nextRegionBtn.innerText = '➡️ 다음 지역으로 이동';
-        document.querySelector('.quest-section').appendChild(nextRegionBtn);
-        nextRegionBtn.addEventListener('click', () => this.handleRegionTransition());
+        document.getElementById('btn-header-prev-region')?.addEventListener('click', () => this.handlePreviousRegionTransition());
+        document.getElementById('btn-header-next-region')?.addEventListener('click', () => this.handleRegionTransition());
 
         // Battle Actions
         document.getElementById('btn-attack').addEventListener('click', () => this.playerAttack());
@@ -353,10 +337,16 @@ class GameEngine {
         const nextExp = Math.max(1, p.nextExp || 80);
         const expBar = document.getElementById('exp-bar');
         const expText = document.getElementById('exp-text');
+        const expLabel = document.getElementById('exp-label');
         if (expBar && expText) {
             const expPct = Math.min(100, (p.exp / nextExp) * 100);
             expBar.style.width = `${expPct}%`;
-            expText.innerText = `${Math.floor(p.exp)} / ${nextExp}`;
+            const cur = Math.floor(p.exp);
+            const cap = Math.floor(nextExp);
+            const curStr = cur.toLocaleString('ko-KR');
+            const capStr = cap.toLocaleString('ko-KR');
+            expText.innerText = `${curStr} / ${capStr}`;
+            if (expLabel) expLabel.innerText = `경험치 (${Math.round(expPct)}%)`;
         }
         
         document.getElementById('atk-value').innerText = totalAtk;
@@ -411,18 +401,19 @@ class GameEngine {
         const critDamageEl = document.getElementById('crit-damage-value');
         if (critDamageEl) critDamageEl.innerText = `${Math.round((totals.critDamageMul || 1.5) * 100)}%`;
         const goldEl = document.getElementById('gold-value');
-        if (goldEl) goldEl.innerText = `${p.gold} G`;
+        if (goldEl) {
+            const gold = Math.max(0, Math.floor(Number(p.gold || 0)));
+            goldEl.innerText = `${gold.toLocaleString('ko-KR')} G`;
+        }
         const talentEl = document.getElementById('talent-value');
         if (talentEl) {
             const talent = Math.max(0, Number(p.relicToken || 0));
-            talentEl.innerText = `${talent.toFixed(2).replace(/\.?0+$/, '')} T`;
+            const tStr = talent.toLocaleString('ko-KR', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2
+            });
+            talentEl.innerText = `${tStr} T`;
         }
-        const regionEl = document.getElementById('current-region-value');
-        if (regionEl) {
-            const regionName = window.GAME_DATA?.regions?.[w.currentRegionId]?.name || '알 수 없는 지역';
-            regionEl.innerText = regionName;
-        }
-
         if (this.state.battle) {
             const m = this.state.battle.monster;
             const clampedMonsterHp = Math.max(0, Math.round(m.hp));
@@ -438,24 +429,38 @@ class GameEngine {
             }
         }
 
-        const questBar = document.getElementById('quest-bar');
-        if (questBar) {
-            const regionData = window.GAME_DATA.regions[w.currentRegionId];
-            questBar.style.width = `${w.explorationProgress}%`;
-            document.getElementById('quest-text').innerText = `${Math.round(w.explorationProgress)}%`;
-            document.getElementById('quest-title').innerText = `${regionData.name} 탐사`;
-            
+        const regionData = window.GAME_DATA?.regions?.[w.currentRegionId];
+        if (regionData) {
+            const headerRegionName = document.getElementById('header-region-name');
+            const headerExplorationBar = document.getElementById('header-exploration-bar');
+            const headerExplorationText = document.getElementById('header-exploration-text');
+            if (headerRegionName) headerRegionName.innerText = regionData.name;
+            if (headerExplorationBar) headerExplorationBar.style.width = `${w.explorationProgress}%`;
+            if (headerExplorationText) headerExplorationText.innerText = `${Math.round(w.explorationProgress)}%`;
+
             const bossBtn = document.getElementById('btn-boss-challenge');
-            bossBtn.classList.toggle('hidden', w.bossDefeated);
+            if (bossBtn) bossBtn.classList.toggle('hidden', w.bossDefeated);
 
-            const nextRegionBtn = document.getElementById('btn-next-region');
+            const headerNextBtn = document.getElementById('btn-header-next-region');
             const hasNextRegion = !!regionData.nextRegionId;
-            nextRegionBtn.classList.toggle('hidden', !w.bossDefeated || !hasNextRegion);
-            const prevRegionBtn = document.getElementById('btn-prev-region');
-            const prevRegionId = this.getPreviousRegionId ? this.getPreviousRegionId(w.currentRegionId) : null;
-            if (prevRegionBtn) prevRegionBtn.classList.toggle('hidden', !prevRegionId);
+            const canGoNext = w.bossDefeated && hasNextRegion;
+            if (headerNextBtn) {
+                headerNextBtn.disabled = !canGoNext;
+                headerNextBtn.title = canGoNext
+                    ? '다음 지역으로 이동'
+                    : hasNextRegion
+                        ? '보스 처치 후 다음 지역으로 이동할 수 있습니다'
+                        : '다음 지역이 없습니다';
+            }
+            const headerPrevBtn = document.getElementById('btn-header-prev-region');
+            const prevRegionId = typeof this.getPreviousRegionId === 'function'
+                ? this.getPreviousRegionId(w.currentRegionId)
+                : null;
+            if (headerPrevBtn) {
+                headerPrevBtn.disabled = !prevRegionId;
+                headerPrevBtn.title = prevRegionId ? '이전 지역으로 이동' : '이전 지역이 없습니다';
+            }
 
-            // Update Theme Color
             document.documentElement.style.setProperty('--accent-color', regionData.themeColor);
             const r = parseInt(regionData.themeColor.slice(1, 3), 16);
             const g = parseInt(regionData.themeColor.slice(3, 5), 16);
@@ -469,8 +474,6 @@ class GameEngine {
         if (saturationVal) saturationVal.innerText = `${w.saturation.toFixed(1)}%`;
         document.body.style.setProperty('--world-saturation', w.saturation);
 
-        const pointEl = document.getElementById('bonus-points');
-        if (pointEl) pointEl.innerText = p.bonusPoints;
         const skillPointEl = document.getElementById('skill-tree-points');
         if (skillPointEl) skillPointEl.innerText = p.skillTreePoints;
         const stBadge = document.getElementById('skill-tree-tab-badge');

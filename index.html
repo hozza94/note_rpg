@@ -7,13 +7,24 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260417-7">
+    <link rel="stylesheet" href="style.css?v=20260418-6">
 </head>
 <body class="theme-gray">
     <div id="app" class="glass-container">
         <!-- Header: World Saturation Status -->
         <header class="app-header">
             <h1 class="world-title">Basileia</h1>
+            <div class="header-region-cluster" aria-label="현재 지역 및 탐사 진행">
+                <button type="button" id="btn-header-prev-region" class="header-region-nav" title="이전 지역" aria-label="이전 지역">◀</button>
+                <div class="header-region-progress">
+                    <span id="header-region-name" class="header-region-name">비손 유역</span>
+                    <div class="header-region-track">
+                        <div id="header-exploration-bar" class="header-exploration-fill" style="width: 0%;"></div>
+                    </div>
+                    <span id="header-exploration-text" class="header-exploration-pct">0%</span>
+                </div>
+                <button type="button" id="btn-header-next-region" class="header-region-nav" title="다음 지역" aria-label="다음 지역">▶</button>
+            </div>
             <div class="saturation-meter">
                 <span class="label">세계의 색채</span>
                 <div class="meter-bar">
@@ -28,36 +39,27 @@
              <aside class="character-pane card">
                 <div class="modal-scroll-wrap character-pane-scroll-wrap">
                 <div class="modal-scroll-body character-pane-scroll-body">
-                <div class="char-header" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div class="char-header">
                     <div>
                         <div class="char-title-hover-zone">
                             <h2 id="char-name">순례자</h2>
                             <button type="button" id="char-stat-info-btn" class="char-stat-info-btn" aria-label="전체 스탯 보기" title="전체 스탯">ⓘ</button>
                             <div id="char-stat-tooltip" class="char-stat-tooltip" role="tooltip"></div>
                         </div>
-                        <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:4px;">
+                        <div class="char-meta-badges">
                             <span id="char-title" class="badge">Pilgrim</span>
                             <span id="char-level" class="badge">Lv.1</span>
-                        </div>
-                        <div class="char-resource-strip">
-                            <span id="current-region-value" class="char-resource-chip region">비손 유역</span>
-                            <span id="gold-value" class="char-resource-chip gold">0 G</span>
-                            <span id="talent-value" class="char-resource-chip talent">0 T</span>
+                            <span id="gold-value" class="badge badge--gold">0 G</span>
+                            <span id="talent-value" class="badge badge--talent">0 T</span>
                         </div>
                     </div>
-                    <button id="btn-settings" class="action-btn small secondary" style="padding: 5px 10px; font-size: 0.9rem;">⚙️ 설정</button>
+                    <button type="button" id="btn-settings" class="char-settings-icon-btn" aria-label="설정" title="설정">⚙️</button>
                 </div>
 
                 <div id="char-battle-effects" class="char-battle-effects hidden" aria-live="polite" aria-label="플레이어 전투 효과 (자기강화·상태이상)"></div>
                 
-                <!-- Quest/Progress Section -->
-                <div class="quest-section">
-                    <div class="quest-header">
-                        <h3 id="quest-title">비손 유역 탐사</h3>
-                        <button id="btn-boss-challenge" class="action-btn danger small">👑 보스 도전</button>
-                    </div>
-                    <div class="bar-container"><div id="quest-bar" class="bar quest" style="width: 0%;"></div></div>
-                    <span id="quest-text" class="quest-progress">0%</span>
+                <div class="char-boss-row">
+                    <button type="button" id="btn-boss-challenge" class="action-btn danger small">👑 보스 도전</button>
                 </div>
 
                 <div class="stats-group">
@@ -72,13 +74,9 @@
                         <span id="pp-text">50 / 50</span>
                     </div>
                     <div class="stat-item">
-                        <label>경험치 (EXP)</label>
+                        <label id="exp-label">경험치 (0%)</label>
                         <div class="bar-container"><div id="exp-bar" class="bar exp" style="width: 0%;"></div></div>
                         <span id="exp-text">0 / 80</span>
-                    </div>
-                    <div class="bonus-points-container">
-                        <span class="label">남은 포인트:</span>
-                        <span id="bonus-points" class="val">0</span>
                     </div>
                     <div class="stat-grid">
                         <div class="stat-box">
@@ -129,8 +127,14 @@
                         </div>
                     </div>
                     <div class="combat-substats">
-                        <span class="chip" title="치명타 확률"><span class="chip-icon">🎯</span> <strong id="crit-chance-value">10%</strong></span>
-                        <span class="chip" title="치명타 피해"><span class="chip-icon">💥</span> <strong id="crit-damage-value">150%</strong></span>
+                        <div class="combat-substat-block">
+                            <span class="combat-substat-label" title="치명타 확률">🎯 치명타</span>
+                            <strong id="crit-chance-value" class="combat-substat-val">10%</strong>
+                        </div>
+                        <div class="combat-substat-block">
+                            <span class="combat-substat-label" title="치명타 피해">💥 치명타 데미지</span>
+                            <strong id="crit-damage-value" class="combat-substat-val">150%</strong>
+                        </div>
                     </div>
                     <section class="equip-section">
                         <div class="equip-section-header">
