@@ -136,14 +136,26 @@
             this.updateAutoExploreButton();
             if (isBattle) this.scheduleAutoBattleTurn(500);
         },
+        /**
+         * 데미지 팝업. options.line(0부터)로 세로로 겹치지 않게 쌓을 수 있음(다단 히트·합성 등).
+         * @param {HTMLElement} targetEl
+         * @param {number} value
+         * @param {boolean} isCrit
+         * @param {boolean} isMonsterDamage
+         * @param {{ xOffset?: number, yOffset?: number, line?: number, lineGap?: number, lifetime?: number }} [options]
+         */
         spawnDamagePopup(targetEl, value, isCrit, isMonsterDamage, options = {}) {
             const rect = targetEl.getBoundingClientRect();
             const popup = document.createElement('div');
             popup.className = `damage-popup ${isCrit ? 'critical' : ''} ${isMonsterDamage ? 'monster-dmg' : ''}`;
             popup.innerText = (isCrit ? 'CRITICAL! ' : '') + Math.round(value);
-            const baseRandomX = (Math.random() - 0.5) * 40;
+            const line = Math.max(0, Math.floor(Number(options.line) || 0));
+            const lineGapRaw = Number(options.lineGap);
+            const lineGap = Number.isFinite(lineGapRaw) && lineGapRaw > 0 ? lineGapRaw : 52;
+            const jitterAmp = line > 0 ? 14 : 40;
+            const baseRandomX = (Math.random() - 0.5) * jitterAmp;
             const xOffset = Number(options.xOffset || 0);
-            const yOffset = Number(options.yOffset || 0);
+            const yOffset = Number(options.yOffset || 0) - line * lineGap;
             popup.style.left = `${rect.left + rect.width / 2 + baseRandomX + xOffset}px`;
             popup.style.top = `${rect.top + yOffset}px`;
             document.body.appendChild(popup);
@@ -755,7 +767,7 @@
                 const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                 m.hp -= dmg2;
                 this.spawnMonsterSkillFx({ id: 'double_strike', tags: ['attack', 'slash'] }, { fxType: 'slash' });
-                this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 24, yOffset: -8 });
+                this.spawnDamagePopup(targetEl, dmg2, false, false, { line: 1 });
                 this.log(`추가 일격! ${dmg2}의 피해`, 'player');
                 this.applyLifeStealFromDamage(dmg2);
                 this.applyPpOnHitPassive(dmg2);
@@ -982,12 +994,13 @@
          * 합성 스킬의 구성 요소 하나를 적용 (damageMul·buffEffectMul 적용).
          * @param {object} subSkillData GAME_DATA.skills 항목
          * @param {{ damageMul: number, buffEffectMul: number }} profile
-         * @param {{ fromMerged?: boolean }} [options]
+         * @param {{ fromMerged?: boolean, popupLine?: number }} [options]
          */
         applyPartialPlayerSkillForBattle(subSkillData, profile, options = {}) {
             const dmgMul = Number(profile.damageMul || 0.88);
             const bufMul = Number(profile.buffEffectMul || 0.88);
             const fromMerged = !!options.fromMerged;
+            const popupLine = Math.max(0, Math.floor(Number(options.popupLine) || 0));
             const p = this.state.player;
             const combined = this.getPlayerCombinedStats();
             if (!this.state.battle || !subSkillData || subSkillData.bossOnly) return;
@@ -1071,7 +1084,7 @@
                 this.applySkillEffectToTarget(effDebuff, false);
                 this.triggerPlayerPhysicalHitFx(isCrit, subSkillData);
                 this.spawnMonsterSkillFx(subSkillData, { emphasize: !!isCrit });
-                this.spawnDamagePopup(targetEl, dmg, isCrit, false);
+                this.spawnDamagePopup(targetEl, dmg, isCrit, false, { line: popupLine });
                 this.log(`${m.name}에게 ${dmg}${isCrit ? '!!!' : ''} (합성 구성)`, 'player');
                 this.applyLifeStealFromDamage(dmg);
                 this.applyPpOnHitPassive(dmg);
@@ -1080,7 +1093,7 @@
                     if (m.hp > 0 && ds > 0 && Math.random() < ds) {
                         const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                         m.hp -= dmg2;
-                        this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
+                        this.spawnDamagePopup(targetEl, dmg2, false, false, { line: popupLine + 1 });
                         this.log(`추가 일격! ${dmg2}의 피해`, 'player');
                         this.applyLifeStealFromDamage(dmg2);
                         this.applyPpOnHitPassive(dmg2);
@@ -1113,12 +1126,12 @@
 
             if (isMerged) {
                 const profile = this.getSkillMergeProfile(skillData);
-                for (const sid of skillData.mergedFrom) {
+                skillData.mergedFrom.forEach((sid, mergedIdx) => {
                     const raw = window.GAME_DATA.skills[sid];
-                    if (!raw || raw.bossOnly) continue;
+                    if (!raw || raw.bossOnly) return;
                     const sub = { ...raw, id: sid };
-                    this.applyPartialPlayerSkillForBattle(sub, profile, { fromMerged: true });
-                }
+                    this.applyPartialPlayerSkillForBattle(sub, profile, { fromMerged: true, popupLine: mergedIdx });
+                });
                 this.updateUI();
                 if (this.state.battle.monster.hp <= 0) return this.winBattle();
                 this.state.battle.isPlayerTurn = false;
@@ -1222,7 +1235,7 @@
                 if (m.hp > 0 && ds > 0 && Math.random() < ds) {
                     const dmg2 = Math.max(1, Math.round(dmg * 0.56));
                     m.hp -= dmg2;
-                    this.spawnDamagePopup(targetEl, dmg2, false, false, { xOffset: 26, yOffset: -10 });
+                    this.spawnDamagePopup(targetEl, dmg2, false, false, { line: 1 });
                     this.log(`추가 일격! ${dmg2}의 피해`, 'player');
                     this.applyLifeStealFromDamage(dmg2);
                     this.applyPpOnHitPassive(dmg2);
