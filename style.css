@@ -1602,18 +1602,234 @@ body {
     white-space: nowrap;
 }
 
-/* Battle Scene & Monster Card */
+/* Battle Scene: 좌 플레이어 · 우 몬스터 */
 .battle-scene {
     margin-bottom: 20px;
-    padding: 15px;
+    padding: 12px 10px;
     background: rgba(255, 255, 255, 0.03);
     border-radius: 12px;
     border: 1px dashed var(--border-color);
     animation: slideDown 0.4s ease;
+    min-width: 0;
+}
+
+.battle-duel {
+    --battle-portrait-w: 168px;
+    --battle-portrait-h: 210px;
+    --battle-header-minh: 2.75rem;
+    --battle-stat-bar-maxw: 200px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 1px minmax(0, 1fr);
+    gap: 10px 12px;
+    align-items: start;
+    min-width: 0;
+}
+
+.battle-duel-divider {
+    width: 1px;
+    min-height: 0;
+    align-self: stretch;
+    background: linear-gradient(
+        180deg,
+        rgba(255, 255, 255, 0),
+        rgba(255, 255, 255, 0.14) 18%,
+        rgba(255, 255, 255, 0.14) 82%,
+        rgba(255, 255, 255, 0)
+    );
+    border-radius: 1px;
+    justify-self: center;
+}
+
+.battle-actor {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.battle-actor-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 10px;
+    margin-bottom: 10px;
+    width: 100%;
+    min-height: var(--battle-header-minh);
+    box-sizing: border-box;
+}
+
+.battle-actor-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.battle-actor-level {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.battle-actor-header--enemy {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 6px 8px;
+    margin-bottom: 10px;
+    width: 100%;
+    min-height: var(--battle-header-minh);
+    box-sizing: border-box;
+}
+
+.battle-actor-header--enemy .grade-badge {
+    flex-shrink: 0;
+}
+
+h3.battle-actor-name {
+    margin: 0;
+    line-height: 1.25;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    max-width: min(100%, 140px);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* 플레이어·적 공통: 동일 픽셀 슬롯 안에서 이미지 정렬 (object-fit / cover 유사) */
+.battle-image-wrap {
+    position: relative;
+    align-self: center;
+    box-sizing: border-box;
+    width: var(--battle-portrait-w);
+    height: var(--battle-portrait-h);
+    max-width: var(--battle-portrait-w);
+    flex-shrink: 0;
+    margin-bottom: 10px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(0, 0, 0, 0.22);
+}
+
+.battle-image-wrap--enemy {
+    display: block;
+}
+
+.battle-image-wrap--enemy .monster-image-wrap {
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    display: block;
+}
+
+.battle-avatar--player {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: none;
+    background-color: transparent;
+    background-image: var(--battle-player-avatar-url, none);
+    background-size: cover;
+    background-position: center top;
+    background-repeat: no-repeat;
+    box-shadow: none;
+}
+
+.battle-actor-stats--player,
+.battle-actor-stats--enemy {
+    align-self: center;
+    width: 100%;
+    max-width: var(--battle-stat-bar-maxw);
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+}
+
+/* 적은 PP가 없으므로 플레이어와 동일 줄 수·HP 바 세로 위치를 맞추기 위한 자리 표시(레이아웃만) */
+.battle-stat-row--duel-skip {
+    visibility: hidden;
+    pointer-events: none;
+    user-select: none;
+}
+
+.battle-stat-row {
+    width: 100%;
+    margin-bottom: 8px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.battle-stat-row:last-child {
+    margin-bottom: 0;
+}
+
+.battle-stat-row-head {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 3px;
+    width: 100%;
+}
+
+.battle-stat-label {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-secondary);
+    letter-spacing: 0.04em;
+}
+
+.battle-stat-value {
+    font-size: 0.72rem;
+    color: #cfd8dc;
+    font-variant-numeric: tabular-nums;
+}
+
+.battle-stat-row .bar-container.mini {
+    width: 100%;
+    max-width: var(--battle-stat-bar-maxw);
+    margin-bottom: 0;
+}
+
+.battle-actor-status {
+    align-self: center;
+    width: 100%;
+    max-width: 220px;
+    margin-top: 8px;
+}
+
+.battle-actor-status .battle-status__label {
+    color: #b3e5fc;
 }
 
 .monster-card {
     text-align: center;
+}
+
+.monster-card--duel {
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .monster-image-wrap {
@@ -1621,6 +1837,25 @@ body {
     display: flex;
     justify-content: center;
     margin-bottom: 12px;
+}
+
+.monster-card--duel .monster-image-wrap {
+    margin-bottom: 0;
+}
+
+.monster-card--duel .monster-image-placeholder {
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    min-height: 100%;
+    max-width: none;
+    margin: 0;
+    border-radius: 0;
+    border: none;
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .monster-image-placeholder {
@@ -1876,14 +2111,6 @@ body {
     100% { opacity: 0; transform: scale(1.06); }
 }
 
-.monster-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 15px;
-}
-
 .grade-badge {
     background: #555;
     color: white;
@@ -1893,20 +2120,20 @@ body {
     font-weight: 700;
 }
 
-.monster-stats {
-    max-width: 250px;
-    margin: 0 auto;
-}
-
 .battle-status {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 6px;
     margin-top: 10px;
-    max-width: 280px;
+    max-width: 100%;
+    width: 100%;
     margin-left: auto;
     margin-right: auto;
+}
+
+.battle-actor-status.battle-status {
+    margin-top: 8px;
 }
 
 .battle-status__label {
@@ -1934,6 +2161,12 @@ body {
 
 .status-chip.player {
     color: #b3e5fc;
+}
+
+.status-chip.player.is-debuff-chip {
+    border-color: rgba(239, 154, 154, 0.45);
+    background: rgba(183, 28, 28, 0.12);
+    color: #ffcdd2;
 }
 
 .status-chip.monster {

@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=20260418-6">
+    <link rel="stylesheet" href="style.css?v=20260418-11">
 </head>
 <body class="theme-gray">
     <div id="app" class="glass-container">
@@ -155,24 +155,69 @@
             <section class="log-pane card">
                 <!-- Battle Enemy Info (Hidden by default) -->
                 <div id="battle-scene" class="battle-scene hidden">
-                    <div class="monster-card">
-                        <div class="monster-image-wrap">
-                            <div id="monster-image-placeholder" class="monster-image-placeholder" aria-label="몬스터 이미지 영역">
-                                <span class="monster-image-empty">이미지 준비중</span>
+                    <div class="battle-duel">
+                        <div class="battle-actor battle-actor--player">
+                            <div class="battle-actor-header">
+                                <span id="battle-player-name" class="battle-actor-name">순례자</span>
+                                <span id="battle-player-level" class="battle-actor-level">Lv.1</span>
+                            </div>
+                            <div class="battle-image-wrap battle-image-wrap--player">
+                                <div id="battle-player-avatar" class="battle-avatar battle-avatar--player" role="img" aria-label="플레이어 아바타"></div>
+                            </div>
+                            <div class="battle-actor-stats battle-actor-stats--player">
+                                <div class="battle-stat-row">
+                                    <div class="battle-stat-row-head">
+                                        <span class="battle-stat-label">HP</span>
+                                        <span id="battle-player-hp-text" class="battle-stat-value">100 / 100</span>
+                                    </div>
+                                    <div class="bar-container mini"><div id="battle-player-hp-bar" class="bar hp" style="width: 100%;"></div></div>
+                                </div>
+                                <div class="battle-stat-row">
+                                    <div class="battle-stat-row-head">
+                                        <span class="battle-stat-label">PP</span>
+                                        <span id="battle-player-pp-text" class="battle-stat-value">50 / 50</span>
+                                    </div>
+                                    <div class="bar-container mini"><div id="battle-player-pp-bar" class="bar pp" style="width: 100%;"></div></div>
+                                </div>
+                            </div>
+                            <div id="battle-player-status" class="battle-actor-status hidden" aria-live="polite" aria-label="플레이어 전투 상태"></div>
+                        </div>
+                        <div class="battle-duel-divider" aria-hidden="true"></div>
+                        <div class="battle-actor battle-actor--enemy">
+                            <div class="monster-card monster-card--duel">
+                                <div class="battle-actor-header battle-actor-header--enemy">
+                                    <span id="monster-grade" class="grade-badge">F</span>
+                                    <h3 id="monster-name" class="battle-actor-name">회색 슬라임</h3>
+                                    <span id="monster-level" class="battle-actor-level">Lv.1</span>
+                                </div>
+                                <div class="battle-image-wrap battle-image-wrap--enemy">
+                                    <div class="monster-image-wrap">
+                                        <div id="monster-image-placeholder" class="monster-image-placeholder" aria-label="몬스터 이미지 영역">
+                                            <span class="monster-image-empty">이미지 준비중</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="battle-actor-stats battle-actor-stats--enemy">
+                                    <div class="battle-stat-row">
+                                        <div class="battle-stat-row-head">
+                                            <span class="battle-stat-label">HP</span>
+                                            <span id="monster-hp-text" class="battle-stat-value">150 / 150</span>
+                                        </div>
+                                        <div class="bar-container mini">
+                                            <div id="monster-hp-bar" class="bar hp" style="width: 100%;"></div>
+                                        </div>
+                                    </div>
+                                    <div class="battle-stat-row battle-stat-row--duel-skip" aria-hidden="true">
+                                        <div class="battle-stat-row-head">
+                                            <span class="battle-stat-label">PP</span>
+                                            <span class="battle-stat-value">0 / 0</span>
+                                        </div>
+                                        <div class="bar-container mini"><div class="bar pp" style="width: 0%;"></div></div>
+                                    </div>
+                                </div>
+                                <div id="battle-status" class="battle-actor-status battle-status hidden" aria-live="polite" aria-label="적 몬스터 상태"></div>
                             </div>
                         </div>
-                        <div class="monster-header">
-                            <span id="monster-grade" class="grade-badge">F</span>
-                            <h3 id="monster-name">회색 슬라임</h3>
-                            <span id="monster-level">Lv.1</span>
-                        </div>
-                        <div class="monster-stats">
-                            <div class="bar-container mini">
-                                <div id="monster-hp-bar" class="bar hp" style="width: 100%;"></div>
-                            </div>
-                            <span id="monster-hp-text">150 / 150</span>
-                        </div>
-                        <div id="battle-status" class="battle-status hidden" aria-live="polite" aria-label="적 몬스터 상태"></div>
                     </div>
                 </div>
 
