@@ -142,7 +142,7 @@
          * @param {number} value
          * @param {boolean} isCrit
          * @param {boolean} isMonsterDamage
-         * @param {{ xOffset?: number, yOffset?: number, line?: number, lineGap?: number, lifetime?: number }} [options]
+         * @param {{ xOffset?: number, yOffset?: number, line?: number, lineGap?: number, lifetime?: number }} [options] lineGap 기본 60px
          */
         spawnDamagePopup(targetEl, value, isCrit, isMonsterDamage, options = {}) {
             const rect = targetEl.getBoundingClientRect();
@@ -151,7 +151,7 @@
             popup.innerText = (isCrit ? 'CRITICAL! ' : '') + Math.round(value);
             const line = Math.max(0, Math.floor(Number(options.line) || 0));
             const lineGapRaw = Number(options.lineGap);
-            const lineGap = Number.isFinite(lineGapRaw) && lineGapRaw > 0 ? lineGapRaw : 52;
+            const lineGap = Number.isFinite(lineGapRaw) && lineGapRaw > 0 ? lineGapRaw : 60;
             const jitterAmp = line > 0 ? 14 : 40;
             const baseRandomX = (Math.random() - 0.5) * jitterAmp;
             const xOffset = Number(options.xOffset || 0);
@@ -162,6 +162,16 @@
             const lifetime = Math.max(300, Number(options.lifetime || 1000));
             setTimeout(() => popup.remove(), lifetime);
         },
+
+        /** 추가 일격: 1타 확정 피해의 56%에 독립 크리 판정(팝업·피해 일치). */
+        computeDoubleStrikeSecondDamage(primaryDmg, combined) {
+            const base = Math.max(1, Math.round(Number(primaryDmg) * 0.56));
+            const isCrit2 = Math.random() < Math.min(0.7, 0.1 + (combined.critChance || 0));
+            const critMul = combined.critDamageMul || 1.5;
+            const dmg2 = isCrit2 ? Math.max(1, Math.round(base * critMul)) : base;
+            return { dmg2, isCrit2 };
+        },
+
         ensureMonsterSkillFxLayer() {
             const wrap = document.querySelector('#battle-scene .battle-image-wrap--enemy .monster-image-wrap');
             if (!wrap) return null;
@@ -764,11 +774,12 @@
             if (m.hp <= 0) return this.winBattle();
             const ds = Math.min(0.35, Math.max(0, this.getPassiveBonuses().doubleStrikeChance || 0));
             if (ds > 0 && Math.random() < ds) {
-                const dmg2 = Math.max(1, Math.round(dmg * 0.56));
+                const { dmg2, isCrit2 } = this.computeDoubleStrikeSecondDamage(dmg, combined);
                 m.hp -= dmg2;
-                this.spawnMonsterSkillFx({ id: 'double_strike', tags: ['attack', 'slash'] }, { fxType: 'slash' });
-                this.spawnDamagePopup(targetEl, dmg2, false, false, { line: 1 });
-                this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                this.triggerPlayerPhysicalHitFx(isCrit2, { id: 'double_strike', tags: ['attack', 'slash'] });
+                this.spawnMonsterSkillFx({ id: 'double_strike', tags: ['attack', 'slash'] }, { fxType: 'slash', emphasize: !!isCrit2 });
+                this.spawnDamagePopup(targetEl, dmg2, isCrit2, false, { line: 1 });
+                this.log(`추가 일격! ${dmg2}${isCrit2 ? '!!!' : ''}의 피해`, 'player');
                 this.applyLifeStealFromDamage(dmg2);
                 this.applyPpOnHitPassive(dmg2);
                 this.updateUI();
@@ -1091,10 +1102,12 @@
                 if (!fromMerged) {
                     const ds = Math.min(0.35, Math.max(0, this.getPassiveBonuses().doubleStrikeChance || 0));
                     if (m.hp > 0 && ds > 0 && Math.random() < ds) {
-                        const dmg2 = Math.max(1, Math.round(dmg * 0.56));
+                        const { dmg2, isCrit2 } = this.computeDoubleStrikeSecondDamage(dmg, combined);
                         m.hp -= dmg2;
-                        this.spawnDamagePopup(targetEl, dmg2, false, false, { line: popupLine + 1 });
-                        this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                        this.triggerPlayerPhysicalHitFx(isCrit2, subSkillData);
+                        this.spawnMonsterSkillFx(subSkillData, { emphasize: !!isCrit2 });
+                        this.spawnDamagePopup(targetEl, dmg2, isCrit2, false, { line: popupLine + 1 });
+                        this.log(`추가 일격! ${dmg2}${isCrit2 ? '!!!' : ''}의 피해`, 'player');
                         this.applyLifeStealFromDamage(dmg2);
                         this.applyPpOnHitPassive(dmg2);
                         this.updateUI();
@@ -1233,10 +1246,12 @@
                 this.applyPpOnHitPassive(dmg);
                 const ds = Math.min(0.35, Math.max(0, this.getPassiveBonuses().doubleStrikeChance || 0));
                 if (m.hp > 0 && ds > 0 && Math.random() < ds) {
-                    const dmg2 = Math.max(1, Math.round(dmg * 0.56));
+                    const { dmg2, isCrit2 } = this.computeDoubleStrikeSecondDamage(dmg, combined);
                     m.hp -= dmg2;
-                    this.spawnDamagePopup(targetEl, dmg2, false, false, { line: 1 });
-                    this.log(`추가 일격! ${dmg2}의 피해`, 'player');
+                    this.triggerPlayerPhysicalHitFx(isCrit2, skillData);
+                    this.spawnMonsterSkillFx(skillData, { emphasize: !!isCrit2 });
+                    this.spawnDamagePopup(targetEl, dmg2, isCrit2, false, { line: 1 });
+                    this.log(`추가 일격! ${dmg2}${isCrit2 ? '!!!' : ''}의 피해`, 'player');
                     this.applyLifeStealFromDamage(dmg2);
                     this.applyPpOnHitPassive(dmg2);
                     this.updateUI();
