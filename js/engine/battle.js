@@ -847,6 +847,9 @@
                 const maxQty = Math.max(minQty, Number(drop.maxQty || minQty));
                 const qty = minQty + Math.floor(Math.random() * (maxQty - minQty + 1));
                 this.addItem(drop.itemId, qty);
+                if (typeof this.recordBossDropEquipTier === 'function') {
+                    this.recordBossDropEquipTier(drop.itemId, bossId);
+                }
                 const item = window.GAME_DATA.items[drop.itemId];
                 if (item?.slot) {
                     rareDropped = true;

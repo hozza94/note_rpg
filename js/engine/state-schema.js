@@ -67,6 +67,7 @@
             skillTreePoints: 0,
             smithLevel: 1,
             itemEnhance: {},
+            itemEquipTier: {},
             autoBattleEnabled: false,
             autoExploreEnabled: false,
             selectedAvatarId: 'male_base',
@@ -183,6 +184,9 @@
         }
         if (!this.state.player.itemEnhance || typeof this.state.player.itemEnhance !== 'object' || Array.isArray(this.state.player.itemEnhance)) {
             this.state.player.itemEnhance = {};
+        }
+        if (!this.state.player.itemEquipTier || typeof this.state.player.itemEquipTier !== 'object' || Array.isArray(this.state.player.itemEquipTier)) {
+            this.state.player.itemEquipTier = {};
         }
 
         if (!this.state.world.currentRegionId) this.state.world.currentRegionId = "pishon";

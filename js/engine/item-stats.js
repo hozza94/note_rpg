@@ -29,7 +29,11 @@
             const rates = (itemId && this.isBossExclusiveItem(itemId) && Array.isArray(smith.bossEnhanceRates))
                 ? smith.bossEnhanceRates
                 : (smith.enhanceRates || [0]);
-            const rate = Number(rates[level] || 0);
+            let rate = Number(rates[level] || 0);
+            if (itemId && this.isBossExclusiveItem(itemId)) {
+                const tier = this.getItemBossEquipTier(itemId);
+                rate *= this.getBossEquipTierEnhanceMultiplier(tier);
+            }
             const out = {};
             const lifeStealMaxMultiplier = 2.5; // 요청 기준: 생명력 흡수는 최대 2.5배까지만 강화 반영
             Object.entries(item.stats).forEach(([k, v]) => {
@@ -89,6 +93,56 @@
             return Object.values(tables).some(list =>
                 Array.isArray(list) && list.some(drop => drop?.itemId === itemId)
             );
+        },
+
+        /** 보스 전용 드랍 테이블 키 → 장비 등급(지역 진행도). 강화 효율 가산에 사용 */
+        getBossDropTableEquipTier(bossId) {
+            const map = {
+                wraith: 1,
+                mud_giant: 2,
+                stone_seraph: 3,
+                abyss_hydra: 4,
+                throne_guardian: 5,
+                border_warden: 6,
+                void_sovereign: 7,
+                beelzebub: 8,
+                astaroth: 9,
+                lucifer: 10
+            };
+            return map[bossId] || 0;
+        },
+
+        /** 보스 전용 장비의 현재 장비 등급(세이브 상 최고 출처 vs 데이터 기본 equipTier 중 큰 값) */
+        getItemBossEquipTier(itemId) {
+            if (!itemId) return 1;
+            const item = window.GAME_DATA?.items?.[itemId];
+            const defTier = Math.max(1, Math.floor(Number(item?.equipTier) || 1));
+            const st = Number(this.state.player?.itemEquipTier?.[itemId]);
+            if (Number.isFinite(st) && st >= 1) return Math.max(defTier, Math.floor(st));
+            return defTier;
+        },
+
+        /** 등급 1 = 1.0, 이후 (tier-1) * bossEquipTierEnhanceStep 만큼 강화 누적배율 추가 가산 */
+        getBossEquipTierEnhanceMultiplier(tier) {
+            const t = Math.max(1, Math.floor(Number(tier) || 1));
+            const step = Number(window.GAME_DATA?.smithing?.bossEquipTierEnhanceStep);
+            const s = Number.isFinite(step) && step > 0 ? step : 0.076;
+            return 1 + (t - 1) * s;
+        },
+
+        /** 보스 전용 드랍 획득 시 장비 등급 기록(동일 itemId는 더 높은 보스에서 드랍 시 상향) */
+        recordBossDropEquipTier(itemId, bossId) {
+            if (!itemId || !bossId) return;
+            const item = window.GAME_DATA?.items?.[itemId];
+            if (!item?.slot || !item.stats) return;
+            if (!this.isBossExclusiveItem(itemId)) return;
+            const dropTier = this.getBossDropTableEquipTier(bossId);
+            if (!dropTier) return;
+            if (!this.state.player.itemEquipTier || typeof this.state.player.itemEquipTier !== 'object') {
+                this.state.player.itemEquipTier = {};
+            }
+            const prev = Number(this.state.player.itemEquipTier[itemId]) || 0;
+            this.state.player.itemEquipTier[itemId] = Math.max(prev, dropTier);
         },
 
         /** itemId가 있으면 보스 전용(+30)과 일반 상한에 맞춰 피크/하이 임계값을 구분한다 */
@@ -156,6 +210,10 @@
                 if (itemId) {
                     const lv = this.getItemEnhanceLevel(itemId);
                     if (lv > 0) parts.push(`강화 +${lv}`);
+                    if (this.isBossExclusiveItem(itemId) && item.slot) {
+                        const et = this.getItemBossEquipTier(itemId);
+                        parts.push(`장비등급 ${et}`);
+                    }
                 }
                 parts.push(statStr);
             } else if (!item.slot) {

@@ -149,6 +149,8 @@ export interface ItemDef {
     grade?: ItemGrade;
     slot?: string;
     stats?: Record<string, number>;
+    /** 보스 전용 장비: 최저 출처 지역 등급(1~). 드랍 시 세이브의 itemEquipTier와 max */
+    equipTier?: number;
     [key: string]: unknown;
 }
 

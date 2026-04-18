@@ -99,11 +99,15 @@
                 const canPay = this.state.player.gold >= goldCost && ownMat >= matCount;
                 const disabled = isMax || !canPay ? 'disabled' : '';
                 const statPreview = this.getEnhancePreviewText(itemId, lv, nextLv);
+                const tierLine = this.isBossExclusiveItem(itemId) && item.slot
+                    ? `<div class="desc">보스 전용 · 장비등급 ${this.getItemBossEquipTier(itemId)} (고위 드랍일수록 강화 보너스 배율 ×${this.getBossEquipTierEnhanceMultiplier(this.getItemBossEquipTier(itemId)).toFixed(2)})</div>`
+                    : '';
                 return `
                     <div class="equip-choice-row ${item.grade.toLowerCase()} ${this.getEnhanceVisualClass(lv, itemId)} ${this.isBossExclusiveItem(itemId) ? 'boss-exclusive' : ''}">
                         <div class="main">
                             <div class="name">${this.getItemDisplayName(itemId, item)} <span class="count">보유 x${this.getInventoryCount(itemId)}${Object.values(this.inventory.equipment).includes(itemId) ? ' · 장착중' : ''}</span></div>
                             <div class="effect">${this.formatShopItemDetails(item, itemId)}</div>
+                            ${tierLine}
                             <div class="desc">${statPreview}</div>
                             <div class="desc">비용: ${goldCost}G + ${window.GAME_DATA.items[costRule.materialId]?.name || costRule.materialId} ${ownMat}/${matCount} · 성공률 ${(successRate * 100).toFixed(0)}%</div>
                         </div>

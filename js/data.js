@@ -994,13 +994,13 @@ const GAME_DATA = {
         'ember_necklace': { kind: 'equipment', name: '잿빛 목걸이', grade: 'Rare', slot: 'accessory', stats: { atk: 6, pp: 10 }, desc: '숨겨진 불씨가 미세하게 맥동하는 목걸이입니다.' },
         'oracle_pendant': { kind: 'equipment', name: '신탁의 펜던트', grade: 'Rare', slot: 'accessory', stats: { faith: 2, pp: 16 }, desc: '희미한 계시가 머무는 청명한 펜던트입니다.' },
         'battle_rosary': { kind: 'equipment', name: '전장의 묵주', grade: 'Rare', slot: 'accessory', stats: { atk: 5, faith: 1, pp: 8 }, desc: '전투 기도를 위해 매듭이 촘촘히 엮인 묵주입니다.' },
-        'wraith_locket': { kind: 'equipment', name: '원혼 로켓', grade: 'Epic', slot: 'accessory', stats: { faith: 3, pp: 18, lifeSteal: 0.04 }, desc: '서늘한 잔향이 맴도는 보스 전용 장신구입니다.' },
+        'wraith_locket': { kind: 'equipment', name: '원혼 로켓', grade: 'Epic', slot: 'accessory', stats: { faith: 3, pp: 18, lifeSteal: 0.04 }, equipTier: 1, desc: '서늘한 잔향이 맴도는 보스 전용 장신구입니다.' },
 
         // --- 방패 (Off-hand) ---
         'wooden_shield': { kind: 'equipment', name: '나무 방패', grade: 'Normal', slot: 'offhand', stats: { def: 4, hp: 15 }, desc: '기초 방어를 위한 단단한 원형 방패입니다.' },
         'covenant_shield': { kind: 'equipment', name: '언약의 방패', grade: 'Rare', slot: 'offhand', stats: { def: 12, hp: 40, faith: 1 }, desc: '진동하는 문양이 새겨진 신성한 방패입니다.' },
         'mirror_buckler': { kind: 'equipment', name: '반향 버클러', grade: 'Rare', slot: 'offhand', stats: { def: 9, spd: 6, pp: 6 }, desc: '충격을 흘려보내는 얇은 경량 보조 방패입니다.' },
-        'giant_heart_shield': { kind: 'equipment', name: '거인의 심장 방패', grade: 'Epic', slot: 'offhand', stats: { def: 18, hp: 75, spd: -2 }, desc: '진흙 거인의 심핵으로 단조된 중량형 방패입니다.' },
+        'giant_heart_shield': { kind: 'equipment', name: '거인의 심장 방패', grade: 'Epic', slot: 'offhand', stats: { def: 18, hp: 75, spd: -2 }, equipTier: 2, desc: '진흙 거인의 심핵으로 단조된 중량형 방패입니다.' },
 
         // --- 신규 장비 1차 확장 ---
         'pilgrim_lance': { kind: 'equipment', name: '순례 창', grade: 'Uncommon', slot: 'weapon', stats: { atk: 10, spd: 2 }, desc: '긴 사거리로 균형 잡힌 전투를 돕는 창입니다.' },
@@ -1012,10 +1012,10 @@ const GAME_DATA = {
         'halo_boots': { kind: 'equipment', name: '광륜 장화', grade: 'Epic', slot: 'boots', stats: { spd: 18, faith: 1 }, desc: '미세한 광륜 잔광이 발끝을 감싸는 장화입니다.' },
         'oath_diadem': { kind: 'equipment', name: '서약의 디아뎀', grade: 'Epic', slot: 'helmet', stats: { def: 12, faith: 2, pp: 14 }, desc: '서약 문장이 새겨진 의식용 관입니다.' },
         'relic_talisman': { kind: 'equipment', name: '유물 부적', grade: 'Epic', slot: 'accessory', stats: { atk: 8, faith: 2, pp: 12 }, desc: '봉인된 유물의 파편을 엮은 부적입니다.' },
-        'aegis_core': { kind: 'equipment', name: '아이기스 코어', grade: 'Epic', slot: 'offhand', stats: { def: 14, hp: 55, faith: 2 }, desc: '집중 방어 결계를 생성하는 핵심 장치입니다.' },
-        'seraphite_mail': { kind: 'equipment', name: '세라파이트 성갑', grade: 'Epic', slot: 'armor', stats: { def: 20, hp: 85, faith: 2 }, desc: '석화 세라프의 깃편으로 엮은 보스 전용 갑주입니다.' },
-        'hydra_fang_blade': { kind: 'equipment', name: '히드라 송곳니도', grade: 'Epic', slot: 'weapon', stats: { atk: 32, spd: 10, lifeSteal: 0.03 }, desc: '심연 히드라의 송곳니를 제련한 포식자의 검입니다.' },
-        'guardian_halo': { kind: 'equipment', name: '수호자의 광륜', grade: 'Epic', slot: 'helmet', stats: { def: 16, faith: 3, pp: 20 }, desc: '왕좌 수호자의 맹세가 남은 최상급 투구입니다.' },
+        'aegis_core': { kind: 'equipment', name: '아이기스 코어', grade: 'Epic', slot: 'offhand', stats: { def: 14, hp: 55, faith: 2 }, equipTier: 7, desc: '집중 방어 결계를 생성하는 핵심 장치입니다.' },
+        'seraphite_mail': { kind: 'equipment', name: '세라파이트 성갑', grade: 'Epic', slot: 'armor', stats: { def: 20, hp: 85, faith: 2 }, equipTier: 3, desc: '석화 세라프의 깃편으로 엮은 보스 전용 갑주입니다.' },
+        'hydra_fang_blade': { kind: 'equipment', name: '히드라 송곳니도', grade: 'Epic', slot: 'weapon', stats: { atk: 32, spd: 10, lifeSteal: 0.03 }, equipTier: 4, desc: '심연 히드라의 송곳니를 제련한 포식자의 검입니다.' },
+        'guardian_halo': { kind: 'equipment', name: '수호자의 광륜', grade: 'Epic', slot: 'helmet', stats: { def: 16, faith: 3, pp: 20 }, equipTier: 5, desc: '왕좌 수호자의 맹세가 남은 최상급 투구입니다.' },
 
         // --- 상위 지역(로어북 연동) 전리품/장비 ---
         'demonic_ember': { kind: 'material', name: '악마 잔화', grade: 'Epic', desc: '상위 마족의 체내에서만 남는 고열 결정입니다.' },
@@ -1025,11 +1025,11 @@ const GAME_DATA = {
         'fallen_feather': { kind: 'material', name: '타락한 깃편', grade: 'Epic', desc: '빛을 잃은 천상의 깃이 무겁게 굳은 파편입니다.' },
         'soul_core': { kind: 'material', name: '군주의 영핵', grade: 'Epic', desc: '최상위 군주급 적에게서만 분리되는 핵심 물질입니다.' },
 
-        'pandemonium_blade': { kind: 'equipment', name: '판데모니움 도검', grade: 'Epic', slot: 'weapon', stats: { atk: 38, spd: 8, faith: 1 }, desc: '마계 화원에서 벼린 검으로 공격과 민첩을 함께 끌어올립니다.' },
-        'abyss_grimoire': { kind: 'equipment', name: '심연 그리모어', grade: 'Epic', slot: 'offhand', stats: { pp: 28, faith: 4, def: 8 }, desc: '봉인된 주문식이 새겨진 금서로 고위 기도술을 보조합니다.' },
-        'astral_circlet': { kind: 'equipment', name: '성좌 서클릿', grade: 'Epic', slot: 'helmet', stats: { def: 18, faith: 4, pp: 16 }, desc: '성좌 심연의 잔광을 새긴 관으로 정신력과 신앙을 강화합니다.' },
-        'fallen_wings': { kind: 'equipment', name: '타락의 날개편', grade: 'Epic', slot: 'accessory', stats: { atk: 12, spd: 12, lifeSteal: 0.04 }, desc: '타락한 낙원의 잔향을 깃들인 장신구입니다.' },
-        'luciferian_mail': { kind: 'equipment', name: '루시페리안 성갑', grade: 'Epic', slot: 'armor', stats: { def: 28, hp: 120, faith: 3 }, desc: '최후 군주의 검은 광휘를 두른 중갑으로 극한 생존력을 제공합니다.' }
+        'pandemonium_blade': { kind: 'equipment', name: '판데모니움 도검', grade: 'Epic', slot: 'weapon', stats: { atk: 38, spd: 8, faith: 1 }, equipTier: 8, desc: '마계 화원에서 벼린 검으로 공격과 민첩을 함께 끌어올립니다.' },
+        'abyss_grimoire': { kind: 'equipment', name: '심연 그리모어', grade: 'Epic', slot: 'offhand', stats: { pp: 28, faith: 4, def: 8 }, equipTier: 8, desc: '봉인된 주문식이 새겨진 금서로 고위 기도술을 보조합니다.' },
+        'astral_circlet': { kind: 'equipment', name: '성좌 서클릿', grade: 'Epic', slot: 'helmet', stats: { def: 18, faith: 4, pp: 16 }, equipTier: 9, desc: '성좌 심연의 잔광을 새긴 관으로 정신력과 신앙을 강화합니다.' },
+        'fallen_wings': { kind: 'equipment', name: '타락의 날개편', grade: 'Epic', slot: 'accessory', stats: { atk: 12, spd: 12, lifeSteal: 0.04 }, equipTier: 9, desc: '타락한 낙원의 잔향을 깃들인 장신구입니다.' },
+        'luciferian_mail': { kind: 'equipment', name: '루시페리안 성갑', grade: 'Epic', slot: 'armor', stats: { def: 28, hp: 120, faith: 3 }, equipTier: 10, desc: '최후 군주의 검은 광휘를 두른 중갑으로 극한 생존력을 제공합니다.' }
     },
 
     dropTables: {
@@ -1366,6 +1366,8 @@ const GAME_DATA = {
             0.06, 0.055, 0.05, 0.045,
             0.04, 0.035
         ],
+        /** 보스 전용 장비: equipTier(1=초반 보스 …)마다 강화 누적배율에 (tier-1)*step 가산 → 고지역 드랍이 같은 +30이라도 훨씬 강함 */
+        bossEquipTierEnhanceStep: 0.076,
         gradeCost: {
             Normal: { gold: 35, materialId: 'smithing_shard', materialCount: 1 },
             Uncommon: { gold: 65, materialId: 'smithing_shard', materialCount: 2 },
