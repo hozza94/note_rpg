@@ -151,7 +151,7 @@
             setTimeout(() => popup.remove(), lifetime);
         },
         ensureMonsterSkillFxLayer() {
-            const wrap = document.querySelector('.monster-image-wrap');
+            const wrap = document.querySelector('#battle-scene .battle-image-wrap--enemy .monster-image-wrap');
             if (!wrap) return null;
             let layer = wrap.querySelector('.battle-skill-fx-layer');
             if (layer) return layer;
@@ -316,6 +316,60 @@
                     setTimeout(() => burst.remove(), lifetime);
                 }, delay + (i * interval));
             }
+        },
+        /** 플레이어 초상 슬롯: 몬스터 측 공격·스킬 이펙트 레이어 */
+        ensurePlayerSkillFxLayer() {
+            const wrap = document.querySelector('#battle-scene .battle-image-wrap--player');
+            if (!wrap) return null;
+            let layer = wrap.querySelector('.battle-mattack-fx-layer');
+            if (layer) return layer;
+            layer = document.createElement('div');
+            layer.className = 'battle-mattack-fx-layer';
+            layer.setAttribute('aria-hidden', 'true');
+            wrap.appendChild(layer);
+            return layer;
+        },
+        mapMonsterAttackBurstType(theme) {
+            const t = String(theme || 'default');
+            if (t === 'default') return 'claw';
+            return t;
+        },
+        emitMonsterAttackFxBursts(layer, preset, delay = 0) {
+            const count = Math.max(1, Math.min(5, Number(preset.count || 1)));
+            const interval = Math.max(0, Number(preset.interval || 0));
+            const lifetime = Math.max(320, Number(preset.lifetime || 520));
+            const spreadX = Math.max(0, Number(preset.spreadX || 22));
+            const spreadY = Math.max(0, Number(preset.spreadY || 14));
+            const fxType = String(preset.fxType || 'claw');
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    const burst = document.createElement('div');
+                    burst.className = `battle-mattack-fx battle-mattack-fx--${fxType}`;
+                    if (preset.emphasize && i === 0) burst.classList.add('is-emphasize');
+                    burst.style.left = `${Math.round((Math.random() - 0.5) * spreadX)}px`;
+                    burst.style.top = `${Math.round((Math.random() - 0.5) * spreadY)}px`;
+                    layer.appendChild(burst);
+                    setTimeout(() => burst.remove(), lifetime);
+                }, delay + (i * interval));
+            }
+        },
+        /** 몬스터 공격이 플레이어 구역에 닿을 때 버스트 (전용 시각 셋) */
+        spawnMonsterAttackSkillFx(skillData = null) {
+            const layer = this.ensurePlayerSkillFxLayer();
+            if (!layer) return;
+            const theme = this.resolveImpactTheme(skillData);
+            const fxType = this.mapMonsterAttackBurstType(theme);
+            const heavy = theme === 'void' || theme === 'stone' || theme === 'blood';
+            const preset = {
+                fxType,
+                count: heavy ? 3 : 2,
+                interval: 50,
+                spreadX: 26,
+                spreadY: 16,
+                lifetime: 540,
+                emphasize: heavy
+            };
+            this.emitMonsterAttackFxBursts(layer, preset, 0);
         },
         spawnMonsterSkillFx(skillData, options = {}) {
             const layer = this.ensureMonsterSkillFxLayer();
@@ -586,19 +640,30 @@
             if (id.includes('bolt') || tags.includes('lightning') || tags.includes('thunder')) return 'lightning';
             return 'default';
         },
-        clearImpactFxClasses(sceneEl, appEl) {
-            ['shake-light', 'shake', 'shake-heavy', 'shake-brutal'].forEach(c => sceneEl?.classList.remove(c));
-            [
+        clearBattleDuelZoneImpactFx() {
+            const shakeClasses = ['shake-light', 'shake', 'shake-heavy', 'shake-brutal'];
+            const flashClasses = [
                 'hit-flash', 'crit-flash',
                 'hit-flash-holy', 'hit-flash-void', 'hit-flash-stone', 'hit-flash-blood',
-                'hit-flash-fire', 'hit-flash-dash', 'hit-flash-lightning'
-            ].forEach(c => appEl?.classList.remove(c));
+                'hit-flash-fire', 'hit-flash-dash', 'hit-flash-lightning',
+                'zone-m-flash', 'zone-m-flash--void', 'zone-m-flash--fire', 'zone-m-flash--stone',
+                'zone-m-flash--blood', 'zone-m-flash--lightning', 'zone-m-flash--holy', 'zone-m-flash--dash'
+            ];
+            const els = [
+                document.querySelector('#battle-scene .battle-actor--player'),
+                document.querySelector('#battle-scene .battle-actor--enemy'),
+                document.getElementById('battle-scene'),
+                document.getElementById('app')
+            ].filter(Boolean);
+            els.forEach((el) => {
+                shakeClasses.forEach((c) => el.classList.remove(c));
+                flashClasses.forEach((c) => el.classList.remove(c));
+            });
         },
-        /** 스킬 타입별 화면 흔들림·플래시 */
+        /** 플레이어 공격 적중: 몬스터 구역만 흔들림·플래시 */
         triggerPlayerPhysicalHitFx(isCrit, skillData = null) {
-            const sceneEl = document.getElementById('battle-scene');
-            const appEl = document.getElementById('app');
-            if (!sceneEl) return;
+            const enemyZone = document.querySelector('#battle-scene .battle-actor--enemy');
+            if (!enemyZone) return;
             const theme = this.resolveImpactTheme(skillData);
             const flashByTheme = {
                 holy: 'hit-flash-holy',
@@ -622,37 +687,35 @@
             };
             const shakeClass = isCrit ? 'shake-brutal' : (shakeByTheme[theme] || 'shake');
             const flashClass = isCrit ? 'crit-flash' : (flashByTheme[theme] || 'hit-flash');
-            this.clearImpactFxClasses(sceneEl, appEl);
-            sceneEl.classList.add(shakeClass);
-            appEl?.classList.add(flashClass);
+            this.clearBattleDuelZoneImpactFx();
+            enemyZone.classList.add(shakeClass, flashClass);
             setTimeout(() => {
-                sceneEl.classList.remove(shakeClass);
-                appEl?.classList.remove(flashClass);
+                enemyZone.classList.remove(shakeClass, flashClass);
             }, isCrit ? 520 : 360);
         },
+        /** 몬스터 공격 피격: 플레이어 구역만 + 몬스터 전용 이펙트 셋 */
         triggerMonsterImpactFx(skillData = null) {
-            const sceneEl = document.getElementById('battle-scene');
-            const appEl = document.getElementById('app');
-            if (!sceneEl) return;
+            const playerZone = document.querySelector('#battle-scene .battle-actor--player');
+            if (!playerZone) return;
             const theme = this.resolveImpactTheme(skillData);
             const shake = (theme === 'stone' || theme === 'void') ? 'shake-heavy' : 'shake';
-            const flash = {
-                holy: 'hit-flash-holy',
-                void: 'hit-flash-void',
-                stone: 'hit-flash-stone',
-                blood: 'hit-flash-blood',
-                fire: 'hit-flash-fire',
-                dash: 'hit-flash-dash',
-                lightning: 'hit-flash-lightning',
-                default: 'hit-flash'
-            }[theme] || 'hit-flash';
-            this.clearImpactFxClasses(sceneEl, appEl);
-            sceneEl.classList.add(shake);
-            appEl?.classList.add(flash);
+            const flashByTheme = {
+                holy: 'zone-m-flash--holy',
+                void: 'zone-m-flash--void',
+                stone: 'zone-m-flash--stone',
+                blood: 'zone-m-flash--blood',
+                fire: 'zone-m-flash--fire',
+                dash: 'zone-m-flash--dash',
+                lightning: 'zone-m-flash--lightning',
+                default: 'zone-m-flash'
+            };
+            const flashClass = flashByTheme[theme] || flashByTheme.default;
+            this.clearBattleDuelZoneImpactFx();
+            playerZone.classList.add(shake, flashClass);
+            this.spawnMonsterAttackSkillFx(skillData);
             setTimeout(() => {
-                sceneEl.classList.remove(shake);
-                appEl?.classList.remove(flash);
-            }, 300);
+                playerZone.classList.remove(shake, flashClass);
+            }, 360);
         },
         playerAttack() {
             if (!this.state.battle || !this.state.battle.isPlayerTurn) return;

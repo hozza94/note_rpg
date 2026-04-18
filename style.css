@@ -2111,6 +2111,275 @@ h3.battle-actor-name {
     100% { opacity: 0; transform: scale(1.06); }
 }
 
+/* 몬스터 → 플레이어: 초상 슬롯 내 전용 버스트 (적색·우→좌 등) */
+.battle-mattack-fx-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    border-radius: 12px;
+    z-index: 5;
+}
+
+.battle-mattack-fx {
+    position: absolute;
+    inset: 0;
+    z-index: 5;
+}
+
+.battle-mattack-fx--claw::before {
+    content: "";
+    position: absolute;
+    left: 18%;
+    top: 48%;
+    width: 72%;
+    height: 3px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0), rgba(255, 120, 90, 0.95), rgba(180, 20, 30, 0.85), rgba(255, 255, 255, 0));
+    transform: rotate(18deg) translateX(56px);
+    box-shadow: 0 0 12px rgba(255, 80, 60, 0.65);
+    animation: mattackClaw 0.44s ease-out forwards;
+}
+
+.battle-mattack-fx--void::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    border: 2px solid rgba(90, 50, 160, 0.85);
+    background:
+        radial-gradient(circle, rgba(40, 20, 80, 0.65) 0%, rgba(20, 8, 48, 0.45) 48%, rgba(10, 4, 30, 0) 72%),
+        radial-gradient(circle at 70% 32%, rgba(160, 110, 255, 0.35), rgba(160, 110, 255, 0) 50%);
+    transform: translate(-50%, -50%) scale(0.5);
+    box-shadow: 0 0 20px rgba(90, 40, 200, 0.55);
+    animation: mattackVoid 0.58s ease-out forwards;
+}
+
+.battle-mattack-fx--fire::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 54%;
+    width: 82px;
+    height: 82px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 200, 80, 0.85) 0%, rgba(255, 70, 30, 0.7) 42%, rgba(120, 10, 0, 0) 70%);
+    transform: translate(-50%, -50%) scale(0.55);
+    box-shadow: 0 0 18px rgba(255, 100, 40, 0.65);
+    animation: mattackFire 0.5s ease-out forwards;
+}
+
+.battle-mattack-fx--stone::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 52%;
+    width: 100px;
+    height: 58px;
+    border-radius: 10px;
+    border: 2px solid rgba(120, 96, 72, 0.9);
+    background:
+        linear-gradient(165deg, rgba(90, 72, 52, 0.55), rgba(48, 36, 28, 0.35)),
+        repeating-linear-gradient(-40deg, rgba(160, 130, 96, 0.28) 0 5px, rgba(60, 48, 36, 0.18) 5px 10px);
+    transform: translate(-50%, -50%) scale(0.58) rotate(8deg);
+    box-shadow: 0 0 14px rgba(100, 78, 52, 0.5);
+    animation: mattackStone 0.56s ease-out forwards;
+}
+
+.battle-mattack-fx--blood::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 92px;
+    height: 92px;
+    border-radius: 50%;
+    background:
+        radial-gradient(circle, rgba(255, 50, 50, 0.62) 0%, rgba(140, 10, 28, 0.5) 44%, rgba(40, 0, 8, 0) 74%);
+    border: 2px solid rgba(200, 30, 50, 0.75);
+    transform: translate(-50%, -50%) scale(0.52);
+    box-shadow: 0 0 18px rgba(180, 24, 40, 0.58);
+    animation: mattackBlood 0.54s ease-out forwards;
+}
+
+.battle-mattack-fx--holy::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 86px;
+    height: 86px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 220, 140, 0.75);
+    background: radial-gradient(circle, rgba(255, 236, 160, 0.5) 0%, rgba(255, 160, 60, 0.22) 50%, rgba(255, 120, 40, 0) 72%);
+    transform: translate(-50%, -50%) scale(0.54);
+    box-shadow: 0 0 16px rgba(255, 200, 100, 0.45);
+    animation: mattackHoly 0.52s ease-out forwards;
+}
+
+.battle-mattack-fx--lightning::before {
+    content: "";
+    position: absolute;
+    left: 52%;
+    top: -8%;
+    width: 4px;
+    height: 118%;
+    background: linear-gradient(180deg, rgba(255, 240, 220, 0), rgba(255, 200, 120, 1), rgba(255, 80, 40, 0.85), rgba(255, 40, 20, 0));
+    box-shadow: 0 0 14px rgba(255, 140, 80, 0.75);
+    transform: translateX(-50%) skewX(-6deg);
+    animation: mattackLightning 0.4s ease-out forwards;
+}
+
+.battle-mattack-fx--dash::before {
+    content: "";
+    position: absolute;
+    left: 6%;
+    top: 58%;
+    width: 90%;
+    height: 2px;
+    background: linear-gradient(90deg, rgba(255, 200, 160, 0), rgba(255, 100, 70, 0.95), rgba(255, 200, 160, 0));
+    box-shadow: 0 0 12px rgba(255, 90, 60, 0.55);
+    transform: translateX(28px);
+    animation: mattackDash 0.38s ease-out forwards;
+}
+
+.battle-mattack-fx.is-emphasize::after {
+    content: "";
+    position: absolute;
+    inset: 5%;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 90, 70, 0.45);
+    animation: mattackEmphasize 0.48s ease-out forwards;
+}
+
+@keyframes mattackClaw {
+    0% { opacity: 0; transform: rotate(18deg) translateX(56px) scaleX(0.55); }
+    38% { opacity: 1; }
+    100% { opacity: 0; transform: rotate(18deg) translateX(-52px) scaleX(1.05); }
+}
+
+@keyframes mattackVoid {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.44); }
+    32% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.28); }
+}
+
+@keyframes mattackFire {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.48); }
+    28% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.22); }
+}
+
+@keyframes mattackStone {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.52) rotate(8deg); }
+    34% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.1) rotate(-4deg); }
+}
+
+@keyframes mattackBlood {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.46); }
+    28% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+}
+
+@keyframes mattackHoly {
+    0% { opacity: 0; transform: translate(-50%, -50%) scale(0.48); }
+    30% { opacity: 1; }
+    100% { opacity: 0; transform: translate(-50%, -50%) scale(1.18); }
+}
+
+@keyframes mattackLightning {
+    0% { opacity: 0; }
+    22% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+@keyframes mattackDash {
+    0% { opacity: 0; transform: translateX(28px); }
+    24% { opacity: 1; }
+    100% { opacity: 0; transform: translateX(-22px); }
+}
+
+@keyframes mattackEmphasize {
+    0% { opacity: 0.85; transform: scale(0.94); }
+    100% { opacity: 0; transform: scale(1.04); }
+}
+
+/* 플레이어 열 전체: 몬스터 히트 직후 짧은 구역 플래시 */
+#battle-scene .battle-actor--player.zone-m-flash {
+    animation: zoneMFlashDefault 0.32s ease-out;
+}
+
+#battle-scene .battle-actor--player.zone-m-flash--void {
+    animation: zoneMFlashVoid 0.34s ease-out;
+}
+
+#battle-scene .battle-actor--player.zone-m-flash--fire {
+    animation: zoneMFlashFire 0.32s ease-out;
+}
+
+#battle-scene .battle-actor--player.zone-m-flash--stone {
+    animation: zoneMFlashStone 0.34s ease-out;
+}
+
+#battle-scene .battle-actor--player.zone-m-flash--blood {
+    animation: zoneMFlashBlood 0.33s ease-out;
+}
+
+#battle-scene .battle-actor--player.zone-m-flash--lightning {
+    animation: zoneMFlashLightning 0.3s ease-out;
+}
+
+#battle-scene .battle-actor--player.zone-m-flash--holy {
+    animation: zoneMFlashHoly 0.32s ease-out;
+}
+
+#battle-scene .battle-actor--player.zone-m-flash--dash {
+    animation: zoneMFlashDash 0.3s ease-out;
+}
+
+@keyframes zoneMFlashDefault {
+    0% { box-shadow: inset 0 0 52px rgba(200, 40, 36, 0.38); filter: brightness(1.15) saturate(1.15); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
+@keyframes zoneMFlashVoid {
+    0% { box-shadow: inset 0 0 56px rgba(90, 40, 180, 0.42); filter: brightness(0.92) saturate(1.25); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
+@keyframes zoneMFlashFire {
+    0% { box-shadow: inset 0 0 48px rgba(255, 90, 30, 0.4); filter: brightness(1.2) saturate(1.2); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
+@keyframes zoneMFlashStone {
+    0% { box-shadow: inset 0 0 50px rgba(130, 100, 70, 0.38); filter: brightness(0.95) saturate(0.9); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
+@keyframes zoneMFlashBlood {
+    0% { box-shadow: inset 0 0 54px rgba(180, 20, 40, 0.42); filter: brightness(1.08) saturate(1.3); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
+@keyframes zoneMFlashLightning {
+    0% { box-shadow: inset 0 0 44px rgba(255, 220, 160, 0.45); filter: brightness(1.25); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
+@keyframes zoneMFlashHoly {
+    0% { box-shadow: inset 0 0 48px rgba(255, 230, 150, 0.36); filter: brightness(1.18); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
+@keyframes zoneMFlashDash {
+    0% { box-shadow: inset 0 0 40px rgba(255, 140, 100, 0.34); filter: brightness(1.12); }
+    100% { box-shadow: inset 0 0 0 transparent; filter: none; }
+}
+
 .grade-badge {
     background: #555;
     color: white;
