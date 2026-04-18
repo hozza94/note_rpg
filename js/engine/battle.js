@@ -98,23 +98,23 @@
             const fx = this.state.battle.effects.player;
             const chips = [];
             if (fx.defMulTurns > 0 && fx.defMulValue !== 1) {
-                chips.push(`<span class="status-chip player" title="방어 강화">방어 ×${fx.defMulValue.toFixed(2)} · ${fx.defMulTurns}T</span>`);
+                chips.push(`<span class="status-chip player" title="방어 강화">방어 ×${fx.defMulValue.toFixed(2)} · ${fx.defMulTurns}턴</span>`);
             }
             if (fx.evadeTurns > 0 && fx.evadeChance > 0) {
                 const totalEv = Math.min(0.5, fx.evadeChance + combined.evadeChance);
-                chips.push(`<span class="status-chip player" title="회피">회피 ${Math.round(totalEv * 100)}% · ${fx.evadeTurns}T</span>`);
+                chips.push(`<span class="status-chip player" title="회피">회피 ${Math.round(totalEv * 100)}% · ${fx.evadeTurns}턴</span>`);
             }
             if (fx.spdMulTurns > 0 && fx.spdMulValue !== 1) {
-                chips.push(`<span class="status-chip player" title="속도 강화">속도 ×${fx.spdMulValue.toFixed(2)} · ${fx.spdMulTurns}T</span>`);
+                chips.push(`<span class="status-chip player" title="속도 강화">속도 ×${fx.spdMulValue.toFixed(2)} · ${fx.spdMulTurns}턴</span>`);
             }
             if (fx.nextCritChance > 0) {
                 chips.push(`<span class="status-chip player" title="다음 치명타">치명 +${Math.round(fx.nextCritChance * 100)}%</span>`);
             }
             if (fx.fearTurns > 0) {
-                chips.push(`<span class="status-chip player is-debuff-chip" title="공포">공포 ${fx.fearTurns}T</span>`);
+                chips.push(`<span class="status-chip player is-debuff-chip" title="공포">공포 ${fx.fearTurns}턴</span>`);
             }
             if (fx.spdDebuffTurns > 0 && fx.spdDebuffMul < 1) {
-                chips.push(`<span class="status-chip player is-debuff-chip" title="이동 둔화">둔화 ×${fx.spdDebuffMul.toFixed(2)} · ${fx.spdDebuffTurns}T</span>`);
+                chips.push(`<span class="status-chip player is-debuff-chip" title="이동 둔화">둔화 ×${fx.spdDebuffMul.toFixed(2)} · ${fx.spdDebuffTurns}턴</span>`);
             }
             if (chips.length === 0) {
                 statusEl.classList.add('hidden');
