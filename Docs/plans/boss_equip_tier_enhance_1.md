@@ -21,3 +21,6 @@
 
 ## 밸런스
 - `bossEquipTierEnhanceStep` 조정으로 후반 +30 대비 초반 +30 격차를 미세 조정 가능.
+
+## 보완 (2): PP 보스 전용 장비에 치명타 피해
+- `wraith_locket`, `guardian_halo`, `abyss_grimoire`, `astral_circlet`에 `specials.critDamageMul` 부여(등급에 따라 4~8.5%p).

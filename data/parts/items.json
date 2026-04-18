@@ -471,7 +471,10 @@
       "pp": 18,
       "lifeSteal": 0.04
     },
-    "desc": "서늘한 잔향이 맴도는 보스 전용 장신구입니다."
+    "specials": {
+      "critDamageMul": 0.04
+    },
+    "desc": "서늘한 잔향이 맴도며, 망령의 각오가 치명타 피해를 살짝 끌어올립니다."
   },
   "wooden_shield": {
     "kind": "equipment",
@@ -668,7 +671,10 @@
       "faith": 3,
       "pp": 20
     },
-    "desc": "왕좌 수호자의 맹세가 남은 최상급 투구입니다."
+    "specials": {
+      "critDamageMul": 0.055
+    },
+    "desc": "왕좌 수호자의 맹세가 남은 최상급 투구로, 신성한 집중이 치명타 피해를 보조합니다."
   },
   "demonic_ember": {
     "kind": "material",
@@ -728,7 +734,10 @@
       "faith": 4,
       "def": 8
     },
-    "desc": "봉인된 주문식이 새겨진 금서로 고위 기도술을 보조합니다."
+    "specials": {
+      "critDamageMul": 0.075
+    },
+    "desc": "봉인된 주문식이 새겨진 금서로, 금단의 구절이 치명타 피해를 끌어올립니다."
   },
   "astral_circlet": {
     "kind": "equipment",
@@ -740,7 +749,10 @@
       "faith": 4,
       "pp": 16
     },
-    "desc": "성좌 심연의 잔광을 새긴 관으로 정신력과 신앙을 강화합니다."
+    "specials": {
+      "critDamageMul": 0.085
+    },
+    "desc": "성좌 심연의 잔광을 새긴 관으로, 별자리의 압력이 치명타 피해를 강화합니다."
   },
   "fallen_wings": {
     "kind": "equipment",
