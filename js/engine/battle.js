@@ -42,6 +42,7 @@
             if (!this.state.battle) {
                 el.classList.add('hidden');
                 el.innerHTML = '';
+                this.renderBattlePlayerStatus();
                 return;
             }
             const combined = this.getPlayerCombinedStats();
@@ -76,11 +77,57 @@
             if (rows.length === 0) {
                 el.classList.add('hidden');
                 el.innerHTML = '';
+                this.renderBattlePlayerStatus();
                 return;
             }
             el.classList.remove('hidden');
             el.innerHTML = `<div class="char-battle-effects__head">플레이어 · 전투 효과 <span class="char-battle-effects__hint">(자기강화·상태이상)</span></div>${rows.join('')}`;
+            this.renderBattlePlayerStatus();
         },
+
+        /** 전투 씬 좌측: 플레이어 버프·디버프 요약 칩 */
+        renderBattlePlayerStatus() {
+            const statusEl = document.getElementById('battle-player-status');
+            if (!statusEl) return;
+            if (!this.state.battle) {
+                statusEl.classList.add('hidden');
+                statusEl.innerHTML = '';
+                return;
+            }
+            const combined = this.getPlayerCombinedStats();
+            const fx = this.state.battle.effects.player;
+            const chips = [];
+            if (fx.defMulTurns > 0 && fx.defMulValue !== 1) {
+                chips.push(`<span class="status-chip player" title="방어 강화">방어 ×${fx.defMulValue.toFixed(2)} · ${fx.defMulTurns}T</span>`);
+            }
+            if (fx.evadeTurns > 0 && fx.evadeChance > 0) {
+                const totalEv = Math.min(0.5, fx.evadeChance + combined.evadeChance);
+                chips.push(`<span class="status-chip player" title="회피">회피 ${Math.round(totalEv * 100)}% · ${fx.evadeTurns}T</span>`);
+            }
+            if (fx.spdMulTurns > 0 && fx.spdMulValue !== 1) {
+                chips.push(`<span class="status-chip player" title="속도 강화">속도 ×${fx.spdMulValue.toFixed(2)} · ${fx.spdMulTurns}T</span>`);
+            }
+            if (fx.nextCritChance > 0) {
+                chips.push(`<span class="status-chip player" title="다음 치명타">치명 +${Math.round(fx.nextCritChance * 100)}%</span>`);
+            }
+            if (fx.fearTurns > 0) {
+                chips.push(`<span class="status-chip player is-debuff-chip" title="공포">공포 ${fx.fearTurns}T</span>`);
+            }
+            if (fx.spdDebuffTurns > 0 && fx.spdDebuffMul < 1) {
+                chips.push(`<span class="status-chip player is-debuff-chip" title="이동 둔화">둔화 ×${fx.spdDebuffMul.toFixed(2)} · ${fx.spdDebuffTurns}T</span>`);
+            }
+            if (chips.length === 0) {
+                statusEl.classList.add('hidden');
+                statusEl.innerHTML = '';
+                return;
+            }
+            statusEl.classList.remove('hidden');
+            statusEl.innerHTML = `
+                <div class="battle-status__label">내 상태</div>
+                <div class="battle-status__chips">${chips.join('')}</div>
+            `;
+        },
+
         toggleBattleUI(isBattle) {
             document.getElementById('explore-actions').classList.toggle('hidden', isBattle);
             document.getElementById('battle-actions').classList.toggle('hidden', !isBattle);
@@ -318,7 +365,8 @@
                         tempAtkTurns: 0, tempDefTurns: 0, tempSpdTurns: 0
                     }
                 },
-                flags: { lowHpCutscenePlayed: false }
+                flags: { lowHpCutscenePlayed: false },
+                autoState: { skillLastTurn: {}, lastAutoSkillId: null }
             };
             this.applyBossPassiveEffects(monster);
             document.getElementById('monster-name').innerText = monster.name;
@@ -688,7 +736,7 @@
             const appliedDmg = Math.round(dmg * combined.damageTakenMul);
             p.hp -= appliedDmg;
             this.applySkillEffectToTarget(skillEffect, true, m);
-            const targetEl = document.querySelector('.character-pane');
+            const targetEl = document.querySelector('.battle-image-wrap--player') || document.querySelector('.character-pane');
             this.spawnDamagePopup(targetEl, appliedDmg, false, true);
             this.triggerMonsterImpactFx(skillData || { id: 'monster_attack', tags: ['attack'] });
             this.log(skillData ? `${m.name}의 [${skillData.name}]! ${appliedDmg}의 피해를 입었습니다.` : `${m.name}의 공격! ${appliedDmg}의 피해를 입었습니다.`, 'enemy');

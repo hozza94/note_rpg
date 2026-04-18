@@ -334,6 +334,29 @@ class GameEngine {
         document.getElementById('pp-bar').style.width = `${(p.pp / totalMaxPp) * 100}%`;
         document.getElementById('pp-text').innerText = `${Math.round(p.pp)} / ${totalMaxPp}`;
 
+        const battleHpBar = document.getElementById('battle-player-hp-bar');
+        const battleHpText = document.getElementById('battle-player-hp-text');
+        const battlePpBar = document.getElementById('battle-player-pp-bar');
+        const battlePpText = document.getElementById('battle-player-pp-text');
+        if (battleHpBar && battleHpText) {
+            battleHpBar.style.width = `${(p.hp / totalMaxHp) * 100}%`;
+            battleHpText.innerText = `${Math.round(p.hp)} / ${totalMaxHp}`;
+        }
+        if (battlePpBar && battlePpText) {
+            battlePpBar.style.width = `${(p.pp / totalMaxPp) * 100}%`;
+            battlePpText.innerText = `${Math.round(p.pp)} / ${totalMaxPp}`;
+        }
+        const battlePlayerName = document.getElementById('battle-player-name');
+        const battlePlayerLevel = document.getElementById('battle-player-level');
+        const battlePlayerAvatar = document.getElementById('battle-player-avatar');
+        if (battlePlayerName) battlePlayerName.innerText = p.name;
+        if (battlePlayerLevel) battlePlayerLevel.innerText = `Lv.${p.level || 1}`;
+        if (battlePlayerAvatar && typeof this.getAvatarImagePath === 'function') {
+            const avatarPath = this.getAvatarImagePath();
+            const safe = avatarPath ? String(avatarPath).replace(/\\/g, '/').replace(/'/g, '%27') : '';
+            battlePlayerAvatar.style.backgroundImage = safe ? `url('${safe}')` : 'none';
+        }
+
         const nextExp = Math.max(1, p.nextExp || 80);
         const expBar = document.getElementById('exp-bar');
         const expText = document.getElementById('exp-text');

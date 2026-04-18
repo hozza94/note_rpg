@@ -78,6 +78,24 @@ export interface MonsterCompendiumEntry {
     skills?: string[];
 }
 
+/** 자동전투 스킬 선택용 메타 (`explore.js` resolveSkillAi / pickAutoBattleSkillAction) */
+export interface SkillAutoAi {
+    role?: 'cleanse' | 'heal' | 'defense' | 'buff' | 'attack' | 'unknown' | string;
+    weight?: number;
+    /** 같은 전투에서 이 스킬 id를 쓴 직후 턴까지 최소 간격 */
+    cooldownTurns?: number;
+    minHpRatio?: number;
+    maxHpRatio?: number;
+    minEnemyHpRatio?: number;
+    maxEnemyHpRatio?: number;
+    /** 적 HP 비율이 낮을수록 가산되는 버스트 선호도 */
+    burstBonus?: number;
+    /** 적·자신 HP가 넉넉할 때 선딜·디버프 등 가산 */
+    setupBonus?: number;
+    /** 직전 자동 스킬과 같을 때 점수에 곱할 패널티 (0~1) */
+    repeatPenalty?: number;
+}
+
 export interface SkillDef {
     name: string;
     tags?: string[];
@@ -87,6 +105,7 @@ export interface SkillDef {
     scaling?: Record<string, unknown>;
     desc?: string;
     bossOnly?: boolean;
+    ai?: SkillAutoAi;
     [key: string]: unknown;
 }
 

@@ -140,31 +140,132 @@
                 this.executeAutoBattleTurn();
             }, delayMs);
         },
+        /** 스킬 데이터에 없을 때 자동전투용 기본 ai (role·쿨다운·반복 패널티) */
+        getDefaultSkillAi(skillData) {
+            if (!skillData || skillData.bossOnly) return null;
+            if (skillData.type === 'passive') return null;
+            const eff = skillData.effect || {};
+            if (eff.cleanse) return { role: 'cleanse', weight: 1.12, cooldownTurns: 2, maxHpRatio: 1, repeatPenalty: 0.42 };
+            if (skillData.type === 'buff' && skillData.scaling?.heal) {
+                return { role: 'heal', weight: 1, cooldownTurns: 2, maxHpRatio: 0.55, burstBonus: 0, setupBonus: 0.08, repeatPenalty: 0.38 };
+            }
+            if (skillData.type === 'buff') {
+                return { role: 'defense', weight: 1, cooldownTurns: 3, maxHpRatio: 0.9, repeatPenalty: 0.4 };
+            }
+            if (skillData.type === 'attack') {
+                return { role: 'attack', weight: 1, cooldownTurns: 1, burstBonus: 0.42, setupBonus: 0.14, repeatPenalty: 0.36 };
+            }
+            return { role: 'unknown', weight: 0.45, cooldownTurns: 2, repeatPenalty: 0.3 };
+        },
+        /** GAME_DATA.skills[id].ai 가 있으면 기본값 위에 병합 */
+        resolveSkillAi(skillData) {
+            const d = this.getDefaultSkillAi(skillData);
+            const c = skillData.ai && typeof skillData.ai === 'object' ? skillData.ai : {};
+            return { ...(d || { role: 'unknown', weight: 0.5, cooldownTurns: 1, repeatPenalty: 0.3 }), ...c };
+        },
+        /**
+         * 자동전투: 후보 스킬 점수화 + 상위 후보 가중 랜덤.
+         * 스킬별 `ai` 메타는 `js/data.js` skills.*.ai 참고.
+         */
+        pickAutoBattleSkillAction() {
+            const battle = this.state.battle;
+            const p = this.state.player;
+            if (!battle?.monster || !battle.isPlayerTurn) return null;
+            const combined = this.getPlayerCombinedStats();
+            const hpRatio = combined.hp > 0 ? p.hp / combined.hp : 1;
+            const m = battle.monster;
+            const enemyHpRatio = m.maxHp > 0 ? m.hp / m.maxHp : 1;
+            const turn = Number(battle.turn || 1);
+            const autoState = (battle.autoState ||= {});
+            autoState.skillLastTurn ||= {};
+            const fx = battle.effects?.player || {};
+            const activeSkills = this.getActiveSkills();
+            const scored = [];
+
+            for (const skill of activeSkills) {
+                const skillData = window.GAME_DATA.skills[skill.id];
+                if (!skillData || skillData.bossOnly) continue;
+                const ppCost = Number(skill.cost ?? skillData.cost ?? 0);
+                if (p.pp < ppCost) continue;
+                const ai = this.resolveSkillAi(skillData);
+                if (!ai) continue;
+
+                if (Number(ai.minHpRatio || 0) > 0 && hpRatio < Number(ai.minHpRatio)) continue;
+                if (Number(ai.maxHpRatio ?? 1) < 1 && hpRatio > Number(ai.maxHpRatio)) continue;
+                if (Number(ai.minEnemyHpRatio || 0) > 0 && enemyHpRatio < Number(ai.minEnemyHpRatio)) continue;
+                if (Number(ai.maxEnemyHpRatio ?? 1) < 1 && enemyHpRatio > Number(ai.maxEnemyHpRatio)) continue;
+
+                const cd = Math.max(0, Number(ai.cooldownTurns || 0));
+                if (cd > 0) {
+                    const last = autoState.skillLastTurn[skill.id];
+                    if (last != null && turn - last < cd) continue;
+                }
+
+                let score = Number(ai.weight || 1) * 10;
+                const role = String(ai.role || 'attack');
+
+                if (role === 'cleanse') {
+                    const need = (fx.fearTurns > 0) || (fx.spdDebuffTurns > 0 && fx.spdDebuffMul < 1);
+                    if (need) score += 40;
+                    else score *= 0.1;
+                } else if (role === 'heal') {
+                    score += (1 - hpRatio) * 36;
+                } else if (role === 'defense' || role === 'buff') {
+                    score += Math.max(0, 0.55 - hpRatio) * 28;
+                    if (enemyHpRatio > 0.32) score += 6;
+                } else if (role === 'attack') {
+                    const atkMul = Number(skillData.effect?.atkMul || 1);
+                    score += atkMul * 7.5;
+                    const sc = skillData.scaling?.damage;
+                    if (sc && typeof sc === 'object') {
+                        score += Number(sc.base || 0) * 0.075 + Number(sc.atk || 0) * 13 + Number(sc.faith || 0) * 2.1;
+                    }
+                    const burst = Number(ai.burstBonus ?? 0.42);
+                    score += burst * 17 * (1 - enemyHpRatio);
+                    const setup = Number(ai.setupBonus ?? 0.14);
+                    score += setup * 12 * enemyHpRatio * Math.min(1, hpRatio + 0.12);
+                } else {
+                    score *= 0.85;
+                }
+
+                if (autoState.lastAutoSkillId === skill.id) {
+                    const pen = Number(ai.repeatPenalty ?? 0.35);
+                    score *= Math.max(0.1, 1 - pen);
+                }
+
+                if (score > 0.02) scored.push({ skill, score });
+            }
+
+            if (scored.length === 0) return null;
+            scored.sort((a, b) => b.score - a.score);
+            const top = scored.slice(0, Math.min(4, scored.length));
+            const minW = 0.5;
+            let total = 0;
+            const weights = top.map((x) => {
+                const w = Math.max(minW, x.score);
+                total += w;
+                return w;
+            });
+            let r = Math.random() * total;
+            for (let i = 0; i < top.length; i++) {
+                r -= weights[i];
+                if (r <= 0) return top[i].skill;
+            }
+            return top[top.length - 1].skill;
+        },
         executeAutoBattleTurn() {
             if (!this.state.battle || !this.state.battle.isPlayerTurn) return;
             if (this.state.battle.monster?.isBoss && !this.canUseAutoBattleOnCurrentBoss()) return;
-            const combined = this.getPlayerCombinedStats();
-            const hpRatio = combined.hp > 0 ? (this.state.player.hp / combined.hp) : 1;
-            const activeSkills = this.getActiveSkills();
             const turn = Number(this.state.battle.turn || 1);
             const autoState = (this.state.battle.autoState ||= {});
-            const meditation = activeSkills.find(s => s.id === 'meditation');
-            if (meditation && this.state.player.pp >= (meditation.cost || 0)) {
-                const canUseMeditationAgain = !autoState.lastMeditationTurn || (turn - autoState.lastMeditationTurn >= 3);
-                // 저체력에서만 사용 + 연속 난사 방지(최소 3턴 간격)
-                if (hpRatio <= 0.32 && canUseMeditationAgain) {
-                    autoState.lastMeditationTurn = turn;
-                    return this.useSkill(meditation);
-                }
+            autoState.skillLastTurn ||= {};
+
+            const picked = this.pickAutoBattleSkillAction();
+            if (picked) {
+                autoState.skillLastTurn[picked.id] = turn;
+                autoState.lastAutoSkillId = picked.id;
+                return this.useSkill(picked);
             }
-            if (hpRatio < 0.42) {
-                const defensiveSkill = activeSkills.find(s => s.type === 'buff' && this.state.player.pp >= (s.cost || 0) && ((s.effect?.defMul || 1) > 1 || (s.effect?.evade || 0) > 0));
-                if (defensiveSkill) return this.useSkill(defensiveSkill);
-            }
-            const attackSkills = activeSkills
-                .filter(skill => skill.type === 'attack' && this.state.player.pp >= (skill.cost || 0))
-                .sort((a, b) => (b.effect?.atkMul || 1) - (a.effect?.atkMul || 1));
-            if (attackSkills.length > 0) return this.useSkill(attackSkills[0]);
             this.playerAttack();
         },
         toggleAutoBattle() {

@@ -309,22 +309,22 @@ const GAME_DATA = {
 
     // 스킬 데이터
     skills: {
-        'meditation': { name: '묵상', tags: ['buff', 'heal', 'defense'], cost: 10, type: 'buff', effect: { defMul: 1.5, nextCrit: 0.2 }, scaling: { heal: { base: 24, atk: 0.12, def: 1.8, faith: 9 } }, desc: '방어력을 높이고 다음 공격의 치명타 확률을 증가시킵니다.' },
-        'praise':     { name: '찬양', tags: ['buff', 'evade', 'spd'], cost: 15, type: 'buff', effect: { evade: 0.1, spdMul: 1.15 }, scaling: { buff: { evadeBase: 0.02, evadeFaith: 0.006, evadeSpd: 0.0002, spdMulBase: 0.02, spdMulFaith: 0.004, spdMulSpd: 0.00025 } }, desc: '회피율과 속도를 일시적으로 높입니다.' },
-        'proclaim':   { name: '선포', tags: ['attack', 'holy'], cost: 20, type: 'attack', effect: { atkMul: 1.8 }, scaling: { damage: { base: 12, atk: 0.28, def: 0.05, faith: 2.6 } }, desc: '성스러운 데미지를 입힙니다.' },
-        'smite':      { name: '심판의 강타', tags: ['attack', 'holy'], cost: 22, type: 'attack', effect: { atkMul: 2.0 }, scaling: { damage: { base: 20, atk: 0.34, def: 0.08, faith: 3.0 } }, desc: '신념을 모아 강력한 일격을 가합니다.' },
-        'holy_wall':  { name: '거룩한 방벽', tags: ['buff', 'defense'], cost: 18, type: 'buff', effect: { defMul: 1.8, nextCrit: 0.1 }, desc: '잠시 동안 견고한 보호를 얻습니다.' },
-        'aegis_prayer': { name: '수호의 기도', tags: ['buff', 'defense', 'evade'], cost: 20, type: 'buff', effect: { defMul: 2.0, evade: 0.08 }, desc: '방어를 대폭 강화하고 짧게 회피력을 끌어올립니다.' },
-        'purify': { name: '정화의 숨', tags: ['buff', 'cleanse'], cost: 14, type: 'buff', effect: { cleanse: true }, desc: '공포와 이동 둔화를 즉시 해제합니다.' },
-        'light_dash': { name: '광휘 질주', tags: ['attack', 'debuff', 'spd'], cost: 19, type: 'attack', effect: { atkMul: 1.7, spdDebuff: 0.88 }, scaling: { damage: { base: 16, atk: 0.26, def: 0.04, faith: 2.0 } }, desc: '빛처럼 파고들어 적의 균형을 무너뜨립니다.' },
-        'martyr_brand': { name: '순교자의 낙인', tags: ['attack', 'fear'], cost: 27, type: 'attack', effect: { atkMul: 2.35, fear: true }, scaling: { damage: { base: 30, atk: 0.42, def: 0.1, faith: 2.4 } }, desc: '고통을 힘으로 바꿔 극단적인 일격을 가합니다.' },
-        'radiant_volley': { name: '광휘 난사', tags: ['attack', 'holy'], cost: 24, type: 'attack', effect: { atkMul: 1.72 }, scaling: { damage: { base: 14, atk: 0.30, def: 0.06, faith: 2.8 } }, desc: '빛줄기를 여러 갈래로 흩뿌려 넓은 범위를 태웁니다.' },
-        'solemn_bastion': { name: '엄숙한 요새', tags: ['buff', 'defense'], cost: 21, type: 'buff', effect: { defMul: 2.05, nextCrit: 0.05 }, scaling: { buff: { defMulBase: 0.02, defMulDef: 0.001, defMulFaith: 0.003 } }, desc: '순간적으로 방벽을 증축하고 다음 일격의 치명 가능성을 살짝 높입니다.' },
-        'mercy_breath': { name: '자비의 숨', tags: ['buff', 'heal', 'defense'], cost: 14, type: 'buff', effect: { defMul: 1.22 }, scaling: { heal: { base: 20, atk: 0.06, def: 1.4, faith: 7 } }, desc: '온화한 기운으로 상처를 어루만지고 잠시 방어력을 높입니다.' },
-        'ember_sigil': { name: '잔화 인장', tags: ['attack', 'fire', 'debuff'], cost: 20, type: 'attack', effect: { atkMul: 1.78, spdDebuff: 0.9 }, scaling: { damage: { base: 11, atk: 0.29, def: 0.05, faith: 2.4 } }, desc: '타오르는 인장을 새겨 적의 발을 느리게 합니다.' },
-        'eden_lance': { name: '에덴의 창', tags: ['attack', 'holy'], cost: 23, type: 'attack', effect: { atkMul: 1.88 }, scaling: { damage: { base: 18, atk: 0.32, def: 0.07, faith: 2.9 } }, desc: '낙원을 향해 찌르는 성스러운 일격입니다.' },
-        'dawn_shelter': { name: '새벽 피난처', tags: ['buff', 'heal', 'defense'], cost: 16, type: 'buff', effect: { defMul: 1.35, nextCrit: 0.08 }, scaling: { heal: { base: 18, atk: 0.08, def: 1.5, faith: 8 } }, desc: '새벽빛으로 방어를 두르고 상처를 어루만집니다.' },
-        'reckoning_bolt': { name: '심판의 전류', tags: ['attack', 'holy', 'debuff'], cost: 26, type: 'attack', effect: { atkMul: 2.05, spdDebuff: 0.92 }, scaling: { damage: { base: 22, atk: 0.36, def: 0.06, faith: 3.2 } }, desc: '하늘에서 떨어진 심판이 적의 균형을 무너뜨립니다.' },
+        'meditation': { name: '묵상', tags: ['buff', 'heal', 'defense'], cost: 10, type: 'buff', effect: { defMul: 1.5, nextCrit: 0.2 }, scaling: { heal: { base: 24, atk: 0.12, def: 1.8, faith: 9 } }, desc: '방어력을 높이고 다음 공격의 치명타 확률을 증가시킵니다.', ai: { role: 'heal', weight: 1.28, cooldownTurns: 3, maxHpRatio: 0.4, repeatPenalty: 0.48 } },
+        'praise':     { name: '찬양', tags: ['buff', 'evade', 'spd'], cost: 15, type: 'buff', effect: { evade: 0.1, spdMul: 1.15 }, scaling: { buff: { evadeBase: 0.02, evadeFaith: 0.006, evadeSpd: 0.0002, spdMulBase: 0.02, spdMulFaith: 0.004, spdMulSpd: 0.00025 } }, desc: '회피율과 속도를 일시적으로 높입니다.', ai: { role: 'buff', weight: 1.06, cooldownTurns: 4, minHpRatio: 0.18, maxHpRatio: 0.93, minEnemyHpRatio: 0.12, repeatPenalty: 0.42 } },
+        'proclaim':   { name: '선포', tags: ['attack', 'holy'], cost: 20, type: 'attack', effect: { atkMul: 1.8 }, scaling: { damage: { base: 12, atk: 0.28, def: 0.05, faith: 2.6 } }, desc: '성스러운 데미지를 입힙니다.', ai: { burstBonus: 0.4, setupBonus: 0.18, cooldownTurns: 1, repeatPenalty: 0.32 } },
+        'smite':      { name: '심판의 강타', tags: ['attack', 'holy'], cost: 22, type: 'attack', effect: { atkMul: 2.0 }, scaling: { damage: { base: 20, atk: 0.34, def: 0.08, faith: 3.0 } }, desc: '신념을 모아 강력한 일격을 가합니다.', ai: { weight: 1.05, burstBonus: 0.58, cooldownTurns: 1, repeatPenalty: 0.34 } },
+        'holy_wall':  { name: '거룩한 방벽', tags: ['buff', 'defense'], cost: 18, type: 'buff', effect: { defMul: 1.8, nextCrit: 0.1 }, desc: '잠시 동안 견고한 보호를 얻습니다.', ai: { role: 'defense', weight: 1.08, cooldownTurns: 3, maxHpRatio: 0.88, repeatPenalty: 0.4 } },
+        'aegis_prayer': { name: '수호의 기도', tags: ['buff', 'defense', 'evade'], cost: 20, type: 'buff', effect: { defMul: 2.0, evade: 0.08 }, desc: '방어를 대폭 강화하고 짧게 회피력을 끌어올립니다.', ai: { role: 'defense', weight: 1.14, cooldownTurns: 3, maxHpRatio: 0.86, repeatPenalty: 0.42 } },
+        'purify': { name: '정화의 숨', tags: ['buff', 'cleanse'], cost: 14, type: 'buff', effect: { cleanse: true }, desc: '공포와 이동 둔화를 즉시 해제합니다.', ai: { role: 'cleanse', weight: 1.22, cooldownTurns: 2, repeatPenalty: 0.35 } },
+        'light_dash': { name: '광휘 질주', tags: ['attack', 'debuff', 'spd'], cost: 19, type: 'attack', effect: { atkMul: 1.7, spdDebuff: 0.88 }, scaling: { damage: { base: 16, atk: 0.26, def: 0.04, faith: 2.0 } }, desc: '빛처럼 파고들어 적의 균형을 무너뜨립니다.', ai: { setupBonus: 0.24, burstBonus: 0.36, cooldownTurns: 1, repeatPenalty: 0.3 } },
+        'martyr_brand': { name: '순교자의 낙인', tags: ['attack', 'fear'], cost: 27, type: 'attack', effect: { atkMul: 2.35, fear: true }, scaling: { damage: { base: 30, atk: 0.42, def: 0.1, faith: 2.4 } }, desc: '고통을 힘으로 바꿔 극단적인 일격을 가합니다.', ai: { weight: 1.06, burstBonus: 0.74, cooldownTurns: 2, maxEnemyHpRatio: 0.96, repeatPenalty: 0.38 } },
+        'radiant_volley': { name: '광휘 난사', tags: ['attack', 'holy'], cost: 24, type: 'attack', effect: { atkMul: 1.72 }, scaling: { damage: { base: 14, atk: 0.30, def: 0.06, faith: 2.8 } }, desc: '빛줄기를 여러 갈래로 흩뿌려 넓은 범위를 태웁니다.', ai: { setupBonus: 0.22, burstBonus: 0.36, cooldownTurns: 1, repeatPenalty: 0.28 } },
+        'solemn_bastion': { name: '엄숙한 요새', tags: ['buff', 'defense'], cost: 21, type: 'buff', effect: { defMul: 2.05, nextCrit: 0.05 }, scaling: { buff: { defMulBase: 0.02, defMulDef: 0.001, defMulFaith: 0.003 } }, desc: '순간적으로 방벽을 증축하고 다음 일격의 치명 가능성을 살짝 높입니다.', ai: { role: 'defense', weight: 1.05, cooldownTurns: 3, maxHpRatio: 0.82, repeatPenalty: 0.4 } },
+        'mercy_breath': { name: '자비의 숨', tags: ['buff', 'heal', 'defense'], cost: 14, type: 'buff', effect: { defMul: 1.22 }, scaling: { heal: { base: 20, atk: 0.06, def: 1.4, faith: 7 } }, desc: '온화한 기운으로 상처를 어루만지고 잠시 방어력을 높입니다.', ai: { role: 'heal', weight: 1.05, cooldownTurns: 2, maxHpRatio: 0.65, repeatPenalty: 0.36 } },
+        'ember_sigil': { name: '잔화 인장', tags: ['attack', 'fire', 'debuff'], cost: 20, type: 'attack', effect: { atkMul: 1.78, spdDebuff: 0.9 }, scaling: { damage: { base: 11, atk: 0.29, def: 0.05, faith: 2.4 } }, desc: '타오르는 인장을 새겨 적의 발을 느리게 합니다.', ai: { setupBonus: 0.2, burstBonus: 0.44, cooldownTurns: 1, repeatPenalty: 0.3 } },
+        'eden_lance': { name: '에덴의 창', tags: ['attack', 'holy'], cost: 23, type: 'attack', effect: { atkMul: 1.88 }, scaling: { damage: { base: 18, atk: 0.32, def: 0.07, faith: 2.9 } }, desc: '낙원을 향해 찌르는 성스러운 일격입니다.', ai: { burstBonus: 0.52, setupBonus: 0.16, cooldownTurns: 1, repeatPenalty: 0.32 } },
+        'dawn_shelter': { name: '새벽 피난처', tags: ['buff', 'heal', 'defense'], cost: 16, type: 'buff', effect: { defMul: 1.35, nextCrit: 0.08 }, scaling: { heal: { base: 18, atk: 0.08, def: 1.5, faith: 8 } }, desc: '새벽빛으로 방어를 두르고 상처를 어루만집니다.', ai: { role: 'heal', weight: 1.08, cooldownTurns: 2, maxHpRatio: 0.75, repeatPenalty: 0.38 } },
+        'reckoning_bolt': { name: '심판의 전류', tags: ['attack', 'holy', 'debuff'], cost: 26, type: 'attack', effect: { atkMul: 2.05, spdDebuff: 0.92 }, scaling: { damage: { base: 22, atk: 0.36, def: 0.06, faith: 3.2 } }, desc: '하늘에서 떨어진 심판이 적의 균형을 무너뜨립니다.', ai: { weight: 1.05, burstBonus: 0.7, cooldownTurns: 2, repeatPenalty: 0.36 } },
 
         /** 합성 액티브: mergedFrom 구성요소를 한 턴에 순차 적용, PP는 합의 85% 올림. 효과 배율은 skillMergeDefaults·mergeProfile */
         'merged_volley_ember': {
@@ -332,35 +332,40 @@ const GAME_DATA = {
             tags: ['attack', 'holy', 'fire', 'merged'],
             type: 'attack',
             mergedFrom: ['radiant_volley', 'ember_sigil'],
-            desc: '광휘 난사와 잔화 인장을 하나로 엮었습니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+            desc: '광휘 난사와 잔화 인장을 하나로 엮었습니다. 단독 사용 대비 약화된 배율이 적용됩니다.',
+            ai: { burstBonus: 0.48, setupBonus: 0.2, cooldownTurns: 2, repeatPenalty: 0.32 }
         },
         'merged_mercy_dawn': {
             name: '여명의 자비',
             tags: ['buff', 'heal', 'defense', 'merged'],
             type: 'buff',
             mergedFrom: ['mercy_breath', 'dawn_shelter'],
-            desc: '자비의 숨과 새벽 피난처를 한 호흡에 담았습니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+            desc: '자비의 숨과 새벽 피난처를 한 호흡에 담았습니다. 단독 사용 대비 약화된 배율이 적용됩니다.',
+            ai: { role: 'heal', weight: 1.1, cooldownTurns: 3, maxHpRatio: 0.78, repeatPenalty: 0.4 }
         },
         'merged_lance_reckoning': {
             name: '창류의 심판',
             tags: ['attack', 'holy', 'merged'],
             type: 'attack',
             mergedFrom: ['eden_lance', 'reckoning_bolt'],
-            desc: '에덴의 창과 심판의 전류를 겹쳐 쏩니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+            desc: '에덴의 창과 심판의 전류를 겹쳐 쏩니다. 단독 사용 대비 약화된 배율이 적용됩니다.',
+            ai: { burstBonus: 0.68, cooldownTurns: 2, weight: 1.06, repeatPenalty: 0.36 }
         },
         'merged_holy_judgment': {
             name: '성벽의 심판',
             tags: ['attack', 'buff', 'holy', 'defense', 'merged'],
             type: 'attack',
             mergedFrom: ['holy_wall', 'smite'],
-            desc: '거룩한 방벽과 심판의 강타를 한 호흡에 묶었습니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+            desc: '거룩한 방벽과 심판의 강타를 한 호흡에 묶었습니다. 단독 사용 대비 약화된 배율이 적용됩니다.',
+            ai: { burstBonus: 0.52, setupBonus: 0.12, cooldownTurns: 2, repeatPenalty: 0.34 }
         },
         'merged_aegis_dash': {
             name: '신속 수호',
             tags: ['attack', 'buff', 'defense', 'evade', 'spd', 'merged'],
             type: 'attack',
             mergedFrom: ['aegis_prayer', 'light_dash'],
-            desc: '수호의 기도와 광휘 질주를 연계합니다. 단독 사용 대비 약화된 배율이 적용됩니다.'
+            desc: '수호의 기도와 광휘 질주를 연계합니다. 단독 사용 대비 약화된 배율이 적용됩니다.',
+            ai: { setupBonus: 0.22, burstBonus: 0.4, cooldownTurns: 2, repeatPenalty: 0.32 }
         },
         'stick':      { name: '끈적이기', tags: ['monster', 'attack', 'debuff'], type: 'attack', effect: { atkMul: 1.0, spdDebuff: 0.8 } },
         'bite':       { name: '물어뜯기', tags: ['monster', 'attack'], type: 'attack', effect: { atkMul: 1.2 } },
