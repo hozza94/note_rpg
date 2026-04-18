@@ -19,6 +19,10 @@
 - `.battle-duel` CSS 변수: 초상 크기·바 `max-width` 공통.
 - 초상: 외곽 `battle-image-wrap` 고정 크기 + `overflow:hidden`; 플레이어 아바타·몬스터 placeholder는 슬롯 안 `cover`/`100%` 채움.
 
+## 보완 (6): 전투 패널 수치 동기화
+- `game.js` `updateUI`: 메인 HP/PP·`#battle-player-*` 갱신을 **스탯 툴팁 HTML보다 앞**에 두어, 툴팁 생성 오류 시에도 전투 줄이 `index.html` 기본값(100/100 등)에 머물지 않게 함. 메인 바는 null 가드.
+- `index.html`의 `game.js?v=` 캐시 버전을 올려 배포·로컬에서 구버전 스크립트 캐시 가능성을 줄임.
+
 ## 보완 (5): 큰 초상·스탯 여백 정리
 - 초상 `168×210px`, 바 최대 `200px`.
 - 스탯 블록은 **내용 높이만** 사용(`min-height` 제거). 구분선(`.battle-duel-divider`)도 **강제 `min-height` 제거**해 그리드 행이 실제 콘텐츠 높이에만 맞도록 함(아래 빈 여백 방지).

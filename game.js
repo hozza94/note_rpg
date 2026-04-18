@@ -316,34 +316,27 @@ class GameEngine {
         const totalMaxHp = totals.hp;
         const totalMaxPp = totals.pp;
 
-        const charNameEl = document.getElementById('char-name');
-        if (charNameEl) charNameEl.innerText = p.name;
-        const charStatTip = document.getElementById('char-stat-tooltip');
-        if (charStatTip) {
-            charStatTip.innerHTML = this.buildCharacterStatTooltipHtml();
-            const hoverZone = document.querySelector('.char-title-hover-zone');
-            if (hoverZone?.matches(':hover') && typeof this._repositionCharStatTooltip === 'function') {
-                requestAnimationFrame(() => this._repositionCharStatTooltip());
-            }
-        }
-        const charLevelEl = document.getElementById('char-level');
-        if (charLevelEl) charLevelEl.innerText = `Lv.${p.level || 1}`;
-
-        document.getElementById('hp-bar').style.width = `${(p.hp / totalMaxHp) * 100}%`;
-        document.getElementById('hp-text').innerText = `${Math.round(p.hp)} / ${totalMaxHp}`;
-        document.getElementById('pp-bar').style.width = `${(p.pp / totalMaxPp) * 100}%`;
-        document.getElementById('pp-text').innerText = `${Math.round(p.pp)} / ${totalMaxPp}`;
-
+        const hpPct = totalMaxHp > 0 ? (p.hp / totalMaxHp) * 100 : 0;
+        const ppPct = totalMaxPp > 0 ? (p.pp / totalMaxPp) * 100 : 0;
+        /* 메인 HP/PP + 전투 듀얼 패널: 툴팁·다음 DOM 갱신에서 오류가 나도 여기까지는 반드시 실행 */
+        const mainHpBar = document.getElementById('hp-bar');
+        const mainHpText = document.getElementById('hp-text');
+        const mainPpBar = document.getElementById('pp-bar');
+        const mainPpText = document.getElementById('pp-text');
+        if (mainHpBar) mainHpBar.style.width = `${hpPct}%`;
+        if (mainHpText) mainHpText.innerText = `${Math.round(p.hp)} / ${totalMaxHp}`;
+        if (mainPpBar) mainPpBar.style.width = `${ppPct}%`;
+        if (mainPpText) mainPpText.innerText = `${Math.round(p.pp)} / ${totalMaxPp}`;
         const battleHpBar = document.getElementById('battle-player-hp-bar');
         const battleHpText = document.getElementById('battle-player-hp-text');
         const battlePpBar = document.getElementById('battle-player-pp-bar');
         const battlePpText = document.getElementById('battle-player-pp-text');
         if (battleHpBar && battleHpText) {
-            battleHpBar.style.width = `${(p.hp / totalMaxHp) * 100}%`;
+            battleHpBar.style.width = `${hpPct}%`;
             battleHpText.innerText = `${Math.round(p.hp)} / ${totalMaxHp}`;
         }
         if (battlePpBar && battlePpText) {
-            battlePpBar.style.width = `${(p.pp / totalMaxPp) * 100}%`;
+            battlePpBar.style.width = `${ppPct}%`;
             battlePpText.innerText = `${Math.round(p.pp)} / ${totalMaxPp}`;
         }
         const battlePlayerName = document.getElementById('battle-player-name');
@@ -356,6 +349,19 @@ class GameEngine {
             const safe = avatarPath ? String(avatarPath).replace(/\\/g, '/').replace(/'/g, '%27') : '';
             battlePlayerAvatar.style.backgroundImage = safe ? `url('${safe}')` : 'none';
         }
+
+        const charNameEl = document.getElementById('char-name');
+        if (charNameEl) charNameEl.innerText = p.name;
+        const charStatTip = document.getElementById('char-stat-tooltip');
+        if (charStatTip) {
+            charStatTip.innerHTML = this.buildCharacterStatTooltipHtml();
+            const hoverZone = document.querySelector('.char-title-hover-zone');
+            if (hoverZone?.matches(':hover') && typeof this._repositionCharStatTooltip === 'function') {
+                requestAnimationFrame(() => this._repositionCharStatTooltip());
+            }
+        }
+        const charLevelEl = document.getElementById('char-level');
+        if (charLevelEl) charLevelEl.innerText = `Lv.${p.level || 1}`;
 
         const nextExp = Math.max(1, p.nextExp || 80);
         const expBar = document.getElementById('exp-bar');
