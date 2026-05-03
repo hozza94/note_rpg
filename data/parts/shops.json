@@ -374,5 +374,39 @@
       "itemId": "seraph_ember",
       "price": 560
     }
+  ],
+  "twilight_reach": [
+    {
+      "itemId": "fallen_feather",
+      "price": 1620
+    },
+    {
+      "itemId": "soul_core",
+      "price": 1980
+    },
+    {
+      "itemId": "chaos_scripture",
+      "price": 1740
+    },
+    {
+      "itemId": "astral_circlet",
+      "price": 2920
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "price": 2560
+    },
+    {
+      "itemId": "guardian_halo",
+      "price": 2520
+    },
+    {
+      "itemId": "smithing_shard",
+      "price": 45
+    },
+    {
+      "itemId": "seraph_ember",
+      "price": 560
+    }
   ]
 }

@@ -13,7 +13,13 @@
         /** 플레이어 액티브 스킬 타입 */
         playerSkillTypes: ['attack', 'buff'],
         /** 아이템 kind (Phase 2) */
-        itemKinds: ['material', 'equipment']
+        itemKinds: ['material', 'equipment'],
+        /**
+         * 레벨업당 스킬트리 포인트 — [game.js](game.js) `checkLevelUp`·[js/engine/state-schema.js](js/engine/state-schema.js) 보정과 반드시 동일.
+         */
+        skillTreePointsPerLevelUp: 3,
+        /** 플레이어 최대 레벨(이상은 경험치 누적만, 레벨업 없음). 순례자 트리 유료 노드 예산 = (cap - 1) * skillTreePointsPerLevelUp */
+        playerLevelCap: 60
     };
 
     /**

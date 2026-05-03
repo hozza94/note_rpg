@@ -87,7 +87,19 @@
         },
         /** 지역이 올라갈수록 필드 일반몹 스탯 배율(보스·보스던전 제외) */
         getRegionFieldStatScale(regionId) {
-            const table = { pishon: 1, gihon: 1.1, hidekel: 1.22, euphrates: 1.45, eden_core: 1.68, periphery: 1.82, void_remnant: 1.95 };
+            const table = {
+                pishon: 1,
+                gihon: 1.1,
+                hidekel: 1.22,
+                euphrates: 1.45,
+                eden_core: 1.68,
+                periphery: 1.82,
+                void_remnant: 1.95,
+                infernal_pandemonium: 2.05,
+                astral_abyss: 2.18,
+                fallen_paradise: 2.28,
+                twilight_reach: 2.38
+            };
             return table[regionId] || 1;
         },
         applyFieldMonsterRegionScaling(monster, regionId) {

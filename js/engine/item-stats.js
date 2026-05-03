@@ -107,7 +107,8 @@
                 void_sovereign: 7,
                 beelzebub: 8,
                 astaroth: 9,
-                lucifer: 10
+                lucifer: 10,
+                twilight_arbiter: 11
             };
             return map[bossId] || 0;
         },

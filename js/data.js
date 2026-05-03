@@ -127,13 +127,26 @@ const GAME_DATA = {
             name: '타락한 낙원',
             minLevel: 72,
             bossId: 'lucifer',
-            nextRegionId: null,
+            nextRegionId: 'twilight_reach',
             themeColor: '#fbc02d',
             description: '빛과 어둠이 뒤틀려 뒤엉킨 최후의 성역. 왕관을 차지하려는 군주가 중심에서 기다립니다.',
             fieldGradeMin: 'SSS',
             fieldGradeMax: 'SSS',
             recommendedPlayerLv: { min: 72, max: 90 },
             enemyPowerTier: 10
+        },
+        'twilight_reach': {
+            id: 'twilight_reach',
+            name: '황혼의 어귀',
+            minLevel: 78,
+            bossId: 'twilight_arbiter',
+            nextRegionId: null,
+            themeColor: '#7e57c2',
+            description: '낙원이 무너진 뒤에만 열리는 잔광의 강어귀. 심판의 잔향이 아직 걷히지 않았습니다.',
+            fieldGradeMin: 'SSS',
+            fieldGradeMax: 'SSS',
+            recommendedPlayerLv: { min: 76, max: 95 },
+            enemyPowerTier: 11
         }
     },
 
@@ -149,7 +162,8 @@ const GAME_DATA = {
             { bossId: 'void_sovereign', regionId: 'void_remnant', recommendedLv: 52, unlockType: 'region_reached' },
             { bossId: 'beelzebub', regionId: 'infernal_pandemonium', recommendedLv: 60, unlockType: 'region_reached' },
             { bossId: 'astaroth', regionId: 'astral_abyss', recommendedLv: 70, unlockType: 'region_reached' },
-            { bossId: 'lucifer', regionId: 'fallen_paradise', recommendedLv: 84, unlockType: 'region_reached' }
+            { bossId: 'lucifer', regionId: 'fallen_paradise', recommendedLv: 84, unlockType: 'region_reached' },
+            { bossId: 'twilight_arbiter', regionId: 'twilight_reach', recommendedLv: 88, unlockType: 'region_reached' }
         ]
     },
 
@@ -209,6 +223,8 @@ const GAME_DATA = {
         { id: "mud_snake", tags: ["field","gihon"], regionId: "gihon", grade: "D", name: "진흙 구렁이", level: 13, minPlayerLv: 9, maxPlayerLv: 99, stats: { hp: 550, atk: 55, def: 30, spd: 150 }, reward: { exp: 420, gold: 150 }, dropTableId: "drop_d_snake", skillTreeId: "st_bite_only" },
         { id: "moss_skeleton", tags: ["field","gihon"], regionId: "gihon", grade: "C", name: "이끼 낀 해골전사", level: 16, minPlayerLv: 10, maxPlayerLv: 99, stats: { hp: 1000, atk: 90, def: 70, spd: 110 }, reward: { exp: 650, gold: 250 }, dropTableId: "drop_c_skeleton", skillTreeId: "st_wail_only" },
         { id: "swamp_stalker", tags: ["field","gihon"], regionId: "gihon", grade: "C", name: "습지의 추격자", level: 19, minPlayerLv: 11, maxPlayerLv: 99, stats: { hp: 1200, atk: 120, def: 50, spd: 190 }, reward: { exp: 780, gold: 320 }, dropTableId: "drop_c_stalker", skillTreeId: "st_fear_only" },
+        { id: "bog_leech_swarm", tags: ["field","gihon"], regionId: "gihon", grade: "D", name: "늪거머리 떼", level: 14, minPlayerLv: 9, maxPlayerLv: 99, stats: { hp: 620, atk: 62, def: 28, spd: 125 }, reward: { exp: 480, gold: 175 }, dropTableId: "drop_d_snake", skillTreeId: "st_bite_only" },
+        { id: "fen_wisp_cluster", tags: ["field","gihon"], regionId: "gihon", grade: "C", name: "습지 불빛 무리", level: 17, minPlayerLv: 10, maxPlayerLv: 99, stats: { hp: 880, atk: 78, def: 42, spd: 155 }, reward: { exp: 580, gold: 215 }, dropTableId: "drop_c_skeleton", skillTreeId: "st_wail_only" },
 
         // 보스: 진흙 거인 (기혼)
         { id: "mud_giant", tags: ["boss","gihon"], regionId: "gihon", grade: "B", name: "진흙 거인", level: 22, minPlayerLv: 12, maxPlayerLv: 99, stats: { hp: 4500, atk: 220, def: 180, spd: 70 }, reward: { exp: 4375, gold: 1250 }, dropTableId: "drop_b_giant", isBoss: true, bossPassiveSkillIds: ["boss_p_deep_root", "boss_p_stone_blood"], bossActiveSkillIds: ["boss_mud_grasp", "boss_a_war_drum"], bossActiveWeights: [1, 1] },
@@ -219,6 +235,8 @@ const GAME_DATA = {
         { id: "canyon_hyena", tags: ["field","hidekel"], regionId: "hidekel", grade: "C", name: "협곡 하이에나", level: 20, minPlayerLv: 16, maxPlayerLv: 99, stats: { hp: 1450, atk: 130, def: 70, spd: 185 }, reward: { exp: 920, gold: 360 }, dropTableId: "drop_c_hidekel", skillTreeId: "st_bite_only" },
         { id: "burning_imp", tags: ["field","hidekel"], regionId: "hidekel", grade: "C", name: "화염 임프", level: 23, minPlayerLv: 17, maxPlayerLv: 99, stats: { hp: 1500, atk: 145, def: 65, spd: 170 }, reward: { exp: 980, gold: 380 }, dropTableId: "drop_c_hidekel", skillTreeId: "st_small_fire_only" },
         { id: "ash_knight", tags: ["field","hidekel"], regionId: "hidekel", grade: "B", name: "잿빛 기사", level: 27, minPlayerLv: 18, maxPlayerLv: 99, stats: { hp: 2600, atk: 185, def: 120, spd: 120 }, reward: { exp: 1550, gold: 620 }, dropTableId: "drop_b_hidekel", skillTreeId: "st_wail_root" },
+        { id: "dust_devil", tags: ["field","hidekel"], regionId: "hidekel", grade: "C", name: "먼지 악령", level: 21, minPlayerLv: 16, maxPlayerLv: 99, stats: { hp: 1280, atk: 118, def: 62, spd: 198 }, reward: { exp: 840, gold: 330 }, dropTableId: "drop_c_hidekel", skillTreeId: "st_fear_only" },
+        { id: "glass_scorpion", tags: ["field","hidekel"], regionId: "hidekel", grade: "B", name: "유리 전갈", level: 25, minPlayerLv: 17, maxPlayerLv: 99, stats: { hp: 2100, atk: 168, def: 95, spd: 145 }, reward: { exp: 1320, gold: 520 }, dropTableId: "drop_b_hidekel", skillTreeId: "st_bite_only" },
 
         // 보스: 석화 세라프 (히데겔)
         { id: "stone_seraph", tags: ["boss","hidekel"], regionId: "hidekel", grade: "A", name: "석화 세라프", level: 30, minPlayerLv: 20, maxPlayerLv: 99, stats: { hp: 7800, atk: 290, def: 220, spd: 180 }, reward: { exp: 7350, gold: 2500 }, dropTableId: "drop_a_seraph", isBoss: true, bossPassiveSkillIds: ["boss_p_grudge_shell", "boss_p_malice", "boss_p_throne_sigil"], bossActiveSkillIds: ["boss_seraph_gaze", "boss_a_iron_hide", "boss_a_fortress"], bossActiveWeights: [2, 1, 1] },
@@ -230,6 +248,8 @@ const GAME_DATA = {
         { id: "obsidian_hound", tags: ["field","euphrates"], regionId: "euphrates", grade: "B", name: "흑요 사냥개", level: 31, minPlayerLv: 25, maxPlayerLv: 99, stats: { hp: 3200, atk: 230, def: 145, spd: 185 }, reward: { exp: 2100, gold: 820 }, dropTableId: "drop_b_euphrates", skillTreeId: "st_bite_only" },
         { id: "warlock_remnant", tags: ["field","euphrates"], regionId: "euphrates", grade: "A", name: "전장의 주술 잔재", level: 35, minPlayerLv: 26, maxPlayerLv: 99, stats: { hp: 4100, atk: 265, def: 165, spd: 160 }, reward: { exp: 2800, gold: 980 }, dropTableId: "drop_a_euphrates", skillTreeId: "st_wail_root" },
         { id: "void_marauder", tags: ["field","euphrates"], regionId: "euphrates", grade: "S", name: "공허의 약탈자", level: 36, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 6500, atk: 295, def: 185, spd: 178 }, reward: { exp: 3400, gold: 1050 }, dropTableId: "drop_a_euphrates", skillTreeId: "st_wail_root" },
+        { id: "blood_reaper", tags: ["field","euphrates"], regionId: "euphrates", grade: "A", name: "선혈의 수확자", level: 33, minPlayerLv: 26, maxPlayerLv: 99, stats: { hp: 4800, atk: 252, def: 158, spd: 172 }, reward: { exp: 2550, gold: 900 }, dropTableId: "drop_a_euphrates", skillTreeId: "st_bite_only" },
+        { id: "trench_phantom", tags: ["field","euphrates"], regionId: "euphrates", grade: "S", name: "참호의 허상", level: 34, minPlayerLv: 27, maxPlayerLv: 99, stats: { hp: 5800, atk: 278, def: 172, spd: 168 }, reward: { exp: 2980, gold: 990 }, dropTableId: "drop_a_euphrates", skillTreeId: "st_fear_only" },
 
         // 보스: 심연 히드라 (유브라데)
         { id: "abyss_hydra", tags: ["boss","euphrates"], regionId: "euphrates", grade: "A", name: "심연 히드라", level: 38, minPlayerLv: 28, maxPlayerLv: 99, stats: { hp: 9800, atk: 360, def: 250, spd: 210 }, reward: { exp: 10850, gold: 3500 }, dropTableId: "drop_a_hydra", isBoss: true, bossPassiveSkillIds: ["boss_p_abyss_tide", "boss_p_swarm_mind", "boss_p_deep_root"], bossActiveSkillIds: ["boss_hydra_maelstrom", "boss_a_overdrive", "bite"], bossActiveWeights: [2, 1, 1] },
@@ -241,6 +261,8 @@ const GAME_DATA = {
         { id: "halo_wraith", tags: ["field","eden_core"], regionId: "eden_core", grade: "A", name: "고리 원령", level: 39, minPlayerLv: 33, maxPlayerLv: 99, stats: { hp: 5100, atk: 315, def: 210, spd: 195 }, reward: { exp: 3700, gold: 1380 }, dropTableId: "drop_a_eden", skillTreeId: "st_fear_only" },
         { id: "eden_judicator", tags: ["field","eden_core"], regionId: "eden_core", grade: "S", name: "에덴 심판관", level: 42, minPlayerLv: 34, maxPlayerLv: 99, stats: { hp: 5800, atk: 340, def: 230, spd: 185 }, reward: { exp: 4300, gold: 1600 }, dropTableId: "drop_s_eden", skillTreeId: "st_stone_seraph_boss" },
         { id: "core_devourer", tags: ["field","eden_core"], regionId: "eden_core", grade: "S", name: "심연 심장의 포식자", level: 44, minPlayerLv: 34, maxPlayerLv: 99, stats: { hp: 9200, atk: 380, def: 245, spd: 200 }, reward: { exp: 6200, gold: 2100 }, dropTableId: "drop_s_eden", skillTreeId: "st_fear_only" },
+        { id: "oath_phantom", tags: ["field","eden_core"], regionId: "eden_core", grade: "A", name: "맹세의 허깨비", level: 37, minPlayerLv: 32, maxPlayerLv: 99, stats: { hp: 4900, atk: 298, def: 198, spd: 188 }, reward: { exp: 3400, gold: 1280 }, dropTableId: "drop_a_eden", skillTreeId: "st_wail_root" },
+        { id: "halo_shredder", tags: ["field","eden_core"], regionId: "eden_core", grade: "S", name: "고리의 찢는 자", level: 43, minPlayerLv: 34, maxPlayerLv: 99, stats: { hp: 8600, atk: 362, def: 228, spd: 208 }, reward: { exp: 5800, gold: 1980 }, dropTableId: "drop_s_eden", skillTreeId: "st_stone_seraph_boss" },
 
         // 보스: 왕좌 수호자 (에덴 심연)
         { id: "throne_guardian", tags: ["boss","eden_core"], regionId: "eden_core", grade: "S", name: "왕좌 수호자", level: 45, minPlayerLv: 36, maxPlayerLv: 99, stats: { hp: 13000, atk: 420, def: 300, spd: 220 }, reward: { exp: 15750, gold: 5250 }, dropTableId: "drop_s_guardian", isBoss: true, bossPassiveSkillIds: ["boss_p_throne_sigil", "boss_p_crown_pressure", "boss_p_stone_blood", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_seraph_gaze", "boss_a_rampart", "telekinesis"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_overdrive"], weights: [2, 1, 1, 1] } },
@@ -251,6 +273,8 @@ const GAME_DATA = {
         { id: "periphery_sentinel", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "회랑의 파수꾼", level: 42, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 5600, atk: 318, def: 205, spd: 180 }, reward: { exp: 5600, gold: 1750 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
         { id: "periphery_stalker", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "변두리 추적자", level: 44, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 6200, atk: 336, def: 218, spd: 192 }, reward: { exp: 6400, gold: 1980 }, dropTableId: "drop_periphery_field", skillTreeId: "st_fear_only" },
         { id: "periphery_harbinger", tags: ["field","periphery"], regionId: "periphery", grade: "SS", name: "잔향의 선구자", level: 46, minPlayerLv: 41, maxPlayerLv: 99, stats: { hp: 7200, atk: 360, def: 232, spd: 186 }, reward: { exp: 7400, gold: 2250 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
+        { id: "memory_wisp", tags: ["field","periphery"], regionId: "periphery", grade: "A", name: "기억의 잔불", level: 41, minPlayerLv: 40, maxPlayerLv: 99, stats: { hp: 5400, atk: 305, def: 200, spd: 195 }, reward: { exp: 5200, gold: 1620 }, dropTableId: "drop_periphery_field", skillTreeId: "st_fear_only" },
+        { id: "echo_knight", tags: ["field","periphery"], regionId: "periphery", grade: "SS", name: "메아리 기사", level: 47, minPlayerLv: 41, maxPlayerLv: 99, stats: { hp: 7600, atk: 372, def: 242, spd: 182 }, reward: { exp: 7800, gold: 2380 }, dropTableId: "drop_periphery_field", skillTreeId: "st_wail_root" },
         { id: "border_warden", tags: ["boss","periphery"], regionId: "periphery", grade: "SS", name: "변방 감시자", level: 49, minPlayerLv: 42, maxPlayerLv: 99, stats: { hp: 17600, atk: 468, def: 334, spd: 232 }, reward: { exp: 21400, gold: 6600 }, dropTableId: "drop_border_warden", isBoss: true, bossPassiveSkillIds: ["boss_p_border_lock", "boss_p_null_skin", "boss_p_throne_sigil", "boss_p_abyss_tide"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_a_void_surge", "boss_a_fortress", "boss_seraph_gaze"], bossActiveWeights: [2, 1, 1, 1], bossActiveLowHp: { threshold: 0.45, skillIds: ["boss_guardian_verdict", "boss_seraph_petrify", "boss_hydra_maelstrom", "boss_a_bloodlust"], weights: [2, 1, 1, 1] } },
 
         // ========================
@@ -283,7 +307,14 @@ const GAME_DATA = {
         { id: "fallen_harbinger", tags: ["field","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "타락의 선고자", level: 76, minPlayerLv: 72, maxPlayerLv: 99, stats: { hp: 26800, atk: 715, def: 468, spd: 286 }, reward: { exp: 24800, gold: 7300 }, dropTableId: "drop_fallen_field", skillTreeId: "st_stone_seraph_boss" },
         { id: "eden_corruptor", tags: ["field","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "에덴의 타락체", level: 79, minPlayerLv: 73, maxPlayerLv: 99, stats: { hp: 31200, atk: 768, def: 512, spd: 278 }, reward: { exp: 28200, gold: 8200 }, dropTableId: "drop_fallen_field", skillTreeId: "st_wail_root" },
         { id: "seraph_ruin", tags: ["field","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "멸락한 세라프", level: 82, minPlayerLv: 74, maxPlayerLv: 99, stats: { hp: 34600, atk: 812, def: 548, spd: 270 }, reward: { exp: 31500, gold: 9100 }, dropTableId: "drop_fallen_field", skillTreeId: "st_stone_seraph_boss" },
-        { id: "lucifer", tags: ["boss","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "루시퍼", level: 86, minPlayerLv: 76, maxPlayerLv: 99, stats: { hp: 52000, atk: 960, def: 690, spd: 345 }, reward: { exp: 62000, gold: 18000 }, dropTableId: "drop_lucifer", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_crown_pressure", "boss_p_border_lock", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_void_surge"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.4, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_bloodlust", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } }
+        { id: "lucifer", tags: ["boss","fallen_paradise"], regionId: "fallen_paradise", grade: "SSS", name: "루시퍼", level: 86, minPlayerLv: 76, maxPlayerLv: 99, stats: { hp: 52000, atk: 960, def: 690, spd: 345 }, reward: { exp: 62000, gold: 18000 }, dropTableId: "drop_lucifer", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_crown_pressure", "boss_p_border_lock", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_void_surge"], bossActiveWeights: [2, 2, 1, 1, 1], bossActiveLowHp: { threshold: 0.4, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_bloodlust", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } },
+
+        // ========================
+        // 황혼의 어귀 (twilight_reach)
+        // ========================
+        { id: "twilight_veil", tags: ["field","twilight_reach"], regionId: "twilight_reach", grade: "SSS", name: "황혼의 장막", level: 84, minPlayerLv: 76, maxPlayerLv: 99, stats: { hp: 38800, atk: 820, def: 540, spd: 292 }, reward: { exp: 35200, gold: 10200 }, dropTableId: "drop_twilight_field", skillTreeId: "st_wail_root" },
+        { id: "twilight_revenant", tags: ["field","twilight_reach"], regionId: "twilight_reach", grade: "SSS", name: "어귀의 망령", level: 86, minPlayerLv: 77, maxPlayerLv: 99, stats: { hp: 42800, atk: 865, def: 575, spd: 305 }, reward: { exp: 39200, gold: 11200 }, dropTableId: "drop_twilight_field", skillTreeId: "st_fear_only" },
+        { id: "twilight_arbiter", tags: ["boss","twilight_reach"], regionId: "twilight_reach", grade: "SSS", name: "황혼의 중재자", level: 90, minPlayerLv: 78, maxPlayerLv: 99, stats: { hp: 56000, atk: 910, def: 640, spd: 318 }, reward: { exp: 68000, gold: 19500 }, dropTableId: "drop_twilight_arbiter", isBoss: true, bossPassiveSkillIds: ["boss_p_void_heart", "boss_p_null_skin", "boss_p_crown_pressure", "boss_p_border_lock", "boss_p_restless"], bossActiveSkillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_seraph_petrify", "boss_a_overdrive", "boss_a_void_surge"], bossActiveWeights: [2, 1, 1, 1, 1], bossActiveLowHp: { threshold: 0.42, skillIds: ["boss_guardian_verdict", "boss_hydra_maelstrom", "boss_a_bloodlust", "boss_seraph_petrify", "boss_mud_quake"], weights: [2, 2, 1, 1, 1] } }
     ],
 
     // 로어북 기반 몬스터/보스 카탈로그(미출현 보관용). 실제 출현은 regions·monsters 체인에 추가 시 활성화.
@@ -538,7 +569,10 @@ const GAME_DATA = {
                 { id: 'reckoning_branch', name: '심판 전류', nodeIds: ['pilgrim_reck_minor', 'pilgrim_active_reckoning'] },
                 { id: 'mirror_path', name: '거울의 길', nodeIds: ['pilgrim_mirror_1', 'pilgrim_mirror_2', 'pilgrim_mirror_keystone'] },
                 { id: 'tithe_branch', name: '십일조의 가지', nodeIds: ['pilgrim_tithe_1', 'pilgrim_tithe_2', 'pilgrim_tithe_ep_1', 'pilgrim_tithe_ep_2', 'pilgrim_tithe_ep_3', 'pilgrim_tithe_ep_4'] },
-                { id: 'first_ring_outer', name: '첫 고리의 외연', nodeIds: ['pilgrim_out_n_1', 'pilgrim_out_n_2', 'pilgrim_out_e_1', 'pilgrim_out_e_2', 'pilgrim_out_s_1', 'pilgrim_out_s_2', 'pilgrim_out_w_1', 'pilgrim_out_w_2'] }
+                { id: 'first_ring_outer', name: '첫 고리의 외연', nodeIds: ['pilgrim_out_n_1', 'pilgrim_out_n_2', 'pilgrim_out_e_1', 'pilgrim_out_e_2', 'pilgrim_out_s_1', 'pilgrim_out_s_2', 'pilgrim_out_w_1', 'pilgrim_out_w_2'] },
+                { id: 'ascent_martyr', name: '순교 연장', nodeIds: ['pilgrim_ascent_m_1', 'pilgrim_ascent_m_2', 'pilgrim_ascent_m_3', 'pilgrim_ascent_m_4', 'pilgrim_ascent_m_5', 'pilgrim_ascent_m_6', 'pilgrim_ascent_m_7', 'pilgrim_ascent_m_8', 'pilgrim_ascent_m_9', 'pilgrim_ascent_m_10'] },
+                { id: 'ascent_tithe', name: '십일조 연장', nodeIds: ['pilgrim_ascent_t_1', 'pilgrim_ascent_t_2', 'pilgrim_ascent_t_3', 'pilgrim_ascent_t_4', 'pilgrim_ascent_t_5', 'pilgrim_ascent_t_6', 'pilgrim_ascent_t_7', 'pilgrim_ascent_t_8', 'pilgrim_ascent_t_9', 'pilgrim_ascent_t_10'] },
+                { id: 'ascent_radiant', name: '광휘 연장', nodeIds: ['pilgrim_ascent_r_1', 'pilgrim_ascent_r_2', 'pilgrim_ascent_r_3', 'pilgrim_ascent_r_4', 'pilgrim_ascent_r_5', 'pilgrim_ascent_r_6', 'pilgrim_ascent_r_7', 'pilgrim_ascent_r_8', 'pilgrim_ascent_r_9', 'pilgrim_ascent_r_10'] }
             ],
             nodes: [
                 { id: 'pilgrim_origin', name: '순례의 서약', kind: 'start', desc: '빛을 향한 여정의 시작점입니다.', grants: { stats: { faith: 1 } }, position: { x: 0, y: 0 } },
@@ -728,7 +762,40 @@ const GAME_DATA = {
                 { id: 'pilgrim_tithe_ep_1', name: '헌납의 삼일', kind: 'small', desc: 'PP +6', grants: { stats: { pp: 6 } }, position: { x: -7.95, y: 3.35 } },
                 { id: 'pilgrim_tithe_ep_2', name: '헌납의 오일', kind: 'small', desc: '신앙 +1, PP +5', grants: { stats: { faith: 1, pp: 5 } }, position: { x: -8.65, y: 3.85 } },
                 { id: 'pilgrim_tithe_ep_3', name: '헌납의 칠일', kind: 'small', desc: 'PP +8', grants: { stats: { pp: 8 } }, position: { x: -9.35, y: 4.35 } },
-                { id: 'pilgrim_tithe_ep_4', name: '헌납의 십일', kind: 'keystone', desc: 'PP +12, 치명타 +2%, 피해량 4% 증가', grants: { stats: { pp: 12 }, specials: { critChance: 0.02, damageMul: 1.04 } }, position: { x: -10.05, y: 4.85 } }
+                { id: 'pilgrim_tithe_ep_4', name: '헌납의 십일', kind: 'keystone', desc: 'PP +12, 치명타 +2%, 피해량 4% 증가', grants: { stats: { pp: 12 }, specials: { critChance: 0.02, damageMul: 1.04 } }, position: { x: -10.05, y: 4.85 } },
+
+                { id: 'pilgrim_ascent_m_1', name: '순교의 잔광 I', kind: 'small', desc: 'HP +10', grants: { stats: { hp: 10 } }, position: { x: 9.35, y: 15.65 } },
+                { id: 'pilgrim_ascent_m_2', name: '순교의 잔광 II', kind: 'small', desc: '공격 +1', grants: { stats: { atk: 1 } }, position: { x: 9.55, y: 16.1 } },
+                { id: 'pilgrim_ascent_m_3', name: '순교의 잔광 III', kind: 'small', desc: '방어 +1', grants: { stats: { def: 1 } }, position: { x: 9.75, y: 16.55 } },
+                { id: 'pilgrim_ascent_m_4', name: '순교의 잔광 IV', kind: 'small', desc: 'PP +5', grants: { stats: { pp: 5 } }, position: { x: 9.95, y: 17.0 } },
+                { id: 'pilgrim_ascent_m_5', name: '순교의 잔광 V', kind: 'small', desc: '신앙 +1', grants: { stats: { faith: 1 } }, position: { x: 10.15, y: 17.45 } },
+                { id: 'pilgrim_ascent_m_6', name: '순교의 잔광 VI', kind: 'small', desc: '속도 +2', grants: { stats: { spd: 2 } }, position: { x: 10.35, y: 17.9 } },
+                { id: 'pilgrim_ascent_m_7', name: '순교의 잔광 VII', kind: 'small', desc: 'HP +12', grants: { stats: { hp: 12 } }, position: { x: 10.55, y: 18.35 } },
+                { id: 'pilgrim_ascent_m_8', name: '순교의 잔광 VIII', kind: 'small', desc: '공격 +2', grants: { stats: { atk: 2 } }, position: { x: 10.75, y: 18.8 } },
+                { id: 'pilgrim_ascent_m_9', name: '순교의 잔광 IX', kind: 'small', desc: '방어 +2', grants: { stats: { def: 2 } }, position: { x: 10.95, y: 19.25 } },
+                { id: 'pilgrim_ascent_m_10', name: '순교의 잔광 X', kind: 'notable', desc: 'HP +18, PP +6', grants: { stats: { hp: 18, pp: 6 } }, position: { x: 11.15, y: 19.7 } },
+
+                { id: 'pilgrim_ascent_t_1', name: '헌납의 여운 I', kind: 'small', desc: 'PP +6', grants: { stats: { pp: 6 } }, position: { x: -10.45, y: 5.35 } },
+                { id: 'pilgrim_ascent_t_2', name: '헌납의 여운 II', kind: 'small', desc: '신앙 +1', grants: { stats: { faith: 1 } }, position: { x: -10.85, y: 5.85 } },
+                { id: 'pilgrim_ascent_t_3', name: '헌납의 여운 III', kind: 'small', desc: 'HP +10', grants: { stats: { hp: 10 } }, position: { x: -11.25, y: 6.35 } },
+                { id: 'pilgrim_ascent_t_4', name: '헌납의 여운 IV', kind: 'small', desc: 'PP +5', grants: { stats: { pp: 5 } }, position: { x: -11.65, y: 6.85 } },
+                { id: 'pilgrim_ascent_t_5', name: '헌납의 여운 V', kind: 'small', desc: '속도 +2', grants: { stats: { spd: 2 } }, position: { x: -12.05, y: 7.35 } },
+                { id: 'pilgrim_ascent_t_6', name: '헌납의 여운 VI', kind: 'small', desc: '방어 +1', grants: { stats: { def: 1 } }, position: { x: -12.45, y: 7.85 } },
+                { id: 'pilgrim_ascent_t_7', name: '헌납의 여운 VII', kind: 'small', desc: 'PP +7', grants: { stats: { pp: 7 } }, position: { x: -12.85, y: 8.35 } },
+                { id: 'pilgrim_ascent_t_8', name: '헌납의 여운 VIII', kind: 'small', desc: '신앙 +1', grants: { stats: { faith: 1 } }, position: { x: -13.25, y: 8.85 } },
+                { id: 'pilgrim_ascent_t_9', name: '헌납의 여운 IX', kind: 'small', desc: 'HP +12', grants: { stats: { hp: 12 } }, position: { x: -13.65, y: 9.35 } },
+                { id: 'pilgrim_ascent_t_10', name: '헌납의 여운 X', kind: 'notable', desc: 'PP +10, 치명타 +2%', grants: { stats: { pp: 10 }, specials: { critChance: 0.02 } }, position: { x: -14.05, y: 9.85 } },
+
+                { id: 'pilgrim_ascent_r_1', name: '난광의 미세 I', kind: 'small', desc: '공격 +1', grants: { stats: { atk: 1 } }, position: { x: -15.05, y: -10.85 } },
+                { id: 'pilgrim_ascent_r_2', name: '난광의 미세 II', kind: 'small', desc: '치명타 +2%', grants: { specials: { critChance: 0.02 } }, position: { x: -15.35, y: -11.35 } },
+                { id: 'pilgrim_ascent_r_3', name: '난광의 미세 III', kind: 'small', desc: '속도 +2', grants: { stats: { spd: 2 } }, position: { x: -15.65, y: -11.85 } },
+                { id: 'pilgrim_ascent_r_4', name: '난광의 미세 IV', kind: 'small', desc: '공격 +2', grants: { stats: { atk: 2 } }, position: { x: -15.95, y: -12.35 } },
+                { id: 'pilgrim_ascent_r_5', name: '난광의 미세 V', kind: 'small', desc: 'PP +5', grants: { stats: { pp: 5 } }, position: { x: -16.25, y: -12.85 } },
+                { id: 'pilgrim_ascent_r_6', name: '난광의 미세 VI', kind: 'small', desc: '신앙 +1', grants: { stats: { faith: 1 } }, position: { x: -16.55, y: -13.35 } },
+                { id: 'pilgrim_ascent_r_7', name: '난광의 미세 VII', kind: 'small', desc: '치명타 +2%', grants: { specials: { critChance: 0.02 } }, position: { x: -16.85, y: -13.85 } },
+                { id: 'pilgrim_ascent_r_8', name: '난광의 미세 VIII', kind: 'small', desc: 'HP +10', grants: { stats: { hp: 10 } }, position: { x: -17.15, y: -14.35 } },
+                { id: 'pilgrim_ascent_r_9', name: '난광의 미세 IX', kind: 'small', desc: '공격 +1', grants: { stats: { atk: 1 } }, position: { x: -17.45, y: -14.85 } },
+                { id: 'pilgrim_ascent_r_10', name: '난광의 미세 X', kind: 'notable', desc: '공격 +2, 피해량 3% 증가', grants: { stats: { atk: 2 }, specials: { damageMul: 1.03 } }, position: { x: -17.75, y: -15.35 } }
             ],
             edges: [
                 ['pilgrim_origin', 'pilgrim_ring_n'],
@@ -926,7 +993,40 @@ const GAME_DATA = {
                 ['pilgrim_tithe_2', 'pilgrim_tithe_ep_1'],
                 ['pilgrim_tithe_ep_1', 'pilgrim_tithe_ep_2'],
                 ['pilgrim_tithe_ep_2', 'pilgrim_tithe_ep_3'],
-                ['pilgrim_tithe_ep_3', 'pilgrim_tithe_ep_4']
+                ['pilgrim_tithe_ep_3', 'pilgrim_tithe_ep_4'],
+
+                ['pilgrim_martyr_keystone', 'pilgrim_ascent_m_1'],
+                ['pilgrim_ascent_m_1', 'pilgrim_ascent_m_2'],
+                ['pilgrim_ascent_m_2', 'pilgrim_ascent_m_3'],
+                ['pilgrim_ascent_m_3', 'pilgrim_ascent_m_4'],
+                ['pilgrim_ascent_m_4', 'pilgrim_ascent_m_5'],
+                ['pilgrim_ascent_m_5', 'pilgrim_ascent_m_6'],
+                ['pilgrim_ascent_m_6', 'pilgrim_ascent_m_7'],
+                ['pilgrim_ascent_m_7', 'pilgrim_ascent_m_8'],
+                ['pilgrim_ascent_m_8', 'pilgrim_ascent_m_9'],
+                ['pilgrim_ascent_m_9', 'pilgrim_ascent_m_10'],
+
+                ['pilgrim_tithe_ep_4', 'pilgrim_ascent_t_1'],
+                ['pilgrim_ascent_t_1', 'pilgrim_ascent_t_2'],
+                ['pilgrim_ascent_t_2', 'pilgrim_ascent_t_3'],
+                ['pilgrim_ascent_t_3', 'pilgrim_ascent_t_4'],
+                ['pilgrim_ascent_t_4', 'pilgrim_ascent_t_5'],
+                ['pilgrim_ascent_t_5', 'pilgrim_ascent_t_6'],
+                ['pilgrim_ascent_t_6', 'pilgrim_ascent_t_7'],
+                ['pilgrim_ascent_t_7', 'pilgrim_ascent_t_8'],
+                ['pilgrim_ascent_t_8', 'pilgrim_ascent_t_9'],
+                ['pilgrim_ascent_t_9', 'pilgrim_ascent_t_10'],
+
+                ['pilgrim_active_radiant_volley', 'pilgrim_ascent_r_1'],
+                ['pilgrim_ascent_r_1', 'pilgrim_ascent_r_2'],
+                ['pilgrim_ascent_r_2', 'pilgrim_ascent_r_3'],
+                ['pilgrim_ascent_r_3', 'pilgrim_ascent_r_4'],
+                ['pilgrim_ascent_r_4', 'pilgrim_ascent_r_5'],
+                ['pilgrim_ascent_r_5', 'pilgrim_ascent_r_6'],
+                ['pilgrim_ascent_r_6', 'pilgrim_ascent_r_7'],
+                ['pilgrim_ascent_r_7', 'pilgrim_ascent_r_8'],
+                ['pilgrim_ascent_r_8', 'pilgrim_ascent_r_9'],
+                ['pilgrim_ascent_r_9', 'pilgrim_ascent_r_10']
             ]
         }
     },
@@ -1177,6 +1277,22 @@ const GAME_DATA = {
             { itemId: 'astral_circlet', chance: 0.12 },
             { itemId: 'abyss_grimoire', chance: 0.11 },
             { itemId: 'guardian_halo', chance: 0.09 }
+        ],
+        'drop_twilight_field': [
+            { itemId: 'fallen_feather', chance: 0.52 },
+            { itemId: 'soul_core', chance: 0.22 },
+            { itemId: 'chaos_scripture', chance: 0.3 },
+            { itemId: 'astral_circlet', chance: 0.08 },
+            { itemId: 'abyss_grimoire', chance: 0.1 },
+            { itemId: 'guardian_oath', chance: 0.22 }
+        ],
+        'drop_twilight_arbiter': [
+            { itemId: 'soul_core', chance: 1.0 },
+            { itemId: 'fallen_feather', chance: 0.9 },
+            { itemId: 'chaos_scripture', chance: 0.35 },
+            { itemId: 'astral_circlet', chance: 0.14 },
+            { itemId: 'guardian_halo', chance: 0.1 },
+            { itemId: 'luciferian_mail', chance: 0.12 }
         ]
     },
 
@@ -1231,6 +1347,12 @@ const GAME_DATA = {
             { itemId: 'fallen_feather', chance: 1.0, minQty: 2, maxQty: 4 },
             { itemId: 'luciferian_mail', chance: 0.045, minQty: 1, maxQty: 1 },
             { itemId: 'guardian_halo', chance: 0.06, minQty: 1, maxQty: 1 }
+        ],
+        twilight_arbiter: [
+            { itemId: 'soul_core', chance: 1.0, minQty: 1, maxQty: 2 },
+            { itemId: 'chaos_scripture', chance: 0.85, minQty: 1, maxQty: 2 },
+            { itemId: 'astral_circlet', chance: 0.055, minQty: 1, maxQty: 1 },
+            { itemId: 'abyss_grimoire', chance: 0.05, minQty: 1, maxQty: 1 }
         ]
     },
 
@@ -1832,6 +1954,16 @@ const GAME_DATA = {
             { itemId: 'fallen_wings', price: 2940 },
             { itemId: 'guardian_halo', price: 2420 },
             { itemId: 'abyss_grimoire', price: 2480 },
+            { itemId: 'smithing_shard', price: 45 },
+            { itemId: 'seraph_ember', price: 560 }
+        ],
+        twilight_reach: [
+            { itemId: 'fallen_feather', price: 1620 },
+            { itemId: 'soul_core', price: 1980 },
+            { itemId: 'chaos_scripture', price: 1740 },
+            { itemId: 'astral_circlet', price: 2920 },
+            { itemId: 'abyss_grimoire', price: 2560 },
+            { itemId: 'guardian_halo', price: 2520 },
             { itemId: 'smithing_shard', price: 45 },
             { itemId: 'seraph_ember', price: 560 }
         ]

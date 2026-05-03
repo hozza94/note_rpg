@@ -388,6 +388,54 @@
           "pilgrim_out_w_1",
           "pilgrim_out_w_2"
         ]
+      },
+      {
+        "id": "ascent_martyr",
+        "name": "순교 연장",
+        "nodeIds": [
+          "pilgrim_ascent_m_1",
+          "pilgrim_ascent_m_2",
+          "pilgrim_ascent_m_3",
+          "pilgrim_ascent_m_4",
+          "pilgrim_ascent_m_5",
+          "pilgrim_ascent_m_6",
+          "pilgrim_ascent_m_7",
+          "pilgrim_ascent_m_8",
+          "pilgrim_ascent_m_9",
+          "pilgrim_ascent_m_10"
+        ]
+      },
+      {
+        "id": "ascent_tithe",
+        "name": "십일조 연장",
+        "nodeIds": [
+          "pilgrim_ascent_t_1",
+          "pilgrim_ascent_t_2",
+          "pilgrim_ascent_t_3",
+          "pilgrim_ascent_t_4",
+          "pilgrim_ascent_t_5",
+          "pilgrim_ascent_t_6",
+          "pilgrim_ascent_t_7",
+          "pilgrim_ascent_t_8",
+          "pilgrim_ascent_t_9",
+          "pilgrim_ascent_t_10"
+        ]
+      },
+      {
+        "id": "ascent_radiant",
+        "name": "광휘 연장",
+        "nodeIds": [
+          "pilgrim_ascent_r_1",
+          "pilgrim_ascent_r_2",
+          "pilgrim_ascent_r_3",
+          "pilgrim_ascent_r_4",
+          "pilgrim_ascent_r_5",
+          "pilgrim_ascent_r_6",
+          "pilgrim_ascent_r_7",
+          "pilgrim_ascent_r_8",
+          "pilgrim_ascent_r_9",
+          "pilgrim_ascent_r_10"
+        ]
       }
     ],
     "nodes": [
@@ -2752,6 +2800,463 @@
           "x": -10.05,
           "y": 4.85
         }
+      },
+      {
+        "id": "pilgrim_ascent_m_1",
+        "name": "순교의 잔광 I",
+        "kind": "small",
+        "desc": "HP +10",
+        "grants": {
+          "stats": {
+            "hp": 10
+          }
+        },
+        "position": {
+          "x": 9.35,
+          "y": 15.65
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_2",
+        "name": "순교의 잔광 II",
+        "kind": "small",
+        "desc": "공격 +1",
+        "grants": {
+          "stats": {
+            "atk": 1
+          }
+        },
+        "position": {
+          "x": 9.55,
+          "y": 16.1
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_3",
+        "name": "순교의 잔광 III",
+        "kind": "small",
+        "desc": "방어 +1",
+        "grants": {
+          "stats": {
+            "def": 1
+          }
+        },
+        "position": {
+          "x": 9.75,
+          "y": 16.55
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_4",
+        "name": "순교의 잔광 IV",
+        "kind": "small",
+        "desc": "PP +5",
+        "grants": {
+          "stats": {
+            "pp": 5
+          }
+        },
+        "position": {
+          "x": 9.95,
+          "y": 17
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_5",
+        "name": "순교의 잔광 V",
+        "kind": "small",
+        "desc": "신앙 +1",
+        "grants": {
+          "stats": {
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": 10.15,
+          "y": 17.45
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_6",
+        "name": "순교의 잔광 VI",
+        "kind": "small",
+        "desc": "속도 +2",
+        "grants": {
+          "stats": {
+            "spd": 2
+          }
+        },
+        "position": {
+          "x": 10.35,
+          "y": 17.9
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_7",
+        "name": "순교의 잔광 VII",
+        "kind": "small",
+        "desc": "HP +12",
+        "grants": {
+          "stats": {
+            "hp": 12
+          }
+        },
+        "position": {
+          "x": 10.55,
+          "y": 18.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_8",
+        "name": "순교의 잔광 VIII",
+        "kind": "small",
+        "desc": "공격 +2",
+        "grants": {
+          "stats": {
+            "atk": 2
+          }
+        },
+        "position": {
+          "x": 10.75,
+          "y": 18.8
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_9",
+        "name": "순교의 잔광 IX",
+        "kind": "small",
+        "desc": "방어 +2",
+        "grants": {
+          "stats": {
+            "def": 2
+          }
+        },
+        "position": {
+          "x": 10.95,
+          "y": 19.25
+        }
+      },
+      {
+        "id": "pilgrim_ascent_m_10",
+        "name": "순교의 잔광 X",
+        "kind": "notable",
+        "desc": "HP +18, PP +6",
+        "grants": {
+          "stats": {
+            "hp": 18,
+            "pp": 6
+          }
+        },
+        "position": {
+          "x": 11.15,
+          "y": 19.7
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_1",
+        "name": "헌납의 여운 I",
+        "kind": "small",
+        "desc": "PP +6",
+        "grants": {
+          "stats": {
+            "pp": 6
+          }
+        },
+        "position": {
+          "x": -10.45,
+          "y": 5.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_2",
+        "name": "헌납의 여운 II",
+        "kind": "small",
+        "desc": "신앙 +1",
+        "grants": {
+          "stats": {
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": -10.85,
+          "y": 5.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_3",
+        "name": "헌납의 여운 III",
+        "kind": "small",
+        "desc": "HP +10",
+        "grants": {
+          "stats": {
+            "hp": 10
+          }
+        },
+        "position": {
+          "x": -11.25,
+          "y": 6.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_4",
+        "name": "헌납의 여운 IV",
+        "kind": "small",
+        "desc": "PP +5",
+        "grants": {
+          "stats": {
+            "pp": 5
+          }
+        },
+        "position": {
+          "x": -11.65,
+          "y": 6.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_5",
+        "name": "헌납의 여운 V",
+        "kind": "small",
+        "desc": "속도 +2",
+        "grants": {
+          "stats": {
+            "spd": 2
+          }
+        },
+        "position": {
+          "x": -12.05,
+          "y": 7.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_6",
+        "name": "헌납의 여운 VI",
+        "kind": "small",
+        "desc": "방어 +1",
+        "grants": {
+          "stats": {
+            "def": 1
+          }
+        },
+        "position": {
+          "x": -12.45,
+          "y": 7.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_7",
+        "name": "헌납의 여운 VII",
+        "kind": "small",
+        "desc": "PP +7",
+        "grants": {
+          "stats": {
+            "pp": 7
+          }
+        },
+        "position": {
+          "x": -12.85,
+          "y": 8.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_8",
+        "name": "헌납의 여운 VIII",
+        "kind": "small",
+        "desc": "신앙 +1",
+        "grants": {
+          "stats": {
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": -13.25,
+          "y": 8.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_9",
+        "name": "헌납의 여운 IX",
+        "kind": "small",
+        "desc": "HP +12",
+        "grants": {
+          "stats": {
+            "hp": 12
+          }
+        },
+        "position": {
+          "x": -13.65,
+          "y": 9.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_t_10",
+        "name": "헌납의 여운 X",
+        "kind": "notable",
+        "desc": "PP +10, 치명타 +2%",
+        "grants": {
+          "stats": {
+            "pp": 10
+          },
+          "specials": {
+            "critChance": 0.02
+          }
+        },
+        "position": {
+          "x": -14.05,
+          "y": 9.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_1",
+        "name": "난광의 미세 I",
+        "kind": "small",
+        "desc": "공격 +1",
+        "grants": {
+          "stats": {
+            "atk": 1
+          }
+        },
+        "position": {
+          "x": -15.05,
+          "y": -10.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_2",
+        "name": "난광의 미세 II",
+        "kind": "small",
+        "desc": "치명타 +2%",
+        "grants": {
+          "specials": {
+            "critChance": 0.02
+          }
+        },
+        "position": {
+          "x": -15.35,
+          "y": -11.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_3",
+        "name": "난광의 미세 III",
+        "kind": "small",
+        "desc": "속도 +2",
+        "grants": {
+          "stats": {
+            "spd": 2
+          }
+        },
+        "position": {
+          "x": -15.65,
+          "y": -11.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_4",
+        "name": "난광의 미세 IV",
+        "kind": "small",
+        "desc": "공격 +2",
+        "grants": {
+          "stats": {
+            "atk": 2
+          }
+        },
+        "position": {
+          "x": -15.95,
+          "y": -12.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_5",
+        "name": "난광의 미세 V",
+        "kind": "small",
+        "desc": "PP +5",
+        "grants": {
+          "stats": {
+            "pp": 5
+          }
+        },
+        "position": {
+          "x": -16.25,
+          "y": -12.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_6",
+        "name": "난광의 미세 VI",
+        "kind": "small",
+        "desc": "신앙 +1",
+        "grants": {
+          "stats": {
+            "faith": 1
+          }
+        },
+        "position": {
+          "x": -16.55,
+          "y": -13.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_7",
+        "name": "난광의 미세 VII",
+        "kind": "small",
+        "desc": "치명타 +2%",
+        "grants": {
+          "specials": {
+            "critChance": 0.02
+          }
+        },
+        "position": {
+          "x": -16.85,
+          "y": -13.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_8",
+        "name": "난광의 미세 VIII",
+        "kind": "small",
+        "desc": "HP +10",
+        "grants": {
+          "stats": {
+            "hp": 10
+          }
+        },
+        "position": {
+          "x": -17.15,
+          "y": -14.35
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_9",
+        "name": "난광의 미세 IX",
+        "kind": "small",
+        "desc": "공격 +1",
+        "grants": {
+          "stats": {
+            "atk": 1
+          }
+        },
+        "position": {
+          "x": -17.45,
+          "y": -14.85
+        }
+      },
+      {
+        "id": "pilgrim_ascent_r_10",
+        "name": "난광의 미세 X",
+        "kind": "notable",
+        "desc": "공격 +2, 피해량 3% 증가",
+        "grants": {
+          "stats": {
+            "atk": 2
+          },
+          "specials": {
+            "damageMul": 1.03
+          }
+        },
+        "position": {
+          "x": -17.75,
+          "y": -15.35
+        }
       }
     ],
     "edges": [
@@ -3406,6 +3911,126 @@
       [
         "pilgrim_tithe_ep_3",
         "pilgrim_tithe_ep_4"
+      ],
+      [
+        "pilgrim_martyr_keystone",
+        "pilgrim_ascent_m_1"
+      ],
+      [
+        "pilgrim_ascent_m_1",
+        "pilgrim_ascent_m_2"
+      ],
+      [
+        "pilgrim_ascent_m_2",
+        "pilgrim_ascent_m_3"
+      ],
+      [
+        "pilgrim_ascent_m_3",
+        "pilgrim_ascent_m_4"
+      ],
+      [
+        "pilgrim_ascent_m_4",
+        "pilgrim_ascent_m_5"
+      ],
+      [
+        "pilgrim_ascent_m_5",
+        "pilgrim_ascent_m_6"
+      ],
+      [
+        "pilgrim_ascent_m_6",
+        "pilgrim_ascent_m_7"
+      ],
+      [
+        "pilgrim_ascent_m_7",
+        "pilgrim_ascent_m_8"
+      ],
+      [
+        "pilgrim_ascent_m_8",
+        "pilgrim_ascent_m_9"
+      ],
+      [
+        "pilgrim_ascent_m_9",
+        "pilgrim_ascent_m_10"
+      ],
+      [
+        "pilgrim_tithe_ep_4",
+        "pilgrim_ascent_t_1"
+      ],
+      [
+        "pilgrim_ascent_t_1",
+        "pilgrim_ascent_t_2"
+      ],
+      [
+        "pilgrim_ascent_t_2",
+        "pilgrim_ascent_t_3"
+      ],
+      [
+        "pilgrim_ascent_t_3",
+        "pilgrim_ascent_t_4"
+      ],
+      [
+        "pilgrim_ascent_t_4",
+        "pilgrim_ascent_t_5"
+      ],
+      [
+        "pilgrim_ascent_t_5",
+        "pilgrim_ascent_t_6"
+      ],
+      [
+        "pilgrim_ascent_t_6",
+        "pilgrim_ascent_t_7"
+      ],
+      [
+        "pilgrim_ascent_t_7",
+        "pilgrim_ascent_t_8"
+      ],
+      [
+        "pilgrim_ascent_t_8",
+        "pilgrim_ascent_t_9"
+      ],
+      [
+        "pilgrim_ascent_t_9",
+        "pilgrim_ascent_t_10"
+      ],
+      [
+        "pilgrim_active_radiant_volley",
+        "pilgrim_ascent_r_1"
+      ],
+      [
+        "pilgrim_ascent_r_1",
+        "pilgrim_ascent_r_2"
+      ],
+      [
+        "pilgrim_ascent_r_2",
+        "pilgrim_ascent_r_3"
+      ],
+      [
+        "pilgrim_ascent_r_3",
+        "pilgrim_ascent_r_4"
+      ],
+      [
+        "pilgrim_ascent_r_4",
+        "pilgrim_ascent_r_5"
+      ],
+      [
+        "pilgrim_ascent_r_5",
+        "pilgrim_ascent_r_6"
+      ],
+      [
+        "pilgrim_ascent_r_6",
+        "pilgrim_ascent_r_7"
+      ],
+      [
+        "pilgrim_ascent_r_7",
+        "pilgrim_ascent_r_8"
+      ],
+      [
+        "pilgrim_ascent_r_8",
+        "pilgrim_ascent_r_9"
+      ],
+      [
+        "pilgrim_ascent_r_9",
+        "pilgrim_ascent_r_10"
       ]
     ]
   }

@@ -901,7 +901,8 @@
                     mud_giant: 'heart_of_giant',
                     stone_seraph: 'seraph_feather',
                     abyss_hydra: 'hydra_venom_gem',
-                    throne_guardian: 'guardian_oath'
+                    throne_guardian: 'guardian_oath',
+                    twilight_arbiter: 'chaos_scripture'
                 };
                 const rewardItemId = rewardMap[bossId];
                 if (rewardItemId) {

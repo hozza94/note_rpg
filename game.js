@@ -567,7 +567,12 @@ class GameEngine {
     }
 
     checkLevelUp() {
-        while (this.state.player.exp >= this.state.player.nextExp) {
+        const meta = typeof window !== 'undefined' && window.GAME_DATA_META ? window.GAME_DATA_META : {};
+        const spPer = Number(meta.skillTreePointsPerLevelUp);
+        const SP = Number.isFinite(spPer) && spPer > 0 ? spPer : 3;
+        const capRaw = Number(meta.playerLevelCap);
+        const levelCap = Number.isFinite(capRaw) && capRaw > 1 ? capRaw : 999;
+        while (this.state.player.exp >= this.state.player.nextExp && this.state.player.level < levelCap) {
             this.state.player.exp -= this.state.player.nextExp;
             this.state.player.level++;
             // 레벨이 올라갈수록 요구치가 과도하게 치솟지 않도록 완만화
@@ -582,10 +587,10 @@ class GameEngine {
 
             // 보너스 포인트 지급
             this.state.player.bonusPoints += 2;
-            this.state.player.skillTreePoints += 3;
+            this.state.player.skillTreePoints += SP;
 
             this.log(`🎉 레벨 업! 이제 Lv.${this.state.player.level} 순례자입니다!`, "system");
-            this.log(`[성장] HP+12 PP+4 공격+2 방어+1 속도+2 / 보너스 포인트 +2 / 스킬트리 포인트 +3`, "system");
+            this.log(`[성장] HP+12 PP+4 공격+2 방어+1 속도+2 / 보너스 포인트 +2 / 스킬트리 포인트 +${SP}`, "system");
 
             // HP/PP 전량 회복
             const totals = this.getPlayerCombinedStats();

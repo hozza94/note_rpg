@@ -312,6 +312,56 @@
     "skillTreeId": "st_fear_only"
   },
   {
+    "id": "bog_leech_swarm",
+    "tags": [
+      "field",
+      "gihon"
+    ],
+    "regionId": "gihon",
+    "grade": "D",
+    "name": "늪거머리 떼",
+    "level": 14,
+    "minPlayerLv": 9,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 620,
+      "atk": 62,
+      "def": 28,
+      "spd": 125
+    },
+    "reward": {
+      "exp": 480,
+      "gold": 175
+    },
+    "dropTableId": "drop_d_snake",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "fen_wisp_cluster",
+    "tags": [
+      "field",
+      "gihon"
+    ],
+    "regionId": "gihon",
+    "grade": "C",
+    "name": "습지 불빛 무리",
+    "level": 17,
+    "minPlayerLv": 10,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 880,
+      "atk": 78,
+      "def": 42,
+      "spd": 155
+    },
+    "reward": {
+      "exp": 580,
+      "gold": 215
+    },
+    "dropTableId": "drop_c_skeleton",
+    "skillTreeId": "st_wail_only"
+  },
+  {
     "id": "mud_giant",
     "tags": [
       "boss",
@@ -422,6 +472,56 @@
     },
     "dropTableId": "drop_b_hidekel",
     "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "dust_devil",
+    "tags": [
+      "field",
+      "hidekel"
+    ],
+    "regionId": "hidekel",
+    "grade": "C",
+    "name": "먼지 악령",
+    "level": 21,
+    "minPlayerLv": 16,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 1280,
+      "atk": 118,
+      "def": 62,
+      "spd": 198
+    },
+    "reward": {
+      "exp": 840,
+      "gold": 330
+    },
+    "dropTableId": "drop_c_hidekel",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "glass_scorpion",
+    "tags": [
+      "field",
+      "hidekel"
+    ],
+    "regionId": "hidekel",
+    "grade": "B",
+    "name": "유리 전갈",
+    "level": 25,
+    "minPlayerLv": 17,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 2100,
+      "atk": 168,
+      "def": 95,
+      "spd": 145
+    },
+    "reward": {
+      "exp": 1320,
+      "gold": 520
+    },
+    "dropTableId": "drop_b_hidekel",
+    "skillTreeId": "st_bite_only"
   },
   {
     "id": "stone_seraph",
@@ -564,6 +664,56 @@
     "skillTreeId": "st_wail_root"
   },
   {
+    "id": "blood_reaper",
+    "tags": [
+      "field",
+      "euphrates"
+    ],
+    "regionId": "euphrates",
+    "grade": "A",
+    "name": "선혈의 수확자",
+    "level": 33,
+    "minPlayerLv": 26,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 4800,
+      "atk": 252,
+      "def": 158,
+      "spd": 172
+    },
+    "reward": {
+      "exp": 2550,
+      "gold": 900
+    },
+    "dropTableId": "drop_a_euphrates",
+    "skillTreeId": "st_bite_only"
+  },
+  {
+    "id": "trench_phantom",
+    "tags": [
+      "field",
+      "euphrates"
+    ],
+    "regionId": "euphrates",
+    "grade": "S",
+    "name": "참호의 허상",
+    "level": 34,
+    "minPlayerLv": 27,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 5800,
+      "atk": 278,
+      "def": 172,
+      "spd": 168
+    },
+    "reward": {
+      "exp": 2980,
+      "gold": 990
+    },
+    "dropTableId": "drop_a_euphrates",
+    "skillTreeId": "st_fear_only"
+  },
+  {
     "id": "abyss_hydra",
     "tags": [
       "boss",
@@ -704,6 +854,56 @@
     "skillTreeId": "st_fear_only"
   },
   {
+    "id": "oath_phantom",
+    "tags": [
+      "field",
+      "eden_core"
+    ],
+    "regionId": "eden_core",
+    "grade": "A",
+    "name": "맹세의 허깨비",
+    "level": 37,
+    "minPlayerLv": 32,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 4900,
+      "atk": 298,
+      "def": 198,
+      "spd": 188
+    },
+    "reward": {
+      "exp": 3400,
+      "gold": 1280
+    },
+    "dropTableId": "drop_a_eden",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "halo_shredder",
+    "tags": [
+      "field",
+      "eden_core"
+    ],
+    "regionId": "eden_core",
+    "grade": "S",
+    "name": "고리의 찢는 자",
+    "level": 43,
+    "minPlayerLv": 34,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 8600,
+      "atk": 362,
+      "def": 228,
+      "spd": 208
+    },
+    "reward": {
+      "exp": 5800,
+      "gold": 1980
+    },
+    "dropTableId": "drop_s_eden",
+    "skillTreeId": "st_stone_seraph_boss"
+  },
+  {
     "id": "throne_guardian",
     "tags": [
       "boss",
@@ -832,6 +1032,56 @@
     "reward": {
       "exp": 7400,
       "gold": 2250
+    },
+    "dropTableId": "drop_periphery_field",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "memory_wisp",
+    "tags": [
+      "field",
+      "periphery"
+    ],
+    "regionId": "periphery",
+    "grade": "A",
+    "name": "기억의 잔불",
+    "level": 41,
+    "minPlayerLv": 40,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 5400,
+      "atk": 305,
+      "def": 200,
+      "spd": 195
+    },
+    "reward": {
+      "exp": 5200,
+      "gold": 1620
+    },
+    "dropTableId": "drop_periphery_field",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "echo_knight",
+    "tags": [
+      "field",
+      "periphery"
+    ],
+    "regionId": "periphery",
+    "grade": "SS",
+    "name": "메아리 기사",
+    "level": 47,
+    "minPlayerLv": 41,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 7600,
+      "atk": 372,
+      "def": 242,
+      "spd": 182
+    },
+    "reward": {
+      "exp": 7800,
+      "gold": 2380
     },
     "dropTableId": "drop_periphery_field",
     "skillTreeId": "st_wail_root"
@@ -1435,6 +1685,119 @@
         "boss_hydra_maelstrom",
         "boss_seraph_petrify",
         "boss_a_bloodlust",
+        "boss_mud_quake"
+      ],
+      "weights": [
+        2,
+        2,
+        1,
+        1,
+        1
+      ]
+    }
+  },
+  {
+    "id": "twilight_veil",
+    "tags": [
+      "field",
+      "twilight_reach"
+    ],
+    "regionId": "twilight_reach",
+    "grade": "SSS",
+    "name": "황혼의 장막",
+    "level": 84,
+    "minPlayerLv": 76,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 38800,
+      "atk": 820,
+      "def": 540,
+      "spd": 292
+    },
+    "reward": {
+      "exp": 35200,
+      "gold": 10200
+    },
+    "dropTableId": "drop_twilight_field",
+    "skillTreeId": "st_wail_root"
+  },
+  {
+    "id": "twilight_revenant",
+    "tags": [
+      "field",
+      "twilight_reach"
+    ],
+    "regionId": "twilight_reach",
+    "grade": "SSS",
+    "name": "어귀의 망령",
+    "level": 86,
+    "minPlayerLv": 77,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 42800,
+      "atk": 865,
+      "def": 575,
+      "spd": 305
+    },
+    "reward": {
+      "exp": 39200,
+      "gold": 11200
+    },
+    "dropTableId": "drop_twilight_field",
+    "skillTreeId": "st_fear_only"
+  },
+  {
+    "id": "twilight_arbiter",
+    "tags": [
+      "boss",
+      "twilight_reach"
+    ],
+    "regionId": "twilight_reach",
+    "grade": "SSS",
+    "name": "황혼의 중재자",
+    "level": 90,
+    "minPlayerLv": 78,
+    "maxPlayerLv": 99,
+    "stats": {
+      "hp": 56000,
+      "atk": 910,
+      "def": 640,
+      "spd": 318
+    },
+    "reward": {
+      "exp": 68000,
+      "gold": 19500
+    },
+    "dropTableId": "drop_twilight_arbiter",
+    "isBoss": true,
+    "bossPassiveSkillIds": [
+      "boss_p_void_heart",
+      "boss_p_null_skin",
+      "boss_p_crown_pressure",
+      "boss_p_border_lock",
+      "boss_p_restless"
+    ],
+    "bossActiveSkillIds": [
+      "boss_guardian_verdict",
+      "boss_hydra_maelstrom",
+      "boss_seraph_petrify",
+      "boss_a_overdrive",
+      "boss_a_void_surge"
+    ],
+    "bossActiveWeights": [
+      2,
+      1,
+      1,
+      1,
+      1
+    ],
+    "bossActiveLowHp": {
+      "threshold": 0.42,
+      "skillIds": [
+        "boss_guardian_verdict",
+        "boss_hydra_maelstrom",
+        "boss_a_bloodlust",
+        "boss_seraph_petrify",
         "boss_mud_quake"
       ],
       "weights": [

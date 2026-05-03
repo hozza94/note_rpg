@@ -772,5 +772,57 @@
       "itemId": "guardian_halo",
       "chance": 0.09
     }
+  ],
+  "drop_twilight_field": [
+    {
+      "itemId": "fallen_feather",
+      "chance": 0.52
+    },
+    {
+      "itemId": "soul_core",
+      "chance": 0.22
+    },
+    {
+      "itemId": "chaos_scripture",
+      "chance": 0.3
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.08
+    },
+    {
+      "itemId": "abyss_grimoire",
+      "chance": 0.1
+    },
+    {
+      "itemId": "guardian_oath",
+      "chance": 0.22
+    }
+  ],
+  "drop_twilight_arbiter": [
+    {
+      "itemId": "soul_core",
+      "chance": 1
+    },
+    {
+      "itemId": "fallen_feather",
+      "chance": 0.9
+    },
+    {
+      "itemId": "chaos_scripture",
+      "chance": 0.35
+    },
+    {
+      "itemId": "astral_circlet",
+      "chance": 0.14
+    },
+    {
+      "itemId": "guardian_halo",
+      "chance": 0.1
+    },
+    {
+      "itemId": "luciferian_mail",
+      "chance": 0.12
+    }
   ]
 }

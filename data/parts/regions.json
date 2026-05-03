@@ -148,7 +148,7 @@
     "name": "타락한 낙원",
     "minLevel": 72,
     "bossId": "lucifer",
-    "nextRegionId": null,
+    "nextRegionId": "twilight_reach",
     "themeColor": "#fbc02d",
     "description": "빛과 어둠이 뒤틀려 뒤엉킨 최후의 성역. 왕관을 차지하려는 군주가 중심에서 기다립니다.",
     "fieldGradeMin": "SSS",
@@ -158,5 +158,21 @@
       "max": 90
     },
     "enemyPowerTier": 10
+  },
+  "twilight_reach": {
+    "id": "twilight_reach",
+    "name": "황혼의 어귀",
+    "minLevel": 78,
+    "bossId": "twilight_arbiter",
+    "nextRegionId": null,
+    "themeColor": "#7e57c2",
+    "description": "낙원이 무너진 뒤에만 열리는 잔광의 강어귀. 심판의 잔향이 아직 걷히지 않았습니다.",
+    "fieldGradeMin": "SSS",
+    "fieldGradeMax": "SSS",
+    "recommendedPlayerLv": {
+      "min": 76,
+      "max": 95
+    },
+    "enemyPowerTier": 11
   }
 }

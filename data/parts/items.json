@@ -474,6 +474,7 @@
     "specials": {
       "critDamageMul": 0.04
     },
+    "equipTier": 1,
     "desc": "서늘한 잔향이 맴도며, 망령의 각오가 치명타 피해를 살짝 끌어올립니다."
   },
   "wooden_shield": {
@@ -521,6 +522,7 @@
       "hp": 75,
       "spd": -2
     },
+    "equipTier": 2,
     "desc": "진흙 거인의 심핵으로 단조된 중량형 방패입니다."
   },
   "pilgrim_lance": {
@@ -635,6 +637,7 @@
       "hp": 55,
       "faith": 2
     },
+    "equipTier": 7,
     "desc": "집중 방어 결계를 생성하는 핵심 장치입니다."
   },
   "seraphite_mail": {
@@ -647,6 +650,7 @@
       "hp": 85,
       "faith": 2
     },
+    "equipTier": 3,
     "desc": "석화 세라프의 깃편으로 엮은 보스 전용 갑주입니다."
   },
   "hydra_fang_blade": {
@@ -659,6 +663,7 @@
       "spd": 10,
       "lifeSteal": 0.03
     },
+    "equipTier": 4,
     "desc": "심연 히드라의 송곳니를 제련한 포식자의 검입니다."
   },
   "guardian_halo": {
@@ -674,6 +679,7 @@
     "specials": {
       "critDamageMul": 0.055
     },
+    "equipTier": 5,
     "desc": "왕좌 수호자의 맹세가 남은 최상급 투구로, 신성한 집중이 치명타 피해를 보조합니다."
   },
   "demonic_ember": {
@@ -722,6 +728,7 @@
       "spd": 8,
       "faith": 1
     },
+    "equipTier": 8,
     "desc": "마계 화원에서 벼린 검으로 공격과 민첩을 함께 끌어올립니다."
   },
   "abyss_grimoire": {
@@ -737,6 +744,7 @@
     "specials": {
       "critDamageMul": 0.075
     },
+    "equipTier": 8,
     "desc": "봉인된 주문식이 새겨진 금서로, 금단의 구절이 치명타 피해를 끌어올립니다."
   },
   "astral_circlet": {
@@ -752,6 +760,7 @@
     "specials": {
       "critDamageMul": 0.085
     },
+    "equipTier": 9,
     "desc": "성좌 심연의 잔광을 새긴 관으로, 별자리의 압력이 치명타 피해를 강화합니다."
   },
   "fallen_wings": {
@@ -764,6 +773,7 @@
       "spd": 12,
       "lifeSteal": 0.04
     },
+    "equipTier": 9,
     "desc": "타락한 낙원의 잔향을 깃들인 장신구입니다."
   },
   "luciferian_mail": {
@@ -776,6 +786,7 @@
       "hp": 120,
       "faith": 3
     },
+    "equipTier": 10,
     "desc": "최후 군주의 검은 광휘를 두른 중갑으로 극한 생존력을 제공합니다."
   }
 }

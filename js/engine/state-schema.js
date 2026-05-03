@@ -121,15 +121,21 @@
             this.sanitizePilgrimSkillTreeUnlocks();
         }
 
-        // 레벨 대비 스킬포인트 보정: (레벨-1) * 3 총 획득량을 최소 기준으로 맞춤
+        // 레벨 대비 스킬포인트 보정: (유효레벨-1) * SP/레벨 — GAME_DATA_META와 game.js.checkLevelUp 동기
         // 총 획득량 = (현재 보유 포인트) + (이미 해금한 노드 수-시작노드)
+        const meta = typeof window !== 'undefined' && window.GAME_DATA_META ? window.GAME_DATA_META : {};
+        const spPer = Number(meta.skillTreePointsPerLevelUp);
+        const SP = Number.isFinite(spPer) && spPer > 0 ? spPer : 3;
+        const capRaw = Number(meta.playerLevelCap);
+        const levelCap = Number.isFinite(capRaw) && capRaw > 1 ? capRaw : 999;
         const nodeMap = this.getSkillTreeNodeMap ? this.getSkillTreeNodeMap() : {};
         const unlockedNodeCount = (this.state.player.unlockedSkillNodes || [])
             .filter((id, idx, arr) => arr.indexOf(id) === idx)
             .filter(id => id !== startNodeId && !!nodeMap[id])
             .length;
-        const level = Math.max(1, Number(this.state.player.level || 1));
-        const targetEarnedSkillPoints = Math.max(0, (level - 1) * 3);
+        const rawLevel = Math.max(1, Number(this.state.player.level || 1));
+        const effectiveLevel = Math.min(levelCap, rawLevel);
+        const targetEarnedSkillPoints = Math.max(0, (effectiveLevel - 1) * SP);
         const currentEarnedSkillPoints = Math.max(0, Number(this.state.player.skillTreePoints || 0)) + unlockedNodeCount;
         const compensation = Math.max(0, targetEarnedSkillPoints - currentEarnedSkillPoints);
         if (compensation > 0) {

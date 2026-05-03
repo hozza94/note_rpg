@@ -59,6 +59,12 @@
       "regionId": "fallen_paradise",
       "recommendedLv": 84,
       "unlockType": "region_reached"
+    },
+    {
+      "bossId": "twilight_arbiter",
+      "regionId": "twilight_reach",
+      "recommendedLv": 88,
+      "unlockType": "region_reached"
     }
   ]
 }
