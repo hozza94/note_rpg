@@ -3595,7 +3595,7 @@ h3.battle-actor-name {
 
 .skill-web-node-name {
     fill: #ffffff;
-    font-size: 12px;
+    font-size: 11px;
     paint-order: stroke;
     stroke: rgba(0, 0, 0, 0.82);
     stroke-width: 2.2px;
@@ -3608,7 +3608,7 @@ h3.battle-actor-name {
 
 .skill-web-node-state {
     fill: #d7e3ea;
-    font-size: 11px;
+    font-size: 10px;
 }
 
 .skill-web-node.kind-keystone .skill-web-node-core {

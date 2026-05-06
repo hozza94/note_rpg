@@ -407,9 +407,6 @@
         formatPassiveSkillTooltip(node) {
             if (!node) return '상세 정보 없음';
             const lines = [`노드 유형: ${node.kind}`, `효과: ${this.formatPassiveSkillSummary(node)}`];
-            const graph = this.getSkillNodeGraphMeta(node);
-            if (graph && graph.L != null && Number.isFinite(graph.L)) lines.push(`트리 거리: L=${graph.L}`);
-            if (graph && graph.r != null && Number.isFinite(graph.r)) lines.push(`방사 거리: r=${graph.r.toFixed(2)}`);
             if (node.desc) lines.push(`설명: ${node.desc}`);
             return lines.join('\n');
         },
@@ -479,8 +476,8 @@
             return `M ${f(ax)} ${f(ay)} C ${f(c1x)} ${f(c1y)} ${f(c2x)} ${f(c2y)} ${f(bx)} ${f(by)}`;
         },
         getSkillTreeLayout(tree) { /* truncated in module extraction safety; keep same behavior via copied logic below */
-            /** 노드 좌표 단위(px). 작을수록 같은 그리드에서 노드가 가깝게 보임 */
-            const unit = 88, padding = 180, fallbackRadius = 2.4;
+            /** 노드 좌표 단위(px). 클수록 노드 간 간격이 넓어짐(겹침 완화) */
+            const unit = 118, padding = 220, fallbackRadius = 2.4;
             const positions = {};
             const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
             const total = Math.max(1, nodes.length);
@@ -524,11 +521,11 @@
         },
         getSkillNodeLayoutRadii(node) {
             const k = node?.kind || 'small';
-            if (k === 'active_unlock') return { core: 18, ring: 26, nameY: -36, stateY: 42 };
-            if (k === 'keystone') return { core: 15, ring: 22, nameY: -31, stateY: 37 };
-            if (k === 'start') return { core: 14, ring: 21, nameY: -29, stateY: 35 };
-            if (k === 'notable') return { core: 12, ring: 18, nameY: -26, stateY: 32 };
-            return { core: 10, ring: 15, nameY: -23, stateY: 29 };
+            if (k === 'active_unlock') return { core: 18, ring: 26, nameY: -40, stateY: 46 };
+            if (k === 'keystone') return { core: 15, ring: 22, nameY: -34, stateY: 40 };
+            if (k === 'start') return { core: 14, ring: 21, nameY: -32, stateY: 38 };
+            if (k === 'notable') return { core: 12, ring: 18, nameY: -29, stateY: 36 };
+            return { core: 10, ring: 15, nameY: -26, stateY: 33 };
         },
         getStarPoints(outerR, innerR, tips = 5) {
             const points = [], step = Math.PI / tips;
@@ -555,7 +552,6 @@
             const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
             const nodeMap = this.getSkillTreeNodeMap();
             const { positions, width, height, originX, originY, viewCenterX, viewCenterY } = this.getSkillTreeLayout(tree);
-            const depthById = this.buildSkillTreeBfsDepthMap(tree);
             const edges = (tree.edges || []).map(([from, to], edgeIdx) => {
                 const a = positions[from], b = positions[to];
                 if (!a || !b) return '';
@@ -573,7 +569,7 @@
                 const stateClass = this.getSkillNodeClass(node.id, unlocked);
                 const canUnlock = this.canUnlockSkillNode(node.id).ok;
                 const isLocked = !unlocked.has(node.id) && !canUnlock;
-                const bottomLabel = unlocked.has(node.id) ? '해금 완료' : (canUnlock ? '해금 가능' : '');
+                const bottomLabel = unlocked.has(node.id) ? '완료' : (canUnlock ? '가능' : '');
                 const branchClass = this.getSkillNodeBranchClass(tree, node.id);
                 const radii = this.getSkillNodeLayoutRadii(node);
                 const nm = this.escapeSvgText(node.name);
@@ -596,7 +592,7 @@
                     </g>
                 `;
             }).join('');
-            content.style.width = '980px';
+            content.style.width = `${Math.min(1120, Math.max(980, width + 40))}px`;
             content.style.maxWidth = '97vw';
             content.innerHTML = `
                 <h3 style="margin-bottom: 8px;">${tree.className} 스킬트리</h3>
@@ -654,18 +650,10 @@
                 const node = nodeId ? nodeMap[nodeId] : null;
                 if (!node || !infoBox) return;
                 const info = this.formatSkillTreeInfo(node);
-                const graph = this.getSkillNodeGraphMeta(node, depthById);
-                const L = graph?.L;
-                const r = graph?.r;
-                const graphMeta = [];
-                if (L != null && Number.isFinite(L)) graphMeta.push(`트리 거리 L=${L}`);
-                if (r != null && Number.isFinite(r)) graphMeta.push(`방사 r=${r.toFixed(2)}`);
-                const graphLine = graphMeta.length ? `<div class="meta skill-tree-graph-meta">${graphMeta.join(' · ')}</div>` : '';
                 infoBox.innerHTML = `
                         <strong>${node.name}</strong>
                         ${info.descText ? `<div>${info.descText}</div>` : ''}
                         ${info.effectText ? `<div class="effect">${info.effectText}</div>` : ''}
-                        ${graphLine}
                         <div class="meta">${this.getSkillNodeStateLabelShort(node.id, unlocked)} · ${node.kind}</div>
                     `;
             };
