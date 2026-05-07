@@ -250,6 +250,29 @@ function main() {
         }
     }
 
+    /** position 그리드 기준 비정상적으로 먼 엣지(지도 끝↔끝 스파인) 방지 */
+    const MAX_SKILL_EDGE_GRID = 12;
+    for (const [treeKey, tree] of Object.entries(skillTrees)) {
+        const posMap = new Map();
+        for (const node of tree.nodes || []) {
+            const p = node.position;
+            if (p && Number.isFinite(p.x) && Number.isFinite(p.y)) posMap.set(node.id, p);
+        }
+        for (const pair of tree.edges || []) {
+            if (!Array.isArray(pair) || pair.length < 2) continue;
+            const [a, b] = pair;
+            const pa = posMap.get(a);
+            const pb = posMap.get(b);
+            if (!pa || !pb) continue;
+            const d = Math.hypot(pa.x - pb.x, pa.y - pb.y);
+            if (d > MAX_SKILL_EDGE_GRID) {
+                warn.push(
+                    `skillTrees.${treeKey}: 엣지 ${a}↔${b} 그리드 거리 ${d.toFixed(2)} (권장 상한 ${MAX_SKILL_EDGE_GRID}, 먼 지점끼리 직접 연결 의심)`
+                );
+            }
+        }
+    }
+
     // --- monsterSkillTrees skill ids + weights 길이 ---
     function checkPoolWeights(tid, label, skillIds, weights) {
         if (!skillIds || !weights) return;
