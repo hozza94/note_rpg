@@ -3530,10 +3530,9 @@ h3.battle-actor-name {
     fill: none;
 }
 
-/* 지도 전체를 가로지르는 장거리 연결: 직선 대신 점선으로 구분해 한눈에 읽기 쉽게 */
+/* 아주 먼 연결만 살짝 흐리게(점선은 그래프가 산만해 보여 실선 유지) */
 .skill-web-edge.long-hop {
-    stroke-dasharray: 8 12;
-    stroke-opacity: 0.42;
+    stroke-opacity: 0.34;
 }
 
 .skill-web-edge.active {

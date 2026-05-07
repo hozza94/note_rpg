@@ -496,7 +496,7 @@
             const ys = Object.values(positions).map(p => p.y);
             const viewCenterX = xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : originX;
             const viewCenterY = ys.length ? (Math.min(...ys) + Math.max(...ys)) / 2 : originY;
-            return { positions, width, height, originX, originY, viewCenterX, viewCenterY };
+            return { positions, width, height, originX, originY, viewCenterX, viewCenterY, unit };
         },
         getSkillNodeStateLabel(nodeId, unlocked) {
             if (unlocked.has(nodeId)) return '해금 완료';
@@ -551,14 +551,16 @@
             const content = document.getElementById('modal-content');
             const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
             const nodeMap = this.getSkillTreeNodeMap();
-            const { positions, width, height, originX, originY, viewCenterX, viewCenterY } = this.getSkillTreeLayout(tree);
+            const { positions, width, height, originX, originY, viewCenterX, viewCenterY, unit } = this.getSkillTreeLayout(tree);
+            /** 그리드상 아주 먼 노드만 표시 구분(대부분 실선). unit과 함께 스케일 */
+            const longHopPx = (unit || 118) * 6.2;
             const edges = (tree.edges || []).map(([from, to], edgeIdx) => {
                 const a = positions[from], b = positions[to];
                 if (!a || !b) return '';
                 const active = unlocked.has(from) && unlocked.has(to);
                 const dx = b.x - a.x, dy = b.y - a.y;
                 const len = Math.hypot(dx, dy) || 1;
-                const longHop = len > 400;
+                const longHop = len > longHopPx;
                 const d = this.getSkillTreeEdgePath(a.x, a.y, b.x, b.y, edgeIdx);
                 const cls = `skill-web-edge ${active ? 'active' : ''}${longHop ? ' long-hop' : ''}`;
                 return `<path class="${cls}" d="${d}" fill="none" />`;
