@@ -909,7 +909,6 @@ const GAME_DATA = {
                 ['pilgrim_sanct_1', 'pilgrim_sanct_2'],
                 ['pilgrim_sanct_2', 'pilgrim_sanct_3'],
                 ['pilgrim_sanct_3', 'pilgrim_sanct_keystone'],
-                ['pilgrim_sanct_keystone', 'pilgrim_guard_final'],
 
                 ['pilgrim_faith_final', 'pilgrim_rev_1'],
                 ['pilgrim_rev_1', 'pilgrim_rev_2'],
@@ -922,7 +921,6 @@ const GAME_DATA = {
                 ['pilgrim_flux_keystone', 'pilgrim_stellar_1'],
                 ['pilgrim_stellar_1', 'pilgrim_stellar_2'],
                 ['pilgrim_stellar_2', 'pilgrim_stellar_crown'],
-                ['pilgrim_stellar_crown', 'pilgrim_hunt_core'],
 
                 ['pilgrim_guard_final', 'pilgrim_bulwark_1'],
                 ['pilgrim_bulwark_1', 'pilgrim_bulwark_2'],

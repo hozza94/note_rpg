@@ -3524,29 +3524,93 @@ h3.battle-actor-name {
     display: block;
 }
 
-.skill-web-edge {
-    stroke: rgba(255, 255, 255, 0.28);
-    stroke-width: 2;
+.skill-web-cluster-sector {
+    fill: rgba(255, 255, 255, 0.018);
+    stroke: none;
+    pointer-events: none;
+}
+
+.skill-web-cluster-sector-edge {
     fill: none;
+    stroke: rgba(255, 255, 255, 0.16);
+    stroke-width: 0.95;
+    pointer-events: none;
 }
 
-/* 아주 먼 연결만 살짝 흐리게(점선은 그래프가 산만해 보여 실선 유지) */
-.skill-web-edge.long-hop {
-    stroke-opacity: 0.34;
+.skill-web-cluster-label {
+    fill: rgba(245, 245, 245, 0.72);
+    font-size: 11px;
+    letter-spacing: 0.4px;
+    paint-order: stroke;
+    stroke: rgba(7, 10, 14, 0.86);
+    stroke-width: 2.4px;
 }
 
-.skill-web-edge.active {
-    stroke: rgba(174, 213, 129, 0.9);
-    stroke-width: 3;
+.skill-web-edge {
+    stroke: rgba(72, 78, 86, 0.95);
+    stroke-width: 2.2;
+    fill: none;
+    transition: stroke 220ms ease, stroke-opacity 220ms ease, stroke-width 220ms ease, filter 220ms ease;
 }
 
-.skill-web-edge.active.long-hop {
-    stroke-opacity: 0.88;
+.skill-web-edge.is-locked {
+    stroke: rgba(72, 78, 86, 0.95);
+    stroke-dasharray: 12 14;
+    stroke-opacity: 0.16;
+    stroke-width: 1.7;
+}
+
+.skill-web-edge.is-locked.tier-3 {
+    stroke-opacity: 0.12;
+    stroke-width: 1.35;
+}
+
+.skill-web-edge.is-available {
+    stroke: rgba(197, 205, 214, 0.94);
+    stroke-dasharray: 7 9;
+    animation: skillEdgeFlow 1.25s linear infinite;
+}
+
+.skill-web-edge.is-available.tier-0 { stroke-width: 2.75; stroke-opacity: 1; }
+.skill-web-edge.is-available.tier-1 { stroke-width: 2.5; stroke-opacity: 0.98; }
+.skill-web-edge.is-available.tier-2 { stroke-width: 2.35; stroke-opacity: 0.95; }
+.skill-web-edge.is-available.tier-3 { stroke-width: 2.15; stroke-opacity: 0.92; }
+
+.skill-web-edge.is-learned {
+    stroke: rgba(255, 215, 120, 0.98);
+    stroke-dasharray: none;
+    filter: drop-shadow(0 0 4px rgba(255, 205, 96, 0.34)) drop-shadow(0 0 10px rgba(255, 196, 84, 0.22));
+}
+
+.skill-web-edge.is-learned.tier-0 { stroke-width: 4.45; stroke-opacity: 1; }
+.skill-web-edge.is-learned.tier-1 { stroke-width: 3.85; stroke-opacity: 0.98; }
+.skill-web-edge.is-learned.tier-2 { stroke-width: 3.35; stroke-opacity: 0.96; }
+.skill-web-edge.is-learned.tier-3 { stroke-width: 2.95; stroke-opacity: 0.93; }
+
+.skill-web-edge.is-related.is-locked {
+    stroke-opacity: 0.28;
+    stroke-width: 2;
+}
+
+.skill-web-edge.is-related.is-available.tier-0 { stroke-width: 3.05; }
+.skill-web-edge.is-related.is-available.tier-1 { stroke-width: 2.8; }
+.skill-web-edge.is-related.is-available.tier-2 { stroke-width: 2.65; }
+.skill-web-edge.is-related.is-available.tier-3 { stroke-width: 2.45; }
+
+.skill-web-edge.is-related.is-learned.tier-0 { stroke-width: 5.15; }
+.skill-web-edge.is-related.is-learned.tier-1 { stroke-width: 4.5; }
+.skill-web-edge.is-related.is-learned.tier-2 { stroke-width: 3.95; }
+.skill-web-edge.is-related.is-learned.tier-3 { stroke-width: 3.5; }
+
+@keyframes skillEdgeFlow {
+    from { stroke-dashoffset: 0; }
+    to { stroke-dashoffset: -16; }
 }
 
 .skill-web-node {
     cursor: pointer;
     --hue: 205;
+    transition: transform 180ms ease, filter 200ms ease;
 }
 
 /* 계열별 색상 (HSV hue) — 핵심 코어·같은 클러스터가 동일 톤 */
@@ -3583,13 +3647,13 @@ h3.battle-actor-name {
 .skill-web-node-core {
     fill: hsl(var(--hue), 58%, 40%);
     stroke: hsl(var(--hue), 72%, 60%);
-    stroke-width: 2;
+    stroke-width: var(--node-core-sw, 2);
 }
 
 .skill-web-node-ring {
     fill: none;
     stroke: hsla(var(--hue), 88%, 66%, 0.32);
-    stroke-width: 3;
+    stroke-width: var(--node-ring-sw, 3);
 }
 
 .skill-web-node-name {
@@ -3600,6 +3664,15 @@ h3.battle-actor-name {
     stroke-width: 2.2px;
 }
 
+.skill-web-node-kind {
+    fill: rgba(12, 18, 24, 0.86);
+    font-size: 12px;
+    font-weight: 700;
+    pointer-events: none;
+    dominant-baseline: middle;
+    alignment-baseline: middle;
+}
+
 .skill-web-node-lock {
     font-size: 11px;
     opacity: 0.92;
@@ -3608,10 +3681,6 @@ h3.battle-actor-name {
 .skill-web-node-state {
     fill: #d7e3ea;
     font-size: 10px;
-}
-
-.skill-web-node.kind-keystone .skill-web-node-core {
-    stroke-width: 3;
 }
 
 .skill-web-node.kind-active_unlock .skill-web-node-name {
@@ -3647,17 +3716,31 @@ h3.battle-actor-name {
     stroke: hsla(var(--hue), 75%, 62%, 0.92);
 }
 
+.skill-web-node:hover {
+    filter: brightness(1.08);
+}
+
+.skill-web-node.is-branch .skill-web-node-ring {
+    stroke: hsla(var(--hue), 88%, 72%, 0.48);
+    stroke-width: calc(var(--node-ring-sw, 3) * 1px + 0.9px);
+}
+
+.skill-web-node.is-branch .skill-web-node-core {
+    stroke-width: calc(var(--node-core-sw, 2) * 1px + 0.55px);
+}
+
 .skill-web-node.is-unlocked:hover .skill-web-node-ring {
     stroke: rgba(165, 214, 167, 0.95);
 }
 
 .skill-web-node.is-selected .skill-web-node-ring {
     stroke: rgba(255, 213, 79, 0.96);
-    stroke-width: 3;
+    stroke-width: calc(var(--node-ring-sw, 3) * 1px + 0.65px);
 }
 
 .skill-web-node.is-selected:hover .skill-web-node-ring {
     stroke: rgba(255, 241, 118, 1);
+    stroke-width: calc(var(--node-ring-sw, 3) * 1px + 0.85px);
 }
 
 .skill-web-learn-row {
@@ -3692,6 +3775,32 @@ h3.battle-actor-name {
     color: #90a4ae;
     font-size: 0.76rem;
     margin-top: 5px;
+}
+
+.skill-web-tooltip {
+    position: absolute;
+    z-index: 5;
+    min-width: 220px;
+    max-width: 260px;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    background: rgba(10, 12, 18, 0.96);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.44);
+    font-size: 0.74rem;
+    line-height: 1.4;
+    pointer-events: none;
+}
+
+.skill-web-tooltip strong {
+    display: block;
+    margin-bottom: 4px;
+    color: #fffde7;
+}
+
+.skill-web-tooltip .meta {
+    color: #b0bec5;
+    margin-top: 4px;
 }
 
 /* Global Toast */

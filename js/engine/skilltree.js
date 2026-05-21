@@ -3,6 +3,25 @@
  */
 (function () {
     if (typeof window === 'undefined' || typeof window.GameEngine === 'undefined') return;
+    const SKILL_TREE_UI = {
+        gridSnapPx: 24,
+        minNodeSepPx: 46,
+        overlapResolvePasses: 42,
+        radialStepPx: 150,
+        radialOuterPaddingPx: 230,
+        radialNodePaddingPx: 48,
+        edgePadPx: 20,
+        minEdgePx: 8,
+        depthTierStep: 5,
+        depthTierMax: 3,
+        marker: {
+            available: { w: 4.6, h: 4.6, refX: 8.4, fill: 'rgba(197, 205, 214, 0.95)' },
+            learned: { w: 5.2, h: 5.2, refX: 8.6, fill: 'rgba(255, 215, 120, 0.98)' }
+        },
+        clusterPad: 40,
+        bracketArm: 12,
+        bracketGap: 2
+    };
 
     Object.assign(window.GameEngine.prototype, {
         getSkillTreeConfig() {
@@ -230,8 +249,11 @@
             const nodeMap = this.getSkillTreeNodeMap();
             const node = nodeMap[nodeId];
             if (!node) return { ok: false, reason: '존재하지 않는 노드입니다.' };
-            if (Array.isArray(node.requiresAll) && node.requiresAll.length > 0) {
-                const missing = node.requiresAll.filter(reqId => !unlocked.has(reqId));
+            const preRequired = Array.isArray(node.preRequired) ? node.preRequired : [];
+            const requiresAll = Array.isArray(node.requiresAll) ? node.requiresAll : [];
+            const needAll = [...new Set([...requiresAll, ...preRequired])];
+            if (needAll.length > 0) {
+                const missing = needAll.filter(reqId => !unlocked.has(reqId));
                 if (missing.length > 0) {
                     const missingNames = missing.map(id => nodeMap[id]?.name || id).slice(0, 3).join(', ');
                     return { ok: false, reason: `선행 노드 필요: ${missingNames}` };
@@ -458,45 +480,227 @@
                 setTimeout(() => toast.remove(), 220);
             }, 1800);
         },
-        getSkillTreeEdgePath(ax, ay, bx, by, edgeIndex = 0) {
+        getSkillTreeEdgePath(ax, ay, bx, by, startPad = 0, endPad = 0) {
             const dx = bx - ax;
             const dy = by - ay;
             const len = Math.hypot(dx, dy) || 1;
             const ux = dx / len;
             const uy = dy / len;
-            const px = -uy;
-            const py = ux;
-            const sign = (edgeIndex % 2 === 0) ? 1 : -1;
-            const bow = Math.min(len * 0.2, 130) * sign;
-            const c1x = ax + ux * len * 0.32 + px * bow;
-            const c1y = ay + uy * len * 0.32 + py * bow;
-            const c2x = bx - ux * len * 0.32 + px * bow * 0.65;
-            const c2y = by - uy * len * 0.32 + py * bow * 0.65;
+            const safeStart = Math.max(0, Math.min(len - SKILL_TREE_UI.minEdgePx, Number(startPad) || 0));
+            const safeEnd = Math.max(0, Math.min(len - SKILL_TREE_UI.minEdgePx, Number(endPad) || 0));
+            const sx = ax + ux * safeStart;
+            const sy = ay + uy * safeStart;
+            const ex = bx - ux * safeEnd;
+            const ey = by - uy * safeEnd;
             const f = (n) => Number(n.toFixed(2));
-            return `M ${f(ax)} ${f(ay)} C ${f(c1x)} ${f(c1y)} ${f(c2x)} ${f(c2y)} ${f(bx)} ${f(by)}`;
+            return `M ${f(sx)} ${f(sy)} L ${f(ex)} ${f(ey)}`;
         },
-        getSkillTreeLayout(tree) { /* truncated in module extraction safety; keep same behavior via copied logic below */
-            /** 노드 좌표 단위(px). 클수록 노드 간 간격이 넓어짐(겹침 완화) */
-            const unit = 118, padding = 220, fallbackRadius = 2.4;
-            const positions = {};
+        getSkillTreeEdgeState(fromId, toId, unlocked) {
+            const fromUnlocked = unlocked.has(fromId);
+            const toUnlocked = unlocked.has(toId);
+            if (fromUnlocked && toUnlocked) return 'learned';
+            const available = (!fromUnlocked && this.canUnlockSkillNode(fromId).ok)
+                || (!toUnlocked && this.canUnlockSkillNode(toId).ok);
+            if (available) return 'available';
+            return 'locked';
+        },
+        buildSkillTreePrereqGraph(tree) {
             const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
-            const total = Math.max(1, nodes.length);
-            nodes.forEach((node, index) => {
-                const p = node.position || { x: Math.cos((Math.PI * 2 * index) / total) * fallbackRadius, y: Math.sin((Math.PI * 2 * index) / total) * fallbackRadius };
-                positions[node.id] = { x: p.x * unit, y: p.y * unit };
+            const nodeMap = new Map();
+            nodes.forEach((n) => nodeMap.set(n.id, n));
+            const parentsById = new Map();
+            const childrenById = new Map();
+            nodes.forEach((n) => {
+                const preRequired = Array.isArray(n.preRequired) ? n.preRequired : [];
+                const requiresAll = Array.isArray(n.requiresAll) ? n.requiresAll : [];
+                const needAll = [...new Set([...requiresAll, ...preRequired])].filter((id) => nodeMap.has(id));
+                parentsById.set(n.id, needAll);
+                if (!childrenById.has(n.id)) childrenById.set(n.id, []);
             });
-            const points = Object.values(positions);
-            const maxAbsX = Math.max(...points.map(p => Math.abs(p.x)), 0);
-            const maxAbsY = Math.max(...points.map(p => Math.abs(p.y)), 0);
-            const width = Math.max(980, maxAbsX * 2 + padding * 2);
-            const height = Math.max(780, maxAbsY * 2 + padding * 2);
-            const originX = width / 2, originY = height / 2;
-            Object.keys(positions).forEach(nodeId => { positions[nodeId].x += originX; positions[nodeId].y += originY; });
-            const xs = Object.values(positions).map(p => p.x);
-            const ys = Object.values(positions).map(p => p.y);
-            const viewCenterX = xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : originX;
-            const viewCenterY = ys.length ? (Math.min(...ys) + Math.max(...ys)) / 2 : originY;
-            return { positions, width, height, originX, originY, viewCenterX, viewCenterY, unit };
+            for (const [childId, parents] of parentsById.entries()) {
+                for (const p of parents) {
+                    if (!childrenById.has(p)) childrenById.set(p, []);
+                    childrenById.get(p).push(childId);
+                }
+            }
+            return { nodeMap, parentsById, childrenById };
+        },
+        computeSkillTreeLogicalDepth(tree) {
+            const { nodeMap, parentsById, childrenById } = this.buildSkillTreePrereqGraph(tree);
+            const nodes = Array.from(nodeMap.keys());
+            const indeg = new Map();
+            nodes.forEach((id) => indeg.set(id, (parentsById.get(id) || []).length));
+            const depth = new Map();
+            const q = [];
+            const startId = tree?.startNodeId;
+            for (const id of nodes) {
+                if ((indeg.get(id) || 0) === 0) q.push(id);
+                depth.set(id, id === startId ? 0 : 0);
+            }
+            for (let qi = 0; qi < q.length; qi++) {
+                const u = q[qi];
+                const du = depth.get(u) || 0;
+                for (const v of childrenById.get(u) || []) {
+                    const next = Math.max(depth.get(v) || 0, du + 1);
+                    depth.set(v, next);
+                    indeg.set(v, (indeg.get(v) || 1) - 1);
+                    if ((indeg.get(v) || 0) === 0) q.push(v);
+                }
+            }
+            // 사이클/누락 보호: 아직 depth가 0인 노드 중 선행이 있는 경우, 선행 최대 +1로 재계산
+            for (const id of nodes) {
+                const parents = parentsById.get(id) || [];
+                if (parents.length === 0) continue;
+                let best = 0;
+                for (const p of parents) best = Math.max(best, (depth.get(p) || 0) + 1);
+                depth.set(id, Math.max(depth.get(id) || 0, best));
+            }
+            // 수동 preRequired가 없는 노드가 다수일 때 중앙 겹침 방지:
+            // start 기준 엣지 BFS 깊이를 보조 tier로 사용해 non-root 0단계를 승격.
+            if (startId && nodeMap.has(startId)) {
+                const adj = this.buildSkillTreeUndirectedAdj(tree);
+                const bfs = new Map([[startId, 0]]);
+                const q2 = [startId];
+                for (let qi = 0; qi < q2.length; qi++) {
+                    const u = q2[qi];
+                    for (const v of adj.get(u) || []) {
+                        if (bfs.has(v)) continue;
+                        bfs.set(v, (bfs.get(u) || 0) + 1);
+                        q2.push(v);
+                    }
+                }
+                for (const id of nodes) {
+                    if (id === startId) {
+                        depth.set(id, 0);
+                        continue;
+                    }
+                    const d = depth.get(id) || 0;
+                    const bd = bfs.get(id);
+                    if (d <= 0 && Number.isFinite(bd) && bd > 0) depth.set(id, bd);
+                }
+            }
+            return { depth, parentsById, childrenById, nodeMap };
+        },
+        buildSkillTreeUndirectedAdj(tree) {
+            const adj = new Map();
+            const edges = Array.isArray(tree?.edges) ? tree.edges : [];
+            for (const pair of edges) {
+                if (!Array.isArray(pair) || pair.length < 2) continue;
+                const a = pair[0], b = pair[1];
+                if (!adj.has(a)) adj.set(a, []);
+                if (!adj.has(b)) adj.set(b, []);
+                adj.get(a).push(b);
+                adj.get(b).push(a);
+            }
+            return adj;
+        },
+        getSkillTreeLayout(tree) { /* 방사형(Radial) 자동 레이아웃 우선 */
+            const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
+            const { depth, parentsById, childrenById, nodeMap } = this.computeSkillTreeLogicalDepth(tree);
+            const startId = tree?.startNodeId;
+            const stepR = 180; // 요청사항: 단계 * 180px
+            const outerPad = SKILL_TREE_UI.radialOuterPaddingPx;
+            const twopi = Math.PI * 2;
+            const norm = (a) => {
+                let v = a % twopi;
+                if (v < 0) v += twopi;
+                return v;
+            };
+            const angDist = (a, b) => {
+                let d = Math.abs(norm(a) - norm(b));
+                if (d > Math.PI) d = twopi - d;
+                return d;
+            };
+
+            // 루트 외 depth 0은 1링으로 올려 충돌 방지
+            const effectiveDepth = new Map();
+            let maxDepth = 0;
+            nodes.forEach((n) => {
+                let d = depth.get(n.id) || 0;
+                if (n.id !== startId && d === 0) d = 1;
+                effectiveDepth.set(n.id, d);
+                maxDepth = Math.max(maxDepth, d);
+            });
+
+            const tierMap = new Map();
+            for (const n of nodes) {
+                const d = effectiveDepth.get(n.id) || 0;
+                if (!tierMap.has(d)) tierMap.set(d, []);
+                tierMap.get(d).push(n.id);
+            }
+
+            const angleById = new Map();
+            if (startId && nodeMap.has(startId)) angleById.set(startId, -Math.PI / 2);
+
+            for (let d = 1; d <= maxDepth; d++) {
+                const ids = tierMap.get(d) || [];
+                if (!ids.length) continue;
+                const targetById = new Map();
+                ids.forEach((id) => {
+                    const p = parentsById.get(id) || [];
+                    const pa = p.filter((pid) => angleById.has(pid)).map((pid) => angleById.get(pid));
+                    if (pa.length) {
+                        const sx = pa.reduce((s, a) => s + Math.cos(a), 0);
+                        const sy = pa.reduce((s, a) => s + Math.sin(a), 0);
+                        targetById.set(id, Math.atan2(sy, sx));
+                    } else {
+                        targetById.set(id, null);
+                    }
+                });
+                ids.sort((a, b) => {
+                    const ta = targetById.get(a);
+                    const tb = targetById.get(b);
+                    if (ta !== null && tb !== null && ta !== tb) return ta - tb;
+                    if (ta !== null && tb === null) return -1;
+                    if (ta === null && tb !== null) return 1;
+                    return String(a).localeCompare(String(b));
+                });
+                const stepA = twopi / ids.length;
+                const base = -Math.PI / 2;
+                let bestPhase = 0;
+                let bestScore = Infinity;
+                for (let phase = 0; phase < ids.length; phase++) {
+                    let score = 0;
+                    for (let i = 0; i < ids.length; i++) {
+                        const target = targetById.get(ids[i]);
+                        if (target === null) continue;
+                        const a = base + (i + phase) * stepA;
+                        score += angDist(a, target);
+                    }
+                    if (score < bestScore) {
+                        bestScore = score;
+                        bestPhase = phase;
+                    }
+                }
+                ids.forEach((id, i) => angleById.set(id, norm(base + (i + bestPhase) * stepA)));
+            }
+
+            const outerR = Math.max(stepR, maxDepth * stepR);
+            const span = outerR + outerPad;
+            const width = Math.max(980, span * 2);
+            const height = Math.max(780, span * 2);
+            const originX = width / 2;
+            const originY = height / 2;
+            const positions = {};
+
+            for (const n of nodes) {
+                const id = n.id;
+                const d = effectiveDepth.get(id) || 0;
+                if (d === 0) {
+                    positions[id] = { x: originX, y: originY };
+                    continue;
+                }
+                const theta = angleById.get(id) ?? 0;
+                const r = d * stepR;
+                positions[id] = {
+                    x: originX + Math.cos(theta) * r,
+                    y: originY + Math.sin(theta) * r
+                };
+            }
+
+            const viewCenterX = originX;
+            const viewCenterY = originY;
+            return { positions, width, height, originX, originY, viewCenterX, viewCenterY, unit: 1 };
         },
         getSkillNodeStateLabel(nodeId, unlocked) {
             if (unlocked.has(nodeId)) return '해금 완료';
@@ -521,11 +725,83 @@
         },
         getSkillNodeLayoutRadii(node) {
             const k = node?.kind || 'small';
-            if (k === 'active_unlock') return { core: 18, ring: 26, nameY: -40, stateY: 46 };
-            if (k === 'keystone') return { core: 15, ring: 22, nameY: -34, stateY: 40 };
-            if (k === 'start') return { core: 14, ring: 21, nameY: -32, stateY: 38 };
-            if (k === 'notable') return { core: 12, ring: 18, nameY: -29, stateY: 36 };
-            return { core: 10, ring: 15, nameY: -26, stateY: 33 };
+            if (k === 'active_unlock') return { core: 20, ring: 29, ringStroke: 3.8, coreStroke: 2.8, nameY: -44, stateY: 50 };
+            if (k === 'keystone') return { core: 17, ring: 25, ringStroke: 3.4, coreStroke: 2.6, nameY: -38, stateY: 43 };
+            if (k === 'start') return { core: 16, ring: 23, ringStroke: 3.2, coreStroke: 2.5, nameY: -34, stateY: 41 };
+            if (k === 'notable') return { core: 12, ring: 19, ringStroke: 2.6, coreStroke: 2.1, nameY: -30, stateY: 37 };
+            return { core: 10, ring: 16, ringStroke: 2.3, coreStroke: 2, nameY: -27, stateY: 34 };
+        },
+        getSkillNodeKindGlyph(node) {
+            const k = node?.kind || 'small';
+            if (k === 'start') return '✦';
+            if (k === 'keystone') return '◆';
+            if (k === 'active_unlock') return '★';
+            if (k === 'notable') return '●';
+            return '·';
+        },
+        getSkillTreeClusterOverlays(tree, positions, centerX, centerY) {
+            const clusters = Array.isArray(tree?.clusters) ? tree.clusters : [];
+            const overlays = [];
+            const pad = SKILL_TREE_UI.clusterPad;
+            const twopi = Math.PI * 2;
+            const norm = (a) => {
+                let v = a % twopi;
+                if (v < 0) v += twopi;
+                return v;
+            };
+            for (const cluster of clusters) {
+                const nodeIds = Array.isArray(cluster?.nodeIds) ? cluster.nodeIds : [];
+                const pts = nodeIds.map((id) => positions[id]).filter(Boolean);
+                if (pts.length < 2) continue;
+                const angles = pts.map((p) => norm(Math.atan2(p.y - centerY, p.x - centerX))).sort((a, b) => a - b);
+                let maxGap = -1;
+                let gapIdx = 0;
+                for (let i = 0; i < angles.length; i++) {
+                    const cur = angles[i];
+                    const nxt = i === angles.length - 1 ? angles[0] + twopi : angles[i + 1];
+                    const gap = nxt - cur;
+                    if (gap > maxGap) {
+                        maxGap = gap;
+                        gapIdx = i;
+                    }
+                }
+                const start = angles[(gapIdx + 1) % angles.length];
+                const end = angles[gapIdx] + (start <= angles[gapIdx] ? twopi : 0);
+                const rs = pts.map((p) => Math.hypot(p.x - centerX, p.y - centerY));
+                const innerR = Math.max(48, Math.min(...rs) - pad * 0.75);
+                const outerR = Math.max(innerR + 40, Math.max(...rs) + pad);
+                const midA = (start + end) / 2;
+                overlays.push({
+                    id: cluster.id || 'unknown',
+                    name: cluster.name || cluster.id || '분기',
+                    startA: start,
+                    endA: end,
+                    innerR,
+                    outerR,
+                    labelX: centerX + Math.cos(midA) * (innerR + (outerR - innerR) * 0.56),
+                    labelY: centerY + Math.sin(midA) * (innerR + (outerR - innerR) * 0.56)
+                });
+            }
+            return overlays;
+        },
+        getSkillTreeSectorPath(cx, cy, innerR, outerR, startA, endA) {
+            const span = Math.max(0.01, endA - startA);
+            const large = span > Math.PI ? 1 : 0;
+            const x1 = cx + Math.cos(startA) * outerR;
+            const y1 = cy + Math.sin(startA) * outerR;
+            const x2 = cx + Math.cos(endA) * outerR;
+            const y2 = cy + Math.sin(endA) * outerR;
+            const x3 = cx + Math.cos(endA) * innerR;
+            const y3 = cy + Math.sin(endA) * innerR;
+            const x4 = cx + Math.cos(startA) * innerR;
+            const y4 = cy + Math.sin(startA) * innerR;
+            return `M ${x1.toFixed(2)} ${y1.toFixed(2)} A ${outerR.toFixed(2)} ${outerR.toFixed(2)} 0 ${large} 1 ${x2.toFixed(2)} ${y2.toFixed(2)} L ${x3.toFixed(2)} ${y3.toFixed(2)} A ${innerR.toFixed(2)} ${innerR.toFixed(2)} 0 ${large} 0 ${x4.toFixed(2)} ${y4.toFixed(2)} Z`;
+        },
+        getSkillTreeEdgeDepthTier(fromId, toId, depthMap) {
+            const da = depthMap.has(fromId) ? depthMap.get(fromId) : 0;
+            const db = depthMap.has(toId) ? depthMap.get(toId) : 0;
+            const L = Math.max(da, db);
+            return Math.min(SKILL_TREE_UI.depthTierMax, Math.floor(L / SKILL_TREE_UI.depthTierStep));
         },
         getStarPoints(outerR, innerR, tips = 5) {
             const points = [], step = Math.PI / tips;
@@ -551,19 +827,36 @@
             const content = document.getElementById('modal-content');
             const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
             const nodeMap = this.getSkillTreeNodeMap();
-            const { positions, width, height, originX, originY, viewCenterX, viewCenterY, unit } = this.getSkillTreeLayout(tree);
-            /** 그리드상 아주 먼 노드만 표시 구분(대부분 실선). unit과 함께 스케일 */
-            const longHopPx = (unit || 118) * 6.2;
-            const edges = (tree.edges || []).map(([from, to], edgeIdx) => {
+            const depthMap = this.buildSkillTreeBfsDepthMap(tree);
+            const prereq = this.buildSkillTreePrereqGraph(tree);
+            const isBranchPoint = (nodeId) => (prereq.childrenById.get(nodeId) || []).length >= 2;
+            const { positions, width, height, originX, originY, viewCenterX, viewCenterY } = this.getSkillTreeLayout(tree);
+            const clusterOverlays = this.getSkillTreeClusterOverlays(tree, positions, originX, originY);
+            const clustersSvg = clusterOverlays.map((cluster) => {
+                const label = this.escapeSvgText(cluster.name);
+                const cls = `skill-web-cluster branch-${cluster.id}`;
+                const sectorD = this.getSkillTreeSectorPath(originX, originY, cluster.innerR, cluster.outerR, cluster.startA, cluster.endA);
+                return `
+                    <g class="${cls}">
+                        <path class="skill-web-cluster-sector" d="${sectorD}"></path>
+                        <path class="skill-web-cluster-sector-edge" d="${sectorD}"></path>
+                        <text class="skill-web-cluster-label" x="${cluster.labelX.toFixed(2)}" y="${cluster.labelY.toFixed(2)}">${label}</text>
+                    </g>
+                `;
+            }).join('');
+            const edgePadById = {};
+            (tree.nodes || []).forEach((node) => {
+                const radii = this.getSkillNodeLayoutRadii(node);
+                edgePadById[node.id] = (Number(radii?.ring || 15) + SKILL_TREE_UI.edgePadPx);
+            });
+            const edges = (tree.edges || []).map(([from, to]) => {
                 const a = positions[from], b = positions[to];
                 if (!a || !b) return '';
-                const active = unlocked.has(from) && unlocked.has(to);
-                const dx = b.x - a.x, dy = b.y - a.y;
-                const len = Math.hypot(dx, dy) || 1;
-                const longHop = len > longHopPx;
-                const d = this.getSkillTreeEdgePath(a.x, a.y, b.x, b.y, edgeIdx);
-                const cls = `skill-web-edge ${active ? 'active' : ''}${longHop ? ' long-hop' : ''}`;
-                return `<path class="${cls}" d="${d}" fill="none" />`;
+                const state = this.getSkillTreeEdgeState(from, to, unlocked);
+                const tier = this.getSkillTreeEdgeDepthTier(from, to, depthMap);
+                const d = this.getSkillTreeEdgePath(a.x, a.y, b.x, b.y, edgePadById[from], edgePadById[to]);
+                const marker = state === 'locked' ? '' : ` marker-end="url(#skill-edge-arrow-${state})"`;
+                return `<path class="skill-web-edge is-${state} tier-${tier}" data-from="${from}" data-to="${to}" d="${d}" fill="none"${marker} />`;
             }).join('');
             const nodes = (tree.nodes || []).map(node => {
                 const pos = positions[node.id];
@@ -573,11 +866,15 @@
                 const isLocked = !unlocked.has(node.id) && !canUnlock;
                 const bottomLabel = unlocked.has(node.id) ? '완료' : (canUnlock ? '가능' : '');
                 const branchClass = this.getSkillNodeBranchClass(tree, node.id);
+                const branchPointClass = isBranchPoint(node.id) ? 'is-branch' : '';
                 const radii = this.getSkillNodeLayoutRadii(node);
                 const nm = this.escapeSvgText(node.name);
                 const lockTspan = isLocked ? '<tspan class="skill-web-node-lock" dx="4" dy="0.5">🔒</tspan>' : '';
+                const kindGlyph = this.escapeSvgText(this.getSkillNodeKindGlyph(node));
                 const effect = this.formatNodeGrantText(node);
                 const isActiveUnlock = node.kind === 'active_unlock';
+                const cw = typeof radii.coreStroke === 'number' ? radii.coreStroke : 2;
+                const rw = typeof radii.ringStroke === 'number' ? radii.ringStroke : 3;
                 const coreShape = isActiveUnlock
                     ? `<polygon class="skill-web-node-core" points="${this.getStarPoints(radii.core, Math.max(4, radii.core * 0.52), 5)}"></polygon>`
                     : `<circle class="skill-web-node-core" r="${radii.core}"></circle>`;
@@ -585,9 +882,10 @@
                     ? `<polygon class="skill-web-node-ring" points="${this.getStarPoints(radii.ring, Math.max(6, radii.ring * 0.54), 5)}"></polygon>`
                     : `<circle class="skill-web-node-ring" r="${radii.ring}"></circle>`;
                 return `
-                    <g class="skill-web-node ${stateClass} kind-${node.kind} ${branchClass}" data-node-id="${node.id}" transform="translate(${pos.x}, ${pos.y})">
+                    <g class="skill-web-node ${stateClass} ${branchPointClass} kind-${node.kind} ${branchClass}" data-node-id="${node.id}" style="--node-core-sw:${cw};--node-ring-sw:${rw};" transform="translate(${pos.x}, ${pos.y})">
                         ${coreShape}
                         ${ringShape}
+                        <text class="skill-web-node-kind" text-anchor="middle" y="1">${kindGlyph}</text>
                         <text class="skill-web-node-name" text-anchor="middle" y="${radii.nameY}"><tspan>${nm}</tspan>${lockTspan}</text>
                         <text class="skill-web-node-state" text-anchor="middle" y="${radii.stateY}">${bottomLabel}</text>
                         <title>${node.name}\n${effect}\n${node.desc || ''}</title>
@@ -596,6 +894,7 @@
             }).join('');
             content.style.width = `${Math.min(1120, Math.max(980, width + 40))}px`;
             content.style.maxWidth = '97vw';
+            content.style.position = 'relative';
             content.innerHTML = `
                 <h3 style="margin-bottom: 8px;">${tree.className} 스킬트리</h3>
                 <p style="margin-bottom: 12px; color:#ffd54f;">남은 포인트: ${this.state.player.skillTreePoints}</p>
@@ -612,11 +911,21 @@
                 <div id="skill-web-viewport" class="skill-web-viewport">
                     <div id="skill-web-zoom-layer" class="skill-web-zoom-layer">
                         <svg class="skill-web-svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+                            <defs>
+                                <marker id="skill-edge-arrow-available" viewBox="0 0 10 10" refX="${SKILL_TREE_UI.marker.available.refX}" refY="5" markerWidth="${SKILL_TREE_UI.marker.available.w}" markerHeight="${SKILL_TREE_UI.marker.available.h}" orient="auto-start-reverse">
+                                    <path d="M 0.4 0.6 L 9.6 5 L 0.4 9.4 z" fill="${SKILL_TREE_UI.marker.available.fill}"></path>
+                                </marker>
+                                <marker id="skill-edge-arrow-learned" viewBox="0 0 10 10" refX="${SKILL_TREE_UI.marker.learned.refX}" refY="5" markerWidth="${SKILL_TREE_UI.marker.learned.w}" markerHeight="${SKILL_TREE_UI.marker.learned.h}" orient="auto-start-reverse">
+                                    <path d="M 0.4 0.6 L 9.6 5 L 0.4 9.4 z" fill="${SKILL_TREE_UI.marker.learned.fill}"></path>
+                                </marker>
+                            </defs>
+                            <g class="skill-web-clusters">${clustersSvg}</g>
                             <g class="skill-web-edges">${edges}</g>
                             <g class="skill-web-nodes">${nodes}</g>
                         </svg>
                     </div>
                 </div>
+                <div id="skill-web-tooltip" class="skill-web-tooltip hidden"></div>
                 <div id="skill-web-toast-stack" class="skill-web-toast-stack"></div>
                 <div id="skill-web-info" class="skill-web-info">노드를 선택하면 상세 효과를 확인할 수 있습니다.</div>
                 <div class="skill-web-learn-row">
@@ -631,6 +940,8 @@
             const infoBox = content.querySelector('#skill-web-info');
             const learnBtn = content.querySelector('#skill-web-learn');
             const zoomLabel = content.querySelector('#skill-web-zoom-level');
+            const tooltip = content.querySelector('#skill-web-tooltip');
+            const edgeEls = Array.from(content.querySelectorAll('.skill-web-edge'));
             let selectedNodeId = null;
 
             /** 모달이 다시 그려져도 팬·줌 위치 유지 (배우기 후·닫았다 열기) */
@@ -765,10 +1076,49 @@
                 content.querySelector('#skill-web-focus-center')?.addEventListener('click', () => centerOnView());
             }
             content.querySelectorAll('.skill-web-node').forEach(nodeEl => {
+                const highlightNodeEdges = (nodeId, on) => {
+                    if (!nodeId) return;
+                    edgeEls.forEach((edgeEl) => {
+                        const from = edgeEl.getAttribute('data-from');
+                        const to = edgeEl.getAttribute('data-to');
+                        const related = from === nodeId || to === nodeId;
+                        edgeEl.classList.toggle('is-related', !!on && related);
+                    });
+                };
+                const moveTooltip = (event, nodeId) => {
+                    if (!tooltip) return;
+                    const node = nodeMap[nodeId];
+                    if (!node) return;
+                    const effect = this.formatNodeGrantText(node);
+                    const pointCost = Number(node.points || 1);
+                    tooltip.innerHTML = `
+                        <strong>${node.name}</strong>
+                        <div>${node.desc || '설명 없음'}</div>
+                        <div class="meta">효과: ${effect}</div>
+                        <div class="meta">소모 포인트: ${pointCost}</div>
+                    `;
+                    tooltip.classList.remove('hidden');
+                    const box = content.getBoundingClientRect();
+                    const x = Math.max(12, Math.min(box.width - 260, event.clientX - box.left + 14));
+                    const y = Math.max(12, Math.min(box.height - 120, event.clientY - box.top + 14));
+                    tooltip.style.left = `${x}px`;
+                    tooltip.style.top = `${y}px`;
+                };
                 nodeEl.addEventListener('mouseenter', () => {
                     if (selectedNodeId) return;
                     const nodeId = nodeEl.getAttribute('data-node-id');
                     fillInfoForNode(nodeId);
+                    highlightNodeEdges(nodeId, true);
+                });
+                nodeEl.addEventListener('mousemove', (event) => {
+                    const nodeId = nodeEl.getAttribute('data-node-id');
+                    if (!nodeId || selectedNodeId) return;
+                    moveTooltip(event, nodeId);
+                });
+                nodeEl.addEventListener('mouseleave', () => {
+                    tooltip?.classList.add('hidden');
+                    const nodeId = nodeEl.getAttribute('data-node-id');
+                    highlightNodeEdges(nodeId, false);
                 });
                 nodeEl.addEventListener('click', (e) => {
                     e.stopPropagation();
@@ -778,6 +1128,14 @@
                     updateSelectionVisual();
                     fillInfoForNode(selectedNodeId);
                     updateLearnButton();
+                    tooltip?.classList.add('hidden');
+                    highlightNodeEdges(selectedNodeId, true);
+                    if (!unlocked.has(nodeId)) {
+                        const check = this.canUnlockSkillNode(nodeId);
+                        if (!check.ok && /선행|연결된 노드/.test(String(check.reason || ''))) {
+                            this.showSkillTreeToast('선행 스킬이 필요합니다.', 'info');
+                        }
+                    }
                 });
             });
             learnBtn?.addEventListener('click', () => {
