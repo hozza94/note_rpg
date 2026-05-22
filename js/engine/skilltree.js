@@ -5,22 +5,92 @@
     if (typeof window === 'undefined' || typeof window.GameEngine === 'undefined') return;
     const SKILL_TREE_UI = {
         gridSnapPx: 24,
-        minNodeSepPx: 46,
-        overlapResolvePasses: 42,
-        radialStepPx: 150,
-        radialOuterPaddingPx: 230,
-        radialNodePaddingPx: 48,
+        minNodeSepPx: 78,
+        overlapResolvePasses: 72,
+        overlapHardMinPx: 84,
+        wedgeStepR: 78,
+        wedgeMinAngleRad: Math.PI / 22,
+        wedgeDepthCap: { main: 7, ext: 11, hub: 5 },
+        wedgeBaseR: { faith: 148, valor: 148, guard: 148, agile: 148, center: 0, ext_m: 438, ext_t: 438, ext_r: 438 },
+        wedgeOuterPaddingPx: 180,
+        wedgeSpanRad: Math.PI / 3.25,
+        lod0ZoomMax: 0.9,
+        lod1ZoomMax: 1.2,
+        defaultOverviewZoom: 0.72,
         edgePadPx: 20,
         minEdgePx: 8,
         depthTierStep: 5,
         depthTierMax: 3,
         marker: {
             available: { w: 4.6, h: 4.6, refX: 8.4, fill: 'rgba(197, 205, 214, 0.95)' },
-            learned: { w: 5.2, h: 5.2, refX: 8.6, fill: 'rgba(255, 215, 120, 0.98)' }
+            learned: { w: 3.2, h: 3.2, refX: 7.2, fill: 'rgba(140, 148, 158, 0.5)' }
         },
         clusterPad: 40,
         bracketArm: 12,
         bracketGap: 2
+    };
+
+    /** 클러스터 ID → 4방향 웨지(overview-redesign) */
+    const CLUSTER_TO_WEDGE = {
+        faith_path: 'faith',
+        valor_path: 'valor',
+        guard_path: 'guard',
+        agile_path: 'agile',
+        keystone_path: 'center',
+        convergence_path: 'center',
+        contemplation_path: 'faith',
+        oracle_branch: 'faith',
+        skirmish_branch: 'valor',
+        aegis_branch: 'guard',
+        swift_branch: 'agile',
+        ascendant_branch: 'faith',
+        abyss_branch: 'center',
+        martyr_path: 'ext_m',
+        boss_hunt_path: 'valor',
+        sanctuary_path: 'faith',
+        revelation_path: 'faith',
+        bulwark_path: 'guard',
+        flux_path: 'faith',
+        stellar_path: 'faith',
+        radiant_volley_branch: 'ext_r',
+        solemn_bastion_branch: 'guard',
+        mercy_breath_branch: 'faith',
+        ember_sigil_branch: 'valor',
+        devotion_twig: 'faith',
+        steadfast_twig: 'guard',
+        quickness_twig: 'agile',
+        chorus_extension: 'faith',
+        vitality_path: 'guard',
+        penitent_path: 'center',
+        iron_will_twig: 'agile',
+        dawn_cleanse_twig: 'center',
+        eden_lance_branch: 'valor',
+        dawn_shelter_branch: 'guard',
+        reckoning_branch: 'valor',
+        mirror_path: 'center',
+        tithe_branch: 'ext_t',
+        first_ring_outer: 'center',
+        ascent_martyr: 'ext_m',
+        ascent_tithe: 'ext_t',
+        ascent_radiant: 'ext_r'
+    };
+
+    const RING_NODE_WEDGE = {
+        pilgrim_ring_n: 'faith',
+        pilgrim_ring_e: 'valor',
+        pilgrim_ring_s: 'guard',
+        pilgrim_ring_w: 'agile'
+    };
+
+    const WEDGE_LAYOUT_META = {
+        faith: { label: '신앙', angle: -Math.PI / 2, hue: 231 },
+        valor: { label: '전투', angle: 0, hue: 3 },
+        guard: { label: '수호', angle: Math.PI / 2, hue: 145 },
+        agile: { label: '기동', angle: Math.PI, hue: 286 },
+        center: { label: '서약·합일', angle: 0, hue: 43, hub: true },
+        ext_m: { label: '순교 연장', angle: Math.PI / 2 + 0.55, hue: 348 },
+        ext_t: { label: '십일조 연장', angle: Math.PI + 0.55, hue: 226 },
+        ext_r: { label: '광휘 연장', angle: -Math.PI / 2 - 0.55, hue: 218 }
     };
 
     Object.assign(window.GameEngine.prototype, {
@@ -245,7 +315,8 @@
             if (!tree) return { ok: false, reason: '스킬트리 정보를 찾을 수 없습니다.' };
             const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
             if (unlocked.has(nodeId)) return { ok: false, reason: '이미 배운 노드입니다.' };
-            if (this.state.player.skillTreePoints <= 0) return { ok: false, reason: '스킬트리 포인트가 부족합니다.' };
+            const cost = this.getSkillNodePointCost(nodeId);
+            if (cost > 0 && this.state.player.skillTreePoints < cost) return { ok: false, reason: '스킬트리 포인트가 부족합니다.' };
             const nodeMap = this.getSkillTreeNodeMap();
             const node = nodeMap[nodeId];
             if (!node) return { ok: false, reason: '존재하지 않는 노드입니다.' };
@@ -263,6 +334,227 @@
             if (!isAdjacent) return { ok: false, reason: '연결된 노드부터 해금해야 합니다.' };
             return { ok: true };
         },
+        getSkillNodePointCost(nodeId) {
+            const tree = this.getSkillTreeConfig();
+            const startId = tree?.startNodeId;
+            if (nodeId === startId) return 0;
+            const node = this.getSkillTreeNodeMap()[nodeId];
+            if (!node) return 0;
+            const raw = Number(node.points);
+            return Number.isFinite(raw) && raw > 0 ? Math.floor(raw) : 1;
+        },
+        canUnlockSkillNodeWithState(nodeId, unlockedSet, skillPoints) {
+            const tree = this.getSkillTreeConfig();
+            if (!tree) return { ok: false, reason: '스킬트리 정보를 찾을 수 없습니다.' };
+            const unlocked = unlockedSet instanceof Set ? unlockedSet : new Set(unlockedSet || []);
+            if (unlocked.has(nodeId)) return { ok: false, reason: '이미 배운 노드입니다.' };
+            const cost = this.getSkillNodePointCost(nodeId);
+            if (cost > 0 && skillPoints < cost) return { ok: false, reason: '스킬트리 포인트가 부족합니다.' };
+            const nodeMap = this.getSkillTreeNodeMap();
+            const node = nodeMap[nodeId];
+            if (!node) return { ok: false, reason: '존재하지 않는 노드입니다.' };
+            const preRequired = Array.isArray(node.preRequired) ? node.preRequired : [];
+            const requiresAll = Array.isArray(node.requiresAll) ? node.requiresAll : [];
+            const needAll = [...new Set([...requiresAll, ...preRequired])];
+            if (needAll.length > 0) {
+                const missing = needAll.filter(reqId => !unlocked.has(reqId));
+                if (missing.length > 0) {
+                    const missingNames = missing.map(id => nodeMap[id]?.name || id).slice(0, 3).join(', ');
+                    return { ok: false, reason: `선행 노드 필요: ${missingNames}` };
+                }
+            }
+            const isAdjacent = (tree.edges || []).some(([from, to]) => (from === nodeId && unlocked.has(to)) || (to === nodeId && unlocked.has(from)));
+            if (!isAdjacent) return { ok: false, reason: '연결된 노드부터 해금해야 합니다.' };
+            return { ok: true, cost };
+        },
+        buildSkillTreeAdjacency(tree) {
+            const adj = new Map();
+            const edges = Array.isArray(tree?.edges) ? tree.edges : [];
+            for (const pair of edges) {
+                if (!Array.isArray(pair) || pair.length < 2) continue;
+                const a = pair[0];
+                const b = pair[1];
+                if (!adj.has(a)) adj.set(a, []);
+                if (!adj.has(b)) adj.set(b, []);
+                adj.get(a).push(b);
+                adj.get(b).push(a);
+            }
+            return adj;
+        },
+        findSkillTreePathFromUnlocked(unlockedSet, targetId, adj) {
+            if (unlockedSet.has(targetId)) return [];
+            const q = [...unlockedSet];
+            const parent = new Map();
+            const visited = new Set(unlockedSet);
+            for (let qi = 0; qi < q.length; qi++) {
+                const u = q[qi];
+                if (u === targetId) {
+                    const path = [];
+                    let cur = targetId;
+                    while (cur && !unlockedSet.has(cur)) {
+                        path.unshift(cur);
+                        cur = parent.get(cur);
+                    }
+                    return path;
+                }
+                for (const v of adj.get(u) || []) {
+                    if (visited.has(v)) continue;
+                    visited.add(v);
+                    parent.set(v, u);
+                    q.push(v);
+                }
+            }
+            return null;
+        },
+        collectSkillTreePrereqClosure(nodeId, nodeMap, cache = new Map()) {
+            if (cache.has(nodeId)) return cache.get(nodeId);
+            const need = new Set();
+            const stack = [nodeId];
+            while (stack.length) {
+                const id = stack.pop();
+                const node = nodeMap[id];
+                if (!node) continue;
+                const preRequired = Array.isArray(node.preRequired) ? node.preRequired : [];
+                const requiresAll = Array.isArray(node.requiresAll) ? node.requiresAll : [];
+                for (const req of [...new Set([...requiresAll, ...preRequired])]) {
+                    if (!need.has(req)) {
+                        need.add(req);
+                        stack.push(req);
+                    }
+                }
+            }
+            cache.set(nodeId, need);
+            return need;
+        },
+        getSkillTreeUnlockPlanTo(targetId) {
+            const tree = this.getSkillTreeConfig();
+            if (!tree) return { ok: false, plan: [], cost: 0, reason: '스킬트리 정보를 찾을 수 없습니다.' };
+            const nodeMap = this.getSkillTreeNodeMap();
+            const target = nodeMap[targetId];
+            if (!target) return { ok: false, plan: [], cost: 0, reason: '존재하지 않는 노드입니다.' };
+            const startId = tree.startNodeId;
+            const unlocked = new Set(this.state.player.unlockedSkillNodes || []);
+            if (unlocked.has(targetId)) return { ok: true, plan: [], cost: 0, reason: '' };
+            const adj = this.buildSkillTreeAdjacency(tree);
+            const simUnlocked = new Set(unlocked);
+            let simPoints = Math.max(0, Number(this.state.player.skillTreePoints || 0));
+            const plan = [];
+            const prereqCache = new Map();
+            const maxSteps = (tree.nodes || []).length + 8;
+
+            for (let step = 0; step < maxSteps; step++) {
+                if (simUnlocked.has(targetId)) {
+                    const cost = plan.reduce((s, id) => s + this.getSkillNodePointCost(id), 0);
+                    return { ok: true, plan, cost, targetName: target.name };
+                }
+                if (simPoints <= 0) {
+                    const cost = plan.reduce((s, id) => s + this.getSkillNodePointCost(id), 0);
+                    return { ok: false, plan, cost, reason: `포인트가 부족합니다. (필요 ${cost + this.getSkillNodePointCost(targetId)} / 보유 ${this.state.player.skillTreePoints})` };
+                }
+
+                const prereqs = this.collectSkillTreePrereqClosure(targetId, nodeMap, prereqCache);
+                const missingPrereq = [...prereqs].filter((id) => !simUnlocked.has(id) && id !== startId)
+                    .filter((id) => this.canUnlockSkillNodeWithState(id, simUnlocked, simPoints).ok);
+                if (missingPrereq.length) {
+                    const pick = missingPrereq.sort((a, b) => String(a).localeCompare(String(b)))[0];
+                    plan.push(pick);
+                    simUnlocked.add(pick);
+                    simPoints -= this.getSkillNodePointCost(pick);
+                    continue;
+                }
+
+                const path = this.findSkillTreePathFromUnlocked(simUnlocked, targetId, adj);
+                if (!path || !path.length) {
+                    return { ok: false, plan, cost: plan.length, reason: '시작점과 연결된 경로가 없습니다.' };
+                }
+                let picked = null;
+                for (const id of path) {
+                    const check = this.canUnlockSkillNodeWithState(id, simUnlocked, simPoints);
+                    if (check.ok) {
+                        picked = id;
+                        break;
+                    }
+                }
+                if (!picked) {
+                    const candidates = (tree.nodes || []).map((n) => n.id).filter((id) => {
+                        return this.canUnlockSkillNodeWithState(id, simUnlocked, simPoints).ok;
+                    });
+                    if (!candidates.length) {
+                        const probe = path.find((id) => !simUnlocked.has(id));
+                        const why = probe
+                            ? this.canUnlockSkillNodeWithState(probe, simUnlocked, simPoints).reason
+                            : '해금할 수 있는 노드가 없습니다.';
+                        return { ok: false, plan, cost: plan.length, reason: why || '해금할 수 있는 노드가 없습니다.' };
+                    }
+                    picked = candidates.find((id) => path.includes(id)) || candidates[0];
+                }
+                plan.push(picked);
+                simUnlocked.add(picked);
+                simPoints -= this.getSkillNodePointCost(picked);
+            }
+            return { ok: false, plan, cost: plan.length, reason: '해금 계획을 완성하지 못했습니다.' };
+        },
+        unlockSkillPathTo(targetId, options = {}) {
+            const notify = options.notify || 'log';
+            const planResult = this.getSkillTreeUnlockPlanTo(targetId);
+            if (!planResult.ok) {
+                this.emitSkillTreeFeedback(planResult.reason, notify, 'system');
+                return { ok: false, message: planResult.reason, plan: planResult.plan || [] };
+            }
+            if (!planResult.plan.length) {
+                return { ok: true, message: '이미 해금된 노드입니다.', plan: [], count: 0 };
+            }
+            const unlockedNames = [];
+            for (const id of planResult.plan) {
+                const result = this.unlockSkillNode(id, { notify: 'none' });
+                if (!result.ok) {
+                    const msg = `${result.message} (중단: ${unlockedNames.length}개 해금됨)`;
+                    this.emitSkillTreeFeedback(msg, notify, 'system');
+                    return { ok: false, message: msg, plan: planResult.plan, count: unlockedNames.length };
+                }
+                unlockedNames.push(result.nodeName || id);
+            }
+            const targetName = this.getSkillTreeNodeMap()[targetId]?.name || targetId;
+            const message = unlockedNames.length > 1
+                ? `${unlockedNames.length}개 노드를 해금했습니다. (목표: ${targetName})`
+                : `새로운 노드를 해금했습니다: ${targetName}`;
+            this.emitSkillTreeFeedback(message, notify, 'effect');
+            return { ok: true, message, plan: planResult.plan, count: unlockedNames.length, targetName };
+        },
+        resetSkillTree(options = {}) {
+            const notify = options.notify || 'log';
+            const tree = this.getSkillTreeConfig();
+            if (!tree) {
+                const msg = '스킬트리 정보를 찾을 수 없습니다.';
+                this.emitSkillTreeFeedback(msg, notify, 'system');
+                return { ok: false, message: msg };
+            }
+            const startId = tree.startNodeId || 'pilgrim_origin';
+            const nodeMap = this.getSkillTreeNodeMap();
+            const unlocked = [...new Set(this.state.player.unlockedSkillNodes || [])];
+            const refund = unlocked
+                .filter((id) => id !== startId && nodeMap[id])
+                .reduce((sum, id) => sum + this.getSkillNodePointCost(id), 0);
+            this.state.player.unlockedSkillNodes = [startId];
+            this.state.player.skillTreePoints = Math.max(0, Number(this.state.player.skillTreePoints || 0)) + refund;
+            this.state.player.activeSkillIds = ['meditation', 'praise', 'proclaim'];
+            if (typeof this.migrateLegacyActiveSkillsToMerged === 'function') {
+                this.migrateLegacyActiveSkillsToMerged();
+            }
+            this.syncUnlockedActiveSkills();
+            this.state.player.skills = this.getActiveSkills().map((skill) => ({
+                id: skill.id,
+                name: skill.name,
+                cost: skill.cost
+            }));
+            const message = refund > 0
+                ? `스킬트리를 초기화했습니다. 포인트 ${refund}을 돌려받았습니다.`
+                : '스킬트리를 초기화했습니다.';
+            this.emitSkillTreeFeedback(message, notify, 'effect');
+            this.updateUI();
+            this.saveGame();
+            return { ok: true, message, refund };
+        },
         emitSkillTreeFeedback(message, notify = 'log', type = 'system') {
             if (notify === 'toast') {
                 this.showSkillTreeToast(message, type === 'effect' ? 'success' : 'info');
@@ -277,8 +569,11 @@
                 this.emitSkillTreeFeedback(check.reason, notify, 'system');
                 return { ok: false, message: check.reason };
             }
+            const cost = this.getSkillNodePointCost(nodeId);
             this.state.player.unlockedSkillNodes.push(nodeId);
-            this.state.player.skillTreePoints = Math.max(0, this.state.player.skillTreePoints - 1);
+            if (cost > 0) {
+                this.state.player.skillTreePoints = Math.max(0, this.state.player.skillTreePoints - cost);
+            }
             this.syncUnlockedActiveSkills();
             const nodeName = this.getSkillTreeNodeMap()[nodeId].name;
             const message = `새로운 노드를 해금했습니다: ${nodeName}`;
@@ -594,113 +889,274 @@
             }
             return adj;
         },
-        getSkillTreeLayout(tree) { /* 방사형(Radial) 자동 레이아웃 우선 */
-            const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
-            const { depth, parentsById, childrenById, nodeMap } = this.computeSkillTreeLogicalDepth(tree);
+        buildSkillTreeWedgeByNodeId(tree) {
+            const wedgeById = new Map();
             const startId = tree?.startNodeId;
-            const stepR = 180; // 요청사항: 단계 * 180px
-            const outerPad = SKILL_TREE_UI.radialOuterPaddingPx;
+            const clusters = Array.isArray(tree?.clusters) ? tree.clusters : [];
+            const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
+            const assign = (id, wedge, force = false) => {
+                if (!id || !wedge) return;
+                if (force || !wedgeById.has(id)) wedgeById.set(id, wedge);
+            };
+            nodes.forEach((n) => {
+                if (n.id === startId) assign(n.id, 'center', true);
+                else if (RING_NODE_WEDGE[n.id]) assign(n.id, RING_NODE_WEDGE[n.id], true);
+                else if (/^pilgrim_ascent_m_/.test(n.id)) assign(n.id, 'ext_m', true);
+                else if (/^pilgrim_ascent_t_/.test(n.id)) assign(n.id, 'ext_t', true);
+                else if (/^pilgrim_ascent_r_/.test(n.id)) assign(n.id, 'ext_r', true);
+            });
+            for (const cluster of clusters) {
+                const wedge = CLUSTER_TO_WEDGE[cluster?.id];
+                if (!wedge) continue;
+                const nodeIds = Array.isArray(cluster.nodeIds) ? cluster.nodeIds : [];
+                nodeIds.forEach((id) => assign(id, wedge));
+            }
+            const inferFromId = (id) => {
+                if (/faith|sanct|rev_|flux|stellar|radiant|mercy|chorus|devotion|oracle|cont_|pilgrim_ring_n|pilgrim_out_n/.test(id)) return 'faith';
+                if (/valor|atk_|hunt|skirm|ember|eden|reck|pilgrim_ring_e|pilgrim_out_e/.test(id)) return 'valor';
+                if (/guard|def_|bulwark|bastion|steadfast|vita|aegis|endurance|pilgrim_ring_s|pilgrim_out_s/.test(id)) return 'guard';
+                if (/agile|spd_|swift|quickness|grace|pilgrim_ring_w|pilgrim_out_w/.test(id)) return 'agile';
+                if (/vow|zeal|resolve|convergence|mirror|pen_|abyss|cleanse|tithe_ep/.test(id)) return 'center';
+                return 'center';
+            };
+            nodes.forEach((n) => {
+                if (!wedgeById.has(n.id)) wedgeById.set(n.id, inferFromId(n.id));
+            });
+            return wedgeById;
+        },
+        getSkillTreeWedgeProgress(tree, unlocked) {
+            const wedgeById = this.buildSkillTreeWedgeByNodeId(tree);
+            const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
+            const stats = {};
+            Object.keys(WEDGE_LAYOUT_META).forEach((k) => { stats[k] = { total: 0, unlocked: 0 }; });
+            nodes.forEach((n) => {
+                if (n.kind === 'start') return;
+                const w = wedgeById.get(n.id) || 'center';
+                if (!stats[w]) stats[w] = { total: 0, unlocked: 0 };
+                stats[w].total += 1;
+                if (unlocked.has(n.id)) stats[w].unlocked += 1;
+            });
+            return stats;
+        },
+        getSkillTreeWedgeOverlays(originX, originY, innerR, outerR) {
+            const span = SKILL_TREE_UI.wedgeSpanRad;
             const twopi = Math.PI * 2;
-            const norm = (a) => {
+            const normA = (a) => {
                 let v = a % twopi;
                 if (v < 0) v += twopi;
                 return v;
             };
-            const angDist = (a, b) => {
-                let d = Math.abs(norm(a) - norm(b));
-                if (d > Math.PI) d = twopi - d;
-                return d;
+            return Object.entries(WEDGE_LAYOUT_META).map(([id, meta]) => {
+                const half = meta.hub ? Math.PI / 6 : span / 2;
+                const startA = normA(meta.angle - half);
+                let endA = meta.angle + half;
+                if (endA < startA) endA += twopi;
+                const ir = meta.hub ? 36 : innerR;
+                const or = meta.hub ? innerR + 118 : (id.startsWith('ext_') ? outerR + 42 : outerR);
+                return {
+                    id,
+                    name: meta.label,
+                    hue: meta.hue,
+                    startA,
+                    endA,
+                    innerR: ir,
+                    outerR: or,
+                    labelX: originX + Math.cos(meta.angle) * (ir + (or - ir) * 0.42),
+                    labelY: originY + Math.sin(meta.angle) * (ir + (or - ir) * 0.42)
+                };
+            });
+        },
+        snapSkillTreePositions(positions, originX, originY, maxRadius) {
+            const snap = SKILL_TREE_UI.gridSnapPx;
+            const minSep = SKILL_TREE_UI.minNodeSepPx;
+            const hardMin = SKILL_TREE_UI.overlapHardMinPx;
+            const ids = Object.keys(positions);
+            ids.forEach((id) => {
+                const p = positions[id];
+                p.x = Math.round(p.x / snap) * snap;
+                p.y = Math.round(p.y / snap) * snap;
+            });
+            const separate = (required) => {
+                let moved = false;
+                for (let i = 0; i < ids.length; i++) {
+                    for (let j = i + 1; j < ids.length; j++) {
+                        const a = positions[ids[i]];
+                        const b = positions[ids[j]];
+                        const dx = b.x - a.x;
+                        const dy = b.y - a.y;
+                        const dist = Math.hypot(dx, dy) || 0.001;
+                        if (dist >= required) continue;
+                        const push = (required - dist) / 2 + 0.5;
+                        const ux = dx / dist;
+                        const uy = dy / dist;
+                        a.x -= ux * push;
+                        a.y -= uy * push;
+                        b.x += ux * push;
+                        b.y += uy * push;
+                        moved = true;
+                    }
+                }
+                return moved;
+            };
+            for (let pass = 0; pass < SKILL_TREE_UI.overlapResolvePasses; pass++) {
+                if (!separate(minSep)) break;
+            }
+            for (let pass = 0; pass < 32; pass++) {
+                if (!separate(hardMin)) break;
+            }
+            if (Number.isFinite(originX) && Number.isFinite(originY) && Number.isFinite(maxRadius) && maxRadius > 0) {
+                ids.forEach((id) => {
+                    const p = positions[id];
+                    const dx = p.x - originX;
+                    const dy = p.y - originY;
+                    const d = Math.hypot(dx, dy) || 1;
+                    if (d > maxRadius) {
+                        const s = maxRadius / d;
+                        p.x = originX + dx * s;
+                        p.y = originY + dy * s;
+                    }
+                });
+            }
+        },
+        getSkillTreeLayout(tree) {
+            const nodes = Array.isArray(tree?.nodes) ? tree.nodes : [];
+            const startId = tree?.startNodeId;
+            const { depth } = this.computeSkillTreeLogicalDepth(tree);
+            const wedgeById = this.buildSkillTreeWedgeByNodeId(tree);
+            const stepR = SKILL_TREE_UI.wedgeStepR;
+            const outerPad = SKILL_TREE_UI.wedgeOuterPaddingPx;
+            const spanRad = SKILL_TREE_UI.wedgeSpanRad;
+            const twopi = Math.PI * 2;
+            const normA = (a) => {
+                let v = a % twopi;
+                if (v < 0) v += twopi;
+                return v;
             };
 
-            // 루트 외 depth 0은 1링으로 올려 충돌 방지
             const effectiveDepth = new Map();
             let maxDepth = 0;
             nodes.forEach((n) => {
                 let d = depth.get(n.id) || 0;
                 if (n.id !== startId && d === 0) d = 1;
+                const wedge = wedgeById.get(n.id);
+                if (wedge === 'center' && n.id !== startId) d = Math.min(d, 4);
+                if (wedge && wedge.startsWith('ext_')) d = Math.max(1, Math.min(d, 12));
                 effectiveDepth.set(n.id, d);
                 maxDepth = Math.max(maxDepth, d);
             });
 
-            const tierMap = new Map();
-            for (const n of nodes) {
-                const d = effectiveDepth.get(n.id) || 0;
-                if (!tierMap.has(d)) tierMap.set(d, []);
-                tierMap.get(d).push(n.id);
-            }
-
             const angleById = new Map();
-            if (startId && nodeMap.has(startId)) angleById.set(startId, -Math.PI / 2);
+            const radiusSlotById = new Map();
+            const byWedge = new Map();
+            nodes.forEach((n) => {
+                if (n.id === startId) return;
+                const w = wedgeById.get(n.id) || 'center';
+                if (!byWedge.has(w)) byWedge.set(w, []);
+                byWedge.get(w).push(n.id);
+            });
 
-            for (let d = 1; d <= maxDepth; d++) {
-                const ids = tierMap.get(d) || [];
-                if (!ids.length) continue;
-                const targetById = new Map();
-                ids.forEach((id) => {
-                    const p = parentsById.get(id) || [];
-                    const pa = p.filter((pid) => angleById.has(pid)).map((pid) => angleById.get(pid));
-                    if (pa.length) {
-                        const sx = pa.reduce((s, a) => s + Math.cos(a), 0);
-                        const sy = pa.reduce((s, a) => s + Math.sin(a), 0);
-                        targetById.set(id, Math.atan2(sy, sx));
-                    } else {
-                        targetById.set(id, null);
-                    }
-                });
+            const minStep = SKILL_TREE_UI.wedgeMinAngleRad;
+            const sameDepthRadialGap = 26;
+
+            for (const [wedge, ids] of byWedge.entries()) {
+                const meta = WEDGE_LAYOUT_META[wedge] || WEDGE_LAYOUT_META.center;
                 ids.sort((a, b) => {
-                    const ta = targetById.get(a);
-                    const tb = targetById.get(b);
-                    if (ta !== null && tb !== null && ta !== tb) return ta - tb;
-                    if (ta !== null && tb === null) return -1;
-                    if (ta === null && tb !== null) return 1;
+                    const da = effectiveDepth.get(a) || 0;
+                    const db = effectiveDepth.get(b) || 0;
+                    if (da !== db) return da - db;
                     return String(a).localeCompare(String(b));
                 });
-                const stepA = twopi / ids.length;
-                const base = -Math.PI / 2;
-                let bestPhase = 0;
-                let bestScore = Infinity;
-                for (let phase = 0; phase < ids.length; phase++) {
-                    let score = 0;
-                    for (let i = 0; i < ids.length; i++) {
-                        const target = targetById.get(ids[i]);
-                        if (target === null) continue;
-                        const a = base + (i + phase) * stepA;
-                        score += angDist(a, target);
-                    }
-                    if (score < bestScore) {
-                        bestScore = score;
-                        bestPhase = phase;
-                    }
-                }
-                ids.forEach((id, i) => angleById.set(id, norm(base + (i + bestPhase) * stepA)));
+                const count = ids.length;
+                const spanCap = meta.hub ? Math.PI / 2.1 : spanRad * 1.42;
+                const stepA = count > 1 ? Math.min(spanCap / (count - 1), Math.max(minStep, spanRad / count)) : 0;
+                const usedSpan = stepA * Math.max(0, count - 1);
+                const depthCount = new Map();
+                ids.forEach((id, i) => {
+                    const offset = (i - (count - 1) / 2) * stepA;
+                    angleById.set(id, meta.angle + offset);
+                    const d = effectiveDepth.get(id) || 0;
+                    const slot = depthCount.get(d) || 0;
+                    depthCount.set(d, slot + 1);
+                    radiusSlotById.set(id, slot);
+                });
             }
 
-            const outerR = Math.max(stepR, maxDepth * stepR);
-            const span = outerR + outerPad;
-            const width = Math.max(980, span * 2);
-            const height = Math.max(780, span * 2);
+            if (startId) angleById.set(startId, 0);
+
+            const caps = SKILL_TREE_UI.wedgeDepthCap;
+            const polar = [];
+            let maxNodeR = 0;
+
+            for (const n of nodes) {
+                const id = n.id;
+                const wedge = wedgeById.get(id) || 'center';
+                const d = effectiveDepth.get(id) || 0;
+                if (id === startId) {
+                    polar.push({ id, r: 0, theta: 0, wedge });
+                    continue;
+                }
+                const meta = WEDGE_LAYOUT_META[wedge] || WEDGE_LAYOUT_META.center;
+                const theta = angleById.get(id) ?? meta.angle;
+                const depthSlot = radiusSlotById.get(id) || 0;
+                let r;
+                if (meta.hub) {
+                    r = 52 + Math.min(d, caps.hub) * 38 + depthSlot * (sameDepthRadialGap * 0.65);
+                } else if (wedge.startsWith('ext_')) {
+                    const base = SKILL_TREE_UI.wedgeBaseR[wedge] || 438;
+                    r = base + Math.max(0, d - 1) * 24 + depthSlot * (sameDepthRadialGap * 0.55);
+                } else {
+                    const base = SKILL_TREE_UI.wedgeBaseR[wedge] || 148;
+                    r = base + Math.max(0, d - 1) * stepR + depthSlot * sameDepthRadialGap;
+                }
+                maxNodeR = Math.max(maxNodeR, r);
+                polar.push({ id, r, theta, wedge });
+            }
+
+            const hubR = maxNodeR + 52;
+            const width = Math.max(1100, hubR * 2 + outerPad * 2);
+            const height = Math.max(860, hubR * 2 + outerPad * 2);
             const originX = width / 2;
             const originY = height / 2;
             const positions = {};
 
-            for (const n of nodes) {
-                const id = n.id;
-                const d = effectiveDepth.get(id) || 0;
-                if (d === 0) {
-                    positions[id] = { x: originX, y: originY };
+            for (const p of polar) {
+                if (p.id === startId) {
+                    positions[p.id] = { x: originX, y: originY, wedge: p.wedge };
                     continue;
                 }
-                const theta = angleById.get(id) ?? 0;
-                const r = d * stepR;
-                positions[id] = {
-                    x: originX + Math.cos(theta) * r,
-                    y: originY + Math.sin(theta) * r
+                positions[p.id] = {
+                    x: originX + Math.cos(p.theta) * p.r,
+                    y: originY + Math.sin(p.theta) * p.r,
+                    wedge: p.wedge
                 };
             }
 
-            const viewCenterX = originX;
-            const viewCenterY = originY;
-            return { positions, width, height, originX, originY, viewCenterX, viewCenterY, unit: 1 };
+            this.snapSkillTreePositions(positions, originX, originY, hubR + 40);
+            const xs = Object.values(positions).map((p) => p.x);
+            const ys = Object.values(positions).map((p) => p.y);
+            const viewCenterX = xs.length ? (Math.min(...xs) + Math.max(...xs)) / 2 : originX;
+            const viewCenterY = ys.length ? (Math.min(...ys) + Math.max(...ys)) / 2 : originY;
+            const layoutInnerR = 148;
+            const layoutOuterR = hubR - 20;
+            return {
+                positions,
+                width,
+                height,
+                originX,
+                originY,
+                viewCenterX,
+                viewCenterY,
+                layoutInnerR,
+                layoutOuterR,
+                wedgeById,
+                unit: 1
+            };
+        },
+        getSkillTreeLodLevel(zoom) {
+            const z = Number(zoom) || 1;
+            if (z <= SKILL_TREE_UI.lod0ZoomMax) return 0;
+            if (z <= SKILL_TREE_UI.lod1ZoomMax) return 1;
+            return 2;
         },
         getSkillNodeStateLabel(nodeId, unlocked) {
             if (unlocked.has(nodeId)) return '해금 완료';
@@ -723,13 +1179,17 @@
             }
             return 'branch-unknown';
         },
+        getSkillNodeWedgeClass(wedgeId) {
+            if (!wedgeId) return 'wedge-unknown';
+            return `wedge-${wedgeId}`;
+        },
         getSkillNodeLayoutRadii(node) {
             const k = node?.kind || 'small';
-            if (k === 'active_unlock') return { core: 20, ring: 29, ringStroke: 3.8, coreStroke: 2.8, nameY: -44, stateY: 50 };
-            if (k === 'keystone') return { core: 17, ring: 25, ringStroke: 3.4, coreStroke: 2.6, nameY: -38, stateY: 43 };
-            if (k === 'start') return { core: 16, ring: 23, ringStroke: 3.2, coreStroke: 2.5, nameY: -34, stateY: 41 };
-            if (k === 'notable') return { core: 12, ring: 19, ringStroke: 2.6, coreStroke: 2.1, nameY: -30, stateY: 37 };
-            return { core: 10, ring: 16, ringStroke: 2.3, coreStroke: 2, nameY: -27, stateY: 34 };
+            if (k === 'active_unlock') return { core: 14, ring: 21, ringStroke: 2.8, coreStroke: 2.2, nameY: -32, stateY: 38 };
+            if (k === 'keystone') return { core: 12, ring: 18, ringStroke: 2.6, coreStroke: 2.1, nameY: -28, stateY: 34 };
+            if (k === 'start') return { core: 11, ring: 17, ringStroke: 2.5, coreStroke: 2, nameY: -26, stateY: 32 };
+            if (k === 'notable') return { core: 8.5, ring: 14, ringStroke: 2.2, coreStroke: 1.8, nameY: -24, stateY: 30 };
+            return { core: 7, ring: 12, ringStroke: 2, coreStroke: 1.7, nameY: -22, stateY: 28 };
         },
         getSkillNodeKindGlyph(node) {
             const k = node?.kind || 'small';
@@ -830,20 +1290,28 @@
             const depthMap = this.buildSkillTreeBfsDepthMap(tree);
             const prereq = this.buildSkillTreePrereqGraph(tree);
             const isBranchPoint = (nodeId) => (prereq.childrenById.get(nodeId) || []).length >= 2;
-            const { positions, width, height, originX, originY, viewCenterX, viewCenterY } = this.getSkillTreeLayout(tree);
-            const clusterOverlays = this.getSkillTreeClusterOverlays(tree, positions, originX, originY);
-            const clustersSvg = clusterOverlays.map((cluster) => {
-                const label = this.escapeSvgText(cluster.name);
-                const cls = `skill-web-cluster branch-${cluster.id}`;
-                const sectorD = this.getSkillTreeSectorPath(originX, originY, cluster.innerR, cluster.outerR, cluster.startA, cluster.endA);
+            const layout = this.getSkillTreeLayout(tree);
+            const { positions, width, height, originX, originY, viewCenterX, viewCenterY, layoutInnerR, layoutOuterR } = layout;
+            const wedgeProgress = this.getSkillTreeWedgeProgress(tree, unlocked);
+            const showLearned = !!this._skillTreeShowLearned;
+            const wedgeOverlays = this.getSkillTreeWedgeOverlays(originX, originY, layoutInnerR, layoutOuterR);
+            const wedgesSvg = wedgeOverlays.map((w) => {
+                const label = this.escapeSvgText(w.name);
+                const prog = wedgeProgress[w.id];
+                const pct = prog && prog.total > 0 ? Math.round((prog.unlocked / prog.total) * 100) : 0;
+                const sub = prog && prog.total > 0 ? `${prog.unlocked}/${prog.total} (${pct}%)` : '';
+                const sectorD = this.getSkillTreeSectorPath(originX, originY, w.innerR, w.outerR, w.startA, w.endA);
                 return `
-                    <g class="${cls}">
-                        <path class="skill-web-cluster-sector" d="${sectorD}"></path>
-                        <path class="skill-web-cluster-sector-edge" d="${sectorD}"></path>
-                        <text class="skill-web-cluster-label" x="${cluster.labelX.toFixed(2)}" y="${cluster.labelY.toFixed(2)}">${label}</text>
+                    <g class="skill-web-wedge wedge-${w.id}" data-wedge="${w.id}">
+                        <path class="skill-web-wedge-sector" d="${sectorD}" style="--wedge-hue:${w.hue}"></path>
+                        <path class="skill-web-wedge-sector-edge" d="${sectorD}"></path>
+                        <text class="skill-web-wedge-label" x="${w.labelX.toFixed(2)}" y="${w.labelY.toFixed(2)}">${label}</text>
+                        <text class="skill-web-wedge-progress" x="${w.labelX.toFixed(2)}" y="${(w.labelY + 14).toFixed(2)}">${sub}</text>
                     </g>
                 `;
             }).join('');
+            /* 세부 클러스터 부채꼴은 웨지와 겹쳐 확대 시 시각 노이즈 → 렌더 생략 */
+            const clustersSvg = '';
             const edgePadById = {};
             (tree.nodes || []).forEach((node) => {
                 const radii = this.getSkillNodeLayoutRadii(node);
@@ -853,9 +1321,13 @@
                 const a = positions[from], b = positions[to];
                 if (!a || !b) return '';
                 const state = this.getSkillTreeEdgeState(from, to, unlocked);
+                if (state === 'learned' && !showLearned) return '';
+                if (state === 'locked') return '';
                 const tier = this.getSkillTreeEdgeDepthTier(from, to, depthMap);
                 const d = this.getSkillTreeEdgePath(a.x, a.y, b.x, b.y, edgePadById[from], edgePadById[to]);
-                const marker = state === 'locked' ? '' : ` marker-end="url(#skill-edge-arrow-${state})"`;
+                const marker = state === 'available'
+                    ? ' marker-end="url(#skill-edge-arrow-available)"'
+                    : '';
                 return `<path class="skill-web-edge is-${state} tier-${tier}" data-from="${from}" data-to="${to}" d="${d}" fill="none"${marker} />`;
             }).join('');
             const nodes = (tree.nodes || []).map(node => {
@@ -866,7 +1338,9 @@
                 const isLocked = !unlocked.has(node.id) && !canUnlock;
                 const bottomLabel = unlocked.has(node.id) ? '완료' : (canUnlock ? '가능' : '');
                 const branchClass = this.getSkillNodeBranchClass(tree, node.id);
+                const wedgeClass = this.getSkillNodeWedgeClass(pos.wedge || layout.wedgeById?.get(node.id));
                 const branchPointClass = isBranchPoint(node.id) ? 'is-branch' : '';
+                const isKeyVisual = node.kind === 'keystone' || node.kind === 'active_unlock' || node.kind === 'start';
                 const radii = this.getSkillNodeLayoutRadii(node);
                 const nm = this.escapeSvgText(node.name);
                 const lockTspan = isLocked ? '<tspan class="skill-web-node-lock" dx="4" dy="0.5">🔒</tspan>' : '';
@@ -882,7 +1356,7 @@
                     ? `<polygon class="skill-web-node-ring" points="${this.getStarPoints(radii.ring, Math.max(6, radii.ring * 0.54), 5)}"></polygon>`
                     : `<circle class="skill-web-node-ring" r="${radii.ring}"></circle>`;
                 return `
-                    <g class="skill-web-node ${stateClass} ${branchPointClass} kind-${node.kind} ${branchClass}" data-node-id="${node.id}" style="--node-core-sw:${cw};--node-ring-sw:${rw};" transform="translate(${pos.x}, ${pos.y})">
+                    <g class="skill-web-node ${stateClass} ${branchPointClass} kind-${node.kind} ${branchClass} ${wedgeClass}${isKeyVisual ? ' is-key-visual' : ''}" data-node-id="${node.id}" data-wedge="${pos.wedge || ''}" style="--node-core-sw:${cw};--node-ring-sw:${rw};" transform="translate(${pos.x}, ${pos.y})">
                         ${coreShape}
                         ${ringShape}
                         <text class="skill-web-node-kind" text-anchor="middle" y="1">${kindGlyph}</text>
@@ -899,26 +1373,28 @@
                 <h3 style="margin-bottom: 8px;">${tree.className} 스킬트리</h3>
                 <p style="margin-bottom: 12px; color:#ffd54f;">남은 포인트: ${this.state.player.skillTreePoints}</p>
                 <div class="skill-web-toolbar">
-                    <span class="skill-web-help">드래그로 이동, 휠/버튼으로 확대·축소 · 노드를 클릭해 선택 후 「배우기」로 해금</span>
+                    <span class="skill-web-help">4방향 웨지 · 줌 아웃=개요 / 줌 인=상세 · 드래그 이동</span>
                     <div class="skill-web-zoom-buttons">
+                        <label class="skill-web-toggle-learned" title="해금 완료된 연결선 표시">
+                            <input type="checkbox" id="skill-web-show-learned" ${showLearned ? 'checked' : ''} />
+                            완료 경로
+                        </label>
                         <button id="skill-web-zoom-out" class="action-btn small">-</button>
                         <span id="skill-web-zoom-level">100%</span>
                         <button id="skill-web-zoom-in" class="action-btn small">+</button>
                         <button id="skill-web-focus-center" class="action-btn small primary" title="전체 노드가 균형 있게 보이도록 화면 중심 이동">트리 중심</button>
-                        <button id="skill-web-zoom-reset" class="action-btn small">초기화</button>
+                        <button id="skill-web-zoom-reset" class="action-btn small" title="개요 줌으로 초기화">개요</button>
                     </div>
                 </div>
-                <div id="skill-web-viewport" class="skill-web-viewport">
+                <div id="skill-web-viewport" class="skill-web-viewport lod-0">
                     <div id="skill-web-zoom-layer" class="skill-web-zoom-layer">
                         <svg class="skill-web-svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
                             <defs>
                                 <marker id="skill-edge-arrow-available" viewBox="0 0 10 10" refX="${SKILL_TREE_UI.marker.available.refX}" refY="5" markerWidth="${SKILL_TREE_UI.marker.available.w}" markerHeight="${SKILL_TREE_UI.marker.available.h}" orient="auto-start-reverse">
                                     <path d="M 0.4 0.6 L 9.6 5 L 0.4 9.4 z" fill="${SKILL_TREE_UI.marker.available.fill}"></path>
                                 </marker>
-                                <marker id="skill-edge-arrow-learned" viewBox="0 0 10 10" refX="${SKILL_TREE_UI.marker.learned.refX}" refY="5" markerWidth="${SKILL_TREE_UI.marker.learned.w}" markerHeight="${SKILL_TREE_UI.marker.learned.h}" orient="auto-start-reverse">
-                                    <path d="M 0.4 0.6 L 9.6 5 L 0.4 9.4 z" fill="${SKILL_TREE_UI.marker.learned.fill}"></path>
-                                </marker>
                             </defs>
+                            <g class="skill-web-wedges">${wedgesSvg}</g>
                             <g class="skill-web-clusters">${clustersSvg}</g>
                             <g class="skill-web-edges">${edges}</g>
                             <g class="skill-web-nodes">${nodes}</g>
@@ -930,6 +1406,7 @@
                 <div id="skill-web-info" class="skill-web-info">노드를 선택하면 상세 효과를 확인할 수 있습니다.</div>
                 <div class="skill-web-learn-row">
                     <button type="button" id="skill-web-learn" class="action-btn primary" disabled>배우기</button>
+                    <button type="button" id="skill-web-reset" class="action-btn danger" title="해금한 스킬을 모두 되돌리고 포인트를 돌려받습니다">스킬 초기화</button>
                 </div>
                 <button id="btn-close-skilltree" class="action-btn" style="margin-top: 14px; width: 100%;">닫기</button>
             `;
@@ -974,6 +1451,7 @@
                 if (!learnBtn) return;
                 learnBtn.removeAttribute('title');
                 const unlockedNow = new Set(this.state.player.unlockedSkillNodes || []);
+                const pointsNow = Math.max(0, Number(this.state.player.skillTreePoints || 0));
                 if (!selectedNodeId) {
                     learnBtn.disabled = true;
                     learnBtn.textContent = '배우기';
@@ -985,15 +1463,24 @@
                     learnBtn.textContent = '이미 해금됨';
                     return;
                 }
-                const check = this.canUnlockSkillNode(selectedNodeId);
-                if (check.ok) {
+                const plan = this.getSkillTreeUnlockPlanTo(selectedNodeId);
+                if (plan.ok && plan.cost > 0 && pointsNow >= plan.cost) {
                     learnBtn.disabled = false;
-                    learnBtn.textContent = '배우기';
-                } else {
-                    learnBtn.disabled = true;
-                    learnBtn.textContent = '배우기';
-                    learnBtn.title = check.reason;
+                    learnBtn.textContent = plan.cost > 1 ? `경로 배우기 (${plan.cost})` : '배우기';
+                    if (plan.cost > 1) {
+                        learnBtn.title = `선행·연결 경로 ${plan.cost}개 노드를 한 번에 해금합니다`;
+                    }
+                    return;
                 }
+                if (plan.ok && plan.cost > 0) {
+                    learnBtn.disabled = true;
+                    learnBtn.textContent = plan.cost > 1 ? `경로 배우기 (${plan.cost})` : '배우기';
+                    learnBtn.title = `포인트 부족 (필요 ${plan.cost} / 보유 ${pointsNow})`;
+                    return;
+                }
+                learnBtn.disabled = true;
+                learnBtn.textContent = '배우기';
+                learnBtn.title = plan.reason || this.canUnlockSkillNode(selectedNodeId).reason;
             };
             const updateSelectionVisual = () => {
                 content.querySelectorAll('.skill-web-node').forEach(el => {
@@ -1001,10 +1488,18 @@
                     el.classList.toggle('is-selected', id === selectedNodeId);
                 });
             };
+            const applySkillTreeLod = (zoomLevel) => {
+                if (!viewport) return;
+                viewport.classList.remove('lod-0', 'lod-1', 'lod-2');
+                viewport.classList.add(`lod-${zoomLevel}`);
+            };
             if (viewport && zoomLayer && zoomLabel) {
                 const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
                 const savedView = this._skillTreeViewState && this._skillTreeViewState[tree.classId];
-                let zoom = savedView && typeof savedView.zoom === 'number' ? clamp(savedView.zoom, 0.55, 2.4) : 1;
+                const defaultZoom = savedView && typeof savedView.zoom === 'number'
+                    ? savedView.zoom
+                    : SKILL_TREE_UI.defaultOverviewZoom;
+                let zoom = clamp(defaultZoom, 0.55, 2.4);
                 /** 시작점만 보면 상단(음수 그리드 y) 노드가 화면 밖으로 나가므로, 전체 분포의 중심을 기준으로 맞춤 */
                 const centerOnView = () => {
                     viewport.scrollLeft = Math.max(0, viewCenterX * zoom - viewport.clientWidth / 2);
@@ -1015,6 +1510,7 @@
                     zoom = clamp(nextZoom, 0.55, 2.4);
                     zoomLayer.style.transform = `scale(${zoom})`;
                     zoomLabel.innerText = `${Math.round(zoom * 100)}%`;
+                    applySkillTreeLod(this.getSkillTreeLodLevel(zoom));
                     if (focusX === undefined || focusY === undefined) {
                         centerOnView();
                         return;
@@ -1026,6 +1522,12 @@
                 };
                 zoomLayer.style.transform = `scale(${zoom})`;
                 zoomLabel.innerText = `${Math.round(zoom * 100)}%`;
+                applySkillTreeLod(this.getSkillTreeLodLevel(zoom));
+                content.querySelector('#skill-web-show-learned')?.addEventListener('change', (e) => {
+                    this._skillTreeShowLearned = !!e.target.checked;
+                    persistSkillTreeView();
+                    this.openSkillTreeModal();
+                });
                 setTimeout(() => {
                     if (savedView && typeof savedView.scrollLeft === 'number') {
                         const maxL = Math.max(0, viewport.scrollWidth - viewport.clientWidth);
@@ -1072,7 +1574,7 @@
                 });
                 content.querySelector('#skill-web-zoom-in')?.addEventListener('click', () => setZoom(zoom + 0.15, viewport.clientWidth / 2, viewport.clientHeight / 2));
                 content.querySelector('#skill-web-zoom-out')?.addEventListener('click', () => setZoom(zoom - 0.15, viewport.clientWidth / 2, viewport.clientHeight / 2));
-                content.querySelector('#skill-web-zoom-reset')?.addEventListener('click', () => setZoom(1));
+                content.querySelector('#skill-web-zoom-reset')?.addEventListener('click', () => setZoom(SKILL_TREE_UI.defaultOverviewZoom));
                 content.querySelector('#skill-web-focus-center')?.addEventListener('click', () => centerOnView());
             }
             content.querySelectorAll('.skill-web-node').forEach(nodeEl => {
@@ -1138,9 +1640,12 @@
                     }
                 });
             });
-            learnBtn?.addEventListener('click', () => {
+            learnBtn?.addEventListener('click', async () => {
                 if (!selectedNodeId || learnBtn.disabled) return;
-                const result = this.unlockSkillNode(selectedNodeId, { notify: 'none' });
+                const plan = this.getSkillTreeUnlockPlanTo(selectedNodeId);
+                const result = (plan.ok && plan.plan.length > 0)
+                    ? this.unlockSkillPathTo(selectedNodeId, { notify: 'none' })
+                    : this.unlockSkillNode(selectedNodeId, { notify: 'none' });
                 if (result.ok) {
                     persistSkillTreeView();
                     this.openSkillTreeModal();
@@ -1149,6 +1654,34 @@
                 } else {
                     this.showSkillTreeToast(result.message, 'info');
                     updateLearnButton();
+                }
+            });
+            content.querySelector('#skill-web-reset')?.addEventListener('click', async () => {
+                const unlockedCount = (this.state.player.unlockedSkillNodes || []).filter((id) => {
+                    const tree = this.getSkillTreeConfig();
+                    return id !== tree?.startNodeId;
+                }).length;
+                if (unlockedCount <= 0) {
+                    this.showSkillTreeToast('초기화할 스킬이 없습니다.', 'info');
+                    return;
+                }
+                const ok = await this.showConfirmModal({
+                    title: '스킬트리 초기화',
+                    message: '해금한 모든 스킬 노드를 되돌리고, 사용한 포인트를 전부 돌려받습니다.\n시작 노드만 남습니다. 계속할까요?',
+                    confirmText: '초기화',
+                    cancelText: '취소',
+                    danger: true
+                });
+                if (!ok) return;
+                const result = this.resetSkillTree({ notify: 'none' });
+                if (result.ok) {
+                    selectedNodeId = null;
+                    persistSkillTreeView();
+                    this.openSkillTreeModal();
+                    this.renderTabContent(document.querySelector('.tab-btn.active')?.dataset.tab || 'skills');
+                    this.showSkillTreeToast(result.message, 'success');
+                } else {
+                    this.showSkillTreeToast(result.message, 'info');
                 }
             });
             document.getElementById('btn-close-skilltree')?.addEventListener('click', () => {
